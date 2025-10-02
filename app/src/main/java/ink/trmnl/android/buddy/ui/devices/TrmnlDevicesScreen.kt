@@ -458,17 +458,29 @@ private fun DeviceCard(
 }
 
 @Composable
-private fun getBatteryColor(percentCharged: Double): Color =
-    when {
-        percentCharged >= 60 -> Color(0xFF4CAF50) // Green
-        percentCharged >= 30 -> Color(0xFFFFA726) // Orange
-        else -> Color(0xFFF44336) // Red
+private fun getBatteryColor(percentCharged: Double): Color {
+    // Use theme-aware colors that work with both light and dark themes
+    val goodColor = MaterialTheme.colorScheme.tertiary
+    val warningColor = MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+    val criticalColor = MaterialTheme.colorScheme.error
+
+    return when {
+        percentCharged >= 60 -> goodColor // Good battery level
+        percentCharged >= 30 -> warningColor // Warning level
+        else -> criticalColor // Critical level
     }
+}
 
 @Composable
-private fun getWifiColor(wifiStrength: Double): Color =
-    when {
-        wifiStrength >= 70 -> Color(0xFF4CAF50) // Green
-        wifiStrength >= 40 -> Color(0xFFFFA726) // Orange
-        else -> Color(0xFFF44336) // Red
+private fun getWifiColor(wifiStrength: Double): Color {
+    // Use theme-aware colors that work with both light and dark themes
+    val strongColor = MaterialTheme.colorScheme.tertiary
+    val mediumColor = MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+    val weakColor = MaterialTheme.colorScheme.error
+
+    return when {
+        wifiStrength >= 70 -> strongColor // Strong signal
+        wifiStrength >= 40 -> mediumColor // Medium signal
+        else -> weakColor // Weak signal
     }
+}

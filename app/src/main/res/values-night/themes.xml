@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Material 3 theme that supports dynamic colors on Android 12+ -->
+    <!-- Material 3 dark theme that supports dynamic colors on Android 12+ -->
     <!-- Using NoActionBar to let Compose handle the UI -->
-    <style name="Theme.App" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.App" parent="android:Theme.Material.NoActionBar">
         <!-- Enable edge-to-edge (handled in MainActivity with enableEdgeToEdge) -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>
