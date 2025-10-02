@@ -122,7 +122,7 @@ fun WelcomeContent(
             ) {
                 // App icon or logo
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    painter = painterResource(id = R.drawable.trmnl_logo_plain),
                     contentDescription = "TRMNL Buddy Logo",
                     modifier = Modifier.size(120.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),

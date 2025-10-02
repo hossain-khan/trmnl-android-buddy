@@ -283,7 +283,7 @@ fun TrmnlDevicesContent(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.nest_display_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                            painter = painterResource(R.drawable.trmnl_device_frame),
                             contentDescription = "No devices",
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -458,7 +458,7 @@ private fun DeviceCard(
             },
             leadingContent = {
                 Icon(
-                    painter = painterResource(R.drawable.nest_display_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                    painter = painterResource(R.drawable.trmnl_device_frame),
                     contentDescription = "Device",
                     modifier = Modifier.size(48.dp),
                     tint = MaterialTheme.colorScheme.primary,
