@@ -29,7 +29,7 @@ okhttp = "5.1.0"
 # https://github.com/square/retrofit/releases
 retrofit = "3.0.0"
 # https://github.com/Kotlin/kotlinx.serialization/releases
-kotlinxSerializationJson = "1.8.1"
+kotlinxSerializationJson = "1.9.0"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
 kotlinxCoroutines = "1.10.2"
 # https://github.com/slackhq/EitherNet/releases
