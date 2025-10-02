@@ -117,9 +117,9 @@ fun EmailDetailContent(
                         Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(Color.Magenta)
+                            .background(MaterialTheme.colorScheme.primaryContainer)
                             .padding(4.dp),
-                    colorFilter = ColorFilter.tint(Color.White),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
                     contentDescription = null,
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -182,9 +182,9 @@ fun EmailItem(
                 Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color.Magenta)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(4.dp),
-            colorFilter = ColorFilter.tint(Color.White),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
             contentDescription = null,
         )
         Column {
