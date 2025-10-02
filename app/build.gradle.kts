@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace = "app.example"
+    namespace = "ink.trmnl.android.buddy"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "app.example"
+        applicationId = "ink.trmnl.android.buddy"
         minSdk = 28
         targetSdk = 36
         versionCode = 1
