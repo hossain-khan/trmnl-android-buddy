@@ -1,0 +1,113 @@
+package ink.trmnl.android.buddy.api
+
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
+
+/**
+ * TRMNL API Client factory and configuration.
+ *
+ * Provides configured instances of the TRMNL API service with proper
+ * JSON serialization, logging, and error handling.
+ */
+object TrmnlApiClient {
+    private const val BASE_URL = "https://usetrmnl.com/api/"
+    private const val CONNECT_TIMEOUT_SECONDS = 30L
+    private const val READ_TIMEOUT_SECONDS = 30L
+    private const val WRITE_TIMEOUT_SECONDS = 30L
+
+    /**
+     * JSON configuration for kotlinx.serialization
+     */
+    private val json = Json {
+        ignoreUnknownKeys = true // Ignore unknown fields in API responses
+        isLenient = true // Be lenient with non-standard JSON
+        coerceInputValues = true // Coerce null to default values
+        encodeDefaults = true // Include default values in serialization
+        prettyPrint = false // Compact JSON for network efficiency
+    }
+
+    /**
+     * Creates a configured OkHttpClient with logging and timeouts.
+     *
+     * @param isDebug Enable debug logging (default: false for production)
+     * @param apiKey Optional API key for authentication
+     * @return Configured OkHttpClient instance
+     */
+    fun createOkHttpClient(
+        isDebug: Boolean = false,
+        apiKey: String? = null,
+    ): OkHttpClient {
+        return OkHttpClient.Builder().apply {
+            // Timeouts
+            connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            writeTimeout(WRITE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+
+            // Logging (only in debug builds)
+            if (isDebug) {
+                addInterceptor(
+                    HttpLoggingInterceptor().apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    }
+                )
+            }
+
+            // Authentication interceptor
+            if (apiKey != null) {
+                addInterceptor { chain ->
+                    val request = chain.request().newBuilder()
+                        .addHeader("Authorization", "Bearer $apiKey")
+                        .build()
+                    chain.proceed(request)
+                }
+            }
+
+            // User-Agent header
+            addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("User-Agent", "TrmnlAndroidBuddy/1.0")
+                    .build()
+                chain.proceed(request)
+            }
+        }.build()
+    }
+
+    /**
+     * Creates a configured Retrofit instance for TRMNL API.
+     *
+     * @param okHttpClient Optional custom OkHttpClient
+     * @return Configured Retrofit instance
+     */
+    fun createRetrofit(
+        okHttpClient: OkHttpClient = createOkHttpClient()
+    ): Retrofit {
+        val contentType = "application/json".toMediaType()
+        
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    /**
+     * Creates a TRMNL API service instance.
+     *
+     * @param apiKey Optional API key for authentication
+     * @param isDebug Enable debug logging (default: false for production)
+     * @return TrmnlApiService instance
+     */
+    fun create(
+        apiKey: String? = null,
+        isDebug: Boolean = false,
+    ): TrmnlApiService {
+        val okHttpClient = createOkHttpClient(isDebug, apiKey)
+        val retrofit = createRetrofit(okHttpClient)
+        return retrofit.create(TrmnlApiService::class.java)
+    }
+}

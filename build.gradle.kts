@@ -4,6 +4,10 @@ plugins {
     // Project: https://developer.android.com/build
     alias(libs.plugins.android.application) apply false
 
+    // Applies the Android library plugin.
+    // Project: https://developer.android.com/build
+    alias(libs.plugins.android.library) apply false
+
     // Applies the Kotlin Android plugin.
     // Project: https://kotlinlang.org/docs/android-overview.html
     alias(libs.plugins.kotlin.android) apply false
@@ -11,6 +15,10 @@ plugins {
     // Applies the Kotlin Compose plugin.
     // Project: https://developer.android.com/jetpack/compose
     alias(libs.plugins.kotlin.compose) apply false
+
+    // Applies the Kotlin Serialization plugin.
+    // Project: https://github.com/Kotlin/kotlinx.serialization
+    alias(libs.plugins.kotlin.serialization) apply false
 
     // Applies the Kotlin Parcelize plugin.
     // Project: https://developer.android.com/kotlin/parcelize
