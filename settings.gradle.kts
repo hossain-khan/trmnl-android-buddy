@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Circuit App Template"
+rootProject.name = "TRMNL Buddy"
 include(":app")
 include(":api")
