@@ -312,9 +312,10 @@ fun UserAccountContent(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                             ),
                     ) {
-                        Column(
+                        Row(
                             modifier = Modifier.padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             // Gravatar avatar with fade-in effect
                             AsyncImage(
@@ -333,19 +334,23 @@ fun UserAccountContent(
                                 placeholder = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                                 error = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = state.user.name,
-                                style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = state.user.email,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
-                            )
+
+                            // Name and email column
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Text(
+                                    text = state.user.name,
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                                Text(
+                                    text = state.user.email,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                                )
+                            }
                         }
                     }
 
