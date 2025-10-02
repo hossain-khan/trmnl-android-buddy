@@ -73,6 +73,67 @@ trmnl-android-buddy/
   - Constants: SCREAMING_SNAKE_CASE
   - Composables: PascalCase (like classes)
 
+### Material You / Material 3 Guidelines
+
+**All screens and UI components MUST be Material You compatible:**
+
+1. **Use Material 3 Components**:
+   - Use `androidx.compose.material3.*` components (NOT `material` or `material2`)
+   - Prefer Material 3 equivalents: `Button`, `Card`, `TextField`, `TopAppBar`, etc.
+   - Use `ListItem` for list entries with proper leading/trailing content
+
+2. **Theme-Aware Colors**:
+   - **NEVER use hardcoded colors** (e.g., `Color(0xFF4CAF50)`, `Color.Red`)
+   - Always use `MaterialTheme.colorScheme.*` for colors:
+     - `primary`, `onPrimary` - Main brand colors
+     - `primaryContainer`, `onPrimaryContainer` - Filled components
+     - `secondary`, `tertiary` - Accent colors
+     - `error`, `onError` - Error states
+     - `surface`, `onSurface` - Backgrounds
+     - `surfaceVariant`, `onSurfaceVariant` - Alternative surfaces
+   - For status indicators (battery, WiFi), use semantic color scheme tokens with alpha modifiers
+   
+3. **Dynamic Color Support**:
+   - The app uses `dynamicColor = true` for Android 12+ wallpaper-based theming
+   - All colors must work in both light and dark themes
+   - Test color contrast in both theme modes
+
+4. **Edge-to-Edge Display**:
+   - Use `Modifier.padding(innerPadding)` with `Scaffold` to respect system bars
+   - Status and navigation bars are transparent (configured in XML themes)
+   - MainActivity already enables edge-to-edge via `enableEdgeToEdge()`
+
+5. **Typography**:
+   - Use `MaterialTheme.typography.*` for all text
+   - Available styles: `displayLarge/Medium/Small`, `headlineLarge/Medium/Small`, `titleLarge/Medium/Small`, `bodyLarge/Medium/Small`, `labelLarge/Medium/Small`
+
+**Example - Good Practice**:
+```kotlin
+@Composable
+fun GoodExample() {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    ) {
+        Text(
+            text = "Hello",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    }
+}
+```
+
+**Example - Bad Practice** ❌:
+```kotlin
+// DON'T DO THIS
+Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
+    Text(text = "Hello", color = Color.White)
+}
+```
+
 ### API Integration
 
 When working with TRMNL API:
@@ -241,6 +302,9 @@ suspend fun fetchDevices(): Result<List<Device>> {
 - [Metro Documentation](https://zacsweers.github.io/metro/)
 - [EitherNet Repository](https://github.com/slackhq/EitherNet)
 - [Compose Documentation](https://developer.android.com/jetpack/compose)
+- [Material 3 Design System](https://m3.material.io/)
+- [Material 3 Compose Components](https://developer.android.com/jetpack/compose/designsystems/material3)
+- [Android Dynamic Color Guide](https://developer.android.com/develop/ui/views/theming/dynamic-colors)
 - [TRMNL API Documentation](https://usetrmnl.com/api)
 
 ## Notes for AI Assistants
