@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,9 +34,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -51,6 +58,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlDeviceRepository
 import ink.trmnl.android.buddy.api.models.User
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.util.GravatarUtils
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -308,11 +316,22 @@ fun UserAccountContent(
                             modifier = Modifier.padding(24.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                                contentDescription = "Profile",
-                                modifier = Modifier.size(80.dp),
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            // Gravatar avatar with fade-in effect
+                            AsyncImage(
+                                model =
+                                    ImageRequest
+                                        .Builder(LocalContext.current)
+                                        .data(GravatarUtils.getGravatarUrl(state.user.email, size = 160))
+                                        .crossfade(true)
+                                        .build(),
+                                contentDescription = "Profile avatar",
+                                modifier =
+                                    Modifier
+                                        .size(80.dp)
+                                        .clip(CircleShape),
+                                contentScale = ContentScale.Crop,
+                                placeholder = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                error = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(

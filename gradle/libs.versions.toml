@@ -38,6 +38,10 @@ kotlinxCoroutines = "1.10.2"
 # https://github.com/slackhq/EitherNet/releases
 eithernet = "2.0.0"
 
+# Image Loading
+# https://github.com/coil-kt/coil/releases
+coil = "3.3.0"
+
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -94,6 +98,11 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 eithernet = { group = "com.slack.eithernet", name = "eithernet", version.ref = "eithernet" }
 eithernet-integration-retrofit = { group = "com.slack.eithernet", name = "eithernet-integration-retrofit", version.ref = "eithernet" }
+
+# Coil - Image loading for Compose
+# https://coil-kt.github.io/coil/
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

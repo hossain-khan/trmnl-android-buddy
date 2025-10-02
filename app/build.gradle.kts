@@ -99,6 +99,10 @@ dependencies {
     // EitherNet for type-safe API results (needed to handle ApiResult from :api module)
     implementation(libs.eithernet)
 
+    // Coil - Image loading for Compose
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
