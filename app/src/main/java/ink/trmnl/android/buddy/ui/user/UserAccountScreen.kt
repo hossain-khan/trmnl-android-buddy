@@ -191,6 +191,21 @@ class UserAccountPresenter(
 }
 
 /**
+ * Redacts an API key to show only first 4 and last 4 characters.
+ * Example: "user_abc123xyz789" becomes "user****789"
+ */
+private fun redactApiKey(apiKey: String): String =
+    when {
+        apiKey.length <= 8 -> "****" // Too short, fully redact
+        else -> {
+            val prefix = apiKey.take(4)
+            val suffix = apiKey.takeLast(4)
+            val middleLength = (apiKey.length - 8).coerceAtLeast(4)
+            "$prefix${"*".repeat(middleLength)}$suffix"
+        }
+    }
+
+/**
  * UI content for UserAccountScreen.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -420,7 +435,7 @@ fun UserAccountContent(
                             headlineContent = { Text("API Key") },
                             supportingContent = {
                                 Text(
-                                    text = state.user.apiKey,
+                                    text = redactApiKey(state.user.apiKey),
                                     fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
                                     style = MaterialTheme.typography.bodySmall,
                                 )
