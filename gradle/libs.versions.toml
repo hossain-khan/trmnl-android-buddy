@@ -1,7 +1,7 @@
 [versions]
 activityCompose = "1.11.0"
 # https://developer.android.com/build/releases/gradle-plugin
-agp = "8.13.0"
+agp = "8.12.1"
 circuit = "0.30.0"
 composeBom = "2025.09.01"
 coreKtx = "1.17.0"
@@ -22,6 +22,8 @@ kotlinter = "5.2.0"
 lifecycleRuntimeKtx = "2.9.4"
 metro = "0.6.8"
 androidxWork = "2.10.5"
+# https://developer.android.com/topic/libraries/architecture/datastore
+androidxDataStore = "1.1.2"
 
 # Networking
 # https://github.com/square/okhttp/releases
@@ -70,6 +72,9 @@ androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text
 
 # WorkManager - https://developer.android.com/topic/libraries/architecture/workmanager
 androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
+
+# DataStore - https://developer.android.com/topic/libraries/architecture/datastore
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
 
 # Networking
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }

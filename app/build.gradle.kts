@@ -94,6 +94,7 @@ dependencies {
     implementation(libs.javax.inject)
 
     implementation(libs.androidx.work)
+    implementation(libs.androidx.datastore.preferences)
 
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)

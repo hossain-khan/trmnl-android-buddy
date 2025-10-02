@@ -251,3 +251,5 @@ suspend fun fetchDevices(): Result<List<Device>> {
 - Write comprehensive unit tests for new API endpoints
 - Follow the existing code structure and patterns
 - Don't use PII (Personally Identifiable Information) in code examples or tests
+- **Do NOT create summary markdown files** (like `FEATURE_SUMMARY.md`, `SCREENS_IMPLEMENTATION.md`, etc.) for features or bug fixes
+- Keep documentation in existing files like README.md or inline code comments
