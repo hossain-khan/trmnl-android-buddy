@@ -1,10 +1,10 @@
 package ink.trmnl.android.buddy.di
 
-import ink.trmnl.android.buddy.data.ExampleEmailValidator
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import ink.trmnl.android.buddy.data.ExampleEmailValidator
 
 // Example of Metro providers that contribute to the app graph.
 // You should delete this file and create your own providers.

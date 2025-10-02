@@ -36,10 +36,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import ink.trmnl.android.buddy.R
-import ink.trmnl.android.buddy.data.Email
-import ink.trmnl.android.buddy.data.ExampleEmailRepository
-import ink.trmnl.android.buddy.data.ExampleEmailValidator
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -50,6 +46,10 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.data.Email
+import ink.trmnl.android.buddy.data.ExampleEmailRepository
+import ink.trmnl.android.buddy.data.ExampleEmailValidator
 import kotlinx.parcelize.Parcelize
 
 // See https://slackhq.github.io/circuit/screen/

@@ -4,15 +4,15 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import ink.trmnl.android.buddy.di.AppWorkerFactory
-import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
-import ink.trmnl.android.buddy.di.WorkerKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
+import ink.trmnl.android.buddy.di.AppWorkerFactory
+import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
+import ink.trmnl.android.buddy.di.WorkerKey
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 

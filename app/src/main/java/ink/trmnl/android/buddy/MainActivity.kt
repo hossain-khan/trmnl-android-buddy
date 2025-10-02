@@ -7,9 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.runtime.remember
-import ink.trmnl.android.buddy.circuit.InboxScreen
-import ink.trmnl.android.buddy.di.ActivityKey
-import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
@@ -22,6 +19,9 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
+import ink.trmnl.android.buddy.circuit.InboxScreen
+import ink.trmnl.android.buddy.di.ActivityKey
+import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 
 @ActivityKey(MainActivity::class)
 @ContributesIntoMap(AppScope::class, binding = binding<Activity>())

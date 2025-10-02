@@ -25,11 +25,6 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import ink.trmnl.android.buddy.R
-import ink.trmnl.android.buddy.circuit.overlay.AppInfoOverlay
-import ink.trmnl.android.buddy.data.Email
-import ink.trmnl.android.buddy.data.ExampleAppVersionService
-import ink.trmnl.android.buddy.data.ExampleEmailRepository
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -41,6 +36,11 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.circuit.overlay.AppInfoOverlay
+import ink.trmnl.android.buddy.data.Email
+import ink.trmnl.android.buddy.data.ExampleAppVersionService
+import ink.trmnl.android.buddy.data.ExampleEmailRepository
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 

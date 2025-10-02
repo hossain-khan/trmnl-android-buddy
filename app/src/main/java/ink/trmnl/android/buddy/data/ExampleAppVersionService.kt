@@ -1,8 +1,8 @@
 package ink.trmnl.android.buddy.data
 
 import android.content.Context
-import ink.trmnl.android.buddy.di.ApplicationContext
 import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.di.ApplicationContext
 
 // Example service class that does not need DI module or binding
 @Inject
