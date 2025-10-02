@@ -19,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -73,6 +74,8 @@ data object TrmnlDevicesScreen : Screen {
 
     sealed class Event : CircuitUiEvent {
         data object Refresh : Event()
+
+        data object AccountClicked : Event()
 
         data class DeviceClicked(
             val device: Device,
@@ -133,6 +136,10 @@ class TrmnlDevicesPresenter
                                 },
                             )
                         }
+                    }
+
+                    is TrmnlDevicesScreen.Event.AccountClicked -> {
+                        navigator.goTo(ink.trmnl.android.buddy.ui.user.UserAccountScreen)
                     }
 
                     is TrmnlDevicesScreen.Event.DeviceClicked -> {
@@ -211,6 +218,14 @@ fun TrmnlDevicesContent(
         topBar = {
             TopAppBar(
                 title = { Text("TRMNL Devices") },
+                actions = {
+                    IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.AccountClicked) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Account",
+                        )
+                    }
+                },
             )
         },
     ) { innerPadding ->
