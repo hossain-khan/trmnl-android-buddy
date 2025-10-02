@@ -59,6 +59,7 @@ circuit-codegen = { group = "com.slack.circuit", name = "circuit-codegen", versi
 circuit-codegen-annotations = { group = "com.slack.circuit", name = "circuit-codegen-annotations", version.ref = "circuit" }
 circuit-foundation = { group = "com.slack.circuit", name = "circuit-foundation", version.ref = "circuit" }
 circuit-overlay = { group = "com.slack.circuit", name = "circuit-overlay", version.ref = "circuit" }
+circuit-test = { group = "com.slack.circuit", name = "circuit-test", version.ref = "circuit" }
 circuitx-android = { group = "com.slack.circuit", name = "circuitx-android", version.ref = "circuit" }
 circuitx-effects = { group = "com.slack.circuit", name = "circuitx-effects", version.ref = "circuit" }
 circuitx-gestureNav = { group = "com.slack.circuit", name = "circuitx-gesture-navigation", version.ref = "circuit" }
