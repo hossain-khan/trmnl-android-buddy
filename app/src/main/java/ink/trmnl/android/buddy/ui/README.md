@@ -73,6 +73,58 @@ Each screen package contains:
 **Dependencies**:
 - `UserPreferencesRepository` - Saves token and onboarding status
 
+### 3. TRMNL Devices Screen (`ui.devices.TrmnlDevicesScreen`)
+
+**Purpose**: Main screen displaying all TRMNL devices with their status.
+
+**Location**: `app/src/main/java/ink/trmnl/android/buddy/ui/devices/`
+
+**Features**:
+- Fetches devices from TRMNL API
+- Displays devices in Material 3 Cards with ListItems
+- Shows device properties:
+  - Name and Friendly ID
+  - MAC Address
+  - Battery level with color-coded progress bar
+  - Battery voltage (if available)
+  - WiFi signal strength with color-coded progress bar
+  - WiFi RSSI in dBm (if available)
+- Loading, error, and empty states
+- Pull-to-refresh capability (TODO)
+- Device click navigation (TODO)
+
+**State**:
+- `devices: List<Device>` - List of fetched devices
+- `isLoading: Boolean` - Loading state
+- `errorMessage: String?` - Error message if fetch fails
+
+**Events**:
+- `Refresh` - Reload devices from API
+- `DeviceClicked(device: Device)` - User taps on a device
+
+**API Integration**:
+- Uses `TrmnlApiService.getDevices()` from `:api` module
+- Authenticates with Bearer token from DataStore
+- Handles all EitherNet ApiResult types:
+  - Success: Displays devices
+  - HttpFailure: Shows specific error (401, 404, etc.)
+  - NetworkFailure: Network connection error
+  - ApiFailure: API-specific error
+  - UnknownFailure: Unexpected error
+
+**UI Components**:
+- Material 3 Cards with elevation
+- ListItem for structured device info
+- LinearProgressIndicator for battery and WiFi
+- Color-coded indicators:
+  - Green (≥60%/70%): Good status
+  - Orange (30-60%/40-70%): Warning
+  - Red (<30%/40%): Critical
+
+**Dependencies**:
+- `TrmnlApiService` - API calls
+- `UserPreferencesRepository` - Get API token
+
 ## Data Layer
 
 ### UserPreferences (`data.preferences.UserPreferences`)
@@ -116,8 +168,9 @@ interface UserPreferencesRepository {
 WelcomeScreen
     └─> Check if API token exists
         ├─> No token: Navigate to AccessTokenScreen
-        │   └─> Save token -> Navigate to DevicesScreen (TODO)
-        └─> Has token: Navigate to DevicesScreen (TODO)
+        │   └─> Save token -> Navigate to TrmnlDevicesScreen
+        └─> Has token: Navigate to TrmnlDevicesScreen
+            └─> Click device -> Navigate to DeviceDetailScreen (TODO)
 ```
 
 ## Dependencies Added
@@ -141,11 +194,12 @@ The `circuit` package contains example screens from Circuit tutorial:
 
 ## Next Steps
 
-1. **Create DevicesScreen** - Main screen showing TRMNL devices
-2. **Integrate API Module** - Use `TrmnlDeviceRepository` from `:api` module
-3. **Handle Token in API Client** - Pass token from DataStore to API calls
-4. **Add Device Detail Screen** - Show individual device information
-5. **Add Settings Screen** - Allow token management and app preferences
+1. **Add Pull-to-Refresh** - Swipe to refresh devices list
+2. **Create DeviceDetailScreen** - Show detailed device information and controls
+3. **Add Settings Screen** - Allow token management and app preferences
+4. **Implement Error Retry** - Add retry button for failed API calls
+5. **Add Device Filtering** - Filter devices by battery level or WiFi strength
+6. **Add Device Sorting** - Sort devices by name, battery, or WiFi strength
 
 ## Testing
 

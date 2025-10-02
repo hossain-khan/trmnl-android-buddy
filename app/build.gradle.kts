@@ -96,6 +96,9 @@ dependencies {
     implementation(libs.androidx.work)
     implementation(libs.androidx.datastore.preferences)
 
+    // EitherNet for type-safe API results (needed to handle ApiResult from :api module)
+    implementation(libs.eithernet)
+
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

@@ -45,6 +45,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -121,10 +122,8 @@ class AccessTokenPresenter
                                         // Mark onboarding as completed
                                         userPreferencesRepository.setOnboardingCompleted()
 
-                                        // Navigate to main screen
-                                        // TODO: Navigate to devices list screen
-                                        // navigator.goTo(DevicesScreen)
-                                        navigator.pop() // For now, just go back
+                                        // Navigate to devices list screen
+                                        navigator.goTo(TrmnlDevicesScreen)
                                     } catch (e: Exception) {
                                         errorMessage = "Failed to save token: ${e.message}"
                                     } finally {

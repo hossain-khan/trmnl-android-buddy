@@ -35,6 +35,7 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import kotlinx.coroutines.flow.first
 import kotlinx.parcelize.Parcelize
 
@@ -82,8 +83,8 @@ class WelcomePresenter
                         if (userPreferences?.apiToken.isNullOrBlank()) {
                             navigator.goTo(AccessTokenScreen)
                         } else {
-                            // TODO: Navigate to main app screen (devices list)
-                            // navigator.goTo(DevicesScreen)
+                            // Navigate to devices list screen
+                            navigator.goTo(TrmnlDevicesScreen)
                         }
                     }
                 }
