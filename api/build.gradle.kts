@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.eithernet.integration.retrofit)
 
     // Testing
+    testImplementation(libs.assertk)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.okhttp.mockwebserver)

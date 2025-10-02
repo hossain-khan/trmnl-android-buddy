@@ -7,9 +7,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import assertk.assertThat
+import assertk.assertions.*
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
@@ -111,26 +111,26 @@ class TrmnlDeviceApiTest {
         val result = apiService.getDevices("Bearer test_token")
 
         // Then: Verify success result with correct data
-        assertTrue("Result should be Success", result is ApiResult.Success)
+        assertThat(result).isInstanceOf(ApiResult.Success::class)
         val successResult = result as ApiResult.Success
 
-        assertEquals(2, successResult.value.data.size)
+        assertThat(successResult.value.data).hasSize(2)
 
         val firstDevice = successResult.value.data[0]
-        assertEquals(12345, firstDevice.id)
-        assertEquals("Kitchen Display", firstDevice.name)
-        assertEquals("ABC123", firstDevice.friendlyId)
-        assertEquals(3.8, firstDevice.batteryVoltage ?: 0.0, 0.01)
+        assertThat(firstDevice.id).isEqualTo(12345)
+        assertThat(firstDevice.name).isEqualTo("Kitchen Display")
+        assertThat(firstDevice.friendlyId).isEqualTo("ABC123")
+        assertThat(firstDevice.batteryVoltage ?: 0.0).isCloseTo(3.8, 0.01)
 
         val secondDevice = successResult.value.data[1]
-        assertEquals(67890, secondDevice.id)
-        assertEquals("Living Room Display", secondDevice.name)
+        assertThat(secondDevice.id).isEqualTo(67890)
+        assertThat(secondDevice.name).isEqualTo("Living Room Display")
 
         // Verify request was made correctly
         val request = mockWebServer.takeRequest()
-        assertEquals("/devices", request.path)
-        assertEquals("GET", request.method)
-        assertEquals("Bearer test_token", request.getHeader("Authorization"))
+        assertThat(request.path).isEqualTo("/devices")
+        assertThat(request.method).isEqualTo("GET")
+        assertThat(request.getHeader("Authorization")).isEqualTo("Bearer test_token")
     }
 
     @Test
@@ -149,9 +149,9 @@ class TrmnlDeviceApiTest {
         val result = apiService.getDevices("Bearer test_token")
 
         // Then: Verify success with empty list
-        assertTrue(result is ApiResult.Success)
+        assertThat(result).isInstanceOf(ApiResult.Success::class)
         val successResult = result as ApiResult.Success
-        assertTrue(successResult.value.data.isEmpty())
+        assertThat(successResult.value.data).isEmpty()
     }
 
     @Test
@@ -183,17 +183,17 @@ class TrmnlDeviceApiTest {
         val result = apiService.getDevice(12345, "Bearer test_token")
 
         // Then: Verify success result with correct device
-        assertTrue(result is ApiResult.Success)
+        assertThat(result).isInstanceOf(ApiResult.Success::class)
         val successResult = result as ApiResult.Success
 
-        assertEquals(12345, successResult.value.data.id)
-        assertEquals("Kitchen Display", successResult.value.data.name)
-        assertEquals("ABC123", successResult.value.data.friendlyId)
+        assertThat(successResult.value.data.id).isEqualTo(12345)
+        assertThat(successResult.value.data.name).isEqualTo("Kitchen Display")
+        assertThat(successResult.value.data.friendlyId).isEqualTo("ABC123")
 
         // Verify request
         val request = mockWebServer.takeRequest()
-        assertEquals("/devices/12345", request.path)
-        assertEquals("GET", request.method)
+        assertThat(request.path).isEqualTo("/devices/12345")
+        assertThat(request.method).isEqualTo("GET")
     }
 
     @Test
@@ -209,9 +209,9 @@ class TrmnlDeviceApiTest {
         val result = apiService.getDevices("Bearer invalid_token")
 
         // Then: Verify HTTP failure
-        assertTrue(result is ApiResult.Failure.HttpFailure)
+        assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
         val failure = result as ApiResult.Failure.HttpFailure
-        assertEquals(401, failure.code)
+        assertThat(failure.code).isEqualTo(401)
     }
 
     @Test
@@ -227,9 +227,9 @@ class TrmnlDeviceApiTest {
         val result = apiService.getDevices("Bearer test_token")
 
         // Then: Verify HTTP failure
-        assertTrue(result is ApiResult.Failure.HttpFailure)
+        assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
         val failure = result as ApiResult.Failure.HttpFailure
-        assertEquals(404, failure.code)
+        assertThat(failure.code).isEqualTo(404)
     }
 
     @Test
@@ -245,9 +245,9 @@ class TrmnlDeviceApiTest {
         val result = apiService.getDevices("Bearer test_token")
 
         // Then: Verify HTTP failure
-        assertTrue(result is ApiResult.Failure.HttpFailure)
+        assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
         val failure = result as ApiResult.Failure.HttpFailure
-        assertEquals(500, failure.code)
+        assertThat(failure.code).isEqualTo(500)
     }
 
     @Test
@@ -282,7 +282,7 @@ class TrmnlDeviceApiTest {
         val result = timeoutApiService.getDevices("Bearer test_token")
 
         // Then: Verify network failure
-        assertTrue(result is ApiResult.Failure.NetworkFailure)
+        assertThat(result).isInstanceOf(ApiResult.Failure.NetworkFailure::class)
     }
 
     @Test
@@ -299,7 +299,7 @@ class TrmnlDeviceApiTest {
         val result = apiService.getDevices("Bearer test_token")
 
         // Then: Verify unknown failure (parsing error)
-        assertTrue(result is ApiResult.Failure.UnknownFailure)
+        assertThat(result).isInstanceOf(ApiResult.Failure.UnknownFailure::class)
     }
 
     @Test
@@ -317,7 +317,7 @@ class TrmnlDeviceApiTest {
 
         // Then: Verify header
         val request = mockWebServer.takeRequest()
-        assertEquals(testToken, request.getHeader("Authorization"))
+        assertThat(request.getHeader("Authorization")).isEqualTo(testToken)
     }
 
     @Test
@@ -348,17 +348,17 @@ class TrmnlDeviceApiTest {
         val result = apiService.getDevices("Bearer test_token")
 
         // Then: Verify all fields parsed correctly
-        assertTrue(result is ApiResult.Success)
+        assertThat(result).isInstanceOf(ApiResult.Success::class)
         val device = (result as ApiResult.Success).value.data[0]
 
-        assertEquals(999, device.id)
-        assertEquals("Test Device", device.name)
-        assertEquals("TEST99", device.friendlyId)
-        assertEquals("11:22:33:44:55:66", device.macAddress)
-        assertEquals(3.5, device.batteryVoltage ?: 0.0, 0.01)
-        assertEquals(-50, device.rssi)
-        assertEquals(50.0, device.percentCharged, 0.01)
-        assertEquals(60.0, device.wifiStrength, 0.01)
+        assertThat(device.id).isEqualTo(999)
+        assertThat(device.name).isEqualTo("Test Device")
+        assertThat(device.friendlyId).isEqualTo("TEST99")
+        assertThat(device.macAddress).isEqualTo("11:22:33:44:55:66")
+        assertThat(device.batteryVoltage ?: 0.0).isCloseTo(3.5, 0.01)
+        assertThat(device.rssi).isEqualTo(-50)
+        assertThat(device.percentCharged).isCloseTo(50.0, 0.01)
+        assertThat(device.wifiStrength).isCloseTo(60.0, 0.01)
     }
 
     @Test
@@ -389,12 +389,12 @@ class TrmnlDeviceApiTest {
         val result = apiService.getDevices("Bearer test_token")
 
         // Then: Verify health methods
-        assertTrue(result is ApiResult.Success)
+        assertThat(result).isInstanceOf(ApiResult.Success::class)
         val device = (result as ApiResult.Success).value.data[0]
 
-        assertTrue("Battery should be low", device.isBatteryLow())
-        assertTrue("WiFi should be weak", device.isWifiWeak())
-        assertEquals("Low", device.getBatteryStatus())
-        assertEquals("Weak", device.getWifiStatus())
+        assertThat(device.isBatteryLow()).isTrue()
+        assertThat(device.isWifiWeak()).isTrue()
+        assertThat(device.getBatteryStatus()).isEqualTo("Low")
+        assertThat(device.getWifiStatus()).isEqualTo("Weak")
     }
 }

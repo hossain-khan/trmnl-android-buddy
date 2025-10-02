@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy
 
-import org.junit.Assert.assertEquals
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import org.junit.Test
 
 /**
@@ -11,6 +12,6 @@ import org.junit.Test
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        assertThat(2 + 2).isEqualTo(4)
     }
 }

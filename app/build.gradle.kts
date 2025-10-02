@@ -106,6 +106,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation(libs.androidx.ui.tooling)
+    testImplementation(libs.assertk)
     testImplementation(libs.junit)
     testImplementation(libs.circuit.test)
     testImplementation(libs.kotlinx.coroutines.test)

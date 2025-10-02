@@ -2,6 +2,7 @@
 activityCompose = "1.11.0"
 # https://developer.android.com/build/releases/gradle-plugin
 agp = "8.12.1"
+assertk = "0.28.1"
 circuit = "0.30.0"
 composeBom = "2025.09.01"
 coreKtx = "1.17.0"
@@ -51,6 +52,11 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+
+# AssertK - Fluent assertion library for Kotlin
+# https://github.com/assertk-org/assertk
+assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 # Circuit - ⚡️A Compose-driven architecture for Kotlin and Android applications.

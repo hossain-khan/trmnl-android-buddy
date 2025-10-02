@@ -1,7 +1,9 @@
 package ink.trmnl.android.buddy.ui.user
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import assertk.assertThat
+import assertk.assertions.hasLength
+import assertk.assertions.isEqualTo
+import assertk.assertions.isTrue
 import org.junit.Test
 
 /**
@@ -22,10 +24,10 @@ class UserAccountScreenTest {
         val redacted = redactApiKey(apiKey)
 
         // Then: Should show first 4 and last 4 with asterisks in middle
-        assertEquals(apiKey.length, redacted.length)
-        assertEquals("user", redacted.take(4))
-        assertEquals("z789", redacted.takeLast(4))
-        assertTrue("Middle should contain asterisks", redacted.substring(4, redacted.length - 4).all { it == '*' })
+        assertThat(redacted).hasLength(apiKey.length)
+        assertThat(redacted.take(4)).isEqualTo("user")
+        assertThat(redacted.takeLast(4)).isEqualTo("z789")
+        assertThat(redacted.substring(4, redacted.length - 4).all { it == '*' }).isTrue()
     }
 
     @Test
@@ -37,7 +39,7 @@ class UserAccountScreenTest {
         val redacted = redactApiKey(apiKey)
 
         // Then: Should fully redact short keys
-        assertEquals("****", redacted)
+        assertThat(redacted).isEqualTo("****")
     }
 
     @Test
@@ -49,7 +51,7 @@ class UserAccountScreenTest {
         val redacted = redactApiKey(apiKey)
 
         // Then: Should fully redact
-        assertEquals("****", redacted)
+        assertThat(redacted).isEqualTo("****")
     }
 
     @Test
@@ -61,7 +63,7 @@ class UserAccountScreenTest {
         val redacted = redactApiKey(apiKey)
 
         // Then: Should show first 4, last 4, with at least 4 asterisks
-        assertEquals("user****1234", redacted)
+        assertThat(redacted).isEqualTo("user****1234")
     }
 
     @Test
@@ -73,9 +75,9 @@ class UserAccountScreenTest {
         val redacted = redactApiKey(apiKey)
 
         // Then: First 4 and last 4 should be visible
-        assertEquals(apiKey.length, redacted.length) // Length should be preserved
-        assertEquals("user", redacted.take(4))
-        assertEquals("6789", redacted.takeLast(4))
+        assertThat(redacted).hasLength(apiKey.length) // Length should be preserved
+        assertThat(redacted.take(4)).isEqualTo("user")
+        assertThat(redacted.takeLast(4)).isEqualTo("6789")
     }
 
     @Test
@@ -94,11 +96,8 @@ class UserAccountScreenTest {
 
             // Then: Length should be preserved (or replaced with ****)
             if (key.length > 8) {
-                assertEquals(
-                    "Length mismatch for key: $key",
-                    key.length,
-                    redacted.length,
-                )
+                assertThat(redacted)
+                    .hasLength(key.length)
             }
         }
     }
@@ -112,8 +111,8 @@ class UserAccountScreenTest {
         val redacted = redactApiKey(apiKey)
 
         // Then: Verify prefix and suffix
-        assertEquals("user", redacted.take(4))
-        assertEquals("z789", redacted.takeLast(4))
+        assertThat(redacted.take(4)).isEqualTo("user")
+        assertThat(redacted.takeLast(4)).isEqualTo("z789")
     }
 
     @Test
@@ -125,9 +124,9 @@ class UserAccountScreenTest {
         val redacted = redactApiKey(apiKey)
 
         // Then: Should preserve special characters at start and end
-        assertEquals(apiKey.length, redacted.length)
-        assertEquals("user", redacted.take(4))
-        assertEquals("!@#", redacted.takeLast(3))
+        assertThat(redacted).hasLength(apiKey.length)
+        assertThat(redacted.take(4)).isEqualTo("user")
+        assertThat(redacted.takeLast(4)).isEqualTo("3!@#") // Last 4 chars
     }
 }
 

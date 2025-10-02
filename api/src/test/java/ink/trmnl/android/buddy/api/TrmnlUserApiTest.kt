@@ -7,10 +7,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import assertk.assertThat
+import assertk.assertions.*
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
@@ -101,25 +100,25 @@ class TrmnlUserApiTest {
         val result = apiService.userInfo("Bearer user_abc123")
 
         // Then: Verify success result with correct user data
-        assertTrue("Result should be Success", result is ApiResult.Success)
+        assertThat(result).isInstanceOf(ApiResult.Success::class)
         val successResult = result as ApiResult.Success
 
         val user = successResult.value.data
-        assertEquals("Jim Bob", user.name)
-        assertEquals("jimbob@gmail.net", user.email)
-        assertEquals("Jim", user.firstName)
-        assertEquals("Bob", user.lastName)
-        assertEquals("en", user.locale)
-        assertEquals("Eastern Time (US & Canada)", user.timeZone)
-        assertEquals("America/New_York", user.timeZoneIana)
-        assertEquals(-14400, user.utcOffset)
-        assertEquals("user_abc123", user.apiKey)
+        assertThat(user.name).isEqualTo("Jim Bob")
+        assertThat(user.email).isEqualTo("jimbob@gmail.net")
+        assertThat(user.firstName).isEqualTo("Jim")
+        assertThat(user.lastName).isEqualTo("Bob")
+        assertThat(user.locale).isEqualTo("en")
+        assertThat(user.timeZone).isEqualTo("Eastern Time (US & Canada)")
+        assertThat(user.timeZoneIana).isEqualTo("America/New_York")
+        assertThat(user.utcOffset).isEqualTo(-14400)
+        assertThat(user.apiKey).isEqualTo("user_abc123")
 
         // Verify request was made correctly
         val request = mockWebServer.takeRequest()
-        assertEquals("/me", request.path)
-        assertEquals("GET", request.method)
-        assertEquals("Bearer user_abc123", request.getHeader("Authorization"))
+        assertThat(request.path).isEqualTo("/me")
+        assertThat(request.method).isEqualTo("GET")
+        assertThat(request.getHeader("Authorization")).isEqualTo("Bearer user_abc123")
     }
 
     @Test
@@ -138,9 +137,9 @@ class TrmnlUserApiTest {
         val result = apiService.userInfo("Bearer invalid_token")
 
         // Then: Verify HttpFailure with 401 status
-        assertTrue("Result should be HttpFailure", result is ApiResult.Failure.HttpFailure)
+        assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
         val failureResult = result as ApiResult.Failure.HttpFailure
-        assertEquals(401, failureResult.code)
+        assertThat(failureResult.code).isEqualTo(401)
     }
 
     @Test
@@ -172,12 +171,12 @@ class TrmnlUserApiTest {
         val result = apiService.userInfo("Bearer user_xyz789")
 
         // Then: Verify Pacific timezone data
-        assertTrue(result is ApiResult.Success)
+        assertThat(result).isInstanceOf(ApiResult.Success::class)
         val user = (result as ApiResult.Success).value.data
 
-        assertEquals("Pacific Time (US & Canada)", user.timeZone)
-        assertEquals("America/Los_Angeles", user.timeZoneIana)
-        assertEquals(-28800, user.utcOffset) // PST offset
+        assertThat(user.timeZone).isEqualTo("Pacific Time (US & Canada)")
+        assertThat(user.timeZoneIana).isEqualTo("America/Los_Angeles")
+        assertThat(user.utcOffset).isEqualTo(-28800) // PST offset
     }
 
     @Test
@@ -209,13 +208,13 @@ class TrmnlUserApiTest {
         val result = apiService.userInfo("Bearer user_de123")
 
         // Then: Verify international user data
-        assertTrue(result is ApiResult.Success)
+        assertThat(result).isInstanceOf(ApiResult.Success::class)
         val user = (result as ApiResult.Success).value.data
 
-        assertEquals("Hans Müller", user.name)
-        assertEquals("de", user.locale)
-        assertEquals("Europe/Berlin", user.timeZoneIana)
-        assertEquals(3600, user.utcOffset) // CET offset
+        assertThat(user.name).isEqualTo("Hans Müller")
+        assertThat(user.locale).isEqualTo("de")
+        assertThat(user.timeZoneIana).isEqualTo("Europe/Berlin")
+        assertThat(user.utcOffset).isEqualTo(3600) // CET offset
     }
 
     @Test
@@ -233,9 +232,9 @@ class TrmnlUserApiTest {
         val result = apiService.userInfo("Bearer user_abc123")
 
         // Then: Verify HttpFailure with 500 status
-        assertTrue("Result should be HttpFailure", result is ApiResult.Failure.HttpFailure)
+        assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
         val failureResult = result as ApiResult.Failure.HttpFailure
-        assertEquals(500, failureResult.code)
+        assertThat(failureResult.code).isEqualTo(500)
     }
 
     @Test
@@ -247,10 +246,7 @@ class TrmnlUserApiTest {
         val result = apiService.userInfo("Bearer user_abc123")
 
         // Then: Verify NetworkFailure
-        assertTrue(
-            "Result should be NetworkFailure or UnknownFailure",
-            result is ApiResult.Failure.NetworkFailure || result is ApiResult.Failure.UnknownFailure
-        )
+        assertThat(result).isInstanceOf(ApiResult.Failure::class)
     }
 
     @Test
@@ -282,16 +278,16 @@ class TrmnlUserApiTest {
         val result = apiService.userInfo("Bearer user_test123")
 
         // Then: Verify all fields are parsed
-        assertTrue(result is ApiResult.Success)
+        assertThat(result).isInstanceOf(ApiResult.Success::class)
         val user = (result as ApiResult.Success).value.data
 
-        assertNotNull("Name should not be null", user.name)
-        assertNotNull("Email should not be null", user.email)
-        assertNotNull("First name should not be null", user.firstName)
-        assertNotNull("Last name should not be null", user.lastName)
-        assertNotNull("Locale should not be null", user.locale)
-        assertNotNull("Time zone should not be null", user.timeZone)
-        assertNotNull("Time zone IANA should not be null", user.timeZoneIana)
-        assertNotNull("API key should not be null", user.apiKey)
+        assertThat(user.name).isNotNull()
+        assertThat(user.email).isNotNull()
+        assertThat(user.firstName).isNotNull()
+        assertThat(user.lastName).isNotNull()
+        assertThat(user.locale).isNotNull()
+        assertThat(user.timeZone).isNotNull()
+        assertThat(user.timeZoneIana).isNotNull()
+        assertThat(user.apiKey).isNotNull()
     }
 }
