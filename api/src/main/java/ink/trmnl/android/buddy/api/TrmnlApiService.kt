@@ -4,6 +4,7 @@ import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.models.ApiError
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
+import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.UserResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -116,6 +117,57 @@ interface TrmnlApiService {
         @Path("id") id: Int,
         @Header("Authorization") authorization: String
     ): ApiResult<DeviceResponse, ApiError>
+    
+    // ========================================
+    // Display API (Device API)
+    // ========================================
+    
+    /**
+     * Get the current display content for a specific device.
+     *
+     * This endpoint uses the Device API authentication (Access-Token header)
+     * and returns the currently shown content on the device's e-ink screen.
+     *
+     * Note: This is a Device API endpoint that requires the device's API key,
+     * not the user's Account API key.
+     *
+     * @param deviceApiKey Device API Key (format: "abc-123")
+     * @return ApiResult containing display data or error
+     *
+     * Example response:
+     * ```json
+     * {
+     *   "status": 200,
+     *   "refresh_rate": 300,
+     *   "image_url": "https://usetrmnl.com/images/setup/setup-logo.bmp",
+     *   "filename": "setup-logo.bmp",
+     *   "rendered_at": "2023-01-01T00:00:00Z"
+     * }
+     * ```
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.getDisplayCurrent("abc-123")) {
+     *     is ApiResult.Success -> {
+     *         val display = result.value
+     *         println("Display image: ${display.imageUrl}")
+     *         println("Refresh rate: ${display.refreshRate}s")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         404 -> println("Device not found")
+     *         401 -> println("Unauthorized")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("display/current")
+    suspend fun getDisplayCurrent(
+        @Header("Access-Token") deviceApiKey: String
+    ): ApiResult<Display, ApiError>
     
     // ========================================
     // Users API
