@@ -156,8 +156,13 @@ When working with TRMNL API:
 ### Testing Guidelines
 
 - **Unit Tests**: Required for all API services and repositories
-- **MockWebServer**: Use for testing Retrofit services
+- **Test Doubles**: Use fakes instead of mocks when possible
+  - **Fakes** are preferred: lightweight, working implementations suitable for tests (e.g., in-memory database, `FakeNavigator`)
+  - **Mocks** should be avoided unless necessary: require mocking frameworks and add complexity
+  - See [Android Test Doubles Guide](https://developer.android.com/training/testing/fundamentals/test-doubles) for detailed explanations
+- **MockWebServer**: Use for testing Retrofit services (simulates HTTP server responses)
 - **Coroutine Testing**: Use `kotlinx-coroutines-test` with `runTest`
+- **Circuit Testing**: Use `circuit-test` library with `FakeNavigator` and `Presenter.test()` helpers
 - **Test Coverage**: Aim for success cases, error cases, and edge cases
 
 ## Development Workflow
@@ -299,12 +304,14 @@ suspend fun fetchDevices(): Result<List<Device>> {
 ## Resources
 
 - [Circuit Documentation](https://slackhq.github.io/circuit/)
+- [Circuit Testing Guide](https://slackhq.github.io/circuit/testing/)
 - [Metro Documentation](https://zacsweers.github.io/metro/)
 - [EitherNet Repository](https://github.com/slackhq/EitherNet)
 - [Compose Documentation](https://developer.android.com/jetpack/compose)
 - [Material 3 Design System](https://m3.material.io/)
 - [Material 3 Compose Components](https://developer.android.com/jetpack/compose/designsystems/material3)
 - [Android Dynamic Color Guide](https://developer.android.com/develop/ui/views/theming/dynamic-colors)
+- [Android Test Doubles Guide](https://developer.android.com/training/testing/fundamentals/test-doubles)
 - [TRMNL API Documentation](https://usetrmnl.com/api)
 
 ## Notes for AI Assistants
