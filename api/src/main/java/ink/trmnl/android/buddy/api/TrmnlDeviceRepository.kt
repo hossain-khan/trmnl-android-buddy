@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.api
 
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.models.Device
+import ink.trmnl.android.buddy.api.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -132,6 +133,48 @@ class TrmnlDeviceRepository(
                 val weakWifiDevices = result.value.filter { it.isWifiWeak() }
                 ApiResult.success(weakWifiDevices)
             }
+            is ApiResult.Failure -> result
+        }
+    }
+    
+    /**
+     * Get information about the authenticated user.
+     *
+     * Makes an API call to `/me` and returns the user profile information.
+     *
+     * @return ApiResult containing user data or error
+     *
+     * Example usage:
+     * ```kotlin
+     * val repository = TrmnlDeviceRepository(apiService, "user_abc123")
+     * when (val result = repository.userInfo()) {
+     *     is ApiResult.Success -> {
+     *         val user = result.value
+     *         println("Hello, ${user.firstName} ${user.lastName}!")
+     *         println("Email: ${user.email}")
+     *         println("Timezone: ${user.timeZoneIana}")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> {
+     *         when (result.code) {
+     *             401 -> println("Unauthorized - invalid API key")
+     *             else -> println("HTTP Error: ${result.code}")
+     *         }
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> {
+     *         println("Network Error: ${result.error}")
+     *     }
+     *     is ApiResult.Failure.ApiFailure -> {
+     *         println("API Error: ${result.error}")
+     *     }
+     *     is ApiResult.Failure.UnknownFailure -> {
+     *         println("Unknown Error: ${result.error}")
+     *     }
+     * }
+     * ```
+     */
+    suspend fun userInfo(): ApiResult<User, *> = withContext(Dispatchers.IO) {
+        when (val result = apiService.userInfo(authHeader)) {
+            is ApiResult.Success -> ApiResult.success(result.value.data)
             is ApiResult.Failure -> result
         }
     }

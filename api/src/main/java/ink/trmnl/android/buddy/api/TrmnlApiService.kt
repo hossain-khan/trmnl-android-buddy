@@ -4,6 +4,7 @@ import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.models.ApiError
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
+import ink.trmnl.android.buddy.api.models.UserResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -115,4 +116,58 @@ interface TrmnlApiService {
         @Path("id") id: Int,
         @Header("Authorization") authorization: String
     ): ApiResult<DeviceResponse, ApiError>
+    
+    // ========================================
+    // Users API
+    // ========================================
+    
+    /**
+     * Get information about the authenticated user.
+     *
+     * Retrieves the profile information for the currently authenticated user,
+     * including their name, email, timezone, and API key.
+     *
+     * Requires authentication via Bearer token.
+     *
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @return ApiResult containing user data or error
+     *
+     * Example response:
+     * ```json
+     * {
+     *   "data": {
+     *     "name": "Jim Bob",
+     *     "email": "jimbob@gmail.net",
+     *     "first_name": "Jim",
+     *     "last_name": "Bob",
+     *     "locale": "en",
+     *     "time_zone": "Eastern Time (US & Canada)",
+     *     "time_zone_iana": "America/New_York",
+     *     "utc_offset": -14400,
+     *     "api_key": "user_xxxxxx"
+     *   }
+     * }
+     * ```
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.userInfo("Bearer user_abc123")) {
+     *     is ApiResult.Success -> {
+     *         val user = result.value.data
+     *         println("Hello, ${user.firstName}!")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         401 -> println("Unauthorized - invalid API key")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("me")
+    suspend fun userInfo(
+        @Header("Authorization") authorization: String
+    ): ApiResult<UserResponse, ApiError>
 }
