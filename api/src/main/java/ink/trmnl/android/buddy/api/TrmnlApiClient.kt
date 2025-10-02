@@ -1,6 +1,5 @@
 package ink.trmnl.android.buddy.api
 
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
 import com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
 import kotlinx.serialization.json.Json
@@ -8,6 +7,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
 
 /**
