@@ -156,6 +156,23 @@ When working with TRMNL API:
 ### Testing Guidelines
 
 - **Unit Tests**: Required for all API services and repositories
+- **Assertions**: Always use [AssertK](https://github.com/assertk-org/assertk) for all test assertions
+  - **NEVER use JUnit assertions** (`assertEquals`, `assertTrue`, `assertNotNull`, etc.)
+  - Use assertk's fluent API: `assertThat(actual).isEqualTo(expected)`
+  - Common assertions: `isEqualTo()`, `isNotNull()`, `isTrue()`, `isFalse()`, `hasSize()`, `isEmpty()`, `isInstanceOf()`, `isCloseTo()`
+  - Benefits: Kotlin-native, better error messages, type-safe, null-safe
+  - Example:
+    ```kotlin
+    import assertk.assertThat
+    import assertk.assertions.*
+    
+    @Test
+    fun `test example`() {
+        val result = someFunction()
+        assertThat(result).isEqualTo("expected")
+        assertThat(result).hasLength(8)
+    }
+    ```
 - **Test Doubles**: Use fakes instead of mocks when possible
   - **Fakes** are preferred: lightweight, working implementations suitable for tests (e.g., in-memory database, `FakeNavigator`)
   - **Mocks** should be avoided unless necessary: require mocking frameworks and add complexity
@@ -257,6 +274,7 @@ All dependency versions are centralized in `gradle/libs.versions.toml`:
   - Retrofit: 3.0.0
   - OkHttp: 5.1.0
   - EitherNet: 2.0.0
+  - AssertK: 0.28.1 (testing assertions)
 
 When suggesting dependency updates:
 1. Check the official release page (links in `libs.versions.toml`)
@@ -307,6 +325,7 @@ suspend fun fetchDevices(): Result<List<Device>> {
 - [Circuit Testing Guide](https://slackhq.github.io/circuit/testing/)
 - [Metro Documentation](https://zacsweers.github.io/metro/)
 - [EitherNet Repository](https://github.com/slackhq/EitherNet)
+- [AssertK Documentation](https://github.com/assertk-org/assertk)
 - [Compose Documentation](https://developer.android.com/jetpack/compose)
 - [Material 3 Design System](https://m3.material.io/)
 - [Material 3 Compose Components](https://developer.android.com/jetpack/compose/designsystems/material3)
