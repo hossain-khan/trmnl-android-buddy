@@ -1,6 +1,8 @@
 package ink.trmnl.android.buddy.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
+import com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -80,6 +82,9 @@ object TrmnlApiClient {
     /**
      * Creates a configured Retrofit instance for TRMNL API.
      *
+     * Includes EitherNet's ApiResultCallAdapterFactory and ApiResultConverterFactory
+     * for type-safe API result handling.
+     *
      * @param okHttpClient Optional custom OkHttpClient
      * @return Configured Retrofit instance
      */
@@ -91,7 +96,9 @@ object TrmnlApiClient {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
+            .addConverterFactory(ApiResultConverterFactory)
             .addConverterFactory(json.asConverterFactory(contentType))
+            .addCallAdapterFactory(ApiResultCallAdapterFactory)
             .build()
     }
 

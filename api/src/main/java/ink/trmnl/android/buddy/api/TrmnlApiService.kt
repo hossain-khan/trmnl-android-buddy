@@ -1,22 +1,118 @@
 package ink.trmnl.android.buddy.api
 
+import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.DeviceResponse
+import ink.trmnl.android.buddy.api.models.DevicesResponse
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Path
 
 /**
  * TRMNL API Service interface.
  *
  * Defines all available API endpoints for interacting with the TRMNL server.
  * Full API documentation: https://usetrmnl.com/api-docs/index.html
+ *
+ * ## Authentication
+ * Most endpoints require authentication via Bearer token (Account API key).
+ * Pass the API key via the Authorization header:
+ * ```
+ * Authorization: Bearer user_xxxxxx
+ * ```
+ *
+ * ## Base URL
+ * Production: `https://usetrmnl.com/api`
+ *
+ * ## Error Handling
+ * Uses EitherNet's ApiResult for type-safe error handling:
+ * - ApiResult.Success<T> - Successful response with data
+ * - ApiResult.Failure.NetworkFailure - Network connectivity issues
+ * - ApiResult.Failure.HttpFailure - HTTP errors (4xx, 5xx)
+ * - ApiResult.Failure.ApiFailure - API-specific errors with decoded error body
+ * - ApiResult.Failure.UnknownFailure - Unexpected errors
+ *
+ * Common HTTP status codes:
+ * - 200: Success
+ * - 401: Unauthorized (invalid or missing API key)
+ * - 404: Resource not found
+ * - 422: Unprocessable entity (validation error)
  */
 interface TrmnlApiService {
     
+    // ========================================
+    // Devices API
+    // ========================================
+    
     /**
-     * Placeholder method - will be populated with actual API endpoints
-     * based on TRMNL API documentation.
+     * Get a list of all devices belonging to the authenticated user.
      *
-     * TODO: Review API docs at https://usetrmnl.com/api-docs/index.html
-     *       and add actual endpoints
+     * Requires authentication via Bearer token.
+     *
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @return ApiResult containing a list of devices or error
+     *
+     * Example response:
+     * ```json
+     * {
+     *   "data": [
+     *     {
+     *       "id": 12345,
+     *       "name": "Kitchen Display",
+     *       "friendly_id": "ABC123",
+     *       "mac_address": "00:11:22:33:44:55",
+     *       "battery_voltage": 3.8,
+     *       "rssi": -27,
+     *       "percent_charged": 66.67,
+     *       "wifi_strength": 100
+     *     }
+     *   ]
+     * }
+     * ```
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.getDevices("Bearer user_abc123")) {
+     *     is ApiResult.Success -> println("Found ${result.value.data.size} devices")
+     *     is ApiResult.Failure.HttpFailure -> println("HTTP error: ${result.code}")
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
      */
-    @GET("status")
-    suspend fun getStatus(): String
+    @GET("devices")
+    suspend fun getDevices(
+        @Header("Authorization") authorization: String
+    ): ApiResult<DevicesResponse, ApiError>
+    
+    /**
+     * Get detailed information about a specific device.
+     *
+     * Requires authentication via Bearer token.
+     *
+     * @param id Device ID to fetch
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @return ApiResult containing device details or error
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.getDevice(12822, "Bearer user_abc123")) {
+     *     is ApiResult.Success -> println("Device: ${result.value.data.name}")
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         404 -> println("Device not found")
+     *         401 -> println("Unauthorized")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("devices/{id}")
+    suspend fun getDevice(
+        @Path("id") id: Int,
+        @Header("Authorization") authorization: String
+    ): ApiResult<DeviceResponse, ApiError>
 }

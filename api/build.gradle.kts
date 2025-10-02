@@ -43,6 +43,10 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.kotlinx.serialization)
+    
+    // EitherNet for type-safe API results
+    implementation(libs.eithernet)
+    implementation(libs.eithernet.integration.retrofit)
 
     // Testing
     testImplementation(libs.junit)

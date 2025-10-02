@@ -34,6 +34,8 @@ retrofitKotlinxSerializationJson = "1.0.0"
 kotlinxSerializationJson = "1.8.1"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
 kotlinxCoroutines = "1.10.2"
+# https://github.com/slackhq/EitherNet/releases
+eithernet = "2.0.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -80,6 +82,8 @@ retrofit-converter-kotlinx-serialization = { group = "com.jakewharton.retrofit",
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+eithernet = { group = "com.slack.eithernet", name = "eithernet", version.ref = "eithernet" }
+eithernet-integration-retrofit = { group = "com.slack.eithernet", name = "eithernet-integration-retrofit", version.ref = "eithernet" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
