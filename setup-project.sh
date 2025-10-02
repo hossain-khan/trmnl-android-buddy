@@ -368,44 +368,45 @@ if [ -f "renovate.json" ]; then
     echo "📋 Found renovate.json - you may want to review and configure this for your project"
 fi
 
-# Remove git history for fresh start
-echo "🔄 Removing git history for fresh start..."
-rm -rf .git/ 2>/dev/null || true
-
-# Step 10: Create initial git repository
-echo "📦 Step 10: Initializing new git repository..."
+# Step 10: Handle git repository initialization
+echo "📦 Step 10: Checking git repository status..."
 
 # Check if git is installed
 if ! command -v git &> /dev/null; then
-    echo "❌ Error: git is not installed or not available in PATH."
-    exit 1
-fi
+    echo "⚠️  Warning: git is not installed or not available in PATH."
+    echo "   You can initialize git manually later with: git init"
+else
+    # Check if git is already initialized
+    if [ -d ".git" ]; then
+        echo "ℹ️  Git repository already exists - preserving existing repository"
+        echo "   You can review changes with: git status"
+        echo "   Remember to commit your customization changes when ready"
+    else
+        echo "🔄 Creating new git repository for fresh start..."
+        
+        # Initialize git repository and handle errors
+        if ! git init; then
+            echo "❌ Error: Failed to initialize git repository."
+            exit 1
+        fi
 
-# Ensure .git directory does not already exist
-if [ -d ".git" ]; then
-    echo "❌ Error: .git directory already exists. Cannot initialize a new repository."
-    exit 1
-fi
+        if ! git add .; then
+            echo "❌ Error: Failed to stage files for commit."
+            exit 1
+        fi
 
-# Initialize git repository and handle errors
-if ! git init; then
-    echo "❌ Error: Failed to initialize git repository."
-    exit 1
-fi
-
-if ! git add .; then
-    echo "❌ Error: Failed to stage files for commit."
-    exit 1
-fi
-
-if ! git commit -m "Initial commit: $APPNAME
+        if ! git commit -m "Initial commit: $APPNAME
 
 - Customized from android-compose-app-template
 - Package: $PACKAGE  
 - Circuit + Metro architecture
 - WorkManager kept: $([ "$REMOVE_WORKMANAGER" = false ] && echo "true" || echo "false")"; then
-    echo "❌ Error: Failed to create initial commit."
-    exit 1
+            echo "❌ Error: Failed to create initial commit."
+            exit 1
+        fi
+        
+        echo "✅ New git repository initialized with initial commit"
+    fi
 fi
 
 echo ""
@@ -433,13 +434,12 @@ if [ "$KEEP_SCRIPT" = false ]; then
     echo "🚀 Happy coding!"
 else
     echo "📜 Setup script kept for debugging/re-running if needed"
+    # Always clean up Android environment setup script (it's not needed after project setup)
+    if [ -f "setup-android-env.sh" ]; then
+        echo "ℹ️ Removing Android environment setup script (no longer needed)..."
+        rm -f setup-android-env.sh
+    fi
     echo "🚀 Happy coding!"
     echo ""
-    echo "💡 Tip: You can safely delete the setup-project.sh and setup-android-env.sh when you no longer need them"
-fi
-
-# Always clean up Android environment setup script (it's not needed after project setup)
-if [ -f "setup-android-env.sh" ] && [ "$KEEP_SCRIPT" = true ]; then
-    echo "ℹ️ Removing Android environment setup script (no longer needed)..."
-    rm -f setup-android-env.sh
+    echo "💡 Tip: You can safely delete the setup-project.sh when you no longer need it"
 fi
