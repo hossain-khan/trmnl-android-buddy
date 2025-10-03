@@ -1,6 +1,9 @@
 [![Android CI](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml)
 
-# TrmnlBuddy
+# TRMNL Buddy
+Your companion app to monitor your TRMNLs on the go.
+
+> 🚧 _NOTE: This is an experimental project, and it's current state not much can be done using the app except view device status remotely. Same thing can be done by visiting [usetrmnl.com/dashboard](https://usetrmnl.com/dashboard)._
 
 An Android app built with:
 - ⚡️ [Circuit](https://github.com/slackhq/circuit) for UI architecture
