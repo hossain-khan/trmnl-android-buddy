@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Privacy toggle button in TRMNL Devices screen top app bar
+  - Allows users to show/hide device IDs and MAC addresses
+  - Privacy is enabled by default (device IDs and MAC addresses are obfuscated)
+  - Toggle state is preserved during screen navigation
+
 ## [1.0.1] - 2025-10-03
 
 ### Added

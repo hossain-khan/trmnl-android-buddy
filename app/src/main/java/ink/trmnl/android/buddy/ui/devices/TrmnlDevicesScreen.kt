@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.devices
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -89,6 +90,7 @@ data object TrmnlDevicesScreen : Screen {
         val devicePreviews: Map<String, String?> = emptyMap(),
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
+        val isPrivacyEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -96,6 +98,8 @@ data object TrmnlDevicesScreen : Screen {
         data object Refresh : Event()
 
         data object AccountClicked : Event()
+
+        data object TogglePrivacy : Event()
 
         data class DeviceClicked(
             val device: Device,
@@ -131,6 +135,7 @@ class TrmnlDevicesPresenter
             var devicePreviews by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
             var isLoading by rememberRetained { mutableStateOf(true) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
+            var isPrivacyEnabled by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
 
             // Fetch devices on initial load only (when devices list is empty)
@@ -181,6 +186,7 @@ class TrmnlDevicesPresenter
                 devicePreviews = devicePreviews,
                 isLoading = isLoading,
                 errorMessage = errorMessage,
+                isPrivacyEnabled = isPrivacyEnabled,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
@@ -205,7 +211,12 @@ class TrmnlDevicesPresenter
                         navigator.goTo(ink.trmnl.android.buddy.ui.user.UserAccountScreen)
                     }
 
+                    TrmnlDevicesScreen.Event.TogglePrivacy -> {
+                        isPrivacyEnabled = !isPrivacyEnabled
+                    }
+
                     is TrmnlDevicesScreen.Event.DeviceClicked -> {
+                        Log.i("TrmnlDevicesPresenter", "Device clicked: ${event.device.name} - Not implemented")
                         // TODO: Navigate to device detail screen
                         // navigator.goTo(DeviceDetailScreen(event.device.id))
                     }
@@ -259,6 +270,7 @@ class TrmnlDevicesPresenter
                                     else -> null // Silently fail for preview images
                                 }
                             } catch (e: Exception) {
+                                Log.d("TrmnlDevicesPresenter", "Error loading preview for ${device.name}: ${e.message}")
                                 null // Silently fail for preview images
                             }
                         } else {
@@ -338,6 +350,19 @@ fun TrmnlDevicesContent(
             TopAppBar(
                 title = { Text("TRMNL Devices") },
                 actions = {
+                    IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.TogglePrivacy) }) {
+                        Icon(
+                            painter =
+                                painterResource(
+                                    if (state.isPrivacyEnabled) {
+                                        R.drawable.password_2_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    } else {
+                                        R.drawable.password_2_off_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    },
+                                ),
+                            contentDescription = if (state.isPrivacyEnabled) "Privacy enabled" else "Privacy disabled",
+                        )
+                    }
                     IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.AccountClicked) }) {
                         Icon(
                             painter = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
@@ -435,6 +460,7 @@ fun TrmnlDevicesContent(
                             device = device,
                             hasToken = state.deviceTokens[device.friendlyId] != null,
                             previewImageUrl = state.devicePreviews[device.friendlyId],
+                            isPrivacyEnabled = state.isPrivacyEnabled,
                             onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                             onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                             onPreviewClick = {
@@ -461,6 +487,7 @@ private fun DeviceCard(
     device: Device,
     hasToken: Boolean,
     previewImageUrl: String?,
+    isPrivacyEnabled: Boolean,
     onClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onPreviewClick: () -> Unit,
@@ -553,7 +580,12 @@ private fun DeviceCard(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            text = PrivacyUtils.obfuscateDeviceId(device.friendlyId),
+                            text =
+                                if (isPrivacyEnabled) {
+                                    PrivacyUtils.obfuscateDeviceId(device.friendlyId)
+                                } else {
+                                    device.friendlyId
+                                },
                             style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Medium,
                         )
@@ -576,7 +608,12 @@ private fun DeviceCard(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            text = PrivacyUtils.obfuscateMacAddress(device.macAddress),
+                            text =
+                                if (isPrivacyEnabled) {
+                                    PrivacyUtils.obfuscateMacAddress(device.macAddress)
+                                } else {
+                                    device.macAddress
+                                },
                             style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Medium,
                         )
