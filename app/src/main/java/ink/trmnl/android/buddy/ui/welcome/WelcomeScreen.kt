@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -125,7 +127,7 @@ fun WelcomeContent(
                     painter = painterResource(id = R.drawable.trmnl_logo_plain),
                     contentDescription = "TRMNL Buddy Logo",
                     modifier = Modifier.size(120.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    colorFilter = ColorFilter.tint(Color(colorResource(id = R.color.trmnl_orange).value)),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
