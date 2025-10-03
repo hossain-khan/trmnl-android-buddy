@@ -1,11 +1,8 @@
 package ink.trmnl.android.buddy.ui.devices
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -426,16 +423,8 @@ private fun DeviceCard(
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var isPreviewExpanded by remember { mutableStateOf(false) }
-
     Card(
-        onClick = {
-            if (hasToken && previewImageUrl != null) {
-                isPreviewExpanded = !isPreviewExpanded
-            } else {
-                onClick()
-            }
-        },
+        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
@@ -607,19 +596,8 @@ private fun DeviceCard(
         // Display preview image if available
         if (hasToken && previewImageUrl != null) {
             AnimatedVisibility(
-                visible = isPreviewExpanded,
-                enter =
-                    fadeIn(animationSpec = tween(300)) +
-                        slideInVertically(
-                            animationSpec = tween(300),
-                            initialOffsetY = { -it / 2 },
-                        ),
-                exit =
-                    fadeOut(animationSpec = tween(300)) +
-                        slideOutVertically(
-                            animationSpec = tween(300),
-                            targetOffsetY = { -it / 2 },
-                        ),
+                visible = true,
+                enter = fadeIn() + slideInVertically(),
             ) {
                 SubcomposeAsyncImage(
                     model = previewImageUrl,
