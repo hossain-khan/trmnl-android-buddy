@@ -535,7 +535,7 @@ private fun DeviceCard(
                     modifier = Modifier.padding(top = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    // Device ID
+                    // Device ID (obfuscated for privacy)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -545,7 +545,7 @@ private fun DeviceCard(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            text = device.friendlyId,
+                            text = obfuscateDeviceId(device.friendlyId),
                             style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Medium,
                         )
@@ -747,4 +747,18 @@ private fun obfuscateMacAddress(macAddress: String): String {
     // Standard MAC address format (e.g., "AB:CD:EF:12:34:56")
     // Show first part and last part, obfuscate everything in between with centered bullets
     return "${parts.first()}:${"••:".repeat(parts.size - 2)}${parts.last()}"
+}
+
+/**
+ * Obfuscates a device ID for privacy by showing only the first character and last 2 characters.
+ * Example: "ABC123" becomes "A•••23"
+ */
+private fun obfuscateDeviceId(deviceId: String): String {
+    if (deviceId.length <= 3) return deviceId
+
+    val first = deviceId.take(1)
+    val last = deviceId.takeLast(2)
+    val middle = "•".repeat(deviceId.length - 3)
+
+    return "$first$middle$last"
 }
