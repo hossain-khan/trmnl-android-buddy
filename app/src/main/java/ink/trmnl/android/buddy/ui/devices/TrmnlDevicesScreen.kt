@@ -149,16 +149,24 @@ class TrmnlDevicesPresenter
             LaunchedEffect(devices) {
                 if (devices.isNotEmpty()) {
                     loadDeviceTokens(devices) { tokens ->
+                        val oldTokens = deviceTokens
                         deviceTokens = tokens
-                    }
-                }
-            }
 
-            // Reload preview images whenever device tokens change
-            LaunchedEffect(deviceTokens) {
-                if (devices.isNotEmpty() && deviceTokens.isNotEmpty()) {
-                    loadDevicePreviews(devices, deviceTokens) { previews ->
-                        devicePreviews = previews
+                        // Only reload previews if tokens actually changed or if we have new devices with tokens
+                        val tokensChanged = oldTokens != tokens
+                        val hasNewTokens =
+                            tokens.values.any { it != null } &&
+                                tokens.keys.any { deviceId ->
+                                    oldTokens[deviceId] != tokens[deviceId] && tokens[deviceId] != null
+                                }
+
+                        if (tokensChanged || hasNewTokens) {
+                            coroutineScope.launch {
+                                loadDevicePreviews(devices, tokens) { previews ->
+                                    devicePreviews = previews
+                                }
+                            }
+                        }
                     }
                 }
             }
