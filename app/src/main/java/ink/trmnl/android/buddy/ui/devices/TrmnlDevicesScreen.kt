@@ -49,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
@@ -121,37 +122,39 @@ class TrmnlDevicesPresenter
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
-            var devices by remember { mutableStateOf<List<Device>>(emptyList()) }
-            var deviceTokens by remember { mutableStateOf<Map<String, String?>>(emptyMap()) }
-            var devicePreviews by remember { mutableStateOf<Map<String, String?>>(emptyMap()) }
-            var isLoading by remember { mutableStateOf(true) }
-            var errorMessage by remember { mutableStateOf<String?>(null) }
+            var devices by rememberRetained { mutableStateOf<List<Device>>(emptyList()) }
+            var deviceTokens by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
+            var devicePreviews by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
+            var isLoading by rememberRetained { mutableStateOf(true) }
+            var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
-            // Fetch devices on initial load
+            // Fetch devices on initial load only (when devices list is empty)
             LaunchedEffect(Unit) {
-                loadDevices(
-                    onSuccess = { fetchedDevices ->
-                        devices = fetchedDevices
-                        // Load tokens for all devices
-                        coroutineScope.launch {
-                            loadDeviceTokens(fetchedDevices) { tokens ->
-                                deviceTokens = tokens
-                                // Load previews for devices that have tokens
-                                coroutineScope.launch {
-                                    loadDevicePreviews(fetchedDevices, tokens) { previews ->
-                                        devicePreviews = previews
+                if (devices.isEmpty() && errorMessage == null) {
+                    loadDevices(
+                        onSuccess = { fetchedDevices ->
+                            devices = fetchedDevices
+                            // Load tokens for all devices
+                            coroutineScope.launch {
+                                loadDeviceTokens(fetchedDevices) { tokens ->
+                                    deviceTokens = tokens
+                                    // Load previews for devices that have tokens
+                                    coroutineScope.launch {
+                                        loadDevicePreviews(fetchedDevices, tokens) { previews ->
+                                            devicePreviews = previews
+                                        }
                                     }
                                 }
                             }
-                        }
-                        isLoading = false
-                    },
-                    onError = { error ->
-                        errorMessage = error
-                        isLoading = false
-                    },
-                )
+                            isLoading = false
+                        },
+                        onError = { error ->
+                            errorMessage = error
+                            isLoading = false
+                        },
+                    )
+                }
             }
 
             return TrmnlDevicesScreen.State(
