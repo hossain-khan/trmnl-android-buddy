@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import coil3.compose.SubcomposeAsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -52,7 +53,12 @@ data class DevicePreviewScreen(
         val deviceId: String,
         val deviceName: String,
         val imageUrl: String,
+        val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
+
+    sealed class Event : CircuitUiEvent {
+        data object BackClicked : Event()
+    }
 }
 
 /**
@@ -70,7 +76,11 @@ class DevicePreviewPresenter
                 deviceId = screen.deviceId,
                 deviceName = screen.deviceName,
                 imageUrl = screen.imageUrl,
-            )
+            ) { event ->
+                when (event) {
+                    DevicePreviewScreen.Event.BackClicked -> navigator.pop()
+                }
+            }
 
         @CircuitInject(DevicePreviewScreen::class, AppScope::class)
         @AssistedFactory
@@ -102,7 +112,7 @@ fun DevicePreviewContent(
             TopAppBar(
                 title = { Text(state.deviceName) },
                 navigationIcon = {
-                    IconButton(onClick = { /* Navigator handled by gesture nav */ }) {
+                    IconButton(onClick = { state.eventSink(DevicePreviewScreen.Event.BackClicked) }) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                             contentDescription = "Back",
