@@ -28,10 +28,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -189,12 +196,53 @@ fun AccessTokenContent(
         ) {
             // Instructions
             Text(
-                text = "Enter your TRMNL API token",
+                text = "Enter your TRMNL User API Key",
                 style = MaterialTheme.typography.headlineSmall,
             )
 
             Text(
-                text = "You can find your API token in your TRMNL account settings at usetrmnl.com",
+                text =
+                    "A User-level API Key is required to access account-level " +
+                        "information like account-info, devices, playlists, and more.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            // Hyperlink to help article
+            val linkColor = MaterialTheme.colorScheme.primary
+            val linkStyle =
+                TextLinkStyles(
+                    style =
+                        SpanStyle(
+                            color = linkColor,
+                            textDecoration = TextDecoration.Underline,
+                        ),
+                )
+            val annotatedString =
+                buildAnnotatedString {
+                    append("Generate your User API Key from your ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            url = "https://usetrmnl.com/account",
+                            styles = linkStyle,
+                        ),
+                    ) {
+                        append("account settings")
+                    }
+                    append(". ")
+
+                    withLink(
+                        LinkAnnotation.Url(
+                            url = "https://help.usetrmnl.com/en/articles/11195228-user-level-api-keys",
+                            styles = linkStyle,
+                        ),
+                    ) {
+                        append("Learn more")
+                    }
+                }
+
+            Text(
+                text = annotatedString,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -205,8 +253,8 @@ fun AccessTokenContent(
             OutlinedTextField(
                 value = state.token,
                 onValueChange = { state.eventSink(AccessTokenScreen.Event.TokenChanged(it)) },
-                label = { Text("API Token") },
-                placeholder = { Text("Paste your token here") },
+                label = { Text("User API Key") },
+                placeholder = { Text("user_abcxyz...") },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !state.isLoading,
                 isError = state.errorMessage != null,
