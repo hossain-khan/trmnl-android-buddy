@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -360,7 +362,10 @@ fun TrmnlDevicesContent(
                 state.isLoading -> {
                     // Loading state
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
                         contentAlignment = Alignment.Center,
                     ) {
                         Column(
@@ -376,7 +381,10 @@ fun TrmnlDevicesContent(
                 state.errorMessage != null -> {
                     // Error state
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
                         contentAlignment = Alignment.Center,
                     ) {
                         Column(
@@ -401,7 +409,10 @@ fun TrmnlDevicesContent(
                 state.devices.isEmpty() -> {
                     // Empty state
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
                         contentAlignment = Alignment.Center,
                     ) {
                         Column(
