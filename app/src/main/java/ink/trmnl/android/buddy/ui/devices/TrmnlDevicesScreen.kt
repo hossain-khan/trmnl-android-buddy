@@ -381,11 +381,40 @@ private fun DeviceCard(
     ) {
         ListItem(
             headlineContent = {
-                Text(
-                    text = device.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = device.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f),
+                    )
+                    IconButton(
+                        onClick = onSettingsClick,
+                        modifier = Modifier.size(40.dp),
+                    ) {
+                        Icon(
+                            painter =
+                                painterResource(
+                                    if (hasToken) {
+                                        R.drawable.image_inset_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    } else {
+                                        R.drawable.settings_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    },
+                                ),
+                            contentDescription = if (hasToken) "Display configured" else "Configure device token",
+                            tint =
+                                if (hasToken) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                        )
+                    }
+                }
             },
             supportingContent = {
                 Column(
@@ -508,29 +537,6 @@ private fun DeviceCard(
                     modifier = Modifier.size(48.dp),
                     tint = MaterialTheme.colorScheme.primary,
                 )
-            },
-            trailingContent = {
-                IconButton(
-                    onClick = onSettingsClick,
-                ) {
-                    Icon(
-                        painter =
-                            painterResource(
-                                if (hasToken) {
-                                    R.drawable.image_inset_24dp_e8eaed_fill0_wght400_grad0_opsz24
-                                } else {
-                                    R.drawable.settings_24dp_e8eaed_fill0_wght400_grad0_opsz24
-                                },
-                            ),
-                        contentDescription = if (hasToken) "Display configured" else "Configure device token",
-                        tint =
-                            if (hasToken) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                    )
-                }
             },
             colors =
                 ListItemDefaults.colors(
