@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Pull-to-refresh functionality on devices list screen using Material 3 PullToRefreshBox
+- Devices are now cached on initial load, preventing unnecessary API calls on every screen visit
+
 ### Security
 - Extended device ID obfuscation to Device API Key management screen for consistent PII protection
 

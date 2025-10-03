@@ -35,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -87,6 +88,7 @@ data object TrmnlDevicesScreen : Screen {
         val deviceTokens: Map<String, String?> = emptyMap(),
         val devicePreviews: Map<String, String?> = emptyMap(),
         val isLoading: Boolean = true,
+        val isRefreshing: Boolean = false,
         val errorMessage: String? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
@@ -129,6 +131,7 @@ class TrmnlDevicesPresenter
             var deviceTokens by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
             var devicePreviews by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
             var isLoading by rememberRetained { mutableStateOf(true) }
+            var isRefreshing by rememberRetained { mutableStateOf(false) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
@@ -179,22 +182,23 @@ class TrmnlDevicesPresenter
                 deviceTokens = deviceTokens,
                 devicePreviews = devicePreviews,
                 isLoading = isLoading,
+                isRefreshing = isRefreshing,
                 errorMessage = errorMessage,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
-                        isLoading = true
+                        isRefreshing = true
                         errorMessage = null
                         coroutineScope.launch {
                             loadDevices(
                                 onSuccess = { fetchedDevices ->
                                     devices = fetchedDevices
                                     // LaunchedEffects will handle loading tokens and previews
-                                    isLoading = false
+                                    isRefreshing = false
                                 },
                                 onError = { error ->
                                     errorMessage = error
-                                    isLoading = false
+                                    isRefreshing = false
                                 },
                             )
                         }
@@ -347,106 +351,109 @@ fun TrmnlDevicesContent(
             )
         },
     ) { innerPadding ->
-        when {
-            state.isLoading -> {
-                // Loading state
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = { state.eventSink(TrmnlDevicesScreen.Event.Refresh) },
+            modifier = Modifier.padding(innerPadding),
+        ) {
+            when {
+                state.isLoading -> {
+                    // Loading state
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        CircularProgressIndicator()
-                        Text("Loading devices...")
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            CircularProgressIndicator()
+                            Text("Loading devices...")
+                        }
                     }
                 }
-            }
 
-            state.errorMessage != null -> {
-                // Error state
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Column(
-                        modifier = Modifier.padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                state.errorMessage != null -> {
+                    // Error state
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Text(
-                            text = "Error",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                        Text(
-                            text = state.errorMessage,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                        Column(
+                            modifier = Modifier.padding(32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            Text(
+                                text = "Error",
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                            Text(
+                                text = state.errorMessage,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
                 }
-            }
 
-            state.devices.isEmpty() -> {
-                // Empty state
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Column(
-                        modifier = Modifier.padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                state.devices.isEmpty() -> {
+                    // Empty state
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.trmnl_device_frame),
-                            contentDescription = "No devices",
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = "No devices found",
-                            style = MaterialTheme.typography.headlineSmall,
-                        )
-                        Text(
-                            text = "Your TRMNL devices will appear here",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                        Column(
+                            modifier = Modifier.padding(32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.trmnl_device_frame),
+                                contentDescription = "No devices",
+                                modifier = Modifier.size(64.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                text = "No devices found",
+                                style = MaterialTheme.typography.headlineSmall,
+                            )
+                            Text(
+                                text = "Your TRMNL devices will appear here",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
                 }
-            }
 
-            else -> {
-                // Devices list
-                LazyColumn(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(state.devices) { device ->
-                        DeviceCard(
-                            device = device,
-                            hasToken = state.deviceTokens[device.friendlyId] != null,
-                            previewImageUrl = state.devicePreviews[device.friendlyId],
-                            onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
-                            onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
-                            onPreviewClick = {
-                                state.devicePreviews[device.friendlyId]?.let { imageUrl ->
-                                    state.eventSink(
-                                        TrmnlDevicesScreen.Event.DevicePreviewClicked(
-                                            device = device,
-                                            imageUrl = imageUrl,
-                                        ),
-                                    )
-                                }
-                            },
-                        )
+                else -> {
+                    // Devices list
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        items(state.devices) { device ->
+                            DeviceCard(
+                                device = device,
+                                hasToken = state.deviceTokens[device.friendlyId] != null,
+                                previewImageUrl = state.devicePreviews[device.friendlyId],
+                                onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
+                                onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
+                                onPreviewClick = {
+                                    state.devicePreviews[device.friendlyId]?.let { imageUrl ->
+                                        state.eventSink(
+                                            TrmnlDevicesScreen.Event.DevicePreviewClicked(
+                                                device = device,
+                                                imageUrl = imageUrl,
+                                            ),
+                                        )
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
             }
