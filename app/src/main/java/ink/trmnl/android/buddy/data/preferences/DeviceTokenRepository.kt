@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -15,15 +16,12 @@ import kotlinx.coroutines.flow.map
 private val Context.deviceTokensDataStore: DataStore<Preferences> by preferencesDataStore(name = "device_tokens")
 
 /**
- * Repository for managing Device API Keys (Access Tokens) for each TRMNL device.
+ * Repository interface for managing Device API Keys (Access Tokens) for each TRMNL device.
  *
  * Device API Keys are stored using DataStore with device friendly ID as the key.
  * Format: "device_token_{friendlyId}" -> "abc-123"
  */
-@Inject
-class DeviceTokenRepository(
-    private val context: Context,
-) {
+interface DeviceTokenRepository {
     /**
      * Save or update a device API key (Access Token) for a specific device.
      *
@@ -31,6 +29,63 @@ class DeviceTokenRepository(
      * @param token The device API key (e.g., "abc-123")
      */
     suspend fun saveDeviceToken(
+        deviceFriendlyId: String,
+        token: String,
+    )
+
+    /**
+     * Get the device API key for a specific device.
+     *
+     * @param deviceFriendlyId The device friendly ID (e.g., "ABC-123")
+     * @return The device API key or null if not set
+     */
+    suspend fun getDeviceToken(deviceFriendlyId: String): String?
+
+    /**
+     * Get device API key as Flow for a specific device.
+     *
+     * @param deviceFriendlyId The device friendly ID (e.g., "ABC-123")
+     * @return Flow emitting the device API key or null
+     */
+    fun getDeviceTokenFlow(deviceFriendlyId: String): Flow<String?>
+
+    /**
+     * Clear/remove the device API key for a specific device.
+     *
+     * @param deviceFriendlyId The device friendly ID (e.g., "ABC-123")
+     */
+    suspend fun clearDeviceToken(deviceFriendlyId: String)
+
+    /**
+     * Check if a device has an API key set.
+     *
+     * @param deviceFriendlyId The device friendly ID (e.g., "ABC-123")
+     * @return true if token exists, false otherwise
+     */
+    suspend fun hasDeviceToken(deviceFriendlyId: String): Boolean
+
+    /**
+     * Clear all device API keys from storage.
+     * This removes all stored device tokens.
+     */
+    suspend fun clearAll()
+}
+
+/**
+ * Implementation of DeviceTokenRepository using DataStore Preferences.
+ */
+@ContributesBinding(dev.zacsweers.metro.AppScope::class)
+@Inject
+class DeviceTokenRepositoryImpl(
+    private val context: Context,
+) : DeviceTokenRepository {
+    /**
+     * Save or update a device API key (Access Token) for a specific device.
+     *
+     * @param deviceFriendlyId The device friendly ID (e.g., "ABC-123")
+     * @param token The device API key (e.g., "abc-123")
+     */
+    override suspend fun saveDeviceToken(
         deviceFriendlyId: String,
         token: String,
     ) {
@@ -46,7 +101,7 @@ class DeviceTokenRepository(
      * @param deviceFriendlyId The device friendly ID (e.g., "ABC-123")
      * @return The device API key or null if not set
      */
-    suspend fun getDeviceToken(deviceFriendlyId: String): String? {
+    override suspend fun getDeviceToken(deviceFriendlyId: String): String? {
         val key = stringPreferencesKey("device_token_$deviceFriendlyId")
         return context.deviceTokensDataStore.data
             .map { preferences ->
@@ -60,7 +115,7 @@ class DeviceTokenRepository(
      * @param deviceFriendlyId The device friendly ID (e.g., "ABC-123")
      * @return Flow emitting the device API key or null
      */
-    fun getDeviceTokenFlow(deviceFriendlyId: String): Flow<String?> {
+    override fun getDeviceTokenFlow(deviceFriendlyId: String): Flow<String?> {
         val key = stringPreferencesKey("device_token_$deviceFriendlyId")
         return context.deviceTokensDataStore.data.map { preferences ->
             preferences[key]
@@ -72,7 +127,7 @@ class DeviceTokenRepository(
      *
      * @param deviceFriendlyId The device friendly ID (e.g., "ABC-123")
      */
-    suspend fun clearDeviceToken(deviceFriendlyId: String) {
+    override suspend fun clearDeviceToken(deviceFriendlyId: String) {
         val key = stringPreferencesKey("device_token_$deviceFriendlyId")
         context.deviceTokensDataStore.edit { preferences ->
             preferences.remove(key)
@@ -85,13 +140,13 @@ class DeviceTokenRepository(
      * @param deviceFriendlyId The device friendly ID (e.g., "ABC-123")
      * @return true if token exists, false otherwise
      */
-    suspend fun hasDeviceToken(deviceFriendlyId: String): Boolean = getDeviceToken(deviceFriendlyId) != null
+    override suspend fun hasDeviceToken(deviceFriendlyId: String): Boolean = getDeviceToken(deviceFriendlyId) != null
 
     /**
      * Clear all device API keys from storage.
      * This removes all stored device tokens.
      */
-    suspend fun clearAll() {
+    override suspend fun clearAll() {
         context.deviceTokensDataStore.edit { preferences ->
             preferences.clear()
         }
