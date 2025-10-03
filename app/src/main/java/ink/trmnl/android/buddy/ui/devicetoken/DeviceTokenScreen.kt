@@ -249,7 +249,7 @@ fun DeviceTokenContent(
                         },
                         supportingContent = {
                             Text(
-                                state.deviceFriendlyId,
+                                obfuscateDeviceId(state.deviceFriendlyId),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                             )
@@ -361,4 +361,20 @@ fun DeviceTokenContent(
             }
         }
     }
+}
+
+/**
+ * Obfuscates a device ID by showing only the first character and last two characters,
+ * replacing the middle with bullet characters.
+ *
+ * Example: ABC123 -> A•••23
+ */
+private fun obfuscateDeviceId(deviceId: String): String {
+    if (deviceId.length <= 3) return deviceId
+
+    val first = deviceId.take(1)
+    val last = deviceId.takeLast(2)
+    val middle = "•".repeat(deviceId.length - 3)
+
+    return "$first$middle$last"
 }
