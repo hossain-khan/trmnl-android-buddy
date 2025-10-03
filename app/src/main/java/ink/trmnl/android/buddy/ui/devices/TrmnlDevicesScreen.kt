@@ -2,6 +2,8 @@ package ink.trmnl.android.buddy.ui.devices
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.clickable
@@ -466,6 +468,26 @@ private fun DeviceCard(
     // Invert colors in dark mode for better visibility of e-ink display images
     val colorFilter = rememberEInkColorFilter()
 
+    // Track if this is the first composition to trigger animation
+    var isInitialized by remember { mutableStateOf(false) }
+
+    // Animate progress indicators from 0 to actual value on first load
+    val batteryProgress by animateFloatAsState(
+        targetValue = if (isInitialized) (device.percentCharged / 100).toFloat() else 0f,
+        animationSpec = tween(durationMillis = 800, delayMillis = 100),
+        label = "battery_progress",
+    )
+    val wifiProgress by animateFloatAsState(
+        targetValue = if (isInitialized) (device.wifiStrength / 100).toFloat() else 0f,
+        animationSpec = tween(durationMillis = 800, delayMillis = 200),
+        label = "wifi_progress",
+    )
+
+    // Trigger animation on first composition
+    LaunchedEffect(Unit) {
+        isInitialized = true
+    }
+
     Card(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
@@ -567,7 +589,7 @@ private fun DeviceCard(
                             )
                         }
                         LinearProgressIndicator(
-                            progress = { (device.percentCharged / 100).toFloat() },
+                            progress = { batteryProgress },
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
@@ -605,7 +627,7 @@ private fun DeviceCard(
                             )
                         }
                         LinearProgressIndicator(
-                            progress = { (device.wifiStrength / 100).toFloat() },
+                            progress = { wifiProgress },
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
