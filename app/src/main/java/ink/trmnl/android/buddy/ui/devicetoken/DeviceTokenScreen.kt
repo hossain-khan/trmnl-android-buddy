@@ -48,6 +48,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
+import ink.trmnl.android.buddy.util.PrivacyUtils
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -249,7 +250,7 @@ fun DeviceTokenContent(
                         },
                         supportingContent = {
                             Text(
-                                obfuscateDeviceId(state.deviceFriendlyId),
+                                PrivacyUtils.obfuscateDeviceId(state.deviceFriendlyId),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                             )
@@ -361,20 +362,4 @@ fun DeviceTokenContent(
             }
         }
     }
-}
-
-/**
- * Obfuscates a device ID by showing only the first character and last two characters,
- * replacing the middle with bullet characters.
- *
- * Example: ABC123 -> A•••23
- */
-private fun obfuscateDeviceId(deviceId: String): String {
-    if (deviceId.length <= 3) return deviceId
-
-    val first = deviceId.take(1)
-    val last = deviceId.takeLast(2)
-    val middle = "•".repeat(deviceId.length - 3)
-
-    return "$first$middle$last"
 }
