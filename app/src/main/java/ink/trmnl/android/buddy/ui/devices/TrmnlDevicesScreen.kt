@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,7 +35,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -90,7 +87,6 @@ data object TrmnlDevicesScreen : Screen {
         val deviceTokens: Map<String, String?> = emptyMap(),
         val devicePreviews: Map<String, String?> = emptyMap(),
         val isLoading: Boolean = true,
-        val isRefreshing: Boolean = false,
         val errorMessage: String? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
@@ -133,7 +129,6 @@ class TrmnlDevicesPresenter
             var deviceTokens by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
             var devicePreviews by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
             var isLoading by rememberRetained { mutableStateOf(true) }
-            var isRefreshing by rememberRetained { mutableStateOf(false) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
@@ -184,23 +179,22 @@ class TrmnlDevicesPresenter
                 deviceTokens = deviceTokens,
                 devicePreviews = devicePreviews,
                 isLoading = isLoading,
-                isRefreshing = isRefreshing,
                 errorMessage = errorMessage,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
-                        isRefreshing = true
+                        isLoading = true
                         errorMessage = null
                         coroutineScope.launch {
                             loadDevices(
                                 onSuccess = { fetchedDevices ->
                                     devices = fetchedDevices
                                     // LaunchedEffects will handle loading tokens and previews
-                                    isRefreshing = false
+                                    isLoading = false
                                 },
                                 onError = { error ->
                                     errorMessage = error
-                                    isRefreshing = false
+                                    isLoading = false
                                 },
                             )
                         }
@@ -353,118 +347,106 @@ fun TrmnlDevicesContent(
             )
         },
     ) { innerPadding ->
-        PullToRefreshBox(
-            isRefreshing = state.isRefreshing,
-            onRefresh = { state.eventSink(TrmnlDevicesScreen.Event.Refresh) },
-            modifier = Modifier.padding(innerPadding),
-        ) {
-            when {
-                state.isLoading -> {
-                    // Loading state
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                        contentAlignment = Alignment.Center,
+        when {
+            state.isLoading -> {
+                // Loading state
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                        ) {
-                            CircularProgressIndicator()
-                            Text("Loading devices...")
-                        }
+                        CircularProgressIndicator()
+                        Text("Loading devices...")
                     }
                 }
+            }
 
-                state.errorMessage != null -> {
-                    // Error state
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                        contentAlignment = Alignment.Center,
+            state.errorMessage != null -> {
+                // Error state
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(
+                        modifier = Modifier.padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        Column(
-                            modifier = Modifier.padding(32.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                        ) {
-                            Text(
-                                text = "Error",
-                                style = MaterialTheme.typography.headlineSmall,
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                            Text(
-                                text = state.errorMessage,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
+                        Text(
+                            text = "Error",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                        Text(
+                            text = state.errorMessage,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
+            }
 
-                state.devices.isEmpty() -> {
-                    // Empty state
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                        contentAlignment = Alignment.Center,
+            state.devices.isEmpty() -> {
+                // Empty state
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(
+                        modifier = Modifier.padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        Column(
-                            modifier = Modifier.padding(32.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.trmnl_device_frame),
-                                contentDescription = "No devices",
-                                modifier = Modifier.size(64.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Text(
-                                text = "No devices found",
-                                style = MaterialTheme.typography.headlineSmall,
-                            )
-                            Text(
-                                text = "Your TRMNL devices will appear here",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(R.drawable.trmnl_device_frame),
+                            contentDescription = "No devices",
+                            modifier = Modifier.size(64.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = "No devices found",
+                            style = MaterialTheme.typography.headlineSmall,
+                        )
+                        Text(
+                            text = "Your TRMNL devices will appear here",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
+            }
 
-                else -> {
-                    // Devices list
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        items(state.devices) { device ->
-                            DeviceCard(
-                                device = device,
-                                hasToken = state.deviceTokens[device.friendlyId] != null,
-                                previewImageUrl = state.devicePreviews[device.friendlyId],
-                                onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
-                                onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
-                                onPreviewClick = {
-                                    state.devicePreviews[device.friendlyId]?.let { imageUrl ->
-                                        state.eventSink(
-                                            TrmnlDevicesScreen.Event.DevicePreviewClicked(
-                                                device = device,
-                                                imageUrl = imageUrl,
-                                            ),
-                                        )
-                                    }
-                                },
-                            )
-                        }
+            else -> {
+                // Devices list
+                LazyColumn(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    items(state.devices) { device ->
+                        DeviceCard(
+                            device = device,
+                            hasToken = state.deviceTokens[device.friendlyId] != null,
+                            previewImageUrl = state.devicePreviews[device.friendlyId],
+                            onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
+                            onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
+                            onPreviewClick = {
+                                state.devicePreviews[device.friendlyId]?.let { imageUrl ->
+                                    state.eventSink(
+                                        TrmnlDevicesScreen.Event.DevicePreviewClicked(
+                                            device = device,
+                                            imageUrl = imageUrl,
+                                        ),
+                                    )
+                                }
+                            },
+                        )
                     }
                 }
             }
