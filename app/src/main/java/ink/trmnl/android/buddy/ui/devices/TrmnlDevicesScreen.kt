@@ -538,7 +538,14 @@ private fun DeviceCard(
                     // Device ID (obfuscated for privacy)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_tag_24),
+                            contentDescription = "Device ID",
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                         Text(
                             text = "ID: ",
                             style = MaterialTheme.typography.bodySmall,
@@ -554,7 +561,14 @@ private fun DeviceCard(
                     // MAC Address (obfuscated for privacy)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_barcode_24),
+                            contentDescription = "MAC Address",
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                         Text(
                             text = "MAC: ",
                             style = MaterialTheme.typography.bodySmall,
@@ -576,11 +590,22 @@ private fun DeviceCard(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Text(
-                                text = "Battery",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Icon(
+                                    painter = painterResource(getBatteryIcon(device.percentCharged)),
+                                    contentDescription = "Battery",
+                                    modifier = Modifier.size(16.dp),
+                                    tint = getBatteryColor(device.percentCharged),
+                                )
+                                Text(
+                                    text = "Battery",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                             Text(
                                 text = "${device.percentCharged.toInt()}%",
                                 style = MaterialTheme.typography.bodySmall,
@@ -614,11 +639,22 @@ private fun DeviceCard(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Text(
-                                text = "WiFi Signal",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Icon(
+                                    painter = painterResource(getWifiIcon(device.wifiStrength)),
+                                    contentDescription = "WiFi Signal",
+                                    modifier = Modifier.size(16.dp),
+                                    tint = getWifiColor(device.wifiStrength),
+                                )
+                                Text(
+                                    text = "WiFi Signal",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                             Text(
                                 text = "${device.wifiStrength.toInt()}%",
                                 style = MaterialTheme.typography.bodySmall,
@@ -762,3 +798,29 @@ private fun obfuscateDeviceId(deviceId: String): String {
 
     return "$first$middle$last"
 }
+
+/**
+ * Returns the appropriate battery icon based on the charge percentage.
+ */
+private fun getBatteryIcon(percentCharged: Double): Int =
+    when {
+        percentCharged >= 95 -> R.drawable.outline_battery_android_full_24
+        percentCharged >= 80 -> R.drawable.outline_battery_android_6_24
+        percentCharged >= 65 -> R.drawable.outline_battery_android_5_24
+        percentCharged >= 50 -> R.drawable.outline_battery_android_4_24
+        percentCharged >= 35 -> R.drawable.outline_battery_android_3_24
+        percentCharged >= 20 -> R.drawable.outline_battery_android_2_24
+        percentCharged >= 5 -> R.drawable.outline_battery_android_1_24
+        else -> R.drawable.outline_battery_android_0_24
+    }
+
+/**
+ * Returns the appropriate WiFi signal icon based on signal strength percentage.
+ */
+private fun getWifiIcon(wifiStrength: Double): Int =
+    when {
+        wifiStrength >= 75 -> R.drawable.outline_signal_wifi_4_bar_24
+        wifiStrength >= 50 -> R.drawable.outline_network_wifi_3_bar_24
+        wifiStrength >= 25 -> R.drawable.outline_network_wifi_2_bar_24
+        else -> R.drawable.outline_network_wifi_1_bar_24
+    }
