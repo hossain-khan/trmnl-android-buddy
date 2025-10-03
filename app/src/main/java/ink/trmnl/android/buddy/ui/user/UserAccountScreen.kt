@@ -59,7 +59,9 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlDeviceRepository
 import ink.trmnl.android.buddy.api.models.User
+import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 import ink.trmnl.android.buddy.util.GravatarUtils
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -100,6 +102,7 @@ data object UserAccountScreen : Screen {
 class UserAccountPresenter(
     @Assisted private val navigator: Navigator,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val deviceTokenRepository: DeviceTokenRepository,
 ) : Presenter<UserAccountScreen.State> {
     @Composable
     override fun present(): UserAccountScreen.State {
@@ -158,8 +161,9 @@ class UserAccountPresenter(
                     coroutineScope.launch {
                         // Clear all preferences (API token and device tokens)
                         userPreferencesRepository.clearAll()
+                        deviceTokenRepository.clearAll()
                         // Navigate to welcome screen and clear back stack
-                        navigator.resetRoot(ink.trmnl.android.buddy.ui.welcome.WelcomeScreen)
+                        navigator.resetRoot(WelcomeScreen)
                     }
                 }
             }
