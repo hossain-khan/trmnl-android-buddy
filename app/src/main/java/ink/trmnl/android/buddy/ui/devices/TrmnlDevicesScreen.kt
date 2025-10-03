@@ -551,7 +551,7 @@ private fun DeviceCard(
                         )
                     }
 
-                    // MAC Address
+                    // MAC Address (obfuscated for privacy)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -561,7 +561,7 @@ private fun DeviceCard(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            text = device.macAddress,
+                            text = obfuscateMacAddress(device.macAddress),
                             style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Medium,
                         )
@@ -729,4 +729,22 @@ private fun getWifiColor(wifiStrength: Double): Color {
         wifiStrength >= 40 -> mediumColor // Medium signal
         else -> weakColor // Weak signal
     }
+}
+
+/**
+ * Obfuscates a MAC address for privacy by showing only the first and last 2 characters.
+ * Example: "AB:CD:EF:12:34:56" becomes "AB:**:**:**:**:56"
+ */
+private fun obfuscateMacAddress(macAddress: String): String {
+    if (macAddress.length < 4) return macAddress
+
+    val parts = macAddress.split(":")
+    if (parts.size <= 2) {
+        // If it's not a standard MAC address format, just obfuscate the middle
+        return "${macAddress.take(2)}${"*".repeat(macAddress.length - 4)}${macAddress.takeLast(2)}"
+    }
+
+    // Standard MAC address format (e.g., "AB:CD:EF:12:34:56")
+    // Show first part and last part, obfuscate everything in between
+    return "${parts.first()}:${"**:".repeat(parts.size - 2)}${parts.last()}"
 }
