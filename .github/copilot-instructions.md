@@ -198,6 +198,62 @@ When working with TRMNL API:
 
 If either command fails, fix the issues before committing.
 
+### Changelog Maintenance
+
+**REQUIRED**: Always update `CHANGELOG.md` when making changes following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) guidelines:
+
+1. **Format**: Follow Keep a Changelog format
+2. **Versioning**: Use [Semantic Versioning](https://semver.org/spec/v2.0.0.html) (MAJOR.MINOR.PATCH)
+   - MAJOR: Incompatible API changes
+   - MINOR: Add functionality in a backward compatible manner
+   - PATCH: Backward compatible bug fixes
+3. **Sections**: Use appropriate change types:
+   - `Added` for new features
+   - `Changed` for changes in existing functionality
+   - `Deprecated` for soon-to-be removed features
+   - `Removed` for now removed features
+   - `Fixed` for any bug fixes
+   - `Security` in case of vulnerabilities
+4. **Unreleased Section**: Add all changes to `[Unreleased]` section first
+5. **Release Process**: When releasing, move `[Unreleased]` changes to a new version section with date
+6. **Format Example**:
+   ```markdown
+   ## [Unreleased]
+   
+   ### Added
+   - New feature description
+   
+   ### Fixed
+   - Bug fix description
+   
+   ## [1.0.1] - 2025-10-03
+   
+   ### Fixed
+   - Previous bug fix
+   ```
+7. **Guidelines**:
+   - Write for humans, not machines
+   - Each version should have an entry
+   - Group similar types of changes together
+   - Use ISO 8601 date format (YYYY-MM-DD)
+   - Link versions at bottom of file
+   - Keep entries concise but descriptive
+   - Don't dump git commit logs
+
+**Example Workflow**:
+```bash
+# 1. Make code changes
+# 2. Update CHANGELOG.md under [Unreleased] section
+# 3. Format code
+./gradlew formatKotlin
+# 4. Run tests
+./gradlew test
+# 5. Commit with descriptive message
+git commit -m "Add feature X
+
+- Updated CHANGELOG.md with new feature"
+```
+
 ### Common Gradle Tasks
 
 ```bash
@@ -336,10 +392,13 @@ suspend fun fetchDevices(): Result<List<Device>> {
 ## Notes for AI Assistants
 
 - Always suggest running `formatKotlin` and `test` before commits
+- **Always update CHANGELOG.md** following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format
+- Add changes to `[Unreleased]` section with appropriate category (Added, Changed, Deprecated, Removed, Fixed, Security)
+- Use [Semantic Versioning](https://semver.org/) for version numbers (MAJOR.MINOR.PATCH)
 - Use EitherNet's `ApiResult` for API responses, not custom Result types
 - Prefer constructor injection over field injection
 - Write comprehensive unit tests for new API endpoints
 - Follow the existing code structure and patterns
 - Don't use PII (Personally Identifiable Information) in code examples or tests
 - **Do NOT create summary markdown files** (like `FEATURE_SUMMARY.md`, `SCREENS_IMPLEMENTATION.md`, etc.) for features or bug fixes
-- Keep documentation in existing files like README.md or inline code comments
+- Keep documentation in existing files like README.md, CHANGELOG.md, or inline code comments
