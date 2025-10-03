@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Visual icons for device list card labels to improve information scannability
+  - Device ID: Tag icon for quick identification
+  - MAC Address: Barcode icon for hardware identification
+  - Battery Level: Dynamic battery icon that changes based on charge level (8 distinct levels)
+  - WiFi Signal: Dynamic WiFi icon that changes based on signal strength (4 distinct levels)
+  - All icons consistently sized at 16dp with 4dp spacing for visual harmony
+
 ### Security
 - Extended device ID obfuscation to Device API Key management screen for consistent PII protection
 
