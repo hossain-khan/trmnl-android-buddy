@@ -86,4 +86,14 @@ class DeviceTokenRepository(
      * @return true if token exists, false otherwise
      */
     suspend fun hasDeviceToken(deviceFriendlyId: String): Boolean = getDeviceToken(deviceFriendlyId) != null
+
+    /**
+     * Clear all device API keys from storage.
+     * This removes all stored device tokens.
+     */
+    suspend fun clearAll() {
+        context.deviceTokensDataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
 }
