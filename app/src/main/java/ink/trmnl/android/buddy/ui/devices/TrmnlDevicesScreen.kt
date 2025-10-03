@@ -598,7 +598,7 @@ private fun DeviceCard(
                                     painter = painterResource(getBatteryIcon(device.percentCharged)),
                                     contentDescription = "Battery",
                                     modifier = Modifier.size(16.dp),
-                                    tint = getBatteryColor(device.percentCharged),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                                 Text(
                                     text = "Battery",
@@ -647,7 +647,7 @@ private fun DeviceCard(
                                     painter = painterResource(getWifiIcon(device.wifiStrength)),
                                     contentDescription = "WiFi Signal",
                                     modifier = Modifier.size(16.dp),
-                                    tint = getWifiColor(device.wifiStrength),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                                 Text(
                                     text = "WiFi Signal",
