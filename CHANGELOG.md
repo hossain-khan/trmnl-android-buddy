@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2025-10-03
+
 ### Added
 - Visual icons for device list card labels to improve information scannability
   - Device ID: Tag icon for quick identification
