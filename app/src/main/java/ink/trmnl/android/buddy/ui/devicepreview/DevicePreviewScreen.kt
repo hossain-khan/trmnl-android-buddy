@@ -135,8 +135,7 @@ fun DevicePreviewContent(
                                         key = DevicePreviewImageKey(deviceId = state.deviceId),
                                     ),
                                 animatedVisibilityScope = requireAnimatedScope(Navigation),
-                            ).fillMaxSize()
-                            .aspectRatio(800f / 480f), // TRMNL device aspect ratio
+                            ).fillMaxSize(),
                     contentScale = ContentScale.Fit,
                     loading = {
                         Box(
