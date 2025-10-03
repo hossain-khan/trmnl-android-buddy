@@ -135,18 +135,6 @@ class TrmnlDevicesPresenter
                     loadDevices(
                         onSuccess = { fetchedDevices ->
                             devices = fetchedDevices
-                            // Load tokens for all devices
-                            coroutineScope.launch {
-                                loadDeviceTokens(fetchedDevices) { tokens ->
-                                    deviceTokens = tokens
-                                    // Load previews for devices that have tokens
-                                    coroutineScope.launch {
-                                        loadDevicePreviews(fetchedDevices, tokens) { previews ->
-                                            devicePreviews = previews
-                                        }
-                                    }
-                                }
-                            }
                             isLoading = false
                         },
                         onError = { error ->
@@ -154,6 +142,32 @@ class TrmnlDevicesPresenter
                             isLoading = false
                         },
                     )
+                }
+            }
+
+            // Always reload device tokens on every visit
+            LaunchedEffect(devices) {
+                if (devices.isNotEmpty()) {
+                    loadDeviceTokens(devices) { tokens ->
+                        val oldTokens = deviceTokens
+                        deviceTokens = tokens
+
+                        // Only reload previews if tokens actually changed or if we have new devices with tokens
+                        val tokensChanged = oldTokens != tokens
+                        val hasNewTokens =
+                            tokens.values.any { it != null } &&
+                                tokens.keys.any { deviceId ->
+                                    oldTokens[deviceId] != tokens[deviceId] && tokens[deviceId] != null
+                                }
+
+                        if (tokensChanged || hasNewTokens) {
+                            coroutineScope.launch {
+                                loadDevicePreviews(devices, tokens) { previews ->
+                                    devicePreviews = previews
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -172,18 +186,7 @@ class TrmnlDevicesPresenter
                             loadDevices(
                                 onSuccess = { fetchedDevices ->
                                     devices = fetchedDevices
-                                    // Reload tokens for all devices
-                                    launch {
-                                        loadDeviceTokens(fetchedDevices) { tokens ->
-                                            deviceTokens = tokens
-                                            // Reload previews for devices that have tokens
-                                            launch {
-                                                loadDevicePreviews(fetchedDevices, tokens) { previews ->
-                                                    devicePreviews = previews
-                                                }
-                                            }
-                                        }
-                                    }
+                                    // LaunchedEffects will handle loading tokens and previews
                                     isLoading = false
                                 },
                                 onError = { error ->
