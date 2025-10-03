@@ -1,7 +1,7 @@
 [![Android CI](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml)
 
 # TRMNL Buddy
-<img width="64" height="64" alt="App Icon" src="https://github.com/user-attachments/assets/f5871ce0-786d-4f2f-aa51-1c6b72413bf7" align="right" />
+<img width="96" height="96" alt="App Icon" src="https://github.com/user-attachments/assets/f5871ce0-786d-4f2f-aa51-1c6b72413bf7" align="right" />
 
 Your companion app to monitor your TRMNLs on the go.
 
