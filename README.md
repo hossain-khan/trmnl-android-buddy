@@ -16,6 +16,24 @@ An Android app built with:
 ## 🧪 Test Drive App
 See [latest release](https://github.com/hossain-khan/trmnl-android-buddy/releases/latest) to download APK that you can side-load on your Android device. 
 
+
+
+### 📸 Screenshots
+
+<table>
+  <tr>
+    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_193811.png" alt="Device List" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_194229.png" alt="API Configuration" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_193834.png" alt="Privacy Toggle" width="250"/></td>
+  </tr>
+  <tr>
+    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_194148.png" alt="Device Preview" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_194156.png" alt="Device Settings" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_194207.png" alt="Account Screen" width="250"/></td>
+  </tr>
+</table>
+
+
 ## Getting Started
 
 1. Open the project in Android Studio
