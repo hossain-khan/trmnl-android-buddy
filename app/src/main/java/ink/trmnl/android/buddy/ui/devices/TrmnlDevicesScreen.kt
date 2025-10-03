@@ -1,8 +1,10 @@
 package ink.trmnl.android.buddy.ui.devices
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,11 +49,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.sharedelements.SharedElementTransitionScope
+import com.slack.circuit.sharedelements.SharedElementTransitionScope.AnimatedScope.Navigation
 import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -62,6 +67,8 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
+import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -93,6 +100,11 @@ data object TrmnlDevicesScreen : Screen {
         data class DeviceSettingsClicked(
             val device: Device,
         ) : Event()
+
+        data class DevicePreviewClicked(
+            val device: Device,
+            val imageUrl: String,
+        ) : Event()
     }
 }
 
@@ -110,37 +122,39 @@ class TrmnlDevicesPresenter
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
-            var devices by remember { mutableStateOf<List<Device>>(emptyList()) }
-            var deviceTokens by remember { mutableStateOf<Map<String, String?>>(emptyMap()) }
-            var devicePreviews by remember { mutableStateOf<Map<String, String?>>(emptyMap()) }
-            var isLoading by remember { mutableStateOf(true) }
-            var errorMessage by remember { mutableStateOf<String?>(null) }
+            var devices by rememberRetained { mutableStateOf<List<Device>>(emptyList()) }
+            var deviceTokens by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
+            var devicePreviews by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
+            var isLoading by rememberRetained { mutableStateOf(true) }
+            var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
-            // Fetch devices on initial load
+            // Fetch devices on initial load only (when devices list is empty)
             LaunchedEffect(Unit) {
-                loadDevices(
-                    onSuccess = { fetchedDevices ->
-                        devices = fetchedDevices
-                        // Load tokens for all devices
-                        coroutineScope.launch {
-                            loadDeviceTokens(fetchedDevices) { tokens ->
-                                deviceTokens = tokens
-                                // Load previews for devices that have tokens
-                                coroutineScope.launch {
-                                    loadDevicePreviews(fetchedDevices, tokens) { previews ->
-                                        devicePreviews = previews
+                if (devices.isEmpty() && errorMessage == null) {
+                    loadDevices(
+                        onSuccess = { fetchedDevices ->
+                            devices = fetchedDevices
+                            // Load tokens for all devices
+                            coroutineScope.launch {
+                                loadDeviceTokens(fetchedDevices) { tokens ->
+                                    deviceTokens = tokens
+                                    // Load previews for devices that have tokens
+                                    coroutineScope.launch {
+                                        loadDevicePreviews(fetchedDevices, tokens) { previews ->
+                                            devicePreviews = previews
+                                        }
                                     }
                                 }
                             }
-                        }
-                        isLoading = false
-                    },
-                    onError = { error ->
-                        errorMessage = error
-                        isLoading = false
-                    },
-                )
+                            isLoading = false
+                        },
+                        onError = { error ->
+                            errorMessage = error
+                            isLoading = false
+                        },
+                    )
+                }
             }
 
             return TrmnlDevicesScreen.State(
@@ -194,6 +208,16 @@ class TrmnlDevicesPresenter
                             ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen(
                                 deviceFriendlyId = event.device.friendlyId,
                                 deviceName = event.device.name,
+                            ),
+                        )
+                    }
+
+                    is TrmnlDevicesScreen.Event.DevicePreviewClicked -> {
+                        navigator.goTo(
+                            DevicePreviewScreen(
+                                deviceId = event.device.friendlyId,
+                                deviceName = event.device.name,
+                                imageUrl = event.imageUrl,
                             ),
                         )
                     }
@@ -406,6 +430,16 @@ fun TrmnlDevicesContent(
                             previewImageUrl = state.devicePreviews[device.friendlyId],
                             onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                             onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
+                            onPreviewClick = {
+                                state.devicePreviews[device.friendlyId]?.let { imageUrl ->
+                                    state.eventSink(
+                                        TrmnlDevicesScreen.Event.DevicePreviewClicked(
+                                            device = device,
+                                            imageUrl = imageUrl,
+                                        ),
+                                    )
+                                }
+                            },
                         )
                     }
                 }
@@ -414,6 +448,7 @@ fun TrmnlDevicesContent(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun DeviceCard(
     device: Device,
@@ -421,6 +456,7 @@ private fun DeviceCard(
     previewImageUrl: String?,
     onClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onPreviewClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -599,30 +635,39 @@ private fun DeviceCard(
                 visible = true,
                 enter = fadeIn() + slideInVertically(),
             ) {
-                SubcomposeAsyncImage(
-                    model = previewImageUrl,
-                    contentDescription = "Device screen preview for ${device.name}",
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(800f / 480f) // TRMNL device aspect ratio
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                    contentScale = ContentScale.Fit,
-                    loading = {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(32.dp),
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    },
-                    error = {
-                        // Silently fail - don't show error for preview images
-                    },
-                )
+                SharedElementTransitionScope {
+                    SubcomposeAsyncImage(
+                        model = previewImageUrl,
+                        contentDescription = "Device screen preview for ${device.name}",
+                        modifier =
+                            Modifier
+                                .sharedElement(
+                                    sharedContentState =
+                                        rememberSharedContentState(
+                                            key = DevicePreviewImageKey(deviceId = device.friendlyId),
+                                        ),
+                                    animatedVisibilityScope = requireAnimatedScope(Navigation),
+                                ).fillMaxWidth()
+                                .aspectRatio(800f / 480f) // TRMNL device aspect ratio
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .clickable(onClick = onPreviewClick),
+                        contentScale = ContentScale.Fit,
+                        loading = {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(32.dp),
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        },
+                        error = {
+                            // Silently fail - don't show error for preview images
+                        },
+                    )
+                }
             }
         }
     }
