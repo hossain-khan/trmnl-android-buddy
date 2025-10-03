@@ -140,7 +140,7 @@ fun WelcomeContent(
 
                 // Subtitle
                 Text(
-                    text = "Manage your devices on the go!",
+                    text = "Monitor your devices on the go!",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,

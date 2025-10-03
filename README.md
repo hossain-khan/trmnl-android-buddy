@@ -1,3 +1,5 @@
+[![Android CI](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml)
+
 # TrmnlBuddy
 
 An Android app built with:
