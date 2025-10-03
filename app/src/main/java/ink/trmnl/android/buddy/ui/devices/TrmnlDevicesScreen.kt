@@ -54,6 +54,7 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
+import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -67,6 +68,7 @@ import kotlinx.parcelize.Parcelize
 data object TrmnlDevicesScreen : Screen {
     data class State(
         val devices: List<Device> = emptyList(),
+        val deviceTokens: Map<Int, String?> = emptyMap(),
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
         val eventSink: (Event) -> Unit = {},
@@ -78,6 +80,10 @@ data object TrmnlDevicesScreen : Screen {
         data object AccountClicked : Event()
 
         data class DeviceClicked(
+            val device: Device,
+        ) : Event()
+
+        data class DeviceSettingsClicked(
             val device: Device,
         ) : Event()
     }
@@ -93,10 +99,12 @@ class TrmnlDevicesPresenter
         @Assisted private val navigator: Navigator,
         private val apiService: TrmnlApiService,
         private val userPreferencesRepository: UserPreferencesRepository,
+        private val deviceTokenRepository: DeviceTokenRepository,
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
             var devices by remember { mutableStateOf<List<Device>>(emptyList()) }
+            var deviceTokens by remember { mutableStateOf<Map<Int, String?>>(emptyMap()) }
             var isLoading by remember { mutableStateOf(true) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
@@ -106,6 +114,12 @@ class TrmnlDevicesPresenter
                 loadDevices(
                     onSuccess = { fetchedDevices ->
                         devices = fetchedDevices
+                        // Load tokens for all devices
+                        coroutineScope.launch {
+                            loadDeviceTokens(fetchedDevices) { tokens ->
+                                deviceTokens = tokens
+                            }
+                        }
                         isLoading = false
                     },
                     onError = { error ->
@@ -117,6 +131,7 @@ class TrmnlDevicesPresenter
 
             return TrmnlDevicesScreen.State(
                 devices = devices,
+                deviceTokens = deviceTokens,
                 isLoading = isLoading,
                 errorMessage = errorMessage,
             ) { event ->
@@ -128,6 +143,12 @@ class TrmnlDevicesPresenter
                             loadDevices(
                                 onSuccess = { fetchedDevices ->
                                     devices = fetchedDevices
+                                    // Reload tokens for all devices
+                                    launch {
+                                        loadDeviceTokens(fetchedDevices) { tokens ->
+                                            deviceTokens = tokens
+                                        }
+                                    }
                                     isLoading = false
                                 },
                                 onError = { error ->
@@ -146,8 +167,28 @@ class TrmnlDevicesPresenter
                         // TODO: Navigate to device detail screen
                         // navigator.goTo(DeviceDetailScreen(event.device.id))
                     }
+
+                    is TrmnlDevicesScreen.Event.DeviceSettingsClicked -> {
+                        navigator.goTo(
+                            ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen(
+                                deviceId = event.device.id,
+                                deviceName = event.device.name,
+                            ),
+                        )
+                    }
                 }
             }
+        }
+
+        private suspend fun loadDeviceTokens(
+            devices: List<Device>,
+            onLoaded: (Map<Int, String?>) -> Unit,
+        ) {
+            val tokens =
+                devices.associate { device ->
+                    device.id to deviceTokenRepository.getDeviceToken(device.id)
+                }
+            onLoaded(tokens)
         }
 
         private suspend fun loadDevices(
@@ -314,7 +355,9 @@ fun TrmnlDevicesContent(
                     items(state.devices) { device ->
                         DeviceCard(
                             device = device,
+                            hasToken = state.deviceTokens[device.id] != null,
                             onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
+                            onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                         )
                     }
                 }
@@ -326,7 +369,9 @@ fun TrmnlDevicesContent(
 @Composable
 private fun DeviceCard(
     device: Device,
+    hasToken: Boolean,
     onClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -463,6 +508,29 @@ private fun DeviceCard(
                     modifier = Modifier.size(48.dp),
                     tint = MaterialTheme.colorScheme.primary,
                 )
+            },
+            trailingContent = {
+                IconButton(
+                    onClick = onSettingsClick,
+                ) {
+                    Icon(
+                        painter =
+                            painterResource(
+                                if (hasToken) {
+                                    R.drawable.image_inset_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                } else {
+                                    R.drawable.settings_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                },
+                            ),
+                        contentDescription = if (hasToken) "Display configured" else "Configure device token",
+                        tint =
+                            if (hasToken) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                    )
+                }
             },
             colors =
                 ListItemDefaults.colors(
