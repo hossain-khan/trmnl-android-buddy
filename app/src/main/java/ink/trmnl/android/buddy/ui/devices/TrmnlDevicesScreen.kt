@@ -69,6 +69,7 @@ import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
+import ink.trmnl.android.buddy.ui.utils.rememberEInkColorFilter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -462,6 +463,9 @@ private fun DeviceCard(
     onPreviewClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Invert colors in dark mode for better visibility of e-ink display images
+    val colorFilter = rememberEInkColorFilter()
+
     Card(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
@@ -655,6 +659,7 @@ private fun DeviceCard(
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                                 .clickable(onClick = onPreviewClick),
                         contentScale = ContentScale.Fit,
+                        colorFilter = colorFilter,
                         loading = {
                             Box(
                                 modifier = Modifier.fillMaxSize(),

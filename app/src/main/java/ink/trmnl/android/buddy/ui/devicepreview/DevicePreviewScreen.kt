@@ -35,6 +35,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
+import ink.trmnl.android.buddy.ui.utils.rememberEInkColorFilter
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -92,6 +93,9 @@ fun DevicePreviewContent(
     state: DevicePreviewScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    // Invert colors in dark mode for better visibility of e-ink display images
+    val colorFilter = rememberEInkColorFilter()
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -137,6 +141,7 @@ fun DevicePreviewContent(
                                 animatedVisibilityScope = requireAnimatedScope(Navigation),
                             ).fillMaxSize(),
                     contentScale = ContentScale.Fit,
+                    colorFilter = colorFilter,
                     loading = {
                         Box(
                             modifier = Modifier.fillMaxSize(),
