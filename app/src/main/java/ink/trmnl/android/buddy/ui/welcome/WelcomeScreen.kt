@@ -83,8 +83,8 @@ class WelcomePresenter
                         if (userPreferences?.apiToken.isNullOrBlank()) {
                             navigator.goTo(AccessTokenScreen)
                         } else {
-                            // Navigate to devices list screen
-                            navigator.goTo(TrmnlDevicesScreen)
+                            // Navigate to devices list screen (resetRoot to prevent back navigation)
+                            navigator.resetRoot(TrmnlDevicesScreen)
                         }
                     }
                 }
