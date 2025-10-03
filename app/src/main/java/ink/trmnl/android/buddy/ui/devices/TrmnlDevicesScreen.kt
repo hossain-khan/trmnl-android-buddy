@@ -1,11 +1,15 @@
 package ink.trmnl.android.buddy.ui.devices
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,9 +41,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil3.compose.SubcomposeAsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -69,6 +75,7 @@ data object TrmnlDevicesScreen : Screen {
     data class State(
         val devices: List<Device> = emptyList(),
         val deviceTokens: Map<String, String?> = emptyMap(),
+        val devicePreviews: Map<String, String?> = emptyMap(),
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
         val eventSink: (Event) -> Unit = {},
@@ -105,6 +112,7 @@ class TrmnlDevicesPresenter
         override fun present(): TrmnlDevicesScreen.State {
             var devices by remember { mutableStateOf<List<Device>>(emptyList()) }
             var deviceTokens by remember { mutableStateOf<Map<String, String?>>(emptyMap()) }
+            var devicePreviews by remember { mutableStateOf<Map<String, String?>>(emptyMap()) }
             var isLoading by remember { mutableStateOf(true) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
@@ -118,6 +126,12 @@ class TrmnlDevicesPresenter
                         coroutineScope.launch {
                             loadDeviceTokens(fetchedDevices) { tokens ->
                                 deviceTokens = tokens
+                                // Load previews for devices that have tokens
+                                coroutineScope.launch {
+                                    loadDevicePreviews(fetchedDevices, tokens) { previews ->
+                                        devicePreviews = previews
+                                    }
+                                }
                             }
                         }
                         isLoading = false
@@ -132,6 +146,7 @@ class TrmnlDevicesPresenter
             return TrmnlDevicesScreen.State(
                 devices = devices,
                 deviceTokens = deviceTokens,
+                devicePreviews = devicePreviews,
                 isLoading = isLoading,
                 errorMessage = errorMessage,
             ) { event ->
@@ -147,6 +162,12 @@ class TrmnlDevicesPresenter
                                     launch {
                                         loadDeviceTokens(fetchedDevices) { tokens ->
                                             deviceTokens = tokens
+                                            // Reload previews for devices that have tokens
+                                            launch {
+                                                loadDevicePreviews(fetchedDevices, tokens) { previews ->
+                                                    devicePreviews = previews
+                                                }
+                                            }
                                         }
                                     }
                                     isLoading = false
@@ -189,6 +210,32 @@ class TrmnlDevicesPresenter
                     device.friendlyId to deviceTokenRepository.getDeviceToken(device.friendlyId)
                 }
             onLoaded(tokens)
+        }
+
+        private suspend fun loadDevicePreviews(
+            devices: List<Device>,
+            tokens: Map<String, String?>,
+            onLoaded: (Map<String, String?>) -> Unit,
+        ) {
+            val previews =
+                devices.associate { device ->
+                    val token = tokens[device.friendlyId]
+                    val imageUrl =
+                        if (token != null) {
+                            try {
+                                when (val result = apiService.getDisplayCurrent(token)) {
+                                    is ApiResult.Success -> result.value.imageUrl
+                                    else -> null // Silently fail for preview images
+                                }
+                            } catch (e: Exception) {
+                                null // Silently fail for preview images
+                            }
+                        } else {
+                            null
+                        }
+                    device.friendlyId to imageUrl
+                }
+            onLoaded(previews)
         }
 
         private suspend fun loadDevices(
@@ -356,6 +403,7 @@ fun TrmnlDevicesContent(
                         DeviceCard(
                             device = device,
                             hasToken = state.deviceTokens[device.friendlyId] != null,
+                            previewImageUrl = state.devicePreviews[device.friendlyId],
                             onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                             onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                         )
@@ -370,6 +418,7 @@ fun TrmnlDevicesContent(
 private fun DeviceCard(
     device: Device,
     hasToken: Boolean,
+    previewImageUrl: String?,
     onClick: () -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -543,6 +592,39 @@ private fun DeviceCard(
                     containerColor = MaterialTheme.colorScheme.surface,
                 ),
         )
+
+        // Display preview image if available
+        if (hasToken && previewImageUrl != null) {
+            AnimatedVisibility(
+                visible = true,
+                enter = fadeIn() + slideInVertically(),
+            ) {
+                SubcomposeAsyncImage(
+                    model = previewImageUrl,
+                    contentDescription = "Device screen preview for ${device.name}",
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(800f / 480f) // TRMNL device aspect ratio
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                    contentScale = ContentScale.Fit,
+                    loading = {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(32.dp),
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    },
+                    error = {
+                        // Silently fail - don't show error for preview images
+                    },
+                )
+            }
+        }
     }
 }
 
