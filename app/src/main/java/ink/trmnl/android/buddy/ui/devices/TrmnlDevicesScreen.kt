@@ -68,7 +68,7 @@ import kotlinx.parcelize.Parcelize
 data object TrmnlDevicesScreen : Screen {
     data class State(
         val devices: List<Device> = emptyList(),
-        val deviceTokens: Map<Int, String?> = emptyMap(),
+        val deviceTokens: Map<String, String?> = emptyMap(),
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
         val eventSink: (Event) -> Unit = {},
@@ -104,7 +104,7 @@ class TrmnlDevicesPresenter
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
             var devices by remember { mutableStateOf<List<Device>>(emptyList()) }
-            var deviceTokens by remember { mutableStateOf<Map<Int, String?>>(emptyMap()) }
+            var deviceTokens by remember { mutableStateOf<Map<String, String?>>(emptyMap()) }
             var isLoading by remember { mutableStateOf(true) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
@@ -171,7 +171,7 @@ class TrmnlDevicesPresenter
                     is TrmnlDevicesScreen.Event.DeviceSettingsClicked -> {
                         navigator.goTo(
                             ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen(
-                                deviceId = event.device.id,
+                                deviceFriendlyId = event.device.friendlyId,
                                 deviceName = event.device.name,
                             ),
                         )
@@ -182,11 +182,11 @@ class TrmnlDevicesPresenter
 
         private suspend fun loadDeviceTokens(
             devices: List<Device>,
-            onLoaded: (Map<Int, String?>) -> Unit,
+            onLoaded: (Map<String, String?>) -> Unit,
         ) {
             val tokens =
                 devices.associate { device ->
-                    device.id to deviceTokenRepository.getDeviceToken(device.id)
+                    device.friendlyId to deviceTokenRepository.getDeviceToken(device.friendlyId)
                 }
             onLoaded(tokens)
         }
@@ -355,7 +355,7 @@ fun TrmnlDevicesContent(
                     items(state.devices) { device ->
                         DeviceCard(
                             device = device,
-                            hasToken = state.deviceTokens[device.id] != null,
+                            hasToken = state.deviceTokens[device.friendlyId] != null,
                             onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                             onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                         )

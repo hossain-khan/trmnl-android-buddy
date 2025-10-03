@@ -59,11 +59,11 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class DeviceTokenScreen(
-    val deviceId: Int,
+    val deviceFriendlyId: String,
     val deviceName: String,
 ) : Screen {
     data class State(
-        val deviceId: Int = 0,
+        val deviceFriendlyId: String = "",
         val deviceName: String = "",
         val currentToken: String = "",
         val tokenInput: String = "",
@@ -104,8 +104,8 @@ class DeviceTokenPresenter
             val coroutineScope = rememberCoroutineScope()
 
             // Load existing token on initial load
-            LaunchedEffect(screen.deviceId) {
-                val token = deviceTokenRepository.getDeviceToken(screen.deviceId)
+            LaunchedEffect(screen.deviceFriendlyId) {
+                val token = deviceTokenRepository.getDeviceToken(screen.deviceFriendlyId)
                 if (token != null) {
                     currentToken = token
                     tokenInput = token
@@ -113,7 +113,7 @@ class DeviceTokenPresenter
             }
 
             return DeviceTokenScreen.State(
-                deviceId = screen.deviceId,
+                deviceFriendlyId = screen.deviceFriendlyId,
                 deviceName = screen.deviceName,
                 currentToken = currentToken,
                 tokenInput = tokenInput,
@@ -136,7 +136,7 @@ class DeviceTokenPresenter
                         errorMessage = null
                         coroutineScope.launch {
                             try {
-                                deviceTokenRepository.saveDeviceToken(screen.deviceId, tokenInput.trim())
+                                deviceTokenRepository.saveDeviceToken(screen.deviceFriendlyId, tokenInput.trim())
                                 // Navigate back to devices list
                                 navigator.pop()
                             } catch (e: Exception) {
@@ -151,7 +151,7 @@ class DeviceTokenPresenter
                         errorMessage = null
                         coroutineScope.launch {
                             try {
-                                deviceTokenRepository.clearDeviceToken(screen.deviceId)
+                                deviceTokenRepository.clearDeviceToken(screen.deviceFriendlyId)
                                 currentToken = ""
                                 tokenInput = ""
                                 isSaving = false
@@ -245,7 +245,7 @@ fun DeviceTokenContent(
                         },
                         supportingContent = {
                             Text(
-                                state.deviceId.toString(),
+                                state.deviceFriendlyId,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                             )
