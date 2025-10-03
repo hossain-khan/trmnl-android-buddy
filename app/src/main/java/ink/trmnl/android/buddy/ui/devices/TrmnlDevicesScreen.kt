@@ -135,18 +135,6 @@ class TrmnlDevicesPresenter
                     loadDevices(
                         onSuccess = { fetchedDevices ->
                             devices = fetchedDevices
-                            // Load tokens for all devices
-                            coroutineScope.launch {
-                                loadDeviceTokens(fetchedDevices) { tokens ->
-                                    deviceTokens = tokens
-                                    // Load previews for devices that have tokens
-                                    coroutineScope.launch {
-                                        loadDevicePreviews(fetchedDevices, tokens) { previews ->
-                                            devicePreviews = previews
-                                        }
-                                    }
-                                }
-                            }
                             isLoading = false
                         },
                         onError = { error ->
@@ -154,6 +142,24 @@ class TrmnlDevicesPresenter
                             isLoading = false
                         },
                     )
+                }
+            }
+
+            // Always reload device tokens on every visit
+            LaunchedEffect(devices) {
+                if (devices.isNotEmpty()) {
+                    loadDeviceTokens(devices) { tokens ->
+                        deviceTokens = tokens
+                    }
+                }
+            }
+
+            // Reload preview images whenever device tokens change
+            LaunchedEffect(deviceTokens) {
+                if (devices.isNotEmpty() && deviceTokens.isNotEmpty()) {
+                    loadDevicePreviews(devices, deviceTokens) { previews ->
+                        devicePreviews = previews
+                    }
                 }
             }
 
@@ -172,18 +178,7 @@ class TrmnlDevicesPresenter
                             loadDevices(
                                 onSuccess = { fetchedDevices ->
                                     devices = fetchedDevices
-                                    // Reload tokens for all devices
-                                    launch {
-                                        loadDeviceTokens(fetchedDevices) { tokens ->
-                                            deviceTokens = tokens
-                                            // Reload previews for devices that have tokens
-                                            launch {
-                                                loadDevicePreviews(fetchedDevices, tokens) { previews ->
-                                                    devicePreviews = previews
-                                                }
-                                            }
-                                        }
-                                    }
+                                    // LaunchedEffects will handle loading tokens and previews
                                     isLoading = false
                                 },
                                 onError = { error ->
