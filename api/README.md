@@ -184,12 +184,16 @@ EitherNet provides these sealed result types for comprehensive error handling:
 - ✅ `GET /devices` - List all user devices
 - ✅ `GET /devices/{id}` - Get specific device details
 
+### Display API (Device API)
+- ✅ `GET /display/current` - Get current display content for a device
+
+### Users API
+- ✅ `GET /me` - Get authenticated user information
+
 ### Coming Soon
-- 🔜 User API (`/me`)
 - 🔜 Playlists API (`/playlists/items`)
 - 🔜 Plugin Settings API (`/plugin_settings`)
 - 🔜 Models & Palettes API (`/models`, `/palettes`)
-- 🔜 Device API (device-specific endpoints)
 
 ## Module Structure
 
@@ -198,24 +202,45 @@ api/
 ├── src/
 │   ├── main/
 │   │   ├── java/ink/trmnl/android/buddy/api/
-│   │   │   ├── models/      # API request/response models
-│   │   │   ├── services/    # Retrofit API interfaces
-│   │   │   └── client/      # HTTP client configuration
+│   │   │   ├── TrmnlApiClient.kt      # HTTP client factory
+│   │   │   ├── TrmnlApiService.kt     # Retrofit API interface
+│   │   │   ├── TrmnlDeviceRepository.kt # Repository layer
+│   │   │   └── models/                # API request/response models
+│   │   │       ├── ApiError.kt
+│   │   │       ├── Device.kt
+│   │   │       ├── DeviceResponse.kt
+│   │   │       ├── DevicesResponse.kt
+│   │   │       ├── Display.kt
+│   │   │       ├── User.kt
+│   │   │       └── UserResponse.kt
 │   │   └── AndroidManifest.xml
 │   └── test/
-│       └── java/            # Unit tests
+│       └── java/ink/trmnl/android/buddy/api/
+│           ├── TrmnlDeviceApiTest.kt  # Device API tests
+│           ├── TrmnlDisplayApiTest.kt # Display API tests
+│           └── TrmnlUserApiTest.kt    # User API tests
+├── resources/
+│   ├── README.md                      # API resources documentation
+│   └── trmnl-open-api.yaml           # OpenAPI specification
 ├── build.gradle.kts
 ├── proguard-rules.pro
+├── consumer-rules.pro
 └── README.md
 ```
 
 ## Testing
 
-The module includes unit tests for API models and integration tests with MockWebServer.
+The module includes comprehensive unit tests using MockWebServer for API integration testing.
 
+Run tests with:
 ```bash
 ./gradlew :api:test
 ```
+
+Test files:
+- `TrmnlDeviceApiTest.kt` - Tests for Devices API endpoints
+- `TrmnlDisplayApiTest.kt` - Tests for Display API endpoints  
+- `TrmnlUserApiTest.kt` - Tests for User API endpoints
 
 ## ProGuard
 
