@@ -201,7 +201,9 @@ fun AccessTokenContent(
             )
 
             Text(
-                text = "A User-level API Key is required to access account-level information like account-info, devices, playlists, and more.",
+                text =
+                    "A User-level API Key is required to access account-level " +
+                        "information like account-info, devices, playlists, and more.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
