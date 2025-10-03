@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,6 +25,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -73,6 +75,7 @@ data object UserAccountScreen : Screen {
         val user: User? = null,
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
+        val showLogoutDialog: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -80,6 +83,12 @@ data object UserAccountScreen : Screen {
         data object BackClicked : Event()
 
         data object Refresh : Event()
+
+        data object LogoutClicked : Event()
+
+        data object ConfirmLogout : Event()
+
+        data object DismissLogoutDialog : Event()
     }
 }
 
@@ -97,6 +106,7 @@ class UserAccountPresenter(
         var user by remember { mutableStateOf<User?>(null) }
         var isLoading by remember { mutableStateOf(true) }
         var errorMessage by remember { mutableStateOf<String?>(null) }
+        var showLogoutDialog by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
 
         // Fetch user info on screen load
@@ -117,6 +127,7 @@ class UserAccountPresenter(
             user = user,
             isLoading = isLoading,
             errorMessage = errorMessage,
+            showLogoutDialog = showLogoutDialog,
         ) { event ->
             when (event) {
                 UserAccountScreen.Event.BackClicked -> {
@@ -134,6 +145,21 @@ class UserAccountPresenter(
                                 errorMessage = error
                             },
                         )
+                    }
+                }
+                UserAccountScreen.Event.LogoutClicked -> {
+                    showLogoutDialog = true
+                }
+                UserAccountScreen.Event.DismissLogoutDialog -> {
+                    showLogoutDialog = false
+                }
+                UserAccountScreen.Event.ConfirmLogout -> {
+                    showLogoutDialog = false
+                    coroutineScope.launch {
+                        // Clear all preferences (API token and device tokens)
+                        userPreferencesRepository.clearAll()
+                        // Navigate to welcome screen and clear back stack
+                        navigator.resetRoot(ink.trmnl.android.buddy.ui.welcome.WelcomeScreen)
                     }
                 }
             }
@@ -233,6 +259,15 @@ fun UserAccountContent(
                         Icon(
                             painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                             contentDescription = "Back",
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { state.eventSink(UserAccountScreen.Event.LogoutClicked) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.account_circle_off_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Logout",
+                            tint = MaterialTheme.colorScheme.error,
                         )
                     }
                 },
@@ -474,6 +509,44 @@ fun UserAccountContent(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
+        }
+
+        // Logout Confirmation Dialog
+        if (state.showLogoutDialog) {
+            AlertDialog(
+                onDismissRequest = { state.eventSink(UserAccountScreen.Event.DismissLogoutDialog) },
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.account_circle_off_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                },
+                title = {
+                    Text("Logout")
+                },
+                text = {
+                    Text(
+                        "Are you sure you want to logout?\n\n" +
+                            "This will remove your account access token and all device tokens from this app.",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { state.eventSink(UserAccountScreen.Event.ConfirmLogout) },
+                    ) {
+                        Text("Logout", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { state.eventSink(UserAccountScreen.Event.DismissLogoutDialog) },
+                    ) {
+                        Text("Cancel")
+                    }
+                },
+            )
         }
     }
 }
