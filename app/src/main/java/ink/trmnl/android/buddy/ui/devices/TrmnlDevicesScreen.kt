@@ -400,7 +400,7 @@ private fun DeviceCard(
                             painter =
                                 painterResource(
                                     if (hasToken) {
-                                        R.drawable.image_inset_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                        R.drawable.settings_check_24dp_e8eaed_fill1_wght400_grad0_opsz24
                                     } else {
                                         R.drawable.settings_24dp_e8eaed_fill0_wght400_grad0_opsz24
                                     },
