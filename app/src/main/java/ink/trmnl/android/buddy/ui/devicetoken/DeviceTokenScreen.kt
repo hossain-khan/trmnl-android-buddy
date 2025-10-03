@@ -33,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -189,6 +191,8 @@ fun DeviceTokenContent(
     state: DeviceTokenScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    var passwordVisible by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -291,6 +295,23 @@ fun DeviceTokenContent(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !state.isSaving,
                 isError = state.errorMessage != null,
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            painter =
+                                painterResource(
+                                    if (passwordVisible) {
+                                        R.drawable.visibility_off_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                                    } else {
+                                        R.drawable.visibility_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                                    },
+                                ),
+                            contentDescription = if (passwordVisible) "Hide token" else "Show token",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                },
                 supportingText = {
                     if (state.errorMessage != null) {
                         Text(
