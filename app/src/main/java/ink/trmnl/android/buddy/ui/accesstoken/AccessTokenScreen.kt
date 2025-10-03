@@ -122,8 +122,8 @@ class AccessTokenPresenter
                                         // Mark onboarding as completed
                                         userPreferencesRepository.setOnboardingCompleted()
 
-                                        // Navigate to devices list screen
-                                        navigator.goTo(TrmnlDevicesScreen)
+                                        // Navigate to devices list screen (resetRoot to prevent back navigation)
+                                        navigator.resetRoot(TrmnlDevicesScreen)
                                     } catch (e: Exception) {
                                         errorMessage = "Failed to save token: ${e.message}"
                                     } finally {
