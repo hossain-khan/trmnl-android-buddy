@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -348,7 +349,12 @@ fun UserAccountContent(
                         modifier = Modifier.fillMaxWidth(),
                         colors =
                             CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                containerColor =
+                                    androidx.compose.ui.graphics
+                                        .Color(colorResource(R.color.trmnl_orange_container).value),
+                                contentColor =
+                                    androidx.compose.ui.graphics
+                                        .Color(colorResource(R.color.trmnl_orange_on_container).value),
                             ),
                     ) {
                         Row(
@@ -382,12 +388,15 @@ fun UserAccountContent(
                                     text = state.user.name,
                                     style = MaterialTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
                                 Text(
                                     text = state.user.email,
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                                    color =
+                                        androidx.compose.ui.graphics
+                                            .Color(
+                                                colorResource(R.color.trmnl_orange_on_container).value,
+                                            ).copy(alpha = 0.8f),
                                 )
                             }
                         }
