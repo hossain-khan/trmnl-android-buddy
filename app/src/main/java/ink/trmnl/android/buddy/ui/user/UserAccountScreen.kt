@@ -234,7 +234,7 @@ class UserAccountPresenter(
 /**
  * Alpha transparency value for cards to allow background logo watermark to show through.
  */
-private const val CARD_BACKGROUND_ALPHA = 0.8f
+private const val CARD_BACKGROUND_ALPHA = 0.7f
 
 /**
  * Redacts an API key to show only first 4 and last 4 characters.
