@@ -18,8 +18,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Extracted modular composable components: `DeviceInfoCard`, `InstructionsCard`, `TokenInputSection`, `ActionButtons`
   - Applied Jetpack Compose best practices for performance and stability
   - Improved code organization with smaller, focused composable functions
+- Refactored AccessTokenScreen to follow Jetpack Compose best practices
+  - Extracted modular composable components: InstructionsSection, HelpLinksSection, TokenInputField, SaveTokenButton, SecurityHelpText
+  - Improved code organization and reusability
+  - Better state hoisting and separation of concerns
 
 ### Added
+- Composable previews for AccessTokenScreen
+  - Light and dark mode previews for default, loading, error, and token-entered states
+  - Helps visualize UI in different states during development
 - Comprehensive Compose preview support for DeviceTokenScreen
   - Added `@PreviewLightDark` annotations for light and dark theme previews
   - Added previews for different states: empty, with token, saved token, error, and saving states
