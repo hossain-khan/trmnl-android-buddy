@@ -41,6 +41,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
@@ -56,6 +58,7 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
+import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -168,8 +171,6 @@ fun AccessTokenContent(
     state: AccessTokenScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -198,139 +199,301 @@ fun AccessTokenContent(
                     .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Instructions
-            Text(
-                text = "Enter your TRMNL User API Key",
-                style = MaterialTheme.typography.headlineSmall,
-            )
+            InstructionsSection()
 
-            Text(
-                text =
-                    "A User-level API Key is required to access account-level " +
-                        "information like account-info, devices, playlists, and more.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            // Hyperlink to help article
-            val linkColor = MaterialTheme.colorScheme.primary
-            val linkStyle =
-                TextLinkStyles(
-                    style =
-                        SpanStyle(
-                            color = linkColor,
-                            textDecoration = TextDecoration.Underline,
-                        ),
-                )
-            val annotatedString =
-                buildAnnotatedString {
-                    append("Generate your User API Key from your ")
-                    withLink(
-                        LinkAnnotation.Url(
-                            url = "https://usetrmnl.com/account",
-                            styles = linkStyle,
-                        ),
-                    ) {
-                        append("account settings")
-                    }
-                    append(". ")
-
-                    withLink(
-                        LinkAnnotation.Url(
-                            url = "https://help.usetrmnl.com/en/articles/11195228-user-level-api-keys",
-                            styles = linkStyle,
-                        ),
-                    ) {
-                        append("Learn more")
-                    }
-                }
-
-            Text(
-                text = annotatedString,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            HelpLinksSection()
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Token input field
-            OutlinedTextField(
-                value = state.token,
-                onValueChange = { state.eventSink(AccessTokenScreen.Event.TokenChanged(it)) },
-                label = { Text("User API Key") },
-                placeholder = { Text("user_abcxyz...") },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !state.isLoading,
-                isError = state.errorMessage != null,
-                supportingText =
-                    if (state.errorMessage != null) {
-                        { Text(state.errorMessage, color = MaterialTheme.colorScheme.error) }
-                    } else {
-                        null
-                    },
-                visualTransformation =
-                    if (passwordVisible) {
-                        VisualTransformation.None
-                    } else {
-                        PasswordVisualTransformation()
-                    },
-                keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done,
-                    ),
-                keyboardActions =
-                    KeyboardActions(
-                        onDone = {
-                            if (state.token.isNotBlank() && !state.isLoading) {
-                                state.eventSink(AccessTokenScreen.Event.SaveClicked)
-                            }
-                        },
-                    ),
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            painter =
-                                painterResource(
-                                    if (passwordVisible) {
-                                        R.drawable.visibility_24dp_e3e3e3_fill0_wght400_grad0_opsz24
-                                    } else {
-                                        R.drawable.visibility_off_24dp_e3e3e3_fill0_wght400_grad0_opsz24
-                                    },
-                                ),
-                            contentDescription = if (passwordVisible) "Hide token" else "Show token",
-                        )
-                    }
-                },
-                singleLine = true,
+            TokenInputField(
+                token = state.token,
+                isLoading = state.isLoading,
+                errorMessage = state.errorMessage,
+                onTokenChange = { state.eventSink(AccessTokenScreen.Event.TokenChanged(it)) },
+                onSaveClick = { state.eventSink(AccessTokenScreen.Event.SaveClicked) },
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Save button
-            Button(
+            SaveTokenButton(
+                isLoading = state.isLoading,
+                isEnabled = state.token.isNotBlank(),
                 onClick = { state.eventSink(AccessTokenScreen.Event.SaveClicked) },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = state.token.isNotBlank() && !state.isLoading,
-            ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.padding(end = 8.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                }
-                Text(if (state.isLoading) "Saving..." else "Save Token")
-            }
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Help text
-            Text(
-                text = "Your token is stored securely on this device and is used to authenticate API requests to TRMNL.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+            SecurityHelpText(modifier = Modifier.align(Alignment.CenterHorizontally))
+        }
+    }
+}
+
+/**
+ * Instructions header section.
+ */
+@Composable
+private fun InstructionsSection(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Text(
+            text = "Enter your TRMNL User API Key",
+            style = MaterialTheme.typography.headlineSmall,
+        )
+
+        Text(
+            text =
+                "A User-level API Key is required to access account-level " +
+                    "information like account-info, devices, playlists, and more.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/**
+ * Help links section with clickable hyperlinks.
+ */
+@Composable
+private fun HelpLinksSection(modifier: Modifier = Modifier) {
+    val linkColor = MaterialTheme.colorScheme.primary
+    val linkStyle =
+        TextLinkStyles(
+            style =
+                SpanStyle(
+                    color = linkColor,
+                    textDecoration = TextDecoration.Underline,
+                ),
+        )
+    val annotatedString =
+        buildAnnotatedString {
+            append("Generate your User API Key from your ")
+            withLink(
+                LinkAnnotation.Url(
+                    url = "https://usetrmnl.com/account",
+                    styles = linkStyle,
+                ),
+            ) {
+                append("account settings")
+            }
+            append(". ")
+
+            withLink(
+                LinkAnnotation.Url(
+                    url = "https://help.usetrmnl.com/en/articles/11195228-user-level-api-keys",
+                    styles = linkStyle,
+                ),
+            ) {
+                append("Learn more")
+            }
+        }
+
+    Text(
+        text = annotatedString,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier,
+    )
+}
+
+/**
+ * Token input field with visibility toggle.
+ */
+@Composable
+private fun TokenInputField(
+    token: String,
+    isLoading: Boolean,
+    errorMessage: String?,
+    onTokenChange: (String) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    OutlinedTextField(
+        value = token,
+        onValueChange = onTokenChange,
+        label = { Text("User API Key") },
+        placeholder = { Text("user_abcxyz...") },
+        modifier = modifier.fillMaxWidth(),
+        enabled = !isLoading,
+        isError = errorMessage != null,
+        supportingText =
+            if (errorMessage != null) {
+                { Text(errorMessage, color = MaterialTheme.colorScheme.error) }
+            } else {
+                null
+            },
+        visualTransformation =
+            if (passwordVisible) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    if (token.isNotBlank() && !isLoading) {
+                        onSaveClick()
+                    }
+                },
+            ),
+        trailingIcon = {
+            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                Icon(
+                    painter =
+                        painterResource(
+                            if (passwordVisible) {
+                                R.drawable.visibility_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                            } else {
+                                R.drawable.visibility_off_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                            },
+                        ),
+                    contentDescription = if (passwordVisible) "Hide token" else "Show token",
+                )
+            }
+        },
+        singleLine = true,
+    )
+}
+
+/**
+ * Save token button with loading state.
+ */
+@Composable
+private fun SaveTokenButton(
+    isLoading: Boolean,
+    isEnabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        enabled = isEnabled && !isLoading,
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.padding(end = 8.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
             )
         }
+        Text(if (isLoading) "Saving..." else "Save Token")
+    }
+}
+
+/**
+ * Security help text shown at the bottom.
+ */
+@Composable
+private fun SecurityHelpText(modifier: Modifier = Modifier) {
+    Text(
+        text = "Your token is stored securely on this device and is used to authenticate API requests to TRMNL.",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier,
+    )
+}
+
+// ==================== Previews ====================
+
+/**
+ * Preview of AccessTokenScreen in default state (light and dark).
+ */
+@PreviewLightDark
+@Composable
+private fun AccessTokenContentPreview() {
+    TrmnlBuddyAppTheme {
+        AccessTokenContent(
+            state =
+                AccessTokenScreen.State(
+                    token = "",
+                    isLoading = false,
+                    errorMessage = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of AccessTokenScreen with token entered.
+ */
+@PreviewLightDark
+@Composable
+private fun AccessTokenContentWithTokenPreview() {
+    TrmnlBuddyAppTheme {
+        AccessTokenContent(
+            state =
+                AccessTokenScreen.State(
+                    token = "user_abc123xyz456",
+                    isLoading = false,
+                    errorMessage = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of AccessTokenScreen in loading state.
+ */
+@PreviewLightDark
+@Composable
+private fun AccessTokenContentLoadingPreview() {
+    TrmnlBuddyAppTheme {
+        AccessTokenContent(
+            state =
+                AccessTokenScreen.State(
+                    token = "user_abc123xyz456",
+                    isLoading = true,
+                    errorMessage = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of AccessTokenScreen with error state.
+ */
+@PreviewLightDark
+@Composable
+private fun AccessTokenContentErrorPreview() {
+    TrmnlBuddyAppTheme {
+        AccessTokenContent(
+            state =
+                AccessTokenScreen.State(
+                    token = "abc",
+                    isLoading = false,
+                    errorMessage = "Token appears to be too short",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of AccessTokenScreen with empty token error.
+ */
+@Preview
+@Composable
+private fun AccessTokenContentEmptyErrorPreview() {
+    TrmnlBuddyAppTheme {
+        AccessTokenContent(
+            state =
+                AccessTokenScreen.State(
+                    token = "",
+                    isLoading = false,
+                    errorMessage = "Token cannot be empty",
+                    eventSink = {},
+                ),
+        )
     }
 }
