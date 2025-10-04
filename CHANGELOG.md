@@ -14,6 +14,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Replaced `remember` with `rememberRetained` in UserAccountScreen for user data persistence
   - Replaced `produceState` with `produceRetainedState` in WelcomeScreen for better flow collection
   - State now survives screen rotations and other configuration changes according to Circuit best practices
+- Refactored DeviceTokenScreen.kt for improved maintainability and modularity
+  - Extracted modular composable components: `DeviceInfoCard`, `InstructionsCard`, `TokenInputSection`, `ActionButtons`
+  - Applied Jetpack Compose best practices for performance and stability
+  - Improved code organization with smaller, focused composable functions
+
+### Added
+- Comprehensive Compose preview support for DeviceTokenScreen
+  - Added `@PreviewLightDark` annotations for light and dark theme previews
+  - Added previews for different states: empty, with token, saved token, error, and saving states
+  - Added component-level previews for individual UI sections
+  - Total of 10 preview variations for better design iteration
 
 ## [1.0.3] - 2025-10-03
 
