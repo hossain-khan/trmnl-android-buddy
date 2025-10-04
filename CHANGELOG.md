@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Clears stored API token from preferences
   - Navigates user back to Access Token screen to re-enter credentials
 
+### Changed
+- Updated Device API Key format guide to reflect actual token format
+  - Updated format description: "20+ character hexadecimal string (e.g., 1a2b3c4d5e6f7g8h9i0j...)"
+  - Updated placeholder text to show generic hexadecimal pattern
+  - Added validation for minimum token length of 20 characters
+
 ## [1.0.2] - 2025-10-03
 
 ### Added

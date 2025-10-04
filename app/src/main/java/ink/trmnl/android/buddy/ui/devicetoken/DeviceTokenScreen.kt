@@ -130,8 +130,13 @@ class DeviceTokenPresenter
                     }
 
                     DeviceTokenScreen.Event.SaveToken -> {
-                        if (tokenInput.isBlank()) {
+                        val trimmedToken = tokenInput.trim()
+                        if (trimmedToken.isBlank()) {
                             errorMessage = "Token cannot be empty"
+                            return@State
+                        }
+                        if (trimmedToken.length < 20) {
+                            errorMessage = "Token must be at least 20 characters long"
                             return@State
                         }
 
@@ -139,7 +144,7 @@ class DeviceTokenPresenter
                         errorMessage = null
                         coroutineScope.launch {
                             try {
-                                deviceTokenRepository.saveDeviceToken(screen.deviceFriendlyId, tokenInput.trim())
+                                deviceTokenRepository.saveDeviceToken(screen.deviceFriendlyId, trimmedToken)
                                 // Navigate back to devices list
                                 navigator.pop()
                             } catch (e: Exception) {
@@ -279,7 +284,7 @@ fun DeviceTokenContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        "Format: abc-123",
+                        "Format: 20+ character hexadecimal string (e.g., 1a2b3c4d5e6f7g8h9i0j...)",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Medium,
@@ -292,7 +297,7 @@ fun DeviceTokenContent(
                 value = state.tokenInput,
                 onValueChange = { state.eventSink(DeviceTokenScreen.Event.TokenChanged(it)) },
                 label = { Text("Device API Key") },
-                placeholder = { Text("abc-123") },
+                placeholder = { Text("1a2b3c4d5e6f7g8h9i0j...") },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !state.isSaving,
                 isError = state.errorMessage != null,
