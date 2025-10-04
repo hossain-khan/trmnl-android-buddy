@@ -35,6 +35,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
@@ -49,6 +51,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
+import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -225,147 +228,430 @@ fun DeviceTokenContent(
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Device Information Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                "Device Name",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                state.deviceName,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        },
-                    )
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                "Device ID",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                PrivacyUtils.obfuscateDeviceId(state.deviceFriendlyId),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        },
-                    )
-                }
-            }
+            DeviceInfoCard(
+                deviceName = state.deviceName,
+                deviceFriendlyId = state.deviceFriendlyId,
+            )
 
-            // Instructions
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
+            InstructionsCard()
+
+            TokenInputSection(
+                tokenInput = state.tokenInput,
+                currentToken = state.currentToken,
+                errorMessage = state.errorMessage,
+                isSaving = state.isSaving,
+                passwordVisible = passwordVisible,
+                onTokenChanged = { state.eventSink(DeviceTokenScreen.Event.TokenChanged(it)) },
+                onPasswordVisibilityToggled = { passwordVisible = !passwordVisible },
+            )
+
+            ActionButtons(
+                currentToken = state.currentToken,
+                tokenInput = state.tokenInput,
+                isSaving = state.isSaving,
+                onSaveClicked = { state.eventSink(DeviceTokenScreen.Event.SaveToken) },
+                onClearClicked = { state.eventSink(DeviceTokenScreen.Event.ClearToken) },
+                onCancelClicked = { state.eventSink(DeviceTokenScreen.Event.BackClicked) },
+            )
+        }
+    }
+}
+
+/**
+ * Device information card showing device name and ID.
+ */
+@Composable
+private fun DeviceInfoCard(
+    deviceName: String,
+    deviceFriendlyId: String,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column {
+            ListItem(
+                headlineContent = {
                     Text(
-                        "About Device API Key",
+                        "Device Name",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        deviceName,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
+                },
+            )
+            ListItem(
+                headlineContent = {
                     Text(
-                        "The Device API Key (Access Token) is required to fetch the current display content for this device. " +
-                            "You can find this key in your device settings on the TRMNL website.",
-                        style = MaterialTheme.typography.bodyMedium,
+                        "Device ID",
+                        style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                },
+                supportingContent = {
                     Text(
-                        "Format: 20+ character hexadecimal string (e.g., 1a2b3c4d5e6f7g8h9i0j...)",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Medium,
+                        PrivacyUtils.obfuscateDeviceId(deviceFriendlyId),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
                     )
-                }
+                },
+            )
+        }
+    }
+}
+
+/**
+ * Instructions card explaining the Device API Key requirements.
+ */
+@Composable
+private fun InstructionsCard(modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                "About Device API Key",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                "The Device API Key (Access Token) is required to fetch the current display content for this device. " +
+                    "You can find this key in your device settings on the TRMNL website.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                "Format: 20+ character hexadecimal string (e.g., 1a2b3c4d5e6f7g8h9i0j...)",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Medium,
+            )
+        }
+    }
+}
+
+/**
+ * Token input section with password visibility toggle.
+ */
+@Composable
+private fun TokenInputSection(
+    tokenInput: String,
+    currentToken: String,
+    errorMessage: String?,
+    isSaving: Boolean,
+    passwordVisible: Boolean,
+    onTokenChanged: (String) -> Unit,
+    onPasswordVisibilityToggled: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = tokenInput,
+        onValueChange = onTokenChanged,
+        label = { Text("Device API Key") },
+        placeholder = { Text("1a2b3c4d5e6f7g8h9i0j...") },
+        modifier = modifier.fillMaxWidth(),
+        enabled = !isSaving,
+        isError = errorMessage != null,
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            IconButton(onClick = onPasswordVisibilityToggled) {
+                Icon(
+                    painter =
+                        painterResource(
+                            if (passwordVisible) {
+                                R.drawable.visibility_off_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                            } else {
+                                R.drawable.visibility_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                            },
+                        ),
+                    contentDescription = if (passwordVisible) "Hide token" else "Show token",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        },
+        supportingText = {
+            if (errorMessage != null) {
+                Text(
+                    errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            } else if (currentToken.isNotEmpty()) {
+                Text("Current token is set. You can update or clear it.")
+            }
+        },
+        singleLine = true,
+    )
+}
+
+/**
+ * Action buttons section including Save, Clear, and Cancel buttons.
+ */
+@Composable
+private fun ActionButtons(
+    currentToken: String,
+    tokenInput: String,
+    isSaving: Boolean,
+    onSaveClicked: () -> Unit,
+    onClearClicked: () -> Unit,
+    onCancelClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            // Save Button
+            Button(
+                onClick = onSaveClicked,
+                enabled = !isSaving && tokenInput.isNotBlank(),
+                modifier = Modifier.weight(1f),
+            ) {
+                Text(if (currentToken.isEmpty()) "Save" else "Update")
             }
 
-            // Token Input
-            OutlinedTextField(
-                value = state.tokenInput,
-                onValueChange = { state.eventSink(DeviceTokenScreen.Event.TokenChanged(it)) },
-                label = { Text("Device API Key") },
-                placeholder = { Text("1a2b3c4d5e6f7g8h9i0j...") },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !state.isSaving,
-                isError = state.errorMessage != null,
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            painter =
-                                painterResource(
-                                    if (passwordVisible) {
-                                        R.drawable.visibility_off_24dp_e3e3e3_fill0_wght400_grad0_opsz24
-                                    } else {
-                                        R.drawable.visibility_24dp_e3e3e3_fill0_wght400_grad0_opsz24
-                                    },
-                                ),
-                            contentDescription = if (passwordVisible) "Hide token" else "Show token",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                },
-                supportingText = {
-                    if (state.errorMessage != null) {
-                        Text(
-                            state.errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    } else if (state.currentToken.isNotEmpty()) {
-                        Text("Current token is set. You can update or clear it.")
-                    }
-                },
-                singleLine = true,
-            )
-
-            // Action Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                // Save Button
-                Button(
-                    onClick = { state.eventSink(DeviceTokenScreen.Event.SaveToken) },
-                    enabled = !state.isSaving && state.tokenInput.isNotBlank(),
+            // Clear Button (only show if token exists)
+            if (currentToken.isNotEmpty()) {
+                OutlinedButton(
+                    onClick = onClearClicked,
+                    enabled = !isSaving,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(if (state.currentToken.isEmpty()) "Save" else "Update")
+                    Text("Clear")
                 }
-
-                // Clear Button (only show if token exists)
-                if (state.currentToken.isNotEmpty()) {
-                    OutlinedButton(
-                        onClick = { state.eventSink(DeviceTokenScreen.Event.ClearToken) },
-                        enabled = !state.isSaving,
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        Text("Clear")
-                    }
-                }
-            }
-
-            // Cancel Button
-            TextButton(
-                onClick = { state.eventSink(DeviceTokenScreen.Event.BackClicked) },
-                enabled = !state.isSaving,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text("Cancel")
             }
         }
+
+        // Cancel Button
+        TextButton(
+            onClick = onCancelClicked,
+            enabled = !isSaving,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Cancel")
+        }
+    }
+}
+
+// ========== Previews ==========
+
+/**
+ * Preview of DeviceTokenContent in light and dark mode with empty state.
+ */
+@PreviewLightDark
+@Composable
+private fun DeviceTokenContentEmptyPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceTokenContent(
+            state =
+                DeviceTokenScreen.State(
+                    deviceFriendlyId = "TRMNL-ABC-123",
+                    deviceName = "Living Room Display",
+                    currentToken = "",
+                    tokenInput = "",
+                    isSaving = false,
+                    errorMessage = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of DeviceTokenContent with token entered.
+ */
+@PreviewLightDark
+@Composable
+private fun DeviceTokenContentWithTokenPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceTokenContent(
+            state =
+                DeviceTokenScreen.State(
+                    deviceFriendlyId = "TRMNL-ABC-123",
+                    deviceName = "Living Room Display",
+                    currentToken = "",
+                    tokenInput = "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p",
+                    isSaving = false,
+                    errorMessage = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of DeviceTokenContent with existing token saved.
+ */
+@PreviewLightDark
+@Composable
+private fun DeviceTokenContentSavedTokenPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceTokenContent(
+            state =
+                DeviceTokenScreen.State(
+                    deviceFriendlyId = "TRMNL-ABC-123",
+                    deviceName = "Living Room Display",
+                    currentToken = "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p",
+                    tokenInput = "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p",
+                    isSaving = false,
+                    errorMessage = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of DeviceTokenContent with error state.
+ */
+@PreviewLightDark
+@Composable
+private fun DeviceTokenContentErrorPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceTokenContent(
+            state =
+                DeviceTokenScreen.State(
+                    deviceFriendlyId = "TRMNL-ABC-123",
+                    deviceName = "Living Room Display",
+                    currentToken = "",
+                    tokenInput = "short",
+                    isSaving = false,
+                    errorMessage = "Token must be at least 20 characters long",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of DeviceTokenContent in saving state.
+ */
+@Preview
+@Composable
+private fun DeviceTokenContentSavingPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceTokenContent(
+            state =
+                DeviceTokenScreen.State(
+                    deviceFriendlyId = "TRMNL-ABC-123",
+                    deviceName = "Living Room Display",
+                    currentToken = "",
+                    tokenInput = "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p",
+                    isSaving = true,
+                    errorMessage = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of DeviceInfoCard component.
+ */
+@PreviewLightDark
+@Composable
+private fun DeviceInfoCardPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceInfoCard(
+            deviceName = "Living Room Display",
+            deviceFriendlyId = "TRMNL-ABC-123",
+        )
+    }
+}
+
+/**
+ * Preview of InstructionsCard component.
+ */
+@PreviewLightDark
+@Composable
+private fun InstructionsCardPreview() {
+    TrmnlBuddyAppTheme {
+        InstructionsCard()
+    }
+}
+
+/**
+ * Preview of TokenInputSection component in empty state.
+ */
+@PreviewLightDark
+@Composable
+private fun TokenInputSectionEmptyPreview() {
+    TrmnlBuddyAppTheme {
+        TokenInputSection(
+            tokenInput = "",
+            currentToken = "",
+            errorMessage = null,
+            isSaving = false,
+            passwordVisible = false,
+            onTokenChanged = {},
+            onPasswordVisibilityToggled = {},
+        )
+    }
+}
+
+/**
+ * Preview of TokenInputSection component with error.
+ */
+@PreviewLightDark
+@Composable
+private fun TokenInputSectionErrorPreview() {
+    TrmnlBuddyAppTheme {
+        TokenInputSection(
+            tokenInput = "short",
+            currentToken = "",
+            errorMessage = "Token must be at least 20 characters long",
+            isSaving = false,
+            passwordVisible = false,
+            onTokenChanged = {},
+            onPasswordVisibilityToggled = {},
+        )
+    }
+}
+
+/**
+ * Preview of ActionButtons component with no existing token.
+ */
+@PreviewLightDark
+@Composable
+private fun ActionButtonsEmptyPreview() {
+    TrmnlBuddyAppTheme {
+        ActionButtons(
+            currentToken = "",
+            tokenInput = "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p",
+            isSaving = false,
+            onSaveClicked = {},
+            onClearClicked = {},
+            onCancelClicked = {},
+        )
+    }
+}
+
+/**
+ * Preview of ActionButtons component with existing token.
+ */
+@PreviewLightDark
+@Composable
+private fun ActionButtonsWithTokenPreview() {
+    TrmnlBuddyAppTheme {
+        ActionButtons(
+            currentToken = "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p",
+            tokenInput = "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p",
+            isSaving = false,
+            onSaveClicked = {},
+            onClearClicked = {},
+            onCancelClicked = {},
+        )
     }
 }
