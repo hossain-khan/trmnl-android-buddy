@@ -291,6 +291,73 @@ git commit -m "Add feature X
 ./gradlew :app:formatKotlin
 ```
 
+### Release Process
+
+**IMPORTANT**: The `main` branch is protected. All changes must be made via pull requests.
+
+Follow this workflow for creating a new release:
+
+1. **Create Release Branch**:
+   ```bash
+   git checkout main
+   git pull
+   git checkout -b release/X.Y.Z
+   ```
+
+2. **Update Version Numbers**:
+   - Update `versionCode` and `versionName` in `app/build.gradle.kts`
+   - Example: `versionCode = 4` and `versionName = "1.0.3"`
+
+3. **Update CHANGELOG.md**:
+   - Move all `[Unreleased]` changes to new version section `[X.Y.Z] - YYYY-MM-DD`
+   - Add empty `[Unreleased]` section at top
+   - Update version comparison links at bottom:
+     ```markdown
+     [unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/X.Y.Z...HEAD
+     [X.Y.Z]: https://github.com/hossain-khan/trmnl-android-buddy/compare/X.Y.Z-1...X.Y.Z
+     ```
+
+4. **Commit and Push Release Branch**:
+   ```bash
+   git add app/build.gradle.kts CHANGELOG.md
+   git commit -m "chore: Prepare release X.Y.Z"
+   git push -u origin release/X.Y.Z
+   ```
+
+5. **Create Release Pull Request**:
+   - Create PR from `release/X.Y.Z` to `main`
+   - Title: "Release X.Y.Z"
+   - Include changelog summary in PR description
+   - Request review and merge
+
+6. **Create and Push Tag** (after PR is merged):
+   ```bash
+   git checkout main
+   git pull
+   git tag -a X.Y.Z -m "Release X.Y.Z - Brief Description
+
+   - Major change 1
+   - Major change 2
+   - Major change 3"
+   git push origin X.Y.Z
+   ```
+
+7. **Create GitHub Release**:
+   - Go to GitHub Releases page
+   - Click "Draft a new release"
+   - Select tag `X.Y.Z`
+   - Title: "Release X.Y.Z"
+   - Copy relevant section from CHANGELOG.md
+   - Publish release
+
+**Version Numbering** (Semantic Versioning):
+- `MAJOR.MINOR.PATCH` (e.g., 1.0.3)
+- MAJOR: Breaking changes or major new features
+- MINOR: New features, backward compatible
+- PATCH: Bug fixes, backward compatible
+
+**Tag Format**: Use plain version number (e.g., `1.0.3`), not `v1.0.3`
+
 ## API Endpoints (TRMNL)
 
 ### Available Endpoints
