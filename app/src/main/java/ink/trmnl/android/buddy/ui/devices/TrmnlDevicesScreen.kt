@@ -51,6 +51,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -74,6 +76,7 @@ import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
+import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.utils.rememberEInkColorFilter
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import kotlinx.coroutines.flow.first
@@ -394,116 +397,179 @@ fun TrmnlDevicesContent(
     ) { innerPadding ->
         when {
             state.isLoading -> {
-                // Loading state
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        CircularProgressIndicator()
-                        Text("Loading devices...")
-                    }
-                }
+                LoadingState()
             }
 
             state.errorMessage != null -> {
-                // Error state
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Column(
-                        modifier = Modifier.padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Text(
-                            text = "Error",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                        Text(
-                            text = state.errorMessage,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        if (state.isUnauthorized) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            OutlinedButton(
-                                onClick = { state.eventSink(TrmnlDevicesScreen.Event.ResetToken) },
-                            ) {
-                                Text("Reset Token")
-                            }
-                        }
-                    }
-                }
+                ErrorState(
+                    errorMessage = state.errorMessage,
+                    isUnauthorized = state.isUnauthorized,
+                    onResetToken = { state.eventSink(TrmnlDevicesScreen.Event.ResetToken) },
+                )
             }
 
             state.devices.isEmpty() -> {
-                // Empty state
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Column(
-                        modifier = Modifier.padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.trmnl_device_frame),
-                            contentDescription = "No devices",
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = "No devices found",
-                            style = MaterialTheme.typography.headlineSmall,
-                        )
-                        Text(
-                            text = "Your TRMNL devices will appear here",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
+                EmptyState()
             }
 
             else -> {
-                // Devices list
-                LazyColumn(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(state.devices) { device ->
-                        DeviceCard(
-                            device = device,
-                            hasToken = state.deviceTokens[device.friendlyId] != null,
-                            previewImageUrl = state.devicePreviews[device.friendlyId],
-                            isPrivacyEnabled = state.isPrivacyEnabled,
-                            onClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
-                            onSettingsClick = { state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
-                            onPreviewClick = {
-                                state.devicePreviews[device.friendlyId]?.let { imageUrl ->
-                                    state.eventSink(
-                                        TrmnlDevicesScreen.Event.DevicePreviewClicked(
-                                            device = device,
-                                            imageUrl = imageUrl,
-                                        ),
-                                    )
-                                }
-                            },
+                DevicesList(
+                    devices = state.devices,
+                    deviceTokens = state.deviceTokens,
+                    devicePreviews = state.devicePreviews,
+                    isPrivacyEnabled = state.isPrivacyEnabled,
+                    innerPadding = innerPadding,
+                    onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
+                    onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
+                    onPreviewClick = { device, imageUrl ->
+                        state.eventSink(
+                            TrmnlDevicesScreen.Event.DevicePreviewClicked(
+                                device = device,
+                                imageUrl = imageUrl,
+                            ),
                         )
-                    }
+                    },
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Loading state composable.
+ * Shows a centered loading indicator with message.
+ */
+@Composable
+private fun LoadingState(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            CircularProgressIndicator()
+            Text("Loading devices...")
+        }
+    }
+}
+
+/**
+ * Error state composable.
+ * Shows error message and optional reset button.
+ */
+@Composable
+private fun ErrorState(
+    errorMessage: String,
+    isUnauthorized: Boolean,
+    onResetToken: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            modifier = Modifier.padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = "Error",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.error,
+            )
+            Text(
+                text = errorMessage,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (isUnauthorized) {
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(onClick = onResetToken) {
+                    Text("Reset Token")
                 }
             }
+        }
+    }
+}
+
+/**
+ * Empty state composable.
+ * Shows when no devices are found.
+ */
+@Composable
+private fun EmptyState(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            modifier = Modifier.padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.trmnl_device_frame),
+                contentDescription = "No devices",
+                modifier = Modifier.size(64.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = "No devices found",
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            Text(
+                text = "Your TRMNL devices will appear here",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/**
+ * Devices list composable.
+ * Shows scrollable list of device cards.
+ */
+@Composable
+private fun DevicesList(
+    devices: List<Device>,
+    deviceTokens: Map<String, String?>,
+    devicePreviews: Map<String, String?>,
+    isPrivacyEnabled: Boolean,
+    innerPadding: PaddingValues,
+    onDeviceClick: (Device) -> Unit,
+    onSettingsClick: (Device) -> Unit,
+    onPreviewClick: (Device, String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyColumn(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(
+            items = devices,
+            key = { device -> device.id },
+        ) { device ->
+            DeviceCard(
+                device = device,
+                hasToken = deviceTokens[device.friendlyId] != null,
+                previewImageUrl = devicePreviews[device.friendlyId],
+                isPrivacyEnabled = isPrivacyEnabled,
+                onClick = { onDeviceClick(device) },
+                onSettingsClick = { onSettingsClick(device) },
+                onPreviewClick = {
+                    devicePreviews[device.friendlyId]?.let { imageUrl ->
+                        onPreviewClick(device, imageUrl)
+                    }
+                },
+            )
         }
     }
 }
@@ -591,158 +657,44 @@ private fun DeviceCard(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     // Device ID (obfuscated for privacy)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.outline_tag_24),
-                            contentDescription = "Device ID",
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = "ID: ",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text =
-                                if (isPrivacyEnabled) {
-                                    PrivacyUtils.obfuscateDeviceId(device.friendlyId)
-                                } else {
-                                    device.friendlyId
-                                },
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Medium,
-                        )
-                    }
+                    DeviceInfoRow(
+                        icon = R.drawable.outline_tag_24,
+                        label = "ID: ",
+                        value =
+                            if (isPrivacyEnabled) {
+                                PrivacyUtils.obfuscateDeviceId(device.friendlyId)
+                            } else {
+                                device.friendlyId
+                            },
+                        contentDescription = "Device ID",
+                    )
 
                     // MAC Address (obfuscated for privacy)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.outline_barcode_24),
-                            contentDescription = "MAC Address",
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = "MAC: ",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text =
-                                if (isPrivacyEnabled) {
-                                    PrivacyUtils.obfuscateMacAddress(device.macAddress)
-                                } else {
-                                    device.macAddress
-                                },
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Medium,
-                        )
-                    }
+                    DeviceInfoRow(
+                        icon = R.drawable.outline_barcode_24,
+                        label = "MAC: ",
+                        value =
+                            if (isPrivacyEnabled) {
+                                PrivacyUtils.obfuscateMacAddress(device.macAddress)
+                            } else {
+                                device.macAddress
+                            },
+                        contentDescription = "MAC Address",
+                    )
 
                     // Battery Level
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            ) {
-                                Icon(
-                                    painter = painterResource(getBatteryIcon(device.percentCharged)),
-                                    contentDescription = "Battery",
-                                    modifier = Modifier.size(16.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                                Text(
-                                    text = "Battery",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                            Text(
-                                text = "${device.percentCharged.toInt()}%",
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Bold,
-                                color = getBatteryColor(device.percentCharged),
-                            )
-                        }
-                        LinearProgressIndicator(
-                            progress = { batteryProgress },
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(8.dp),
-                            color = getBatteryColor(device.percentCharged),
-                        )
-                        device.batteryVoltage?.let { voltage ->
-                            Text(
-                                text = "%.2fV".format(voltage),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
+                    BatteryIndicator(
+                        percentCharged = device.percentCharged,
+                        batteryVoltage = device.batteryVoltage,
+                        batteryProgress = batteryProgress,
+                    )
 
                     // WiFi Strength
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            ) {
-                                Icon(
-                                    painter = painterResource(getWifiIcon(device.wifiStrength)),
-                                    contentDescription = "WiFi Signal",
-                                    modifier = Modifier.size(16.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                                Text(
-                                    text = "WiFi Signal",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                            Text(
-                                text = "${device.wifiStrength.toInt()}%",
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Bold,
-                                color = getWifiColor(device.wifiStrength),
-                            )
-                        }
-                        LinearProgressIndicator(
-                            progress = { wifiProgress },
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(8.dp),
-                            color = getWifiColor(device.wifiStrength),
-                        )
-                        device.rssi?.let { rssi ->
-                            Text(
-                                text = "$rssi dBm",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
+                    WifiIndicator(
+                        wifiStrength = device.wifiStrength,
+                        rssi = device.rssi,
+                        wifiProgress = wifiProgress,
+                    )
                 }
             },
             leadingContent = {
@@ -760,45 +712,229 @@ private fun DeviceCard(
         )
 
         // Display preview image if available
-        if (hasToken && previewImageUrl != null) {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn() + slideInVertically(),
+        DevicePreviewImage(
+            hasToken = hasToken,
+            previewImageUrl = previewImageUrl,
+            deviceName = device.name,
+            deviceId = device.friendlyId,
+            onPreviewClick = onPreviewClick,
+        )
+    }
+}
+
+/**
+ * Device information row composable.
+ * Shows an icon, label, and value in a horizontal row.
+ */
+@Composable
+private fun DeviceInfoRow(
+    icon: Int,
+    label: String,
+    value: String,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = contentDescription,
+            modifier = Modifier.size(16.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Medium,
+        )
+    }
+}
+
+/**
+ * Battery indicator composable.
+ * Shows battery percentage, progress bar, and optional voltage.
+ */
+@Composable
+private fun BatteryIndicator(
+    percentCharged: Double,
+    batteryVoltage: Double?,
+    batteryProgress: Float,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                SharedElementTransitionScope {
-                    SubcomposeAsyncImage(
-                        model = previewImageUrl,
-                        contentDescription = "Device screen preview for ${device.name}",
-                        modifier =
-                            Modifier
-                                .sharedElement(
-                                    sharedContentState =
-                                        rememberSharedContentState(
-                                            key = DevicePreviewImageKey(deviceId = device.friendlyId),
-                                        ),
-                                    animatedVisibilityScope = requireAnimatedScope(Navigation),
-                                ).fillMaxWidth()
-                                .aspectRatio(800f / 480f) // TRMNL device aspect ratio
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                                .clickable(onClick = onPreviewClick),
-                        contentScale = ContentScale.Fit,
-                        colorFilter = colorFilter,
-                        loading = {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(32.dp),
-                                    color = MaterialTheme.colorScheme.primary,
-                                )
-                            }
-                        },
-                        error = {
-                            // Silently fail - don't show error for preview images
-                        },
-                    )
-                }
+                Icon(
+                    painter = painterResource(getBatteryIcon(percentCharged)),
+                    contentDescription = "Battery",
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = "Battery",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Text(
+                text = "${percentCharged.toInt()}%",
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold,
+                color = getBatteryColor(percentCharged),
+            )
+        }
+        LinearProgressIndicator(
+            progress = { batteryProgress },
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(8.dp),
+            color = getBatteryColor(percentCharged),
+        )
+        batteryVoltage?.let { voltage ->
+            Text(
+                text = "%.2fV".format(voltage),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/**
+ * WiFi indicator composable.
+ * Shows WiFi signal strength percentage, progress bar, and optional RSSI.
+ */
+@Composable
+private fun WifiIndicator(
+    wifiStrength: Double,
+    rssi: Int?,
+    wifiProgress: Float,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Icon(
+                    painter = painterResource(getWifiIcon(wifiStrength)),
+                    contentDescription = "WiFi Signal",
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = "WiFi Signal",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Text(
+                text = "${wifiStrength.toInt()}%",
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold,
+                color = getWifiColor(wifiStrength),
+            )
+        }
+        LinearProgressIndicator(
+            progress = { wifiProgress },
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(8.dp),
+            color = getWifiColor(wifiStrength),
+        )
+        rssi?.let { rssiValue ->
+            Text(
+                text = "$rssiValue dBm",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/**
+ * Device preview image composable.
+ * Shows the device's current screen display if available.
+ */
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun DevicePreviewImage(
+    hasToken: Boolean,
+    previewImageUrl: String?,
+    deviceName: String,
+    deviceId: String,
+    onPreviewClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    // Invert colors in dark mode for better visibility of e-ink display images
+    val colorFilter = rememberEInkColorFilter()
+
+    if (hasToken && previewImageUrl != null) {
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn() + slideInVertically(),
+        ) {
+            SharedElementTransitionScope {
+                SubcomposeAsyncImage(
+                    model = previewImageUrl,
+                    contentDescription = "Device screen preview for $deviceName",
+                    modifier =
+                        modifier
+                            .sharedElement(
+                                sharedContentState =
+                                    rememberSharedContentState(
+                                        key = DevicePreviewImageKey(deviceId = deviceId),
+                                    ),
+                                animatedVisibilityScope = requireAnimatedScope(Navigation),
+                            ).fillMaxWidth()
+                            .aspectRatio(800f / 480f) // TRMNL device aspect ratio
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .clickable(onClick = onPreviewClick),
+                    contentScale = ContentScale.Fit,
+                    colorFilter = colorFilter,
+                    loading = {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(32.dp),
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    },
+                    error = {
+                        // Silently fail - don't show error for preview images
+                    },
+                )
             }
         }
     }
@@ -857,3 +993,236 @@ private fun getWifiIcon(wifiStrength: Double): Int =
         wifiStrength >= 25 -> R.drawable.outline_network_wifi_2_bar_24
         else -> R.drawable.outline_network_wifi_1_bar_24
     }
+
+// ========== Previews ==========
+
+/**
+ * Sample device data for previews.
+ */
+private val sampleDevice1 =
+    Device(
+        id = 1,
+        name = "Living Room Display",
+        friendlyId = "ABC-123",
+        macAddress = "12:34:56:78:9A:BC",
+        batteryVoltage = 3.7,
+        rssi = -45,
+        percentCharged = 85.0,
+        wifiStrength = 90.0,
+    )
+
+private val sampleDevice2 =
+    Device(
+        id = 2,
+        name = "Kitchen Dashboard",
+        friendlyId = "DEF-456",
+        macAddress = "12:34:56:78:9A:BD",
+        batteryVoltage = 3.5,
+        rssi = -65,
+        percentCharged = 45.0,
+        wifiStrength = 60.0,
+    )
+
+private val sampleDevice3 =
+    Device(
+        id = 3,
+        name = "Office Monitor",
+        friendlyId = "GHI-789",
+        macAddress = "12:34:56:78:9A:BE",
+        batteryVoltage = 3.2,
+        rssi = -80,
+        percentCharged = 15.0,
+        wifiStrength = 25.0,
+    )
+
+@Preview(name = "Loading State")
+@Composable
+private fun LoadingStatePreview() {
+    TrmnlBuddyAppTheme {
+        LoadingState()
+    }
+}
+
+@Preview(name = "Error State - Unauthorized")
+@Composable
+private fun ErrorStateUnauthorizedPreview() {
+    TrmnlBuddyAppTheme {
+        ErrorState(
+            errorMessage = "Unauthorized. Please check your API token.",
+            isUnauthorized = true,
+            onResetToken = {},
+        )
+    }
+}
+
+@Preview(name = "Error State - Network Error")
+@Composable
+private fun ErrorStateNetworkPreview() {
+    TrmnlBuddyAppTheme {
+        ErrorState(
+            errorMessage = "Network error. Please check your connection.",
+            isUnauthorized = false,
+            onResetToken = {},
+        )
+    }
+}
+
+@Preview(name = "Empty State")
+@Composable
+private fun EmptyStatePreview() {
+    TrmnlBuddyAppTheme {
+        EmptyState()
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Device Card - High Battery & WiFi")
+@Composable
+private fun DeviceCardHighBatteryPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceCard(
+            device = sampleDevice1,
+            hasToken = true,
+            previewImageUrl = null,
+            isPrivacyEnabled = false,
+            onClick = {},
+            onSettingsClick = {},
+            onPreviewClick = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Device Card - Medium Battery & WiFi")
+@Composable
+private fun DeviceCardMediumBatteryPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceCard(
+            device = sampleDevice2,
+            hasToken = true,
+            previewImageUrl = null,
+            isPrivacyEnabled = false,
+            onClick = {},
+            onSettingsClick = {},
+            onPreviewClick = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Device Card - Low Battery & WiFi")
+@Composable
+private fun DeviceCardLowBatteryPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceCard(
+            device = sampleDevice3,
+            hasToken = false,
+            previewImageUrl = null,
+            isPrivacyEnabled = false,
+            onClick = {},
+            onSettingsClick = {},
+            onPreviewClick = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Device Card - Privacy Enabled")
+@Composable
+private fun DeviceCardPrivacyEnabledPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceCard(
+            device = sampleDevice1,
+            hasToken = true,
+            previewImageUrl = null,
+            isPrivacyEnabled = true,
+            onClick = {},
+            onSettingsClick = {},
+            onPreviewClick = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Devices List with Multiple Devices")
+@Composable
+private fun DevicesListPreview() {
+    TrmnlBuddyAppTheme {
+        DevicesList(
+            devices = listOf(sampleDevice1, sampleDevice2, sampleDevice3),
+            deviceTokens = mapOf("ABC-123" to "token1", "DEF-456" to "token2"),
+            devicePreviews = emptyMap(),
+            isPrivacyEnabled = false,
+            innerPadding = PaddingValues(0.dp),
+            onDeviceClick = {},
+            onSettingsClick = {},
+            onPreviewClick = { _, _ -> },
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Full Screen - With Devices", showBackground = true)
+@Composable
+private fun TrmnlDevicesContentPreview() {
+    TrmnlBuddyAppTheme {
+        TrmnlDevicesContent(
+            state =
+                TrmnlDevicesScreen.State(
+                    devices = listOf(sampleDevice1, sampleDevice2, sampleDevice3),
+                    deviceTokens = mapOf("ABC-123" to "token1", "DEF-456" to "token2"),
+                    devicePreviews = emptyMap(),
+                    isLoading = false,
+                    errorMessage = null,
+                    isUnauthorized = false,
+                    isPrivacyEnabled = false,
+                ),
+        )
+    }
+}
+
+@Preview(name = "Full Screen - Loading")
+@Composable
+private fun TrmnlDevicesContentLoadingPreview() {
+    TrmnlBuddyAppTheme {
+        TrmnlDevicesContent(
+            state =
+                TrmnlDevicesScreen.State(
+                    devices = emptyList(),
+                    isLoading = true,
+                    errorMessage = null,
+                ),
+        )
+    }
+}
+
+@Preview(name = "Full Screen - Error")
+@Composable
+private fun TrmnlDevicesContentErrorPreview() {
+    TrmnlBuddyAppTheme {
+        TrmnlDevicesContent(
+            state =
+                TrmnlDevicesScreen.State(
+                    devices = emptyList(),
+                    isLoading = false,
+                    errorMessage = "Network error. Please check your connection.",
+                    isUnauthorized = false,
+                ),
+        )
+    }
+}
+
+@Preview(name = "Full Screen - Empty")
+@Composable
+private fun TrmnlDevicesContentEmptyPreview() {
+    TrmnlBuddyAppTheme {
+        TrmnlDevicesContent(
+            state =
+                TrmnlDevicesScreen.State(
+                    devices = emptyList(),
+                    isLoading = false,
+                    errorMessage = null,
+                ),
+        )
+    }
+}
