@@ -18,8 +18,8 @@ android {
         applicationId = "ink.trmnl.android.buddy"
         minSdk = 28
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.0.4"
+        versionCode = 6
+        versionName = "1.0.5"
 
         // Read key or other properties from local.properties
         val localProperties =
