@@ -8,16 +8,9 @@ import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.api.TrmnlApiClient
 import ink.trmnl.android.buddy.api.TrmnlApiService
-import ink.trmnl.android.buddy.data.ExampleEmailValidator
 
-// Example of Metro providers that contribute to the app graph.
-// You should delete this file and create your own providers.
 @ContributesTo(AppScope::class)
-interface ExampleAppBindings {
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideEmailValidator(): ExampleEmailValidator = ExampleEmailValidator()
-
+interface AppBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun provideTrmnlApiService(
