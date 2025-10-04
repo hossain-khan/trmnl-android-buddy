@@ -66,6 +66,7 @@ import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 import ink.trmnl.android.buddy.util.GravatarUtils
+import ink.trmnl.android.buddy.util.PrivacyUtils
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -235,21 +236,6 @@ class UserAccountPresenter(
  * Alpha transparency value for cards to allow background logo watermark to show through.
  */
 private const val CARD_BACKGROUND_ALPHA = 0.7f
-
-/**
- * Redacts an API key to show only first 4 and last 4 characters.
- * Example: "user_abc123xyz789" becomes "user****789"
- */
-private fun redactApiKey(apiKey: String): String =
-    when {
-        apiKey.length <= 8 -> "****" // Too short, fully redact
-        else -> {
-            val prefix = apiKey.take(4)
-            val suffix = apiKey.takeLast(4)
-            val middleLength = (apiKey.length - 8).coerceAtLeast(4)
-            "$prefix${"*".repeat(middleLength)}$suffix"
-        }
-    }
 
 /**
  * UI content for UserAccountScreen.
@@ -540,7 +526,7 @@ fun UserAccountContent(
                                 headlineContent = { Text("API Key") },
                                 supportingContent = {
                                     Text(
-                                        text = redactApiKey(state.user.apiKey),
+                                        text = PrivacyUtils.redactApiKey(state.user.apiKey),
                                         fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
                                         style = MaterialTheme.typography.bodySmall,
                                     )
