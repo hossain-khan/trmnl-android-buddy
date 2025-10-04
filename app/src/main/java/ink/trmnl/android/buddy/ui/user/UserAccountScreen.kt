@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.user
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -230,6 +232,11 @@ class UserAccountPresenter(
 }
 
 /**
+ * Alpha transparency value for cards to allow background logo watermark to show through.
+ */
+private const val CARD_BACKGROUND_ALPHA = 0.8f
+
+/**
  * Redacts an API key to show only first 4 and last 4 characters.
  * Example: "user_abc123xyz789" becomes "user****789"
  */
@@ -335,191 +342,218 @@ fun UserAccountContent(
 
             state.user != null -> {
                 // Success state - show user info
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                            .verticalScroll(rememberScrollState())
-                            .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    // User profile card
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors =
-                            CardDefaults.cardColors(
-                                containerColor =
-                                    androidx.compose.ui.graphics
-                                        .Color(colorResource(R.color.trmnl_orange_container).value),
-                                contentColor =
-                                    androidx.compose.ui.graphics
-                                        .Color(colorResource(R.color.trmnl_orange_on_container).value),
-                            ),
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(24.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            // Gravatar avatar with fade-in effect
-                            AsyncImage(
-                                model =
-                                    ImageRequest
-                                        .Builder(LocalContext.current)
-                                        .data(GravatarUtils.getGravatarUrl(state.user.email, size = 160))
-                                        .crossfade(true)
-                                        .build(),
-                                contentDescription = "Profile avatar",
-                                modifier =
-                                    Modifier
-                                        .size(80.dp)
-                                        .clip(CircleShape),
-                                contentScale = ContentScale.Crop,
-                                placeholder = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                                error = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                            )
+                Box(modifier = Modifier.fillMaxSize()) {
+                    // Background watermark logo
+                    Image(
+                        painter = painterResource(R.drawable.trmnl_logo_semi_transparent),
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .size(600.dp)
+                                .align(Alignment.CenterEnd)
+                                .offset(x = 200.dp),
+                        contentScale = ContentScale.Fit,
+                    )
 
-                            // Name and email column
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
-                            ) {
-                                Text(
-                                    text = state.user.name,
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = state.user.email,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color =
+                    // Content
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding)
+                                .verticalScroll(rememberScrollState())
+                                .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        // User profile card
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors =
+                                CardDefaults.cardColors(
+                                    containerColor =
                                         androidx.compose.ui.graphics
-                                            .Color(
-                                                colorResource(R.color.trmnl_orange_on_container).value,
-                                            ).copy(alpha = 0.8f),
+                                            .Color(colorResource(R.color.trmnl_orange_container).value),
+                                    contentColor =
+                                        androidx.compose.ui.graphics
+                                            .Color(colorResource(R.color.trmnl_orange_on_container).value),
+                                ),
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(24.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                // Gravatar avatar with fade-in effect
+                                AsyncImage(
+                                    model =
+                                        ImageRequest
+                                            .Builder(LocalContext.current)
+                                            .data(GravatarUtils.getGravatarUrl(state.user.email, size = 160))
+                                            .crossfade(true)
+                                            .build(),
+                                    contentDescription = "Profile avatar",
+                                    modifier =
+                                        Modifier
+                                            .size(80.dp)
+                                            .clip(CircleShape),
+                                    contentScale = ContentScale.Crop,
+                                    placeholder = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                    error = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                )
+
+                                // Name and email column
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    Text(
+                                        text = state.user.name,
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                    Text(
+                                        text = state.user.email,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color =
+                                            androidx.compose.ui.graphics
+                                                .Color(
+                                                    colorResource(R.color.trmnl_orange_on_container).value,
+                                                ).copy(alpha = CARD_BACKGROUND_ALPHA),
+                                    )
+                                }
+                            }
+                        }
+
+                        // Personal Information Section
+                        Text(
+                            text = "Personal Information",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors =
+                                CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = CARD_BACKGROUND_ALPHA),
+                                ),
+                        ) {
+                            Column {
+                                ListItem(
+                                    headlineContent = { Text("First Name") },
+                                    supportingContent = { Text(state.user.firstName) },
+                                    colors =
+                                        ListItemDefaults.colors(
+                                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                                        ),
+                                )
+                                ListItem(
+                                    headlineContent = { Text("Last Name") },
+                                    supportingContent = { Text(state.user.lastName) },
+                                    colors =
+                                        ListItemDefaults.colors(
+                                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                                        ),
+                                )
+                                ListItem(
+                                    headlineContent = { Text("Email") },
+                                    supportingContent = { Text(state.user.email) },
+                                    colors =
+                                        ListItemDefaults.colors(
+                                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                                        ),
                                 )
                             }
                         }
-                    }
 
-                    // Personal Information Section
-                    Text(
-                        text = "Personal Information",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
+                        // Locale & Timezone Section
+                        Text(
+                            text = "Locale & Timezone",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
 
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Column {
-                            ListItem(
-                                headlineContent = { Text("First Name") },
-                                supportingContent = { Text(state.user.firstName) },
-                                colors =
-                                    ListItemDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.surface,
-                                    ),
-                            )
-                            ListItem(
-                                headlineContent = { Text("Last Name") },
-                                supportingContent = { Text(state.user.lastName) },
-                                colors =
-                                    ListItemDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.surface,
-                                    ),
-                            )
-                            ListItem(
-                                headlineContent = { Text("Email") },
-                                supportingContent = { Text(state.user.email) },
-                                colors =
-                                    ListItemDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.surface,
-                                    ),
-                            )
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors =
+                                CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = CARD_BACKGROUND_ALPHA),
+                                ),
+                        ) {
+                            Column {
+                                ListItem(
+                                    headlineContent = { Text("Locale") },
+                                    supportingContent = { Text(state.user.locale) },
+                                    colors =
+                                        ListItemDefaults.colors(
+                                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                                        ),
+                                )
+                                ListItem(
+                                    headlineContent = { Text("Time Zone") },
+                                    supportingContent = { Text(state.user.timeZone) },
+                                    colors =
+                                        ListItemDefaults.colors(
+                                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                                        ),
+                                )
+                                ListItem(
+                                    headlineContent = { Text("IANA Timezone") },
+                                    supportingContent = { Text(state.user.timeZoneIana) },
+                                    colors =
+                                        ListItemDefaults.colors(
+                                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                                        ),
+                                )
+                                ListItem(
+                                    headlineContent = { Text("UTC Offset") },
+                                    supportingContent = {
+                                        val hours = state.user.utcOffset / 3600
+                                        val sign = if (hours >= 0) "+" else ""
+                                        Text("UTC$sign$hours hours")
+                                    },
+                                    colors =
+                                        ListItemDefaults.colors(
+                                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                                        ),
+                                )
+                            }
                         }
-                    }
 
-                    // Locale & Timezone Section
-                    Text(
-                        text = "Locale & Timezone",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
+                        // API Key Section
+                        Text(
+                            text = "API Access",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
 
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Column {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors =
+                                CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = CARD_BACKGROUND_ALPHA),
+                                ),
+                        ) {
                             ListItem(
-                                headlineContent = { Text("Locale") },
-                                supportingContent = { Text(state.user.locale) },
-                                colors =
-                                    ListItemDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.surface,
-                                    ),
-                            )
-                            ListItem(
-                                headlineContent = { Text("Time Zone") },
-                                supportingContent = { Text(state.user.timeZone) },
-                                colors =
-                                    ListItemDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.surface,
-                                    ),
-                            )
-                            ListItem(
-                                headlineContent = { Text("IANA Timezone") },
-                                supportingContent = { Text(state.user.timeZoneIana) },
-                                colors =
-                                    ListItemDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.surface,
-                                    ),
-                            )
-                            ListItem(
-                                headlineContent = { Text("UTC Offset") },
+                                headlineContent = { Text("API Key") },
                                 supportingContent = {
-                                    val hours = state.user.utcOffset / 3600
-                                    val sign = if (hours >= 0) "+" else ""
-                                    Text("UTC$sign$hours hours")
+                                    Text(
+                                        text = redactApiKey(state.user.apiKey),
+                                        fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                                        style = MaterialTheme.typography.bodySmall,
+                                    )
                                 },
                                 colors =
                                     ListItemDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.surface,
+                                        containerColor = androidx.compose.ui.graphics.Color.Transparent,
                                     ),
                             )
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-
-                    // API Key Section
-                    Text(
-                        text = "API Access",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        ListItem(
-                            headlineContent = { Text("API Key") },
-                            supportingContent = {
-                                Text(
-                                    text = redactApiKey(state.user.apiKey),
-                                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
-                                    style = MaterialTheme.typography.bodySmall,
-                                )
-                            },
-                            colors =
-                                ListItemDefaults.colors(
-                                    containerColor = MaterialTheme.colorScheme.surface,
-                                ),
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
