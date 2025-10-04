@@ -49,6 +49,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
@@ -110,10 +111,10 @@ class UserAccountPresenter(
 ) : Presenter<UserAccountScreen.State> {
     @Composable
     override fun present(): UserAccountScreen.State {
-        var user by remember { mutableStateOf<User?>(null) }
-        var isLoading by remember { mutableStateOf(true) }
-        var errorMessage by remember { mutableStateOf<String?>(null) }
-        var showLogoutDialog by remember { mutableStateOf(false) }
+        var user by rememberRetained { mutableStateOf<User?>(null) }
+        var isLoading by rememberRetained { mutableStateOf(true) }
+        var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
+        var showLogoutDialog by rememberRetained { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
 
         // Fetch user info on screen load

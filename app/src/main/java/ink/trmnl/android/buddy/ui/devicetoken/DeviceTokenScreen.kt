@@ -37,6 +37,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
@@ -100,10 +101,10 @@ class DeviceTokenPresenter
     ) : Presenter<DeviceTokenScreen.State> {
         @Composable
         override fun present(): DeviceTokenScreen.State {
-            var currentToken by remember { mutableStateOf("") }
-            var tokenInput by remember { mutableStateOf("") }
-            var isSaving by remember { mutableStateOf(false) }
-            var errorMessage by remember { mutableStateOf<String?>(null) }
+            var currentToken by rememberRetained { mutableStateOf("") }
+            var tokenInput by rememberRetained { mutableStateOf("") }
+            var isSaving by rememberRetained { mutableStateOf(false) }
+            var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
             // Load existing token on initial load

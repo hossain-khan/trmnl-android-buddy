@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Improved Circuit state retention across configuration changes
+  - Replaced `remember` with `rememberRetained` in AccessTokenScreen for form state persistence
+  - Replaced `remember` with `rememberRetained` in DeviceTokenScreen for form state persistence
+  - Replaced `remember` with `rememberRetained` in UserAccountScreen for user data persistence
+  - Replaced `produceState` with `produceRetainedState` in WelcomeScreen for better flow collection
+  - State now survives screen rotations and other configuration changes according to Circuit best practices
+
 ## [1.0.3] - 2025-10-03
 
 ### Added
