@@ -10,4 +10,10 @@
     
     <!-- TRMNL Brand Color -->
     <color name="trmnl_orange">#F8654B</color>
+    <color name="trmnl_orange_light">#FFEDE9</color> <!-- Light tint for light mode -->
+    <color name="trmnl_orange_dark">#4A1F15</color> <!-- Dark tint for dark mode -->
+    
+    <!-- TRMNL Brand Color container for light mode -->
+    <color name="trmnl_orange_container">#FFEDE9</color> <!-- Light container -->
+    <color name="trmnl_orange_on_container">#3D1410</color> <!-- Dark text on light container -->
 </resources>

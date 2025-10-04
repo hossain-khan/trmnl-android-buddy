@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TRMNL Brand Color variations for dark mode -->
+    <color name="trmnl_orange_container">#4A1F15</color> <!-- Dark tint for dark mode -->
+    <color name="trmnl_orange_on_container">#FFB4A8</color> <!-- Light text on dark container -->
+</resources>

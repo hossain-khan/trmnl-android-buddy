@@ -1,24 +1,35 @@
 package ink.trmnl.android.buddy.ui.welcome
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +49,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.parcelize.Parcelize
 
@@ -49,6 +61,7 @@ import kotlinx.parcelize.Parcelize
 data object WelcomeScreen : Screen {
     data class State(
         val isLoading: Boolean = true,
+        val hasExistingToken: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -78,6 +91,7 @@ class WelcomePresenter
 
             return WelcomeScreen.State(
                 isLoading = userPreferences == null,
+                hasExistingToken = !userPreferences?.apiToken.isNullOrBlank(),
             ) { event ->
                 when (event) {
                     WelcomeScreen.Event.GetStartedClicked -> {
@@ -109,12 +123,30 @@ fun WelcomeContent(
     state: WelcomeScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    var showWelcomeBack by remember { mutableStateOf(false) }
+
+    // Show "Welcome back" message after 800ms delay if user has token
+    LaunchedEffect(state.hasExistingToken) {
+        if (state.hasExistingToken && !state.isLoading) {
+            delay(800)
+            showWelcomeBack = true
+        }
+    }
+
+    // Animate alpha for fade-in effect with slow tween animation
+    val alpha by animateFloatAsState(
+        targetValue = if (showWelcomeBack && state.hasExistingToken) 1f else 0f,
+        animationSpec = tween(durationMillis = 1000),
+        label = "welcomeBackAlpha",
+    )
+
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
                     .padding(32.dp),
             contentAlignment = Alignment.Center,
         ) {
@@ -151,7 +183,7 @@ fun WelcomeContent(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 // Get Started button
-                Button(
+                OutlinedButton(
                     onClick = { state.eventSink(WelcomeScreen.Event.GetStartedClicked) },
                     enabled = !state.isLoading,
                 ) {
@@ -159,6 +191,33 @@ fun WelcomeContent(
                         text = "Get Started",
                         style = MaterialTheme.typography.titleMedium,
                     )
+                }
+
+                // Welcome back message area (fixed height to prevent layout shifts)
+                Box(
+                    modifier =
+                        Modifier
+                            .height(32.dp)
+                            .graphicsLayer { this.alpha = alpha },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (showWelcomeBack && state.hasExistingToken) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = "Welcome back!",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.emoji_people_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
                 }
             }
         }

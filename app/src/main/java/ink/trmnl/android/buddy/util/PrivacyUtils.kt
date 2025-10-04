@@ -41,4 +41,22 @@ object PrivacyUtils {
         // Show first part and last part, obfuscate everything in between with centered bullets
         return "${parts.first()}:${"••:".repeat(parts.size - 2)}${parts.last()}"
     }
+
+    /**
+     * Redacts an API key to show only first 4 and last 4 characters.
+     * Example: "user_abc123xyz789" becomes "user****789"
+     *
+     * @param apiKey The API key to redact
+     * @return The redacted API key
+     */
+    fun redactApiKey(apiKey: String): String =
+        when {
+            apiKey.length <= 8 -> "****" // Too short, fully redact
+            else -> {
+                val prefix = apiKey.take(4)
+                val suffix = apiKey.takeLast(4)
+                val middleLength = (apiKey.length - 8).coerceAtLeast(4)
+                "$prefix${"*".repeat(middleLength)}$suffix"
+            }
+        }
 }

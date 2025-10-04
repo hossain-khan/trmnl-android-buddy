@@ -8,16 +8,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- "Welcome back!" message on Welcome screen for returning users
+  - Displays with emoji_people icon after 800ms delay
+  - Smooth 1-second fade-in animation
+  - Fixed-height container prevents layout shifts
+- TRMNL brand orange colors for user profile card
+  - Light mode: `#FFEDE9` container, `#3D1410` on-container
+  - Dark mode: `#4A1F15` container, `#FFB4A8` on-container
+  - Automatic theme adaptation based on system preferences
+- Background logo watermark on User Account screen
+  - Semi-transparent TRMNL logo (600dp) positioned on right edge
+  - 70% opacity cards allow subtle logo visibility
+  - Professional branded appearance without interfering with content readability
 - "Reset Token" button on unauthorized (401) error state
   - Appears when API token is invalid or expired
   - Clears stored API token from preferences
   - Navigates user back to Access Token screen to re-enter credentials
 
 ### Changed
+- Welcome screen: Changed "Get Started" button from filled to outlined style
+- User Account screen: Information cards now use 70% opacity for watermark visibility
 - Updated Device API Key format guide to reflect actual token format
   - Updated format description: "20+ character hexadecimal string (e.g., 1a2b3c4d5e6f7g8h9i0j...)"
   - Updated placeholder text to show generic hexadecimal pattern
   - Added validation for minimum token length of 20 characters
+- Moved `redactApiKey` function to `PrivacyUtils` for better code organization
+
+### Fixed
+- Welcome screen now scrollable in landscape mode
+- Access Token screen now scrollable in landscape mode
+- Both screens properly handle keyboard visibility without cutting off content
 
 ## [1.0.2] - 2025-10-03
 
