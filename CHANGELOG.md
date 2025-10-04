@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- "Reset Token" button on unauthorized (401) error state
+  - Appears when API token is invalid or expired
+  - Clears stored API token from preferences
+  - Navigates user back to Access Token screen to re-enter credentials
+
 ## [1.0.2] - 2025-10-03
 
 ### Added

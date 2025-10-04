@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +34,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -90,6 +92,7 @@ data object TrmnlDevicesScreen : Screen {
         val devicePreviews: Map<String, String?> = emptyMap(),
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
+        val isUnauthorized: Boolean = false,
         val isPrivacyEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
@@ -100,6 +103,8 @@ data object TrmnlDevicesScreen : Screen {
         data object AccountClicked : Event()
 
         data object TogglePrivacy : Event()
+
+        data object ResetToken : Event()
 
         data class DeviceClicked(
             val device: Device,
@@ -135,6 +140,7 @@ class TrmnlDevicesPresenter
             var devicePreviews by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
             var isLoading by rememberRetained { mutableStateOf(true) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
+            var isUnauthorized by rememberRetained { mutableStateOf(false) }
             var isPrivacyEnabled by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
 
@@ -146,8 +152,9 @@ class TrmnlDevicesPresenter
                             devices = fetchedDevices
                             isLoading = false
                         },
-                        onError = { error ->
+                        onError = { error, unauthorized ->
                             errorMessage = error
+                            isUnauthorized = unauthorized
                             isLoading = false
                         },
                     )
@@ -186,12 +193,14 @@ class TrmnlDevicesPresenter
                 devicePreviews = devicePreviews,
                 isLoading = isLoading,
                 errorMessage = errorMessage,
+                isUnauthorized = isUnauthorized,
                 isPrivacyEnabled = isPrivacyEnabled,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
                         isLoading = true
                         errorMessage = null
+                        isUnauthorized = false
                         coroutineScope.launch {
                             loadDevices(
                                 onSuccess = { fetchedDevices ->
@@ -199,8 +208,9 @@ class TrmnlDevicesPresenter
                                     // LaunchedEffects will handle loading tokens and previews
                                     isLoading = false
                                 },
-                                onError = { error ->
+                                onError = { error, unauthorized ->
                                     errorMessage = error
+                                    isUnauthorized = unauthorized
                                     isLoading = false
                                 },
                             )
@@ -213,6 +223,15 @@ class TrmnlDevicesPresenter
 
                     TrmnlDevicesScreen.Event.TogglePrivacy -> {
                         isPrivacyEnabled = !isPrivacyEnabled
+                    }
+
+                    TrmnlDevicesScreen.Event.ResetToken -> {
+                        coroutineScope.launch {
+                            // Clear all token data from preferences
+                            userPreferencesRepository.clearApiToken()
+                            // Navigate to AccessTokenScreen with root reset
+                            navigator.resetRoot(ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen)
+                        }
                     }
 
                     is TrmnlDevicesScreen.Event.DeviceClicked -> {
@@ -283,7 +302,7 @@ class TrmnlDevicesPresenter
 
         private suspend fun loadDevices(
             onSuccess: (List<Device>) -> Unit,
-            onError: (String) -> Unit,
+            onError: (String, Boolean) -> Unit,
         ) {
             try {
                 // Get API token from preferences
@@ -291,7 +310,7 @@ class TrmnlDevicesPresenter
                 val apiToken = preferences.apiToken
 
                 if (apiToken.isNullOrBlank()) {
-                    onError("API token not found. Please configure your token.")
+                    onError("API token not found. Please configure your token.", false)
                     return
                 }
 
@@ -304,26 +323,26 @@ class TrmnlDevicesPresenter
 
                     is ApiResult.Failure.HttpFailure -> {
                         when (result.code) {
-                            401 -> onError("Unauthorized. Please check your API token.")
-                            404 -> onError("API endpoint not found.")
-                            else -> onError("HTTP Error: ${result.code}")
+                            401 -> onError("Unauthorized. Please check your API token.", true)
+                            404 -> onError("API endpoint not found.", false)
+                            else -> onError("HTTP Error: ${result.code}", false)
                         }
                     }
 
                     is ApiResult.Failure.NetworkFailure -> {
-                        onError("Network error. Please check your connection.")
+                        onError("Network error. Please check your connection.", false)
                     }
 
                     is ApiResult.Failure.ApiFailure -> {
-                        onError("API Error: ${result.error}")
+                        onError("API Error: ${result.error}", false)
                     }
 
                     is ApiResult.Failure.UnknownFailure -> {
-                        onError("Unknown error: ${result.error.message}")
+                        onError("Unknown error: ${result.error.message}", false)
                     }
                 }
             } catch (e: Exception) {
-                onError("Error loading devices: ${e.message}")
+                onError("Error loading devices: ${e.message}", false)
             }
         }
 
@@ -411,6 +430,14 @@ fun TrmnlDevicesContent(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                        if (state.isUnauthorized) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButton(
+                                onClick = { state.eventSink(TrmnlDevicesScreen.Event.ResetToken) },
+                            ) {
+                                Text("Reset Token")
+                            }
+                        }
                     }
                 }
             }
