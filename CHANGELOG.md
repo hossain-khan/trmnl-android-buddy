@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Refactored `UserAccountScreen.kt` to follow Compose best practices
+  - Extracted modular composable components for better readability and reusability:
+    - `LoadingState` - Separated loading UI
+    - `ErrorState` - Separated error UI
+    - `UserAccountSuccessContent` - Main success state content
+    - `BackgroundWatermark` - Background logo as separate component
+    - `UserProfileCard` - User profile header with avatar
+    - `PersonalInfoSection` - Personal information card
+    - `LocaleTimezoneSection` - Locale and timezone info card
+    - `ApiAccessSection` - API key display card
+    - `LogoutConfirmationDialog` - Logout confirmation dialog
+  - Added comprehensive Compose previews for light and dark themes:
+    - Component-level previews for each section
+    - Full-screen previews for loading, error, and success states
+    - Uses `@PreviewLightDark` annotation for automatic light/dark mode previews
 - Improved Circuit state retention across configuration changes
   - Replaced `remember` with `rememberRetained` in AccessTokenScreen for form state persistence
   - Replaced `remember` with `rememberRetained` in DeviceTokenScreen for form state persistence
