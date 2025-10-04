@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceRetainedState
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
@@ -83,7 +84,7 @@ class WelcomePresenter
         @Composable
         override fun present(): WelcomeScreen.State {
             // Check if user has API token on first load
-            val userPreferences by androidx.compose.runtime.produceState<ink.trmnl.android.buddy.data.preferences.UserPreferences?>(
+            val userPreferences by produceRetainedState<ink.trmnl.android.buddy.data.preferences.UserPreferences?>(
                 initialValue = null,
             ) {
                 value = userPreferencesRepository.userPreferencesFlow.first()

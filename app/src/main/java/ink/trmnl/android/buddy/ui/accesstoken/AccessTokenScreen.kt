@@ -43,6 +43,7 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
@@ -93,9 +94,9 @@ class AccessTokenPresenter
     ) : Presenter<AccessTokenScreen.State> {
         @Composable
         override fun present(): AccessTokenScreen.State {
-            var token by remember { mutableStateOf("") }
-            var isLoading by remember { mutableStateOf(false) }
-            var errorMessage by remember { mutableStateOf<String?>(null) }
+            var token by rememberRetained { mutableStateOf("") }
+            var isLoading by rememberRetained { mutableStateOf(false) }
+            var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
             return AccessTokenScreen.State(
