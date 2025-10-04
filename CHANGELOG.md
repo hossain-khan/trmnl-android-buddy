@@ -14,6 +14,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Replaced `remember` with `rememberRetained` in UserAccountScreen for user data persistence
   - Replaced `produceState` with `produceRetainedState` in WelcomeScreen for better flow collection
   - State now survives screen rotations and other configuration changes according to Circuit best practices
+- Refactored AccessTokenScreen to follow Jetpack Compose best practices
+  - Extracted modular composable components: InstructionsSection, HelpLinksSection, TokenInputField, SaveTokenButton, SecurityHelpText
+  - Improved code organization and reusability
+  - Better state hoisting and separation of concerns
+
+### Added
+- Composable previews for AccessTokenScreen
+  - Light and dark mode previews for default, loading, error, and token-entered states
+  - Helps visualize UI in different states during development
 
 ## [1.0.3] - 2025-10-03
 
