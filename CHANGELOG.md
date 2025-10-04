@@ -8,59 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Refactored TrmnlDevicesScreen.kt for better code organization and maintainability
-  - Extracted smaller modular composable functions: `LoadingState`, `ErrorState`, `EmptyState`, `DevicesList`
-  - Extracted device card components: `DeviceInfoRow`, `BatteryIndicator`, `WifiIndicator`, `DevicePreviewImage`
-  - Added stable key parameter to LazyColumn items for better recomposition performance
-  - Improved code reusability and testability through component separation
-- Refactored `UserAccountScreen.kt` to follow Compose best practices
-  - Extracted modular composable components for better readability and reusability:
-    - `LoadingState` - Separated loading UI
-    - `ErrorState` - Separated error UI
-    - `UserAccountSuccessContent` - Main success state content
-    - `BackgroundWatermark` - Background logo as separate component
-    - `UserProfileCard` - User profile header with avatar
-    - `PersonalInfoSection` - Personal information card
-    - `LocaleTimezoneSection` - Locale and timezone info card
-    - `ApiAccessSection` - API key display card
-    - `LogoutConfirmationDialog` - Logout confirmation dialog
-  - Added comprehensive Compose previews for light and dark themes:
-    - Component-level previews for each section
-    - Full-screen previews for loading, error, and success states
-    - Uses `@PreviewLightDark` annotation for automatic light/dark mode previews
+- Refactored following screens for better code modularity, organization, maintainability and follow Compose best practices
+  - TrmnlDevicesScreen
+  - UserAccountScreen
+  - DeviceTokenScreen
+  - AccessTokenScreen
 - Improved Circuit state retention across configuration changes
-  - Replaced `remember` with `rememberRetained` in AccessTokenScreen for form state persistence
-  - Replaced `remember` with `rememberRetained` in DeviceTokenScreen for form state persistence
-  - Replaced `remember` with `rememberRetained` in UserAccountScreen for user data persistence
-  - Replaced `produceState` with `produceRetainedState` in WelcomeScreen for better flow collection
-  - State now survives screen rotations and other configuration changes according to Circuit best practices
-- Refactored DeviceTokenScreen.kt for improved maintainability and modularity
-  - Extracted modular composable components: `DeviceInfoCard`, `InstructionsCard`, `TokenInputSection`, `ActionButtons`
-  - Applied Jetpack Compose best practices for performance and stability
-  - Improved code organization with smaller, focused composable functions
-- Refactored AccessTokenScreen to follow Jetpack Compose best practices
-  - Extracted modular composable components: InstructionsSection, HelpLinksSection, TokenInputField, SaveTokenButton, SecurityHelpText
-  - Improved code organization and reusability
-  - Better state hoisting and separation of concerns
 
 ### Added
-- Composable previews for AccessTokenScreen
-  - Light and dark mode previews for default, loading, error, and token-entered states
-  - Helps visualize UI in different states during development
-- Comprehensive Compose preview support for DeviceTokenScreen
-  - Added `@PreviewLightDark` annotations for light and dark theme previews
-  - Added previews for different states: empty, with token, saved token, error, and saving states
-  - Added component-level previews for individual UI sections
-  - Total of 10 preview variations for better design iteration
-
-### Added
-- Comprehensive Compose previews for TrmnlDevicesScreen
-  - Light and dark mode previews using `@PreviewLightDark` annotation
-  - Individual previews for all screen states: loading, error, empty, and success
-  - Device card previews showing high, medium, and low battery/WiFi levels
-  - Privacy mode enabled/disabled previews
-  - Full screen previews for complete UI validation
-
+- Composable previews with light and dark mode previews using `@PreviewLightDark` annotation for following screens
+  - TrmnlDevicesScreen
+  - UserAccountScreen
+  - DeviceTokenScreen
+  - AccessTokenScreen
 
 ## [1.0.3] - 2025-10-03
 
