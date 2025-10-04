@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Refactored TrmnlDevicesScreen.kt for better code organization and maintainability
+  - Extracted smaller modular composable functions: `LoadingState`, `ErrorState`, `EmptyState`, `DevicesList`
+  - Extracted device card components: `DeviceInfoRow`, `BatteryIndicator`, `WifiIndicator`, `DevicePreviewImage`
+  - Added stable key parameter to LazyColumn items for better recomposition performance
+  - Improved code reusability and testability through component separation
 - Refactored `UserAccountScreen.kt` to follow Compose best practices
   - Extracted modular composable components for better readability and reusability:
     - `LoadingState` - Separated loading UI
@@ -47,6 +52,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added previews for different states: empty, with token, saved token, error, and saving states
   - Added component-level previews for individual UI sections
   - Total of 10 preview variations for better design iteration
+
+### Added
+- Comprehensive Compose previews for TrmnlDevicesScreen
+  - Light and dark mode previews using `@PreviewLightDark` annotation
+  - Individual previews for all screen states: loading, error, empty, and success
+  - Device card previews showing high, medium, and low battery/WiFi levels
+  - Privacy mode enabled/disabled previews
+  - Full screen previews for complete UI validation
+
 
 ## [1.0.3] - 2025-10-03
 
