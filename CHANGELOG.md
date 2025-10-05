@@ -10,9 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Device preview refresh rate indicator on device list screen
   - Semi-transparent overlay with rounded corners displayed on top of preview images
-  - Shows refresh rate with `image_inset` icon (e.g., "5m", "300s", "1h")
+  - Shows refresh rate with refresh icon (e.g., "5m", "300s", "1h")
   - Human-readable format: seconds (< 60s), minutes (< 60m), hours (≥ 60m)
   - Overlay positioned at top-left corner with Material 3 surface styling
+- New refresh icon drawable for refresh rate indicator
 
 ### Changed
 - Device preview data structure now includes refresh rate information

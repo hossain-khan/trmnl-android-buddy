@@ -992,7 +992,7 @@ private fun RefreshRateIndicator(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                painter = painterResource(R.drawable.image_inset_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                painter = painterResource(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                 contentDescription = "Refresh rate",
                 modifier = Modifier.size(14.dp),
                 tint = MaterialTheme.colorScheme.onSurface,
