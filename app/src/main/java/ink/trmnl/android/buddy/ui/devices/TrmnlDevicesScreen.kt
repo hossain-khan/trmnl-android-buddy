@@ -84,6 +84,14 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 /**
+ * Data class to hold preview image information including refresh rate.
+ */
+data class DevicePreviewInfo(
+    val imageUrl: String,
+    val refreshRate: Int, // in seconds
+)
+
+/**
  * Screen for displaying list of TRMNL devices.
  * Shows device status, battery level, and WiFi strength.
  */
@@ -92,7 +100,7 @@ data object TrmnlDevicesScreen : Screen {
     data class State(
         val devices: List<Device> = emptyList(),
         val deviceTokens: Map<String, String?> = emptyMap(),
-        val devicePreviews: Map<String, String?> = emptyMap(),
+        val devicePreviews: Map<String, DevicePreviewInfo?> = emptyMap(),
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
         val isUnauthorized: Boolean = false,
@@ -119,7 +127,7 @@ data object TrmnlDevicesScreen : Screen {
 
         data class DevicePreviewClicked(
             val device: Device,
-            val imageUrl: String,
+            val previewInfo: DevicePreviewInfo,
         ) : Event()
     }
 }
@@ -140,7 +148,7 @@ class TrmnlDevicesPresenter
         override fun present(): TrmnlDevicesScreen.State {
             var devices by rememberRetained { mutableStateOf<List<Device>>(emptyList()) }
             var deviceTokens by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
-            var devicePreviews by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
+            var devicePreviews by rememberRetained { mutableStateOf<Map<String, DevicePreviewInfo?>>(emptyMap()) }
             var isLoading by rememberRetained { mutableStateOf(true) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             var isUnauthorized by rememberRetained { mutableStateOf(false) }
@@ -257,7 +265,7 @@ class TrmnlDevicesPresenter
                             DevicePreviewScreen(
                                 deviceId = event.device.friendlyId,
                                 deviceName = event.device.name,
-                                imageUrl = event.imageUrl,
+                                imageUrl = event.previewInfo.imageUrl,
                             ),
                         )
                     }
@@ -279,16 +287,23 @@ class TrmnlDevicesPresenter
         private suspend fun loadDevicePreviews(
             devices: List<Device>,
             tokens: Map<String, String?>,
-            onLoaded: (Map<String, String?>) -> Unit,
+            onLoaded: (Map<String, DevicePreviewInfo?>) -> Unit,
         ) {
             val previews =
                 devices.associate { device ->
                     val token = tokens[device.friendlyId]
-                    val imageUrl =
+                    val previewInfo =
                         if (token != null) {
                             try {
                                 when (val result = apiService.getDisplayCurrent(token)) {
-                                    is ApiResult.Success -> result.value.imageUrl
+                                    is ApiResult.Success -> {
+                                        result.value.imageUrl?.let { imageUrl ->
+                                            DevicePreviewInfo(
+                                                imageUrl = imageUrl,
+                                                refreshRate = result.value.refreshRate,
+                                            )
+                                        }
+                                    }
                                     else -> null // Silently fail for preview images
                                 }
                             } catch (e: Exception) {
@@ -298,7 +313,7 @@ class TrmnlDevicesPresenter
                         } else {
                             null
                         }
-                    device.friendlyId to imageUrl
+                    device.friendlyId to previewInfo
                 }
             onLoaded(previews)
         }
@@ -421,11 +436,11 @@ fun TrmnlDevicesContent(
                     innerPadding = innerPadding,
                     onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                     onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
-                    onPreviewClick = { device, imageUrl ->
+                    onPreviewClick = { device, previewInfo ->
                         state.eventSink(
                             TrmnlDevicesScreen.Event.DevicePreviewClicked(
                                 device = device,
-                                imageUrl = imageUrl,
+                                previewInfo = previewInfo,
                             ),
                         )
                     },
@@ -537,12 +552,12 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 private fun DevicesList(
     devices: List<Device>,
     deviceTokens: Map<String, String?>,
-    devicePreviews: Map<String, String?>,
+    devicePreviews: Map<String, DevicePreviewInfo?>,
     isPrivacyEnabled: Boolean,
     innerPadding: PaddingValues,
     onDeviceClick: (Device) -> Unit,
     onSettingsClick: (Device) -> Unit,
-    onPreviewClick: (Device, String) -> Unit,
+    onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -560,13 +575,13 @@ private fun DevicesList(
             DeviceCard(
                 device = device,
                 hasToken = deviceTokens[device.friendlyId] != null,
-                previewImageUrl = devicePreviews[device.friendlyId],
+                previewInfo = devicePreviews[device.friendlyId],
                 isPrivacyEnabled = isPrivacyEnabled,
                 onClick = { onDeviceClick(device) },
                 onSettingsClick = { onSettingsClick(device) },
                 onPreviewClick = {
-                    devicePreviews[device.friendlyId]?.let { imageUrl ->
-                        onPreviewClick(device, imageUrl)
+                    devicePreviews[device.friendlyId]?.let { previewInfo ->
+                        onPreviewClick(device, previewInfo)
                     }
                 },
             )
@@ -579,7 +594,7 @@ private fun DevicesList(
 private fun DeviceCard(
     device: Device,
     hasToken: Boolean,
-    previewImageUrl: String?,
+    previewInfo: DevicePreviewInfo?,
     isPrivacyEnabled: Boolean,
     onClick: () -> Unit,
     onSettingsClick: () -> Unit,
@@ -714,7 +729,7 @@ private fun DeviceCard(
         // Display preview image if available
         DevicePreviewImage(
             hasToken = hasToken,
-            previewImageUrl = previewImageUrl,
+            previewInfo = previewInfo,
             deviceName = device.name,
             deviceId = device.friendlyId,
             onPreviewClick = onPreviewClick,
@@ -888,7 +903,7 @@ private fun WifiIndicator(
 @Composable
 private fun DevicePreviewImage(
     hasToken: Boolean,
-    previewImageUrl: String?,
+    previewInfo: DevicePreviewInfo?,
     deviceName: String,
     deviceId: String,
     onPreviewClick: () -> Unit,
@@ -897,48 +912,115 @@ private fun DevicePreviewImage(
     // Invert colors in dark mode for better visibility of e-ink display images
     val colorFilter = rememberEInkColorFilter()
 
-    if (hasToken && previewImageUrl != null) {
+    if (hasToken && previewInfo != null) {
         AnimatedVisibility(
             visible = true,
             enter = fadeIn() + slideInVertically(),
         ) {
             SharedElementTransitionScope {
-                SubcomposeAsyncImage(
-                    model = previewImageUrl,
-                    contentDescription = "Device screen preview for $deviceName",
+                Box(
                     modifier =
                         modifier
-                            .sharedElement(
-                                sharedContentState =
-                                    rememberSharedContentState(
-                                        key = DevicePreviewImageKey(deviceId = deviceId),
-                                    ),
-                                animatedVisibilityScope = requireAnimatedScope(Navigation),
-                            ).fillMaxWidth()
+                            .fillMaxWidth()
                             .aspectRatio(800f / 480f) // TRMNL device aspect ratio
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .clickable(onClick = onPreviewClick),
-                    contentScale = ContentScale.Fit,
-                    colorFilter = colorFilter,
-                    loading = {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(32.dp),
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    },
-                    error = {
-                        // Silently fail - don't show error for preview images
-                    },
-                )
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    SubcomposeAsyncImage(
+                        model = previewInfo.imageUrl,
+                        contentDescription = "Device screen preview for $deviceName",
+                        modifier =
+                            Modifier
+                                .sharedElement(
+                                    sharedContentState =
+                                        rememberSharedContentState(
+                                            key = DevicePreviewImageKey(deviceId = deviceId),
+                                        ),
+                                    animatedVisibilityScope = requireAnimatedScope(Navigation),
+                                ).fillMaxSize()
+                                .clickable(onClick = onPreviewClick),
+                        contentScale = ContentScale.Fit,
+                        colorFilter = colorFilter,
+                        loading = {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(32.dp),
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        },
+                        error = {
+                            // Silently fail - don't show error for preview images
+                        },
+                    )
+
+                    // Refresh rate indicator overlay
+                    RefreshRateIndicator(
+                        refreshRate = previewInfo.refreshRate,
+                        modifier = Modifier.align(Alignment.TopStart),
+                    )
+                }
             }
         }
     }
 }
+
+/**
+ * Refresh rate indicator composable.
+ * Shows a semi-transparent overlay with refresh rate information.
+ */
+@Composable
+private fun RefreshRateIndicator(
+    refreshRate: Int,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier =
+            modifier
+                .padding(8.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+            ),
+        shape = MaterialTheme.shapes.small,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                contentDescription = "Refresh rate",
+                modifier = Modifier.size(14.dp),
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = formatRefreshRate(refreshRate),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+    }
+}
+
+/**
+ * Formats refresh rate in seconds to a human-readable string.
+ */
+private fun formatRefreshRate(seconds: Int): String =
+    when {
+        seconds < 60 -> "${seconds}s"
+        seconds < 3600 -> {
+            val minutes = seconds / 60
+            "${minutes}m"
+        }
+        else -> {
+            val hours = seconds / 3600
+            "${hours}h"
+        }
+    }
 
 @Composable
 private fun getBatteryColor(percentCharged: Double): Color {
@@ -1083,7 +1165,7 @@ private fun DeviceCardHighBatteryPreview() {
         DeviceCard(
             device = sampleDevice1,
             hasToken = true,
-            previewImageUrl = null,
+            previewInfo = null,
             isPrivacyEnabled = false,
             onClick = {},
             onSettingsClick = {},
@@ -1100,7 +1182,7 @@ private fun DeviceCardMediumBatteryPreview() {
         DeviceCard(
             device = sampleDevice2,
             hasToken = true,
-            previewImageUrl = null,
+            previewInfo = null,
             isPrivacyEnabled = false,
             onClick = {},
             onSettingsClick = {},
@@ -1117,7 +1199,7 @@ private fun DeviceCardLowBatteryPreview() {
         DeviceCard(
             device = sampleDevice3,
             hasToken = false,
-            previewImageUrl = null,
+            previewInfo = null,
             isPrivacyEnabled = false,
             onClick = {},
             onSettingsClick = {},
@@ -1134,7 +1216,7 @@ private fun DeviceCardPrivacyEnabledPreview() {
         DeviceCard(
             device = sampleDevice1,
             hasToken = true,
-            previewImageUrl = null,
+            previewInfo = null,
             isPrivacyEnabled = true,
             onClick = {},
             onSettingsClick = {},
