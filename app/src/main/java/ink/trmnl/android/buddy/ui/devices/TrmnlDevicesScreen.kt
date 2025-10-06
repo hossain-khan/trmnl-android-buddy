@@ -36,6 +36,9 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -105,6 +108,7 @@ data object TrmnlDevicesScreen : Screen {
         val errorMessage: String? = null,
         val isUnauthorized: Boolean = false,
         val isPrivacyEnabled: Boolean = true,
+        val snackbarMessage: String? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -129,6 +133,12 @@ data object TrmnlDevicesScreen : Screen {
             val device: Device,
             val previewInfo: DevicePreviewInfo,
         ) : Event()
+
+        data class RefreshRateInfoClicked(
+            val refreshRate: Int,
+        ) : Event()
+
+        data object DismissSnackbar : Event()
     }
 }
 
@@ -153,6 +163,7 @@ class TrmnlDevicesPresenter
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             var isUnauthorized by rememberRetained { mutableStateOf(false) }
             var isPrivacyEnabled by rememberRetained { mutableStateOf(true) }
+            var snackbarMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
             // Fetch devices on initial load only (when devices list is empty)
@@ -206,6 +217,7 @@ class TrmnlDevicesPresenter
                 errorMessage = errorMessage,
                 isUnauthorized = isUnauthorized,
                 isPrivacyEnabled = isPrivacyEnabled,
+                snackbarMessage = snackbarMessage,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
@@ -268,6 +280,14 @@ class TrmnlDevicesPresenter
                                 imageUrl = event.previewInfo.imageUrl,
                             ),
                         )
+                    }
+
+                    is TrmnlDevicesScreen.Event.RefreshRateInfoClicked -> {
+                        snackbarMessage = formatRefreshRateExplanation(event.refreshRate)
+                    }
+
+                    TrmnlDevicesScreen.Event.DismissSnackbar -> {
+                        snackbarMessage = null
                     }
                 }
             }
@@ -381,8 +401,21 @@ fun TrmnlDevicesContent(
     state: TrmnlDevicesScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Show snackbar when message changes
+    LaunchedEffect(state.snackbarMessage) {
+        state.snackbarMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            state.eventSink(TrmnlDevicesScreen.Event.DismissSnackbar)
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             TopAppBar(
                 title = { Text("TRMNL Devices") },
@@ -444,6 +477,7 @@ fun TrmnlDevicesContent(
                             ),
                         )
                     },
+                    eventSink = state.eventSink,
                 )
             }
         }
@@ -558,6 +592,7 @@ private fun DevicesList(
     onDeviceClick: (Device) -> Unit,
     onSettingsClick: (Device) -> Unit,
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
+    eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -584,6 +619,7 @@ private fun DevicesList(
                         onPreviewClick(device, previewInfo)
                     }
                 },
+                eventSink = eventSink,
             )
         }
     }
@@ -599,6 +635,7 @@ private fun DeviceCard(
     onClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onPreviewClick: () -> Unit,
+    eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Invert colors in dark mode for better visibility of e-ink display images
@@ -733,6 +770,7 @@ private fun DeviceCard(
             deviceName = device.name,
             deviceId = device.friendlyId,
             onPreviewClick = onPreviewClick,
+            eventSink = eventSink,
         )
     }
 }
@@ -907,6 +945,7 @@ private fun DevicePreviewImage(
     deviceName: String,
     deviceId: String,
     onPreviewClick: () -> Unit,
+    eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Invert colors in dark mode for better visibility of e-ink display images
@@ -959,6 +998,9 @@ private fun DevicePreviewImage(
                     // Refresh rate indicator overlay
                     RefreshRateIndicator(
                         refreshRate = previewInfo.refreshRate,
+                        onInfoClick = { rate ->
+                            eventSink(TrmnlDevicesScreen.Event.RefreshRateInfoClicked(rate))
+                        },
                         modifier = Modifier.align(Alignment.TopStart),
                     )
                 }
@@ -974,9 +1016,11 @@ private fun DevicePreviewImage(
 @Composable
 private fun RefreshRateIndicator(
     refreshRate: Int,
+    onInfoClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
+        onClick = { onInfoClick(refreshRate) },
         modifier =
             modifier
                 .padding(8.dp),
@@ -1019,6 +1063,24 @@ private fun formatRefreshRate(seconds: Int): String =
         else -> {
             val hours = seconds / 3600
             "${hours}h"
+        }
+    }
+
+/**
+ * Formats refresh rate explanation for snackbar display.
+ */
+private fun formatRefreshRateExplanation(seconds: Int): String =
+    when {
+        seconds < 60 -> "This device checks for new content every $seconds seconds"
+        seconds < 3600 -> {
+            val minutes = seconds / 60
+            val minuteText = if (minutes == 1) "minute" else "minutes"
+            "This device checks for new content every $minutes $minuteText"
+        }
+        else -> {
+            val hours = seconds / 3600
+            val hourText = if (hours == 1) "hour" else "hours"
+            "This device checks for new content every $hours $hourText"
         }
     }
 
@@ -1170,6 +1232,7 @@ private fun DeviceCardHighBatteryPreview() {
             onClick = {},
             onSettingsClick = {},
             onPreviewClick = {},
+            eventSink = {},
         )
     }
 }
@@ -1187,6 +1250,7 @@ private fun DeviceCardMediumBatteryPreview() {
             onClick = {},
             onSettingsClick = {},
             onPreviewClick = {},
+            eventSink = {},
         )
     }
 }
@@ -1204,6 +1268,7 @@ private fun DeviceCardLowBatteryPreview() {
             onClick = {},
             onSettingsClick = {},
             onPreviewClick = {},
+            eventSink = {},
         )
     }
 }
@@ -1221,6 +1286,7 @@ private fun DeviceCardPrivacyEnabledPreview() {
             onClick = {},
             onSettingsClick = {},
             onPreviewClick = {},
+            eventSink = {},
         )
     }
 }
@@ -1239,6 +1305,7 @@ private fun DevicesListPreview() {
             onDeviceClick = {},
             onSettingsClick = {},
             onPreviewClick = { _, _ -> },
+            eventSink = {},
         )
     }
 }
