@@ -17,12 +17,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Example: "This device checks for new screen content every 5 minutes"
     - Helps users understand what the refresh rate means
 - New refresh icon drawable for refresh rate indicator
+- `FormattingUtils.kt` utility file for common formatting functions
+  - `formatRefreshRate()` - Converts seconds to short format (5m, 300s, 1h)
+  - `formatRefreshRateExplanation()` - Generates full sentences for user-friendly explanations
 
 ### Changed
 - Device preview data structure now includes refresh rate information
   - Added `DevicePreviewInfo` data class to store both image URL and refresh rate
   - Updated presenter to fetch and store refresh rate from Display API
   - Improved preview loading to utilize complete Display API response
+- Refactored formatting functions to `ink.trmnl.android.buddy.util` package for better code organization
 
 ## [1.0.4] - 2025-10-04
 
