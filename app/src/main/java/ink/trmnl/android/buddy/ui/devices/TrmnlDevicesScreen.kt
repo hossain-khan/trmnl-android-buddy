@@ -1071,16 +1071,16 @@ private fun formatRefreshRate(seconds: Int): String =
  */
 private fun formatRefreshRateExplanation(seconds: Int): String =
     when {
-        seconds < 60 -> "This device checks for new content every $seconds seconds"
+        seconds < 60 -> "This device checks for new screen content every $seconds seconds"
         seconds < 3600 -> {
             val minutes = seconds / 60
             val minuteText = if (minutes == 1) "minute" else "minutes"
-            "This device checks for new content every $minutes $minuteText"
+            "This device checks for new screen content every $minutes $minuteText"
         }
         else -> {
             val hours = seconds / 3600
             val hourText = if (hours == 1) "hour" else "hours"
-            "This device checks for new content every $hours $hourText"
+            "This device checks for new screen content every $hours $hourText"
         }
     }
 

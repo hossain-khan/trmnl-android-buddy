@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Human-readable format: seconds (< 60s), minutes (< 60m), hours (≥ 60m)
   - Overlay positioned at top-left corner with Material 3 surface styling
   - **Clickable indicator** - Tap to see user-friendly explanation via snackbar
-    - Example: "This device checks for new content every 5 minutes"
+    - Example: "This device checks for new screen content every 5 minutes"
     - Helps users understand what the refresh rate means
 - New refresh icon drawable for refresh rate indicator
 
