@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `FormattingUtils.kt` utility file for common formatting functions
   - `formatRefreshRate()` - Converts seconds to short format (5m, 300s, 1h)
   - `formatRefreshRateExplanation()` - Generates full sentences for user-friendly explanations
+- `DeviceIndicatorUtils.kt` utility file for device status UI helpers
+  - `getBatteryColor()` - Returns theme-aware battery color based on charge level
+  - `getWifiColor()` - Returns theme-aware WiFi color based on signal strength
+  - `getBatteryIcon()` - Returns appropriate battery icon based on charge percentage
+  - `getWifiIcon()` - Returns appropriate WiFi icon based on signal strength
 
 ### Changed
 - Device preview data structure now includes refresh rate information
@@ -27,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated presenter to fetch and store refresh rate from Display API
   - Improved preview loading to utilize complete Display API response
 - Refactored formatting functions to `ink.trmnl.android.buddy.util` package for better code organization
+- Refactored device indicator helper functions to `ink.trmnl.android.buddy.ui.utils` package for reusability
 
 ## [1.0.4] - 2025-10-04
 
