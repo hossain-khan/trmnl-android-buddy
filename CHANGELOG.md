@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **DEVGUIDE.md** - Comprehensive technical documentation for developers
+  - Architecture overview with diagrams
+  - Detailed project structure
+  - Complete tech stack reference
+  - Development setup instructions
+  - Code organization patterns (Circuit, Metro, Repository)
+  - Design patterns and best practices
+  - Testing guidelines with examples
+  - Build and deployment instructions
+  - Common tasks and troubleshooting
+- **CONTRIBUTING.md** - Contribution guidelines for contributors
+  - Getting started guide
+  - Development workflow
+  - Code style and conventions
+  - Pull request process
+  - Bug reporting template
+  - Feature request template
+  - Links to DEVGUIDE.md for technical details
 - Device preview refresh rate indicator on device list screen
   - Semi-transparent overlay with rounded corners displayed on top of preview images
   - Shows refresh rate with refresh icon (e.g., "5m", "300s", "1h")
