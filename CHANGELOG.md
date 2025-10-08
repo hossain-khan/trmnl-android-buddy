@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2025-10-08
+
 ### Added
 - Device preview refresh rate indicator on device list screen
   - Semi-transparent overlay with rounded corners displayed on top of preview images
@@ -25,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `getWifiColor()` - Returns theme-aware WiFi color based on signal strength
   - `getBatteryIcon()` - Returns appropriate battery icon based on charge percentage
   - `getWifiIcon()` - Returns appropriate WiFi icon based on signal strength
+- Comprehensive unit tests for `FormattingUtils` with 8 test cases
 
 ### Changed
 - Device preview data structure now includes refresh rate information
@@ -143,10 +146,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.4...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.5...HEAD
+[1.0.5]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/hossain-khan/trmnl-android-buddy/releases/tag/1.0.0
-[1.0.0]: https://github.com/hossain-khan/trmnl-android-buddy/releases/tag/v1.0.0
