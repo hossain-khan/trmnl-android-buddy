@@ -22,14 +22,14 @@ See [latest release](https://github.com/hossain-khan/trmnl-android-buddy/release
 
 <table>
   <tr>
-    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_193811.png" alt="Device List" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_194229.png" alt="API Configuration" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_193834.png" alt="Privacy Toggle" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161825.png" alt="Device List" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_162116.png" alt="User API Configuration" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161930.png" alt="Device API Key Input" width="250"/></td>
   </tr>
   <tr>
-    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_194148.png" alt="Device Preview" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_194156.png" alt="Device Settings" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.2/Screenshot_20251003_194207.png" alt="Account Screen" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161910.png" alt="Device Preview" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161937.png" alt="User Account Home" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161943.png" alt="User Logout" width="250"/></td>
   </tr>
 </table>
 
