@@ -364,7 +364,7 @@ private fun UserAccountSuccessContent(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        BackgroundWatermark()
+        BackgroundWatermark(modifier = Modifier.align(Alignment.CenterEnd))
 
         Column(
             modifier =
@@ -387,12 +387,12 @@ private fun UserAccountSuccessContent(
  * Background watermark logo.
  */
 @Composable
-private fun BackgroundWatermark() {
+private fun BackgroundWatermark(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(R.drawable.trmnl_logo_semi_transparent),
         contentDescription = null,
         modifier =
-            Modifier
+            modifier
                 .size(600.dp)
                 .offset(x = 200.dp),
         contentScale = ContentScale.Fit,
