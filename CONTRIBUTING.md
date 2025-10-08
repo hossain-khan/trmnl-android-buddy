@@ -7,10 +7,7 @@ Thank you for your interest in contributing to TRMNL Android Buddy! This documen
 - [Code of Conduct](#code-of-conduct)
 - [Getting Started](#getting-started)
 - [Development Workflow](#development-workflow)
-- [Code Style and Conventions](#code-style-and-conventions)
 - [Pull Request Process](#pull-request-process)
-- [Reporting Bugs](#reporting-bugs)
-- [Suggesting Features](#suggesting-features)
 - [Questions](#questions)
 
 ## Code of Conduct
@@ -130,119 +127,15 @@ git checkout -b fix/bug-description
    git push origin feature/your-feature-name
    ```
 
-## Code Style and Conventions
-
-### Kotlin Style Guide
-
-This project follows the [official Kotlin style guide](https://kotlinlang.org/docs/coding-conventions.html) enforced by ktlint.
-
-**Key Points**:
-- **Classes**: PascalCase (e.g., `UserAccountScreen`)
-- **Functions/Properties**: camelCase (e.g., `getUserData()`)
-- **Constants**: SCREAMING_SNAKE_CASE (e.g., `MAX_RETRY_COUNT`)
-- **Composables**: PascalCase like classes (e.g., `UserProfileCard()`)
-
-### Material Design 3 Guidelines
-
-**IMPORTANT**: All UI components must be Material You compatible.
-
-✅ **DO**:
-```kotlin
-Card(
-    colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-    )
-) {
-    Text(
-        text = "Hello",
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
-    )
-}
-```
-
-❌ **DON'T**:
-```kotlin
-// Never hardcode colors
-Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
-    Text(text = "Hello", color = Color.White)
-}
-```
-
-### Architecture Patterns
-
-1. **Circuit UDF**:
-   - Screens split into Presenter (logic) and UI (rendering)
-   - State flows down, events flow up
-   - Use `@CircuitInject` for dependency injection
-
-2. **Metro DI**:
-   - Constructor injection preferred
-   - Use `@Inject` for classes
-   - Define bindings in `AppBindings.kt` or `AppGraph.kt`
-
-3. **Repository Pattern**:
-   - Abstract data sources (API, DataStore)
-   - Return `Flow<T>` for reactive data or suspend functions
-   - Use EitherNet's `ApiResult<T, E>` for API calls
-
-### Testing Guidelines
-
-1. **Use AssertK** for all assertions:
-   ```kotlin
-   import assertk.assertThat
-   import assertk.assertions.*
-   
-   assertThat(result).isEqualTo("expected")
-   ```
-
-2. **Prefer Fakes over Mocks**:
-   - Fakes: Lightweight implementations (e.g., `FakeNavigator`)
-   - Mocks: Only when necessary (require frameworks)
-
-3. **Write tests for**:
-   - New API endpoints
-   - Repository methods
-   - Business logic in Presenters
-   - Utility functions
-
-4. **Example test**:
-   ```kotlin
-   @Test
-   fun `getDevices returns success when API responds 200`() = runTest {
-       // Arrange
-       mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(jsonResponse))
-       
-       // Act
-       val result = apiService.getDevices("Bearer token")
-       
-       // Assert
-       assertThat(result).isInstanceOf<ApiResult.Success<*>>()
-   }
-   ```
-
-### Code Formatting
-
-**REQUIRED before every commit**:
-
-```bash
-# Auto-format all Kotlin code
-./gradlew formatKotlin
-
-# Check formatting without modifying files
-./gradlew lintKotlin
-```
-
 ## Pull Request Process
 
 ### Before Submitting
 
-1. ✅ Code is formatted with `./gradlew formatKotlin`
-2. ✅ All tests pass with `./gradlew test`
-3. ✅ CHANGELOG.md is updated under `[Unreleased]` section
-4. ✅ Commits have descriptive messages
-5. ✅ No unnecessary files (build artifacts, IDE files, etc.)
+1. Code is formatted with `./gradlew formatKotlin`
+2. All tests pass with `./gradlew test`
+3. CHANGELOG.md is updated under `[Unreleased]` section
+4. Commits have descriptive messages
+5. No unnecessary files (build artifacts, IDE files, etc.)
 
 ### Submitting a Pull Request
 
@@ -290,72 +183,6 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 ### Protected Main Branch
 
 The `main` branch is protected. All changes must go through pull requests. Direct pushes are not allowed.
-
-## Reporting Bugs
-
-### Before Reporting
-
-1. **Search existing issues** to avoid duplicates
-2. **Ensure it's a bug** and not expected behavior
-3. **Reproduce the bug** consistently
-
-### Bug Report Template
-
-Create a new issue with:
-
-**Title**: Brief, descriptive summary
-
-**Description**:
-```markdown
-**Describe the bug**
-A clear description of what the bug is.
-
-**Steps to reproduce**
-1. Go to '...'
-2. Click on '...'
-3. Scroll down to '...'
-4. See error
-
-**Expected behavior**
-What you expected to happen.
-
-**Actual behavior**
-What actually happened.
-
-**Screenshots**
-If applicable, add screenshots.
-
-**Device Information**
-- Device: [e.g., Pixel 7]
-- Android Version: [e.g., Android 14]
-- App Version: [e.g., 1.0.3]
-
-**Logs**
-Any relevant logcat output.
-```
-
-## Suggesting Features
-
-### Feature Request Template
-
-Create a new issue with:
-
-**Title**: Brief feature description
-
-**Description**:
-```markdown
-**Is your feature request related to a problem?**
-A clear description of the problem.
-
-**Proposed solution**
-How would you like this to work?
-
-**Alternatives considered**
-Any alternative solutions you've thought about.
-
-**Additional context**
-Any other context, mockups, or examples.
-```
 
 ## Questions
 

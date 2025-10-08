@@ -40,20 +40,3 @@ See [latest release](https://github.com/hossain-khan/trmnl-android-buddy/release
 2. Sync Gradle
 3. Build and run! or just run `./gradlew assembleDebug` from command line to build APK.
 
-## 📚 Documentation
-
-- **[DEVGUIDE.md](DEVGUIDE.md)** - Comprehensive technical documentation for developers
-  - Architecture overview and design patterns
-  - Detailed project structure and tech stack
-  - Development setup and common tasks
-  - Testing guidelines and troubleshooting
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guidelines for contributing to the project
-  - Development workflow and code style
-  - Pull request process
-  - Bug reporting and feature requests
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history and release notes
-
-## 🤝 Contributing
-
-We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
-
