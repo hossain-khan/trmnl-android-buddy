@@ -6,4 +6,5 @@ package ink.trmnl.android.buddy.data.preferences
 data class UserPreferences(
     val apiToken: String? = null,
     val isOnboardingCompleted: Boolean = false,
+    val isBatteryTrackingEnabled: Boolean = true,
 )

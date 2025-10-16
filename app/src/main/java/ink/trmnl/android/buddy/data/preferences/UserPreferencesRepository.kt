@@ -43,6 +43,11 @@ interface UserPreferencesRepository {
     suspend fun setOnboardingCompleted()
 
     /**
+     * Set battery tracking preference.
+     */
+    suspend fun setBatteryTrackingEnabled(enabled: Boolean)
+
+    /**
      * Clear all preferences.
      */
     suspend fun clearAll()
@@ -57,6 +62,7 @@ class UserPreferencesRepositoryImpl
         private object PreferencesKeys {
             val API_TOKEN = stringPreferencesKey("api_token")
             val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+            val BATTERY_TRACKING_ENABLED = booleanPreferencesKey("battery_tracking_enabled")
         }
 
         override val userPreferencesFlow: Flow<UserPreferences> =
@@ -64,6 +70,7 @@ class UserPreferencesRepositoryImpl
                 UserPreferences(
                     apiToken = preferences[PreferencesKeys.API_TOKEN],
                     isOnboardingCompleted = preferences[PreferencesKeys.ONBOARDING_COMPLETED] ?: false,
+                    isBatteryTrackingEnabled = preferences[PreferencesKeys.BATTERY_TRACKING_ENABLED] ?: true,
                 )
             }
 
@@ -82,6 +89,12 @@ class UserPreferencesRepositoryImpl
         override suspend fun setOnboardingCompleted() {
             context.dataStore.edit { preferences ->
                 preferences[PreferencesKeys.ONBOARDING_COMPLETED] = true
+            }
+        }
+
+        override suspend fun setBatteryTrackingEnabled(enabled: Boolean) {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.BATTERY_TRACKING_ENABLED] = enabled
             }
         }
 

@@ -94,6 +94,7 @@ data class DeviceDetailScreen(
         val rssi: Int?,
         val batteryHistory: List<BatteryHistoryEntity> = emptyList(),
         val isLoading: Boolean = true,
+        val isBatteryTrackingEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -111,6 +112,7 @@ class DeviceDetailPresenter
         @Assisted private val screen: DeviceDetailScreen,
         @Assisted private val navigator: Navigator,
         private val batteryHistoryRepository: BatteryHistoryRepository,
+        private val userPreferencesRepository: ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository,
     ) : Presenter<DeviceDetailScreen.State> {
         @Composable
         override fun present(): DeviceDetailScreen.State {
@@ -118,6 +120,11 @@ class DeviceDetailPresenter
                 .getBatteryHistoryForDevice(screen.deviceId)
                 .collectAsState(initial = emptyList())
             var isLoading by rememberRetained { mutableStateOf(true) }
+            val preferences by userPreferencesRepository.userPreferencesFlow.collectAsState(
+                initial =
+                    ink.trmnl.android.buddy.data.preferences
+                        .UserPreferences(),
+            )
 
             // Mark loading complete when we have data
             LaunchedEffect(batteryHistory) {
@@ -135,6 +142,7 @@ class DeviceDetailPresenter
                 rssi = screen.rssi,
                 batteryHistory = batteryHistory,
                 isLoading = isLoading,
+                isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
@@ -199,6 +207,7 @@ fun DeviceDetailContent(
             BatteryHistoryChart(
                 batteryHistory = state.batteryHistory,
                 isLoading = state.isLoading,
+                isBatteryTrackingEnabled = state.isBatteryTrackingEnabled,
             )
 
             // Disclaimer
@@ -339,6 +348,7 @@ private fun CurrentStatusCard(
 private fun BatteryHistoryChart(
     batteryHistory: List<BatteryHistoryEntity>,
     isLoading: Boolean,
+    isBatteryTrackingEnabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     var isInitialized by remember { mutableStateOf(false) }
@@ -358,6 +368,37 @@ private fun BatteryHistoryChart(
             )
 
             when {
+                !isBatteryTrackingEnabled -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.outline_barcode_24),
+                                contentDescription = "Tracking disabled",
+                                modifier = Modifier.size(48.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                text = "Battery history tracking is disabled",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center,
+                            )
+                            Text(
+                                text = "Enable it in Settings to start collecting data",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
+                }
+
                 isLoading -> {
                     Box(
                         modifier = Modifier.fillMaxWidth().height(200.dp),

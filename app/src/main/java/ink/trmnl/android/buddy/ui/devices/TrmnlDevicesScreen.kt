@@ -123,6 +123,8 @@ data object TrmnlDevicesScreen : Screen {
 
         data object AccountClicked : Event()
 
+        data object SettingsClicked : Event()
+
         data object TogglePrivacy : Event()
 
         data object ResetToken : Event()
@@ -248,6 +250,10 @@ class TrmnlDevicesPresenter
 
                     is TrmnlDevicesScreen.Event.AccountClicked -> {
                         navigator.goTo(ink.trmnl.android.buddy.ui.user.UserAccountScreen)
+                    }
+
+                    is TrmnlDevicesScreen.Event.SettingsClicked -> {
+                        navigator.goTo(ink.trmnl.android.buddy.ui.settings.SettingsScreen)
                     }
 
                     TrmnlDevicesScreen.Event.TogglePrivacy -> {
@@ -444,6 +450,12 @@ fun TrmnlDevicesContent(
                                     },
                                 ),
                             contentDescription = if (state.isPrivacyEnabled) "Privacy enabled" else "Privacy disabled",
+                        )
+                    }
+                    IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.SettingsClicked) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.settings_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Settings",
                         )
                     }
                     IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.AccountClicked) }) {
