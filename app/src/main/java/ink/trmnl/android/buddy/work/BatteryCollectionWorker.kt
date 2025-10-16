@@ -49,9 +49,15 @@ class BatteryCollectionWorker(
         Log.d(TAG, "Starting battery collection work")
 
         try {
-            // Get API token from preferences
+            // Get API token and preferences
             val preferences = userPreferencesRepository.userPreferencesFlow.first()
             val apiToken = preferences.apiToken
+
+            // Check if battery tracking is enabled
+            if (!preferences.isBatteryTrackingEnabled) {
+                Log.d(TAG, "Battery tracking is disabled, skipping collection")
+                return Result.success()
+            }
 
             if (apiToken.isNullOrBlank()) {
                 Log.w(TAG, "No API token found, skipping battery collection")

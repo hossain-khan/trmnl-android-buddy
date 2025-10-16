@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Settings Screen**: New screen for app settings accessible from devices list
+  - Battery history tracking toggle to opt-out of periodic data collection
+  - Material 3 design with Switch component for easy toggling
+  - Navigation from TRMNL Devices screen via settings icon in top app bar
+- **Battery Tracking Opt-Out**: Users can now disable automatic battery history collection
+  - New `isBatteryTrackingEnabled` preference (default: enabled)
+  - BatteryCollectionWorker checks preference before collecting data
+  - Settings are persisted in DataStore and survive app restarts
+- **Device Detail Screen Enhancement**: Shows when battery tracking is disabled
+  - Empty state with friendly message when tracking is turned off
+  - Directs users to Settings to re-enable tracking
+  - Distinguishes between "no data yet" and "tracking disabled" states
+
+### Changed
+- TRMNL Devices screen: Added settings icon to top app bar (between privacy and account icons)
+- Battery collection worker now respects user preference for tracking opt-out
+- UserPreferences data class includes `isBatteryTrackingEnabled` field
+
+### Added (Previous)
 - **Battery History Tracking**: Automatic weekly collection of battery data for health monitoring
   - Background worker collects battery levels for all devices every 7 days
   - Room database stores historical battery data with timestamps

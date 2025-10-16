@@ -239,6 +239,12 @@ private class FakeUserPreferencesRepository : UserPreferencesRepository {
             userPreferencesFlow.value.copy(isOnboardingCompleted = true)
     }
 
+    override suspend fun setBatteryTrackingEnabled(enabled: Boolean) {
+        preferences["battery_tracking_enabled"] = enabled
+        userPreferencesFlow.value =
+            userPreferencesFlow.value.copy(isBatteryTrackingEnabled = enabled)
+    }
+
     override suspend fun clearAll() {
         wasCleared = true
         preferences.clear()
