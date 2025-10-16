@@ -488,7 +488,10 @@ private fun DisclaimerCard(modifier: Modifier = Modifier) {
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = "Note: Battery trajectory predictions are based on historical drain data. Actual battery life may vary depending on usage patterns, environmental conditions, and device settings.",
+                text =
+                    "Note: Battery trajectory predictions are based on historical drain data. " +
+                        "Actual battery life may vary depending on usage patterns, " +
+                        "environmental conditions, and device settings.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

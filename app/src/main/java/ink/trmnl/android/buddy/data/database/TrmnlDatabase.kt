@@ -22,7 +22,7 @@ abstract class TrmnlDatabase : RoomDatabase() {
         private const val DATABASE_NAME = "trmnl_buddy.db"
 
         @Volatile
-        private var INSTANCE: TrmnlDatabase? = null
+        private var instance: TrmnlDatabase? = null
 
         /**
          * Get the singleton database instance.
@@ -31,16 +31,16 @@ abstract class TrmnlDatabase : RoomDatabase() {
          * @return Database instance
          */
         fun getInstance(context: Context): TrmnlDatabase =
-            INSTANCE ?: synchronized(this) {
-                val instance =
+            instance ?: synchronized(this) {
+                val newInstance =
                     Room
                         .databaseBuilder(
                             context.applicationContext,
                             TrmnlDatabase::class.java,
                             DATABASE_NAME,
                         ).build()
-                INSTANCE = instance
-                instance
+                instance = newInstance
+                newInstance
             }
     }
 }
