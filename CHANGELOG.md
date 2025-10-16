@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Battery History Tracking**: Automatic weekly collection of battery data for health monitoring
+  - Background worker collects battery levels for all devices every 7 days
+  - Room database stores historical battery data with timestamps
+  - Battery data includes percentage charged and voltage (when available)
+- **Device Detail Screen**: New screen showing comprehensive device information
+  - Current battery and WiFi status with progress indicators
+  - Historical battery chart using Vico library
+  - Visual battery trajectory over time with date labels
+  - Material 3 design with smooth animations
+  - Navigation from device list by tapping any device card
+- **Battery Trajectory Visualization**: Line chart displaying battery drain over time
+  - Interactive chart with date-based x-axis (MM/dd format)
+  - Battery percentage on y-axis (0-100%)
+  - Automatic data point plotting from historical readings
+  - Empty state with friendly message when no data available
+- **Prediction Disclaimer**: User-friendly note about battery trajectory accuracy
+  - Explains that predictions are based on historical data
+  - Notes that actual results may vary by usage and conditions
+- Room database integration with Metro DI
+  - `TrmnlDatabase` with `BatteryHistoryEntity` and `BatteryHistoryDao`
+  - `BatteryHistoryRepository` for data operations
+  - Database singleton pattern with application context
+- Vico chart library (2.0.0-alpha.28) for Material 3 compatible charting
+
+### Changed
+- Updated WorkManager initialization to schedule weekly battery collection
+  - Periodic work runs every 7 days with network connectivity requirement
+  - Uses `ExistingPeriodicWorkPolicy.KEEP` to avoid duplicate workers
+
 ## [1.0.5] - 2025-10-08
 
 ### Added

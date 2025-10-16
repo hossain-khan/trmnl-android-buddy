@@ -115,6 +115,16 @@ dependencies {
     implementation(libs.androidx.work)
     implementation(libs.androidx.datastore.preferences)
 
+    // Room Database
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    // Vico Chart Library for battery trajectory visualization
+    implementation(libs.vico.compose)
+    implementation(libs.vico.compose.m3)
+    implementation(libs.vico.core)
+
     // EitherNet for type-safe API results (needed to handle ApiResult from :api module)
     implementation(libs.eithernet)
 
