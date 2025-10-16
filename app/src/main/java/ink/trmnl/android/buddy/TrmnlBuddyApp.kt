@@ -3,14 +3,18 @@ package ink.trmnl.android.buddy
 import android.app.Application
 import androidx.work.Configuration
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dev.zacsweers.metro.createGraphFactory
 import ink.trmnl.android.buddy.di.AppGraph
+import ink.trmnl.android.buddy.work.BatteryCollectionWorker
 import ink.trmnl.android.buddy.work.SampleWorker
+import java.util.concurrent.TimeUnit
 
 /**
  * Application class for the app with key initializations.
@@ -28,6 +32,7 @@ class TrmnlBuddyApp :
     override fun onCreate() {
         super.onCreate()
         scheduleBackgroundWork()
+        scheduleBatteryCollection()
     }
 
     /**
@@ -47,5 +52,29 @@ class TrmnlBuddyApp :
                 ).build()
 
         appGraph.workManager.enqueue(workRequest)
+    }
+
+    /**
+     * Schedules weekly battery data collection using WorkManager.
+     * The worker collects battery information for all devices to track battery health over time.
+     */
+    private fun scheduleBatteryCollection() {
+        val batteryWorkRequest =
+            PeriodicWorkRequestBuilder<BatteryCollectionWorker>(
+                repeatInterval = 7,
+                repeatIntervalTimeUnit = TimeUnit.DAYS,
+            ).setConstraints(
+                Constraints
+                    .Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build(),
+            ).build()
+
+        // Use KEEP policy to avoid duplicates
+        appGraph.workManager.enqueueUniquePeriodicWork(
+            BatteryCollectionWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            batteryWorkRequest,
+        )
     }
 }

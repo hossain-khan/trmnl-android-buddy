@@ -8,6 +8,8 @@ import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.api.TrmnlApiClient
 import ink.trmnl.android.buddy.api.TrmnlApiService
+import ink.trmnl.android.buddy.data.database.BatteryHistoryDao
+import ink.trmnl.android.buddy.data.database.TrmnlDatabase
 
 @ContributesTo(AppScope::class)
 interface AppBindings {
@@ -20,4 +22,13 @@ interface AppBindings {
         val isDebug = BuildConfig.DEBUG
         return TrmnlApiClient.create(isDebug = isDebug)
     }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideTrmnlDatabase(
+        @ApplicationContext context: Context,
+    ): TrmnlDatabase = TrmnlDatabase.getInstance(context)
+
+    @Provides
+    fun provideBatteryHistoryDao(database: TrmnlDatabase): BatteryHistoryDao = database.batteryHistoryDao()
 }

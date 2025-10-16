@@ -264,9 +264,16 @@ class TrmnlDevicesPresenter
                     }
 
                     is TrmnlDevicesScreen.Event.DeviceClicked -> {
-                        Log.i("TrmnlDevicesPresenter", "Device clicked: ${event.device.name} - Not implemented")
-                        // TODO: Navigate to device detail screen
-                        // navigator.goTo(DeviceDetailScreen(event.device.id))
+                        navigator.goTo(
+                            ink.trmnl.android.buddy.ui.devicedetail.DeviceDetailScreen(
+                                deviceId = event.device.friendlyId,
+                                deviceName = event.device.name,
+                                currentBattery = event.device.percentCharged,
+                                currentVoltage = event.device.batteryVoltage,
+                                wifiStrength = event.device.wifiStrength,
+                                rssi = event.device.rssi,
+                            ),
+                        )
                     }
 
                     is TrmnlDevicesScreen.Event.DeviceSettingsClicked -> {

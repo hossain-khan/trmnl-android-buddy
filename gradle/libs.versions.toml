@@ -26,6 +26,14 @@ androidxWork = "2.10.5"
 # https://developer.android.com/topic/libraries/architecture/datastore
 androidxDataStore = "1.1.2"
 
+# Room Database
+# https://developer.android.com/jetpack/androidx/releases/room
+androidxRoom = "2.7.0-alpha13"
+
+# Chart Library
+# https://github.com/patrykandpatrick/vico
+vico = "2.0.0-alpha.28"
+
 # Networking
 # https://github.com/square/okhttp/releases
 okhttp = "5.1.0"
@@ -86,6 +94,16 @@ androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.re
 
 # DataStore - https://developer.android.com/topic/libraries/architecture/datastore
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
+
+# Room Database - https://developer.android.com/jetpack/androidx/releases/room
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
+
+# Vico Chart Library - https://github.com/patrykandpatrick/vico
+vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
 
 # Networking
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
