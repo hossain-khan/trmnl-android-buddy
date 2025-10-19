@@ -34,17 +34,31 @@ android {
 
     // See `keystore/README.md` for more information
     signingConfigs {
-        create("config") {
+        getByName("debug") {
             storeFile = file("../keystore/debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
+        create("release") {
+            // For CI/CD: Use keystore from environment variables (GitHub Actions)
+            // For local builds: Fall back to debug keystore
+            val keystoreFile = System.getenv("KEYSTORE_FILE")?.let { file(it) }
+                ?: file("../keystore/debug.keystore")
+            val keystorePassword = System.getenv("KEYSTORE_PASSWORD") ?: "android"
+            val keyAliasValue = System.getenv("KEY_ALIAS") ?: "androiddebugkey"
+            val keyPasswordValue = keystorePassword // Use store password for key password
+
+            storeFile = keystoreFile
+            storePassword = keystorePassword
+            keyAlias = keyAliasValue
+            keyPassword = keyPasswordValue
+        }
     }
 
     buildTypes {
         debug {
-            signingConfig = signingConfigs.getByName("config")
+            signingConfig = signingConfigs.getByName("debug")
         }
         release {
             isMinifyEnabled = true
@@ -52,8 +66,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            // Use same signing config for release builds (for development/testing)
-            signingConfig = signingConfigs.getByName("config")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
