@@ -20,14 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Instructions for creating production release keystore
   - Base64 encoding instructions for GitHub Actions
   - Workflow usage documentation
-
-### Changed
-- Release builds now use separate signing configuration instead of debug keystore
-  - Local builds: Falls back to debug keystore when production keystore not configured
-  - GitHub Actions: Uses production keystore from repository secrets
-- Updated `app/build.gradle.kts` with dual signing configuration (debug and release)
-
-### Added (Previous)
 - **Settings Screen**: New screen for app settings accessible from devices list
   - Battery history tracking toggle to opt-out of periodic data collection
   - Material 3 design with Switch component for easy toggling
@@ -40,13 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Empty state with friendly message when tracking is turned off
   - Directs users to Settings to re-enable tracking
   - Distinguishes between "no data yet" and "tracking disabled" states
-
-### Changed
-- TRMNL Devices screen: Added settings icon to top app bar (between privacy and account icons)
-- Battery collection worker now respects user preference for tracking opt-out
-- UserPreferences data class includes `isBatteryTrackingEnabled` field
-
-### Added (Previous)
 - **Battery History Tracking**: Automatic weekly collection of battery data for health monitoring
   - Background worker collects battery levels for all devices every 7 days
   - Room database stores historical battery data with timestamps
@@ -72,6 +57,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Vico chart library (2.0.0-alpha.28) for Material 3 compatible charting
 
 ### Changed
+- Release builds now use separate signing configuration instead of debug keystore
+  - Local builds: Falls back to debug keystore when production keystore not configured
+  - GitHub Actions: Uses production keystore from repository secrets
+- Updated `app/build.gradle.kts` with dual signing configuration (debug and release)
+- TRMNL Devices screen: Added settings icon to top app bar (between privacy and account icons)
+- Battery collection worker now respects user preference for tracking opt-out
+- UserPreferences data class includes `isBatteryTrackingEnabled` field
 - Updated WorkManager initialization to schedule weekly battery collection
   - Periodic work runs every 7 days with network connectivity requirement
   - Uses `ExistingPeriodicWorkPolicy.KEEP` to avoid duplicate workers
