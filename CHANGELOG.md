@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **GitHub Actions Release Workflows**: Automated release build and signing system
+  - `android-release.yml` - Builds and publishes release APKs on main branch pushes and GitHub releases
+  - `test-keystore-apk-signing.yml` - Manual workflow to validate keystore and APK signing
+  - `test-keystore.yml` - Comprehensive keystore diagnostics and troubleshooting workflow
+- **CI/CD Release Signing**: Environment variable-based keystore configuration for automated builds
+  - Supports `KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, and `KEY_ALIAS` environment variables
+  - Falls back to debug keystore for local development
+  - Automatic APK attachment to GitHub releases
+- **Enhanced Keystore Documentation**: Comprehensive guide for production keystore setup
+  - Instructions for creating production release keystore
+  - Base64 encoding instructions for GitHub Actions
+  - Workflow usage documentation
+
+### Changed
+- Release builds now use separate signing configuration instead of debug keystore
+  - Local builds: Falls back to debug keystore when production keystore not configured
+  - GitHub Actions: Uses production keystore from repository secrets
+- Updated `app/build.gradle.kts` with dual signing configuration (debug and release)
+
+### Added (Previous)
 - **Settings Screen**: New screen for app settings accessible from devices list
   - Battery history tracking toggle to opt-out of periodic data collection
   - Material 3 design with Switch component for easy toggling
