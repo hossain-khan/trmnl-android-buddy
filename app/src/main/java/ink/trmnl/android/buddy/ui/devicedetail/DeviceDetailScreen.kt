@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,12 +26,14 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -103,6 +106,7 @@ data class DeviceDetailScreen(
         val batteryHistory: List<BatteryHistoryEntity> = emptyList(),
         val isLoading: Boolean = true,
         val isBatteryTrackingEnabled: Boolean = true,
+        val hasRecordedToday: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -114,6 +118,8 @@ data class DeviceDetailScreen(
         ) : Event()
 
         data object ClearBatteryHistory : Event()
+
+        data object RecordBatteryManually : Event()
     }
 }
 
@@ -140,6 +146,23 @@ class DeviceDetailPresenter
                         .UserPreferences(),
             )
 
+            // Check if battery has been recorded today
+            val hasRecordedToday by remember {
+                derivedStateOf {
+                    val today =
+                        java.util.Calendar
+                            .getInstance()
+                            .apply {
+                                set(java.util.Calendar.HOUR_OF_DAY, 0)
+                                set(java.util.Calendar.MINUTE, 0)
+                                set(java.util.Calendar.SECOND, 0)
+                                set(java.util.Calendar.MILLISECOND, 0)
+                            }.timeInMillis
+
+                    batteryHistory.any { it.timestamp >= today }
+                }
+            }
+
             // Mark loading complete when we have data or after initial load
             LaunchedEffect(batteryHistory) {
                 isLoading = false
@@ -155,6 +178,7 @@ class DeviceDetailPresenter
                 batteryHistory = batteryHistory,
                 isLoading = isLoading,
                 isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
+                hasRecordedToday = hasRecordedToday,
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
@@ -187,6 +211,16 @@ class DeviceDetailPresenter
                         // Clear all battery history for this device
                         kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
                             batteryHistoryRepository.deleteHistoryForDevice(screen.deviceId)
+                        }
+                    }
+                    DeviceDetailScreen.Event.RecordBatteryManually -> {
+                        // Record current battery level manually
+                        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                            batteryHistoryRepository.recordBatteryReading(
+                                deviceId = screen.deviceId,
+                                percentCharged = screen.currentBattery,
+                                batteryVoltage = screen.currentVoltage,
+                            )
                         }
                     }
                 }
@@ -255,6 +289,12 @@ fun DeviceDetailContent(
 
             // Disclaimer
             DisclaimerCard()
+
+            // Manual Battery Recording
+            ManualBatteryRecordingCard(
+                hasRecordedToday = state.hasRecordedToday,
+                onRecordBattery = { state.eventSink(DeviceDetailScreen.Event.RecordBatteryManually) },
+            )
 
             // Debug Panel (only in debug builds)
             if (BuildConfig.DEBUG) {
@@ -622,6 +662,73 @@ private fun DisclaimerCard(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+    }
+}
+
+@Composable
+private fun ManualBatteryRecordingCard(
+    hasRecordedToday: Boolean,
+    onRecordBattery: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Manual Battery Recording",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Text(
+                text =
+                    "Record the current battery level to track battery health over time. " +
+                        "Battery recordings are periodically taken weekly if the user preference is turned on.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            OutlinedButton(
+                onClick = onRecordBattery,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !hasRecordedToday,
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.outline_battery_android_6_24),
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = if (hasRecordedToday) "Battery Recorded Today" else "Record Battery Level",
+                )
+            }
+
+            if (hasRecordedToday) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.check_24dp_e8eaed_fill1_wght400_grad0_opsz24),
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    Text(
+                        text = "Battery level already logged for today",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
         }
     }
 }
