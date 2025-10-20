@@ -12,12 +12,12 @@ plugins {
 
 android {
     namespace = "ink.trmnl.android.buddy"
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "ink.trmnl.android.buddy"
         minSdk = 28
-        targetSdk = 36
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 6
         versionName = "1.0.5"
 
