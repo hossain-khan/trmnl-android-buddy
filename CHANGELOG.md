@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Manual Battery Recording**: New button on Device Detail screen to manually record battery levels
+  - Allows users to manually track battery health at any time
+  - Button automatically disables if battery already recorded today (prevents duplicate same-day entries)
+  - Shows success message with checkmark icon when battery is already logged for the day
+  - Explains that automatic weekly recordings happen when user preference is enabled
+  - Uses Material 3 OutlinedButton design with battery icon
+- **Battery History Chart Enhancements**: Improved UX for the battery history chart on Device Detail screen
+  - Data point dots: Added circular indicators (8dp) on each data point for better visibility
+  - Horizontal scrolling: Chart width dynamically adjusts based on data points (50dp per point) to prevent date label truncation
+  - Material 3 theming: Point indicators use primary color for consistency with dynamic theming
 - **GitHub Actions Release Workflows**: Automated release build and signing system
   - `android-release.yml` - Builds and publishes release APKs on main branch pushes and GitHub releases
   - `test-keystore-apk-signing.yml` - Manual workflow to validate keystore and APK signing
