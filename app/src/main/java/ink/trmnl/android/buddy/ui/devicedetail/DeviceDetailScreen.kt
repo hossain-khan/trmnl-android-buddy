@@ -126,11 +126,9 @@ class DeviceDetailPresenter
                         .UserPreferences(),
             )
 
-            // Mark loading complete when we have data
+            // Mark loading complete when we have data or after initial load
             LaunchedEffect(batteryHistory) {
-                if (batteryHistory.isNotEmpty()) {
-                    isLoading = false
-                }
+                isLoading = false
             }
 
             return DeviceDetailScreen.State(
@@ -418,13 +416,13 @@ private fun BatteryHistoryChart(
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.outline_barcode_24),
+                                painter = painterResource(R.drawable.graph_trend_up),
                                 contentDescription = "No data",
                                 modifier = Modifier.size(48.dp),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             Text(
-                                text = "No battery history available yet",
+                                text = "Not enough battery data available",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = TextAlign.Center,
@@ -513,17 +511,13 @@ private fun DisclaimerCard(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-            ),
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Icon(
-                painter = painterResource(R.drawable.outline_barcode_24),
+                painter = painterResource(R.drawable.outline_info_24),
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
