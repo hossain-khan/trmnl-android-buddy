@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,8 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,7 +34,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,9 +46,13 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
+import com.patrykandpatrick.vico.core.common.component.ShapeComponent
+import com.patrykandpatrick.vico.core.common.shape.Shape
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -519,6 +519,12 @@ private fun BatteryChart(
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }
 
+    // Calculate chart width based on number of data points (50dp per data point minimum)
+    val chartWidth =
+        remember(batteryHistory.size) {
+            maxOf(300, batteryHistory.size * 50)
+        }
+
     LaunchedEffect(batteryHistory) {
         withContext(Dispatchers.Default) {
             if (batteryHistory.isNotEmpty()) {
@@ -536,10 +542,37 @@ private fun BatteryChart(
     }
 
     if (batteryHistory.isNotEmpty()) {
+        val primaryColor = MaterialTheme.colorScheme.primary
+
+        // Create a custom line layer with points
+        val lineLayer =
+            rememberLineCartesianLayer(
+                LineCartesianLayer.LineProvider.series(
+                    LineCartesianLayer.Line(
+                        fill =
+                            LineCartesianLayer.LineFill.single(
+                                com.patrykandpatrick.vico.core.common
+                                    .Fill(primaryColor.hashCode()),
+                            ),
+                        pointProvider =
+                            LineCartesianLayer.PointProvider.single(
+                                LineCartesianLayer.Point(
+                                    component =
+                                        ShapeComponent(
+                                            shape = Shape.Pill,
+                                            color = primaryColor.hashCode(),
+                                        ),
+                                    sizeDp = 8f,
+                                ),
+                            ),
+                    ),
+                ),
+            )
+
         CartesianChartHost(
             chart =
                 rememberCartesianChart(
-                    rememberLineCartesianLayer(),
+                    lineLayer,
                     startAxis = rememberStartAxis(title = "Battery %"),
                     bottomAxis =
                         rememberBottomAxis(
@@ -558,7 +591,8 @@ private fun BatteryChart(
                         ),
                 ),
             modelProducer = modelProducer,
-            modifier = modifier.fillMaxWidth().height(200.dp),
+            modifier = modifier.width(chartWidth.dp).height(200.dp),
+            scrollState = rememberVicoScrollState(scrollEnabled = true),
             zoomState = rememberVicoZoomState(zoomEnabled = false),
         )
     }
