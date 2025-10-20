@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.ui.devicedetail
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -43,9 +45,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
@@ -114,6 +118,8 @@ data class DeviceDetailScreen(
         data class PopulateBatteryHistory(
             val minBatteryLevel: Float,
         ) : Event()
+
+        data object ClearBatteryHistory : Event()
     }
 }
 
@@ -181,6 +187,12 @@ class DeviceDetailPresenter
                                     timestamp = timestamp,
                                 )
                             }
+                        }
+                    }
+                    DeviceDetailScreen.Event.ClearBatteryHistory -> {
+                        // Clear all battery history for this device
+                        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                            batteryHistoryRepository.deleteHistoryForDevice(screen.deviceId)
                         }
                     }
                 }
@@ -256,6 +268,9 @@ fun DeviceDetailContent(
                     currentBattery = state.currentBattery,
                     onPopulateData = { minBattery ->
                         state.eventSink(DeviceDetailScreen.Event.PopulateBatteryHistory(minBattery))
+                    },
+                    onClearData = {
+                        state.eventSink(DeviceDetailScreen.Event.ClearBatteryHistory)
                     },
                 )
             }
@@ -587,6 +602,7 @@ private fun DisclaimerCard(modifier: Modifier = Modifier) {
 private fun DebugBatteryDataPanel(
     currentBattery: Double,
     onPopulateData: (Float) -> Unit,
+    onClearData: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var minBatteryLevel by remember { mutableFloatStateOf(0f) }
@@ -658,6 +674,31 @@ private fun DebugBatteryDataPanel(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Populate Battery History Data")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Clear history button
+            OutlinedButton(
+                onClick = { onClearData() },
+                colors =
+                    ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error,
+                    ),
+                border =
+                    BorderStroke(
+                        width = 1.dp,
+                        brush = SolidColor(MaterialTheme.colorScheme.error),
+                    ),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.close_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Clear Battery History")
             }
         }
     }
