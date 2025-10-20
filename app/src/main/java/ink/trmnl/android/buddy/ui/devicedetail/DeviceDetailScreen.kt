@@ -617,7 +617,7 @@ private fun DebugBatteryDataPanel(
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -675,8 +675,6 @@ private fun DebugBatteryDataPanel(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Populate Battery History Data")
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             // Clear history button
             OutlinedButton(
