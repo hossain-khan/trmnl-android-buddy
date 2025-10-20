@@ -7,13 +7,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,6 +64,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
@@ -67,11 +73,13 @@ import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
 import ink.trmnl.android.buddy.ui.utils.getWifiIcon
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 /**
  * Screen for displaying device details including battery history and health trajectory.
@@ -100,6 +108,12 @@ data class DeviceDetailScreen(
 
     sealed class Event : CircuitUiEvent {
         data object BackClicked : Event()
+
+        data class PopulateBatteryHistory(
+            val minBatteryLevel: Float,
+        ) : Event()
+
+        data object ClearBatteryHistory : Event()
     }
 }
 
@@ -144,6 +158,37 @@ class DeviceDetailPresenter
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
+                    is DeviceDetailScreen.Event.PopulateBatteryHistory -> {
+                        // Generate simulated battery history data
+                        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                            val currentTime = System.currentTimeMillis()
+                            val weeksToGenerate = 12 // Generate 12 weeks of history
+                            val currentBattery = screen.currentBattery
+                            val minBattery = event.minBatteryLevel.toDouble()
+
+                            // Calculate battery drop per week
+                            val totalDrop = currentBattery - minBattery
+                            val dropPerWeek = totalDrop / weeksToGenerate
+
+                            for (week in 0 until weeksToGenerate) {
+                                val weeklyBattery = currentBattery - (dropPerWeek * week)
+                                val timestamp = currentTime - TimeUnit.DAYS.toMillis((weeksToGenerate - week) * 7L)
+
+                                batteryHistoryRepository.recordBatteryReading(
+                                    deviceId = screen.deviceId,
+                                    percentCharged = weeklyBattery,
+                                    batteryVoltage = screen.currentVoltage,
+                                    timestamp = timestamp,
+                                )
+                            }
+                        }
+                    }
+                    DeviceDetailScreen.Event.ClearBatteryHistory -> {
+                        // Clear all battery history for this device
+                        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                            batteryHistoryRepository.deleteHistoryForDevice(screen.deviceId)
+                        }
+                    }
                 }
             }
         }
@@ -210,6 +255,19 @@ fun DeviceDetailContent(
 
             // Disclaimer
             DisclaimerCard()
+
+            // Debug Panel (only in debug builds)
+            if (BuildConfig.DEBUG) {
+                DebugBatteryDataPanel(
+                    currentBattery = state.currentBattery,
+                    onPopulateData = { minBattery ->
+                        state.eventSink(DeviceDetailScreen.Event.PopulateBatteryHistory(minBattery))
+                    },
+                    onClearData = {
+                        state.eventSink(DeviceDetailScreen.Event.ClearBatteryHistory)
+                    },
+                )
+            }
         }
     }
 }
