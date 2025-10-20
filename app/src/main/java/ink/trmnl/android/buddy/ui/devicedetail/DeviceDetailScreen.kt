@@ -608,13 +608,13 @@ private fun DebugBatteryDataPanel(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.outline_barcode_24),
+                    painter = painterResource(R.drawable.tools_outline),
                     contentDescription = null,
                     modifier = Modifier.size(20.dp),
                     tint = MaterialTheme.colorScheme.onErrorContainer,
                 )
                 Text(
-                    text = "🐛 DEBUG: Simulate Battery History",
+                    text = "DEBUG: Simulate Battery History",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onErrorContainer,
