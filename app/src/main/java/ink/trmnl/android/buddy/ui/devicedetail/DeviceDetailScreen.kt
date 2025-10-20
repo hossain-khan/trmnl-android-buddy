@@ -7,13 +7,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,14 +29,17 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,6 +66,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
@@ -67,11 +75,13 @@ import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
 import ink.trmnl.android.buddy.ui.utils.getWifiIcon
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 /**
  * Screen for displaying device details including battery history and health trajectory.
@@ -100,6 +110,10 @@ data class DeviceDetailScreen(
 
     sealed class Event : CircuitUiEvent {
         data object BackClicked : Event()
+
+        data class PopulateBatteryHistory(
+            val minBatteryLevel: Float,
+        ) : Event()
     }
 }
 
@@ -144,6 +158,31 @@ class DeviceDetailPresenter
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
+                    is DeviceDetailScreen.Event.PopulateBatteryHistory -> {
+                        // Generate simulated battery history data
+                        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                            val currentTime = System.currentTimeMillis()
+                            val weeksToGenerate = 12 // Generate 12 weeks of history
+                            val currentBattery = screen.currentBattery
+                            val minBattery = event.minBatteryLevel.toDouble()
+
+                            // Calculate battery drop per week
+                            val totalDrop = currentBattery - minBattery
+                            val dropPerWeek = totalDrop / weeksToGenerate
+
+                            for (week in 0 until weeksToGenerate) {
+                                val weeklyBattery = currentBattery - (dropPerWeek * week)
+                                val timestamp = currentTime - TimeUnit.DAYS.toMillis((weeksToGenerate - week) * 7L)
+
+                                batteryHistoryRepository.recordBatteryReading(
+                                    deviceId = screen.deviceId,
+                                    percentCharged = weeklyBattery,
+                                    batteryVoltage = screen.currentVoltage,
+                                    timestamp = timestamp,
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -210,6 +249,16 @@ fun DeviceDetailContent(
 
             // Disclaimer
             DisclaimerCard()
+
+            // Debug Panel (only in debug builds)
+            if (BuildConfig.DEBUG) {
+                DebugBatteryDataPanel(
+                    currentBattery = state.currentBattery,
+                    onPopulateData = { minBattery ->
+                        state.eventSink(DeviceDetailScreen.Event.PopulateBatteryHistory(minBattery))
+                    },
+                )
+            }
         }
     }
 }
@@ -530,6 +579,86 @@ private fun DisclaimerCard(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+    }
+}
+
+@Composable
+private fun DebugBatteryDataPanel(
+    currentBattery: Double,
+    onPopulateData: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var minBatteryLevel by remember { mutableFloatStateOf(0f) }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+            ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.outline_barcode_24),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                )
+                Text(
+                    text = "🐛 DEBUG: Simulate Battery History",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                )
+            }
+
+            Text(
+                text = "Generate 12 weeks of battery drain data from ${currentBattery.toInt()}% down to ${minBatteryLevel.toInt()}%",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+            )
+
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = "Minimum Battery Level: ${minBatteryLevel.toInt()}%",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                )
+                Slider(
+                    value = minBatteryLevel,
+                    onValueChange = { minBatteryLevel = it },
+                    valueRange = 0f..currentBattery.toFloat(),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            Button(
+                onClick = { onPopulateData(minBatteryLevel) },
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.graph_trend_up),
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Populate Battery History Data")
+            }
         }
     }
 }
