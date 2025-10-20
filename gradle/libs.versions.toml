@@ -1,4 +1,9 @@
 [versions]
+# Android SDK versions
+compileSdk = "36"
+minSdk = "26"
+targetSdk = "36"
+
 activityCompose = "1.11.0"
 # https://developer.android.com/build/releases/gradle-plugin
 agp = "8.12.1"
