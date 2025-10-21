@@ -60,7 +60,6 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
-import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
