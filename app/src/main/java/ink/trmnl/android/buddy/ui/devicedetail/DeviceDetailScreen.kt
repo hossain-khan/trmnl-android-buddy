@@ -71,6 +71,7 @@ import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
+import ink.trmnl.android.buddy.ui.theme.ebGaramondFontFamily
 import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
@@ -251,7 +252,7 @@ fun DeviceDetailContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(state.deviceName, fontFamily = ebGaramondFontFamily) },
+                title = { TrmnlTitle(state.deviceName) },
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(DeviceDetailScreen.Event.BackClicked) }) {
                         Icon(

@@ -78,9 +78,9 @@ import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
+import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
-import ink.trmnl.android.buddy.ui.theme.ebGaramondFontFamily
 import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
@@ -432,7 +432,7 @@ fun TrmnlDevicesContent(
         },
         topBar = {
             TopAppBar(
-                title = { Text("TRMNL Devices", fontFamily = ebGaramondFontFamily) },
+                title = { TrmnlTitle("TRMNL Devices") },
                 actions = {
                     IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.TogglePrivacy) }) {
                         Icon(

@@ -47,8 +47,8 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
-import ink.trmnl.android.buddy.ui.theme.ebGaramondFontFamily
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -130,7 +130,7 @@ fun SettingsContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Settings", fontFamily = ebGaramondFontFamily) },
+                title = { TrmnlTitle("Settings") },
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(SettingsScreen.Event.BackClicked) }) {
                         Icon(
