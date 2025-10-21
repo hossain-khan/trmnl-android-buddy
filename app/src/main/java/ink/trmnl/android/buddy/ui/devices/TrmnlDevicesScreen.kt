@@ -77,8 +77,8 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
-import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
+import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.utils.getBatteryColor
