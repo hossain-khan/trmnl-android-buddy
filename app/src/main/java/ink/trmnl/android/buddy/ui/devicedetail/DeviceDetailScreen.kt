@@ -251,7 +251,7 @@ fun DeviceDetailContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(state.deviceName) },
+                title = { Text(state.deviceName, fontFamily = ebGaramondFontFamily) },
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(DeviceDetailScreen.Event.BackClicked) }) {
                         Icon(

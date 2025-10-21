@@ -59,6 +59,8 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import ink.trmnl.android.buddy.ui.theme.ebGaramondFontFamily
+import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -175,7 +177,7 @@ fun AccessTokenContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("API Token Setup") },
+                title = { Text("API Token Setup", fontFamily = ebGaramondFontFamily) },
                 navigationIcon = {
                     IconButton(
                         onClick = { state.eventSink(AccessTokenScreen.Event.BackClicked) },
