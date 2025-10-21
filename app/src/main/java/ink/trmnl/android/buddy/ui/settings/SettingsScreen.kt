@@ -263,7 +263,7 @@ private fun AppInformationSection(modifier: Modifier = Modifier) {
                         Text(
                             text =
                                 ink.trmnl.android.buddy.BuildConfig.BUILD_TYPE
-                                    .replaceFirstChar { it.uppercase() },
+                                    .capitalized(),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
