@@ -18,7 +18,7 @@ Release builds are signed by workflows using securely stored keystore files and 
 
 Three GitHub Actions workflows are available for testing and building releases:
 
-1. **android-release.yml**: Builds release APK on main branch pushes and GitHub releases
+1. **[android-release.yml](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android-release.yml)**: Builds release APK on main branch pushes and GitHub releases
 2. **test-keystore-apk-signing.yml**: Validates keystore configuration and APK signing
 3. **test-keystore.yml**: Comprehensive keystore diagnostics and troubleshooting
 
