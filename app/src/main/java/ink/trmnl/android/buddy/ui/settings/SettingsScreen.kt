@@ -1,5 +1,8 @@
 package ink.trmnl.android.buddy.ui.settings
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -220,6 +224,8 @@ private fun BatteryTrackingSection(
 
 @Composable
 private fun AppInformationSection(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
     Column(modifier = modifier) {
         Text(
             text = "App Information",
@@ -276,6 +282,42 @@ private fun AppInformationSection(modifier: Modifier = Modifier) {
                         ListItemDefaults.colors(
                             containerColor = MaterialTheme.colorScheme.surface,
                         ),
+                )
+
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Report Issues",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "View project on GitHub",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.github_thin_outline),
+                            contentDescription = "GitHub",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    colors =
+                        ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    modifier =
+                        Modifier.clickable {
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/hossain-khan/trmnl-android-buddy"),
+                                )
+                            context.startActivity(intent)
+                        },
                 )
             }
         }

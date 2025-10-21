@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Displays current app version from BuildConfig (e.g., "1.0.5")
   - Shows build type with capitalized first letter (e.g., "Debug" or "Release")
   - Organized in Material 3 card with consistent styling
+- **GitHub Project Link**: Direct link to report issues and view project on GitHub
+  - "Report Issues" item in App Information section
+  - Opens GitHub repository in browser
+  - Uses GitHub icon for easy recognition
 - **Account Access from Settings**: Added account button to Settings screen app bar
   - Quick access to user account information from Settings
   - Maintains consistent navigation flow
