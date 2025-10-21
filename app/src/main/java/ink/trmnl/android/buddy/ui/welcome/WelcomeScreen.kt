@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.ui.welcome
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -143,6 +144,8 @@ fun WelcomeContent(
         label = "welcomeBackAlpha",
     )
 
+    val isDarkTheme = isSystemInDarkTheme()
+
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier =
@@ -224,6 +227,21 @@ fun WelcomeContent(
                     }
                 }
             }
+
+            // TRMNL "Works With" Badge - bottom right corner
+            Image(
+                painter =
+                    painterResource(
+                        id =
+                            if (isDarkTheme) {
+                                R.drawable.trmnl_badge_works_with_dark
+                            } else {
+                                R.drawable.trmnl_badge_works_with_light
+                            },
+                    ),
+                contentDescription = "Works with TRMNL",
+                modifier = Modifier.align(Alignment.BottomEnd),
+            )
         }
     }
 }
