@@ -228,7 +228,9 @@ private fun AppInformationSection(modifier: Modifier = Modifier) {
         )
 
         Card(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         ) {
             Column {
