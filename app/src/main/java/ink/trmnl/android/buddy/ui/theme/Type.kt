@@ -29,6 +29,14 @@ val displayFontFamily =
         ),
     )
 
+val ebGaramondFontFamily =
+    FontFamily(
+        Font(
+            googleFont = GoogleFont("EB Garamond"),
+            fontProvider = provider,
+        ),
+    )
+
 // Default Material 3 typography values
 val baseline = Typography()
 

@@ -51,6 +51,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
+import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import kotlinx.coroutines.launch
@@ -207,7 +208,7 @@ fun DeviceTokenContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Device API Key") },
+                title = { TrmnlTitle("Device API Key") },
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(DeviceTokenScreen.Event.BackClicked) }) {
                         Icon(

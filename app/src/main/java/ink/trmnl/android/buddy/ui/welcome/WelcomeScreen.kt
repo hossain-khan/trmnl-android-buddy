@@ -47,9 +47,11 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
+import ink.trmnl.android.buddy.ui.theme.ebGaramondFontFamily
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.parcelize.Parcelize
@@ -84,7 +86,7 @@ class WelcomePresenter
         @Composable
         override fun present(): WelcomeScreen.State {
             // Check if user has API token on first load
-            val userPreferences by produceRetainedState<ink.trmnl.android.buddy.data.preferences.UserPreferences?>(
+            val userPreferences by produceRetainedState<UserPreferences?>(
                 initialValue = null,
             ) {
                 value = userPreferencesRepository.userPreferencesFlow.first()
@@ -170,6 +172,7 @@ fun WelcomeContent(
                     text = "TRMNL Buddy",
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.Bold,
+                    fontFamily = ebGaramondFontFamily,
                     textAlign = TextAlign.Center,
                 )
 

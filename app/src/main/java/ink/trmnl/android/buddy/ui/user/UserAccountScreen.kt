@@ -67,6 +67,7 @@ import ink.trmnl.android.buddy.api.TrmnlDeviceRepository
 import ink.trmnl.android.buddy.api.models.User
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 import ink.trmnl.android.buddy.util.GravatarUtils
@@ -255,7 +256,7 @@ fun UserAccountContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Account") },
+                title = { TrmnlTitle("Account") },
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(UserAccountScreen.Event.BackClicked) }) {
                         Icon(

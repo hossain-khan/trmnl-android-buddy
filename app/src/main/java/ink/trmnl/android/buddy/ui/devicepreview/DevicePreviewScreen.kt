@@ -35,6 +35,8 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
+import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import ink.trmnl.android.buddy.ui.utils.rememberEInkColorFilter
 import kotlinx.parcelize.Parcelize
@@ -110,7 +112,7 @@ fun DevicePreviewContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(state.deviceName) },
+                title = { TrmnlTitle(state.deviceName) },
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(DevicePreviewScreen.Event.BackClicked) }) {
                         Icon(
