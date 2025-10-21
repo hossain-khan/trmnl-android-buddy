@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **App Information Display**: Version and build type now shown in Settings screen
+  - Displays current app version from BuildConfig (e.g., "1.0.5")
+  - Shows build type with capitalized first letter (e.g., "Debug" or "Release")
+  - Organized in Material 3 card with consistent styling
+- **GitHub Project Link**: Direct link to report issues and view project on GitHub
+  - "Report Issues" item in App Information section
+  - Opens GitHub repository in browser
+  - Uses GitHub icon for easy recognition
+- **Account Access from Settings**: Added account button to Settings screen app bar
+  - Quick access to user account information from Settings
+  - Maintains consistent navigation flow
 - **Manual Battery Recording**: New button on Device Detail screen to manually record battery levels
   - Allows users to manually track battery health at any time
   - Button automatically disables if battery already recorded today (prevents duplicate same-day entries)
@@ -67,6 +78,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Vico chart library (2.0.0-alpha.28) for Material 3 compatible charting
 
 ### Changed
+- **Account Navigation**: Moved account button from TRMNL Devices screen to Settings screen
+  - Improves UI organization by grouping account access with app settings
+  - Reduces clutter in main devices screen top app bar
 - Release builds now use separate signing configuration instead of debug keystore
   - Local builds: Falls back to debug keystore when production keystore not configured
   - GitHub Actions: Uses production keystore from repository secrets

@@ -121,8 +121,6 @@ data object TrmnlDevicesScreen : Screen {
     sealed class Event : CircuitUiEvent {
         data object Refresh : Event()
 
-        data object AccountClicked : Event()
-
         data object SettingsClicked : Event()
 
         data object TogglePrivacy : Event()
@@ -246,10 +244,6 @@ class TrmnlDevicesPresenter
                                 },
                             )
                         }
-                    }
-
-                    is TrmnlDevicesScreen.Event.AccountClicked -> {
-                        navigator.goTo(ink.trmnl.android.buddy.ui.user.UserAccountScreen)
                     }
 
                     is TrmnlDevicesScreen.Event.SettingsClicked -> {
@@ -456,12 +450,6 @@ fun TrmnlDevicesContent(
                         Icon(
                             painter = painterResource(R.drawable.settings_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                             contentDescription = "Settings",
-                        )
-                    }
-                    IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.AccountClicked) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                            contentDescription = "Account",
                         )
                     }
                 },

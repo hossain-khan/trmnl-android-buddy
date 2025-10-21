@@ -1,10 +1,14 @@
 package ink.trmnl.android.buddy.ui.settings
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -24,10 +28,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -38,6 +44,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
@@ -56,6 +63,8 @@ data object SettingsScreen : Screen {
 
     sealed class Event : CircuitUiEvent {
         data object BackClicked : Event()
+
+        data object AccountClicked : Event()
 
         data class BatteryTrackingToggled(
             val enabled: Boolean,
@@ -86,6 +95,9 @@ class SettingsPresenter(
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
                     navigator.pop()
+                }
+                SettingsScreen.Event.AccountClicked -> {
+                    navigator.goTo(ink.trmnl.android.buddy.ui.user.UserAccountScreen)
                 }
                 is SettingsScreen.Event.BatteryTrackingToggled -> {
                     coroutineScope.launch {
@@ -126,6 +138,14 @@ fun SettingsContent(
                         )
                     }
                 },
+                actions = {
+                    IconButton(onClick = { state.eventSink(SettingsScreen.Event.AccountClicked) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Account",
+                        )
+                    }
+                },
             )
         },
     ) { innerPadding ->
@@ -145,6 +165,9 @@ fun SettingsContent(
                     state.eventSink(SettingsScreen.Event.BatteryTrackingToggled(enabled))
                 },
             )
+
+            // App Information Section
+            AppInformationSection()
         }
     }
 }
@@ -197,6 +220,95 @@ private fun BatteryTrackingSection(
                         containerColor = MaterialTheme.colorScheme.surface,
                     ),
             )
+        }
+    }
+}
+
+@Composable
+private fun AppInformationSection(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
+    Column(modifier = modifier) {
+        Text(
+            text = "App Information",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        Card(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            Column {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Version",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = BuildConfig.VERSION_NAME + " (" + BuildConfig.BUILD_TYPE + ")",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.deviceinfo_thin_outline),
+                            contentDescription = "GitHub",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(32.dp),
+                        )
+                    },
+                    colors =
+                        ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                )
+
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Report Issues",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "View project on GitHub",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.github_thin_outline),
+                            contentDescription = "GitHub",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(32.dp),
+                        )
+                    },
+                    colors =
+                        ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    modifier =
+                        Modifier.clickable {
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    "https://github.com/hossain-khan/trmnl-android-buddy".toUri(),
+                                )
+                            context.startActivity(intent)
+                        },
+                )
+            }
         }
     }
 }
