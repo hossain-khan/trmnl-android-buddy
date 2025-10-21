@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **TRMNL "Works With" Badge on Welcome Screen**: Added official TRMNL branding badge
+  - Theme-aware badge that automatically switches between light and dark variants
+  - Positioned in bottom right corner of welcome screen (80dp size)
+  - Includes official TRMNL brand assets (logos, glyphs, and badge SVGs)
+  - Uses `isSystemInDarkTheme()` for seamless theme integration
+- **EB Garamond Typography**: Implemented elegant EB Garamond font for branding
+  - Applied to all screen titles across the app via `TrmnlTitle` component
+  - Google Fonts downloadable font integration with automatic font downloading
+  - Created reusable `TrmnlTitle` composable for consistent branding
+  - Centralized font logic in single component for maintainability
+  - Used on Welcome screen title and all TopAppBar titles (8 screens total)
 - **Google Play Store Listing Documentation**: Created `docs/GOOGLE_PLAY_LISTING.md` with comprehensive Google Play Store content
   - App title and descriptions (short and full)
   - Feature sections and highlights
