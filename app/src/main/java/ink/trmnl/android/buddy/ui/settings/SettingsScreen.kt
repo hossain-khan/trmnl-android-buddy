@@ -48,6 +48,7 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import androidx.core.net.toUri
 
 /**
  * Screen for app settings.
@@ -314,7 +315,7 @@ private fun AppInformationSection(modifier: Modifier = Modifier) {
                             val intent =
                                 Intent(
                                     Intent.ACTION_VIEW,
-                                    Uri.parse("https://github.com/hossain-khan/trmnl-android-buddy"),
+                                    "https://github.com/hossain-khan/trmnl-android-buddy".toUri(),
                                 )
                             context.startActivity(intent)
                         },
