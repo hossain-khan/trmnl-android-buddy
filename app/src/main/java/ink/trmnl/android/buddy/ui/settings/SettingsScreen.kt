@@ -38,6 +38,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
@@ -244,7 +245,7 @@ private fun AppInformationSection(modifier: Modifier = Modifier) {
                     },
                     supportingContent = {
                         Text(
-                            text = ink.trmnl.android.buddy.BuildConfig.VERSION_NAME,
+                            text = BuildConfig.VERSION_NAME,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -265,8 +266,8 @@ private fun AppInformationSection(modifier: Modifier = Modifier) {
                     supportingContent = {
                         Text(
                             text =
-                                ink.trmnl.android.buddy.BuildConfig.BUILD_TYPE
-                                    .capitalized(),
+                                BuildConfig.BUILD_TYPE
+                                    .replaceFirstChar { it.uppercase() },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
