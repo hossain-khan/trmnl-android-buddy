@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-10-21
+
+### Added
+- **AAB (Android App Bundle) Distribution**: Release workflow now builds both APK and AAB formats
+  - APK for direct installation and sideloading
+  - AAB for Google Play Store distribution with optimized downloads
+  - Both formats automatically attached to GitHub releases
+  - Separate artifacts with version naming (e.g., `trmnl-android-buddy-v1.1.0.apk` and `.aab`)
+
+### Fixed
+- **Release Keystore Path Resolution**: Fixed GitHub Actions workflow keystore path issue
+  - Changed from module-relative to project-relative path resolution using `rootProject.file()`
+  - Resolves workflow failure where keystore file was not found during automated builds
+  - Ensures proper keystore location for CI/CD release signing
+
 ## [1.0.6] - 2025-10-20
 
 ### Added
@@ -233,7 +248,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.6...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.6...1.1.0
 [1.0.6]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.5...1.0.6
 [1.0.5]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.3...1.0.4
