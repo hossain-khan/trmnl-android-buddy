@@ -57,6 +57,8 @@ data object SettingsScreen : Screen {
     sealed class Event : CircuitUiEvent {
         data object BackClicked : Event()
 
+        data object AccountClicked : Event()
+
         data class BatteryTrackingToggled(
             val enabled: Boolean,
         ) : Event()
@@ -86,6 +88,9 @@ class SettingsPresenter(
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
                     navigator.pop()
+                }
+                SettingsScreen.Event.AccountClicked -> {
+                    navigator.goTo(ink.trmnl.android.buddy.ui.user.UserAccountScreen)
                 }
                 is SettingsScreen.Event.BatteryTrackingToggled -> {
                     coroutineScope.launch {
@@ -126,6 +131,14 @@ fun SettingsContent(
                         )
                     }
                 },
+                actions = {
+                    IconButton(onClick = { state.eventSink(SettingsScreen.Event.AccountClicked) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Account",
+                        )
+                    }
+                },
             )
         },
     ) { innerPadding ->
@@ -145,6 +158,9 @@ fun SettingsContent(
                     state.eventSink(SettingsScreen.Event.BatteryTrackingToggled(enabled))
                 },
             )
+
+            // App Information Section
+            AppInformationSection()
         }
     }
 }
@@ -197,6 +213,67 @@ private fun BatteryTrackingSection(
                         containerColor = MaterialTheme.colorScheme.surface,
                     ),
             )
+        }
+    }
+}
+
+@Composable
+private fun AppInformationSection(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        Text(
+            text = "App Information",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            Column {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Version",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = ink.trmnl.android.buddy.BuildConfig.VERSION_NAME,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    colors =
+                        ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                )
+
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Build Type",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text =
+                                ink.trmnl.android.buddy.BuildConfig.BUILD_TYPE
+                                    .replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    colors =
+                        ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                )
+            }
         }
     }
 }
