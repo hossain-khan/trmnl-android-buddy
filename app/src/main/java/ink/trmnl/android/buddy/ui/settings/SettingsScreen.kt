@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -48,7 +50,6 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
-import androidx.core.net.toUri
 
 /**
  * Screen for app settings.
@@ -252,31 +253,17 @@ private fun AppInformationSection(modifier: Modifier = Modifier) {
                     },
                     supportingContent = {
                         Text(
-                            text = BuildConfig.VERSION_NAME,
+                            text = BuildConfig.VERSION_NAME + " (" + BuildConfig.BUILD_TYPE + ")",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     },
-                    colors =
-                        ListItemDefaults.colors(
-                            containerColor = MaterialTheme.colorScheme.surface,
-                        ),
-                )
-
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = "Build Type",
-                            style = MaterialTheme.typography.titleSmall,
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            text =
-                                BuildConfig.BUILD_TYPE
-                                    .replaceFirstChar { it.uppercase() },
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.deviceinfo_thin_outline),
+                            contentDescription = "GitHub",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(32.dp),
                         )
                     },
                     colors =
@@ -304,6 +291,7 @@ private fun AppInformationSection(modifier: Modifier = Modifier) {
                             painter = painterResource(R.drawable.github_thin_outline),
                             contentDescription = "GitHub",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(32.dp),
                         )
                     },
                     colors =
