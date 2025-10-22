@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Moved the image refresh time indicator to the top-right corner of the device preview
+
 ### Fixed
 - Disabled color inversion for dark mode
 

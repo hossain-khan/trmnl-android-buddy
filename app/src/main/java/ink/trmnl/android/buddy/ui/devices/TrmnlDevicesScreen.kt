@@ -1007,7 +1007,7 @@ private fun DevicePreviewImage(
                         onInfoClick = { rate ->
                             eventSink(TrmnlDevicesScreen.Event.RefreshRateInfoClicked(rate))
                         },
-                        modifier = Modifier.align(Alignment.TopStart),
+                        modifier = Modifier.align(Alignment.TopEnd),
                     )
                 }
             }
@@ -1032,7 +1032,7 @@ private fun RefreshRateIndicator(
                 .padding(8.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
             ),
         shape = MaterialTheme.shapes.small,
     ) {
