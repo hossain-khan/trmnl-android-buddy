@@ -23,7 +23,10 @@ on:
 jobs:
   build-release:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write  # Required to upload release assets
+      actions: read    # Required to read workflow artifacts
+      
     steps:
       - uses: actions/checkout@v5
 
