@@ -26,30 +26,18 @@ An Android app built with:
 - 🎨 [Jetpack Compose](https://developer.android.com/jetpack/compose) for UI
 - 📱 Material Design 3 with 🌈 Material You!
 
-## 🧪 Test Drive App
-See [latest release](https://github.com/hossain-khan/trmnl-android-buddy/releases/latest) to download APK that you can side-load on your Android device. 
-
-
 
 ### 📸 Screenshots
 
 <table>
   <tr>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161825.png" alt="Device List" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_162116.png" alt="User API Configuration" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161930.png" alt="Device API Key Input" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173055.png" alt="Welcome Screen" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173120.png" alt="User API Configuration" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173216.png" alt="Device API Key Input" width="250"/></td>
   </tr>
   <tr>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161910.png" alt="Device Preview" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161937.png" alt="User Account Home" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161943.png" alt="User Logout" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173259.png" alt="Device Preview" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173357.png" alt="Device Details" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173320.png" alt="User Account Home" width="250"/></td>
   </tr>
 </table>
-
-
-## Getting Started
-
-1. Open the project in Android Studio
-2. Sync Gradle
-3. Build and run! or just run `./gradlew assembleDebug` from command line to build APK.
-
