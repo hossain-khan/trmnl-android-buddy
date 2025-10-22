@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -266,12 +268,20 @@ fun UserAccountContent(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { state.eventSink(UserAccountScreen.Event.LogoutClicked) }) {
+                    TextButton(
+                        onClick = { state.eventSink(UserAccountScreen.Event.LogoutClicked) },
+                        colors =
+                            ButtonDefaults.textButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error,
+                            ),
+                    ) {
                         Icon(
                             painter = painterResource(R.drawable.account_circle_off_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                             contentDescription = "Logout",
-                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(18.dp),
                         )
+                        Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                        Text("Logout")
                     }
                 },
             )

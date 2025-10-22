@@ -194,6 +194,9 @@ When working with TRMNL API:
 
 # 2. Run all tests (ensures nothing is broken)
 ./gradlew test
+
+# 3. Run debug build to ensure no build issues
+./gradlew assembleDebug
 ```
 
 If either command fails, fix the issues before committing.
@@ -293,7 +296,7 @@ git commit -m "Add feature X
 
 ### Release Process
 
-**IMPORTANT**: The `main` branch is protected. All changes must be made via pull requests.
+**IMPORTANT**: The `main` branch is protected. All changes must be made in new git branch via pull requests.
 
 Follow this workflow for creating a new release:
 

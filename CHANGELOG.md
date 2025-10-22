@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Improved Button UX with Text Labels**: Converted icon-only buttons to text buttons with icons for better accessibility and discoverability
+  - Settings screen: Account button now displays "Account" text with icon
+  - User Account screen: Logout button now displays "Logout" text with icon
+  - Follows Material Design 3 guidelines (18dp icons in buttons, 8dp spacing)
+  - Improves accessibility by making button actions explicit
+  - Maintains theme-aware error color for logout action
+
 ## [1.2.0] - 2025-10-21
 
 ### Added
