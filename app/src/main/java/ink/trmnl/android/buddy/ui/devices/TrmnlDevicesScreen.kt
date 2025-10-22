@@ -974,7 +974,7 @@ private fun DevicePreviewImage(
     modifier: Modifier = Modifier,
 ) {
     // Track if image is dark-heavy (analyzed in background by Coil transformation)
-    var isDarkHeavy by remember { mutableStateOf<Boolean?>(null) }
+    var isDarkHeavy by rememberRetained { mutableStateOf<Boolean?>(null) }
     val isDarkMode = isSystemInDarkTheme()
 
     // Log when color filter decision changes

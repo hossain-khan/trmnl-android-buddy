@@ -35,6 +35,7 @@ import coil3.request.allowHardware
 import coil3.request.crossfade
 import coil3.request.transformations
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
@@ -122,7 +123,7 @@ fun DevicePreviewContent(
     modifier: Modifier = Modifier,
 ) {
     // Track if image is dark-heavy (analyzed in background by Coil transformation)
-    var isDarkHeavy by remember { mutableStateOf<Boolean?>(null) }
+    var isDarkHeavy by rememberRetained { mutableStateOf<Boolean?>(null) }
     val isDarkMode = isSystemInDarkTheme()
 
     // Log when color filter decision changes
