@@ -98,10 +98,63 @@ Monitor and manage your TRMNL e-ink displays with battery tracking & health insi
 
 **🔗 USEFUL LINKS**
 • TRMNL Website: https://usetrmnl.com
-• Report Issues: GitHub repository
-• API Documentation: https://usetrmnl.com/api
+• Report Issues: https://github.com/hossain-khan/trmnl-android-buddy/issues
 
 Perfect for TRMNL device owners who want to keep their e-ink displays running smoothly and monitor battery health over time!
+
+---
+
+## Simplified Full Description (Plain Text for Google Play - Copy/Paste Ready)
+
+```
+TRMNL Android Buddy is the essential companion app for managing your TRMNL e-ink display devices. Monitor device health, track battery life, and stay on top of your displays' status—all from your Android phone.
+
+📊 DEVICE MONITORING
+• View all your TRMNL devices in one place
+• Real-time battery level and WiFi signal strength
+• Animated progress indicators for quick status checks
+• Device preview showing current screen content
+• Refresh rate tracking for each device
+
+🔋 BATTERY HEALTH TRACKING
+• Automatic weekly battery data collection
+• Historical battery charts with trajectory visualization
+• Manual battery recording when needed
+• Opt-out option for privacy-conscious users
+• Battery health predictions based on historical data
+
+📱 DEVICE DETAILS
+• Comprehensive device information screen
+• Current voltage readings (when available)
+• WiFi signal strength in dBm
+• Device ID and MAC address management
+• Privacy-first design with obfuscated sensitive data
+
+🎨 MODERN DESIGN
+• Material You support with dynamic theming (Android 12+)
+• Automatic dark mode based on system preferences
+• Edge-to-edge display for modern aesthetics
+• Smooth animations and transitions
+• Material Design 3 components throughout
+
+🔐 PRIVACY & SECURITY
+• Encrypted storage for API tokens
+• Device IDs and MAC addresses obfuscated by default
+• Toggle privacy mode to show/hide sensitive information
+• Secure DataStore for all preferences
+• No data shared with third parties
+
+📱 REQUIREMENTS
+• Android 8.0 (API 26) or higher
+• TRMNL account with API key
+• Internet connection for device data sync
+
+🔗 USEFUL LINKS
+• TRMNL Website: https://usetrmnl.com
+• Report Issues on GitHub: https://github.com/hossain-khan/trmnl-android-buddy/issues
+
+Perfect for TRMNL device owners who want to keep their e-ink displays running smoothly and monitor battery health over time!
+```
 
 ---
 

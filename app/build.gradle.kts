@@ -16,8 +16,10 @@ android {
 
     defaultConfig {
         applicationId = "ink.trmnl.android.buddy"
-        minSdk = 28
+        minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
+
+        // Google Play app versioning - keep in sync with release notes and changelog
         versionCode = 9
         versionName = "1.2.0"
 

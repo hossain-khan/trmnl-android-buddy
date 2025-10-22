@@ -1,8 +1,8 @@
 [versions]
-# Android SDK versions
-compileSdk = "36"
-minSdk = "26"
-targetSdk = "36"
+# Android SDK versions (https://apilevels.com/)
+compileSdk = "36" # Android 16 (Baklava)
+minSdk = "26" # Android 8 (Oreo)
+targetSdk = "36" # Android 16 (Baklava)
 
 activityCompose = "1.11.0"
 # https://developer.android.com/build/releases/gradle-plugin
