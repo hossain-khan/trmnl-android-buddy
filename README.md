@@ -26,10 +26,6 @@ An Android app built with:
 - 🎨 [Jetpack Compose](https://developer.android.com/jetpack/compose) for UI
 - 📱 Material Design 3 with 🌈 Material You!
 
-## 🧪 Test Drive App
-See [latest release](https://github.com/hossain-khan/trmnl-android-buddy/releases/latest) to download APK that you can side-load on your Android device. 
-
-
 
 ### 📸 Screenshots
 
@@ -45,11 +41,3 @@ See [latest release](https://github.com/hossain-khan/trmnl-android-buddy/release
     <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161943.png" alt="User Logout" width="250"/></td>
   </tr>
 </table>
-
-
-## Getting Started
-
-1. Open the project in Android Studio
-2. Sync Gradle
-3. Build and run! or just run `./gradlew assembleDebug` from command line to build APK.
-
