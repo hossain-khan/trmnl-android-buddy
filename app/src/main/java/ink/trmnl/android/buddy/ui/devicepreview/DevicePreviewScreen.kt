@@ -1,7 +1,9 @@
 package ink.trmnl.android.buddy.ui.devicepreview
 
+import android.util.Log
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,12 +18,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil3.compose.SubcomposeAsyncImage
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.request.crossfade
+import coil3.request.transformations
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -38,6 +50,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
+import ink.trmnl.android.buddy.ui.utils.ImageAnalysisTransformation
 import ink.trmnl.android.buddy.ui.utils.rememberEInkColorFilter
 import kotlinx.parcelize.Parcelize
 
@@ -97,6 +110,9 @@ class DevicePreviewPresenter
 /**
  * UI content for DevicePreviewScreen.
  * Displays the device preview image in full-screen with shared element transition.
+ *
+ * Uses smart image analysis in background thread to determine if color inversion
+ * should be applied in dark mode. Only light-heavy images (typical e-ink) are inverted.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @CircuitInject(DevicePreviewScreen::class, AppScope::class)
@@ -105,8 +121,21 @@ fun DevicePreviewContent(
     state: DevicePreviewScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    // Invert colors in dark mode for better visibility of e-ink display images
-    val colorFilter = rememberEInkColorFilter()
+    // Track if image is dark-heavy (analyzed in background by Coil transformation)
+    var isDarkHeavy by remember { mutableStateOf<Boolean?>(null) }
+    val isDarkMode = isSystemInDarkTheme()
+
+    // Log when color filter decision changes
+    LaunchedEffect(isDarkMode, isDarkHeavy) {
+        if (isDarkHeavy != null) {
+            val shouldInvert = isDarkMode && isDarkHeavy == false
+            Log.d(
+                "DevicePreviewScreen",
+                "Device: ${state.deviceName} | Dark mode: $isDarkMode | " +
+                    "Image is dark-heavy: $isDarkHeavy | Will invert: $shouldInvert",
+            )
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -141,7 +170,23 @@ fun DevicePreviewContent(
         ) {
             SharedElementTransitionScope {
                 SubcomposeAsyncImage(
-                    model = state.imageUrl,
+                    model =
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(state.imageUrl)
+                            .allowHardware(false) // Required for bitmap analysis
+                            .crossfade(true)
+                            .transformations(
+                                ImageAnalysisTransformation { stats ->
+                                    // Analysis runs on background thread
+                                    // State update is safe and triggers recomposition
+                                    Log.d(
+                                        "DevicePreviewScreen",
+                                        "Image analyzed for ${state.deviceName}: $stats",
+                                    )
+                                    isDarkHeavy = stats.isDarkHeavy
+                                },
+                            ).build(),
                     contentDescription = "Full screen preview for ${state.deviceName}",
                     modifier =
                         Modifier
@@ -153,7 +198,12 @@ fun DevicePreviewContent(
                                 animatedVisibilityScope = requireAnimatedScope(Navigation),
                             ).fillMaxSize(),
                     contentScale = ContentScale.Fit,
-                    colorFilter = colorFilter,
+                    // Smart color filter: only invert in dark mode if image is light-heavy
+                    colorFilter =
+                        when {
+                            isDarkMode && isDarkHeavy == false -> rememberEInkColorFilter()
+                            else -> null
+                        },
                     loading = {
                         Box(
                             modifier = Modifier.fillMaxSize(),
