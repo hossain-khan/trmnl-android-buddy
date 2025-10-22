@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Smart Image Analysis for E-Ink Displays**: Intelligent color inversion for device preview images in dark mode
+  - Analyzes image color distribution in background thread to determine if inversion is needed
+  - Only inverts light-heavy images (typical e-ink with black text on white background)
+  - Dark-heavy images remain unmodified (already suitable for dark mode)
+  - Consistent rendering across device list and full-screen preview
+  - Uses Coil 3 transformations for non-blocking background processing
+  - Added comprehensive unit tests with Robolectric for bitmap analysis
+  - Includes debug logging for monitoring analysis results and inversion decisions
+  - Handles 1-bit and 2-bit grayscale e-ink images (800×480 resolution)
+
 ## [1.3.0] - 2025-10-22
 
 ### Changed
