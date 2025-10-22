@@ -703,7 +703,7 @@ private fun DeviceCard(
                                     if (hasToken) {
                                         R.drawable.settings_check_24dp_e8eaed_fill1_wght400_grad0_opsz24
                                     } else {
-                                        R.drawable.settings_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                        R.drawable.tv_options_input_settings_24dp_e8eaed_fill0_wght400_grad0_opsz24
                                     },
                                 ),
                             contentDescription = if (hasToken) "Display configured" else "Configure device token",
