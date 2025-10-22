@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-10-22
+
 ### Changed
 - **Improved Button UX with Text Labels**: Converted icon-only buttons to text buttons with icons for better accessibility and discoverability
   - Settings screen: Account button now displays "Account" text with icon
@@ -279,7 +281,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.2.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.3.0...HEAD
+[1.3.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.2.0...1.3.0
 [1.2.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.6...1.1.0
 [1.0.6]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.0.5...1.0.6
