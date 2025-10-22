@@ -31,13 +31,13 @@ An Android app built with:
 
 <table>
   <tr>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161825.png" alt="Device List" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_162116.png" alt="User API Configuration" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161930.png" alt="Device API Key Input" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173055.png" alt="Welcome Screen" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173120.png" alt="User API Configuration" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173216.png" alt="Device API Key Input" width="250"/></td>
   </tr>
   <tr>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161910.png" alt="Device Preview" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161937.png" alt="User Account Home" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.0.5/Screenshot_20251008_161943.png" alt="User Logout" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173259.png" alt="Device Preview" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173357.png" alt="Device Details" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173320.png" alt="User Account Home" width="250"/></td>
   </tr>
 </table>
