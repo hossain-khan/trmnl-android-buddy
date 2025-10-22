@@ -37,6 +37,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -146,6 +147,7 @@ class DeviceDetailPresenter
                     ink.trmnl.android.buddy.data.preferences
                         .UserPreferences(),
             )
+            val coroutineScope = rememberCoroutineScope()
 
             // Check if battery has been recorded today
             val hasRecordedToday by remember {
@@ -185,7 +187,7 @@ class DeviceDetailPresenter
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
                     is DeviceDetailScreen.Event.PopulateBatteryHistory -> {
                         // Generate simulated battery history data
-                        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                        coroutineScope.launch(Dispatchers.IO) {
                             val currentTime = System.currentTimeMillis()
                             val weeksToGenerate = 12 // Generate 12 weeks of history
                             val currentBattery = screen.currentBattery
@@ -210,13 +212,13 @@ class DeviceDetailPresenter
                     }
                     DeviceDetailScreen.Event.ClearBatteryHistory -> {
                         // Clear all battery history for this device
-                        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                        coroutineScope.launch(Dispatchers.IO) {
                             batteryHistoryRepository.deleteHistoryForDevice(screen.deviceId)
                         }
                     }
                     DeviceDetailScreen.Event.RecordBatteryManually -> {
                         // Record current battery level manually
-                        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                        coroutineScope.launch(Dispatchers.IO) {
                             batteryHistoryRepository.recordBatteryReading(
                                 deviceId = screen.deviceId,
                                 percentCharged = screen.currentBattery,
