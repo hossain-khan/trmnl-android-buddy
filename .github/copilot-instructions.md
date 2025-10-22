@@ -358,6 +358,8 @@ Follow this workflow for creating a new release:
 - MAJOR: Breaking changes or major new features
 - MINOR: New features, backward compatible
 - PATCH: Bug fixes, backward compatible
+- **Default**: Always increment MINOR version for regular releases (e.g., 1.2.0 → 1.3.0)
+- Only use PATCH for critical hotfixes between regular releases
 
 **Tag Format**: Use plain version number (e.g., `1.0.3`), not `v1.0.3`
 
