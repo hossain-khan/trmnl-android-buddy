@@ -85,7 +85,6 @@ import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
 import ink.trmnl.android.buddy.ui.utils.getWifiIcon
-import ink.trmnl.android.buddy.ui.utils.rememberEInkColorFilter
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import ink.trmnl.android.buddy.util.formatRefreshRate
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
@@ -652,9 +651,6 @@ private fun DeviceCard(
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Invert colors in dark mode for better visibility of e-ink display images
-    val colorFilter = rememberEInkColorFilter()
-
     // Track if this is the first composition to trigger animation
     var isInitialized by remember { mutableStateOf(false) }
 
@@ -962,9 +958,6 @@ private fun DevicePreviewImage(
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Invert colors in dark mode for better visibility of e-ink display images
-    val colorFilter = rememberEInkColorFilter()
-
     if (hasToken && previewInfo != null) {
         AnimatedVisibility(
             visible = true,
@@ -992,7 +985,6 @@ private fun DevicePreviewImage(
                                 ).fillMaxSize()
                                 .clickable(onClick = onPreviewClick),
                         contentScale = ContentScale.Fit,
-                        colorFilter = colorFilter,
                         loading = {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
