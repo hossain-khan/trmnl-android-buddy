@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.utils
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ColorFilter
@@ -15,35 +16,73 @@ import androidx.compose.ui.graphics.ColorMatrix
 fun rememberEInkColorFilter(): ColorFilter? {
     val isDarkMode = isSystemInDarkTheme()
     return if (isDarkMode) {
-        // Invert color matrix: multiplies RGB by -1 and adds 255
-        // This transforms: new_color = -old_color + 255
-        ColorFilter.colorMatrix(
-            ColorMatrix(
-                floatArrayOf(
-                    -1f,
-                    0f,
-                    0f,
-                    0f,
-                    255f,
-                    0f,
-                    -1f,
-                    0f,
-                    0f,
-                    255f,
-                    0f,
-                    0f,
-                    -1f,
-                    0f,
-                    255f,
-                    0f,
-                    0f,
-                    0f,
-                    1f,
-                    0f, // Keep alpha unchanged
-                ),
-            ),
-        )
+        getInvertColorFilter()
     } else {
         null
     }
 }
+
+/**
+ * Returns a smart color filter that only inverts e-ink images in dark mode
+ * if the image is predominantly light (typical e-ink with black text on white).
+ *
+ * Dark-heavy images (white text on black background) won't be inverted
+ * as they're already suitable for dark mode.
+ *
+ * @param bitmap The image bitmap to analyze (optional)
+ * @return ColorFilter that conditionally inverts colors, or null
+ */
+@Composable
+fun rememberSmartEInkColorFilter(bitmap: Bitmap?): ColorFilter? {
+    val isDarkMode = isSystemInDarkTheme()
+
+    if (!isDarkMode) {
+        return null
+    }
+
+    // If bitmap is available, analyze it
+    if (bitmap != null) {
+        val isDarkHeavy = ImageAnalyzer.isDarkHeavy(bitmap)
+        // Only invert if image is light-heavy (typical e-ink)
+        return if (!isDarkHeavy) {
+            getInvertColorFilter()
+        } else {
+            null
+        }
+    }
+
+    // Default behavior: invert in dark mode if bitmap not available
+    return getInvertColorFilter()
+}
+
+/**
+ * Creates and returns an invert color filter.
+ * This transforms colors: new_color = -old_color + 255
+ */
+private fun getInvertColorFilter(): ColorFilter =
+    ColorFilter.colorMatrix(
+        ColorMatrix(
+            floatArrayOf(
+                -1f,
+                0f,
+                0f,
+                0f,
+                255f,
+                0f,
+                -1f,
+                0f,
+                0f,
+                255f,
+                0f,
+                0f,
+                -1f,
+                0f,
+                255f,
+                0f,
+                0f,
+                0f,
+                1f,
+                0f, // Keep alpha unchanged
+            ),
+        ),
+    )
