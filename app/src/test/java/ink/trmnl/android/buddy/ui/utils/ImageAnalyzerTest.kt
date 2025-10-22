@@ -3,7 +3,12 @@ package ink.trmnl.android.buddy.ui.utils
 import android.graphics.Bitmap
 import android.graphics.Color
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.isBetween
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isGreaterThanOrEqualTo
+import assertk.assertions.isLessThanOrEqualTo
+import assertk.assertions.isTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
