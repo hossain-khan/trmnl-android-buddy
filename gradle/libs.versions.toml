@@ -33,11 +33,11 @@ androidxDataStore = "1.1.2"
 
 # Room Database
 # https://developer.android.com/jetpack/androidx/releases/room
-androidxRoom = "2.7.0-alpha13"
+androidxRoom = "2.8.3"
 
 # Chart Library
 # https://github.com/patrykandpatrick/vico
-vico = "2.0.0-alpha.28"
+vico = "2.2.1"
 
 # Networking
 # https://github.com/square/okhttp/releases
