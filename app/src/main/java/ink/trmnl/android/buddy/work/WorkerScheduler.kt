@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.work
 
+import android.util.Log
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -29,13 +30,27 @@ interface WorkerScheduler {
 
 /**
  * Default implementation of WorkerScheduler using WorkManager.
+ * Manages the scheduling and cancellation of periodic background workers.
  */
 @ContributesBinding(AppScope::class)
 @Inject
 class WorkerSchedulerImpl(
     private val workManager: WorkManager,
 ) : WorkerScheduler {
+    companion object {
+        private const val TAG = "WorkerScheduler"
+    }
+
+    /**
+     * Schedules or reschedules the low battery notification worker.
+     * Uses REPLACE policy to ensure only one instance runs and to update the work
+     * when threshold changes.
+     *
+     * Worker will run weekly and requires network connectivity to fetch device data.
+     */
     override fun scheduleLowBatteryNotification() {
+        Log.d(TAG, "Scheduling low battery notification worker (weekly, network required)")
+
         val notificationWorkRequest =
             PeriodicWorkRequestBuilder<LowBatteryNotificationWorker>(
                 repeatInterval = 7,
@@ -55,7 +70,12 @@ class WorkerSchedulerImpl(
         )
     }
 
+    /**
+     * Cancels the low battery notification worker.
+     * Called when user disables low battery notifications in settings.
+     */
     override fun cancelLowBatteryNotification() {
+        Log.d(TAG, "Cancelling low battery notification worker")
         workManager.cancelUniqueWork(LowBatteryNotificationWorker.WORK_NAME)
     }
 }

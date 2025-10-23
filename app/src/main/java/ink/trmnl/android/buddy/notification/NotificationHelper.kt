@@ -1,11 +1,15 @@
 package ink.trmnl.android.buddy.notification
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import ink.trmnl.android.buddy.R
 
 /**
@@ -13,6 +17,7 @@ import ink.trmnl.android.buddy.R
  * Handles notification channel creation and notification display.
  */
 object NotificationHelper {
+    private const val TAG = "NotificationHelper"
     const val CHANNEL_ID_LOW_BATTERY = "low_battery_alerts"
     private const val NOTIFICATION_ID_LOW_BATTERY = 1001
 
@@ -34,6 +39,7 @@ object NotificationHelper {
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+            Log.d(TAG, "Created notification channel: $CHANNEL_ID_LOW_BATTERY")
         }
     }
 
@@ -49,6 +55,19 @@ object NotificationHelper {
         deviceNames: List<String>,
         thresholdPercent: Int,
     ) {
+        // Check for POST_NOTIFICATIONS permission on Android 13+ (API 33+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                Log.w(
+                    TAG,
+                    "POST_NOTIFICATIONS permission not granted, cannot show notification. " +
+                        "User needs to grant notification permission in app settings.",
+                )
+                return
+            }
+        }
+
         val title =
             if (deviceNames.size == 1) {
                 "Low Battery: ${deviceNames[0]}"
@@ -62,6 +81,8 @@ object NotificationHelper {
             } else {
                 "${deviceNames.joinToString(", ")} are below $thresholdPercent%"
             }
+
+        Log.d(TAG, "Showing low battery notification for ${deviceNames.size} device(s): $deviceNames")
 
         val notification =
             NotificationCompat

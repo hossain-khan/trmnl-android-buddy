@@ -132,6 +132,7 @@ class SettingsPresenter(
                 is SettingsScreen.Event.LowBatteryNotificationToggled -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setLowBatteryNotificationEnabled(event.enabled)
+                        // Schedule or cancel the weekly battery check worker based on toggle state
                         if (event.enabled) {
                             workerScheduler.scheduleLowBatteryNotification()
                         } else {
@@ -142,6 +143,7 @@ class SettingsPresenter(
                 is SettingsScreen.Event.LowBatteryThresholdChanged -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setLowBatteryThreshold(event.percent)
+                        // Reschedule worker with updated threshold (uses REPLACE policy)
                         workerScheduler.scheduleLowBatteryNotification()
                     }
                 }
@@ -367,6 +369,7 @@ private fun LowBatteryNotificationSection(
                                 value = thresholdPercent.toFloat(),
                                 onValueChange = { onThresholdChange(it.toInt()) },
                                 valueRange = 5f..50f,
+                                // 44 steps creates 45 discrete values (5%, 6%, 7%, ..., 50%) for 1% increments
                                 steps = 44,
                                 modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                             )
