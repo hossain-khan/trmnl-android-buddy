@@ -1,10 +1,18 @@
 package ink.trmnl.android.buddy.ui.settings
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,7 +30,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,7 +40,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -37,6 +51,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -52,6 +70,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import ink.trmnl.android.buddy.work.WorkerScheduler
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -62,6 +81,8 @@ import kotlinx.parcelize.Parcelize
 data object SettingsScreen : Screen {
     data class State(
         val isBatteryTrackingEnabled: Boolean = true,
+        val isLowBatteryNotificationEnabled: Boolean = false,
+        val lowBatteryThresholdPercent: Int = 20,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -73,6 +94,16 @@ data object SettingsScreen : Screen {
         data class BatteryTrackingToggled(
             val enabled: Boolean,
         ) : Event()
+
+        data class LowBatteryNotificationToggled(
+            val enabled: Boolean,
+        ) : Event()
+
+        data class LowBatteryThresholdChanged(
+            val percent: Int,
+        ) : Event()
+
+        data object TestLowBatteryNotificationClicked : Event()
     }
 }
 
@@ -83,6 +114,7 @@ data object SettingsScreen : Screen {
 class SettingsPresenter(
     @Assisted private val navigator: Navigator,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val workerScheduler: WorkerScheduler,
 ) : Presenter<SettingsScreen.State> {
     @Composable
     override fun present(): SettingsScreen.State {
@@ -95,6 +127,8 @@ class SettingsPresenter(
 
         return SettingsScreen.State(
             isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
+            isLowBatteryNotificationEnabled = preferences.isLowBatteryNotificationEnabled,
+            lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
@@ -107,6 +141,28 @@ class SettingsPresenter(
                     coroutineScope.launch {
                         userPreferencesRepository.setBatteryTrackingEnabled(event.enabled)
                     }
+                }
+                is SettingsScreen.Event.LowBatteryNotificationToggled -> {
+                    coroutineScope.launch {
+                        userPreferencesRepository.setLowBatteryNotificationEnabled(event.enabled)
+                        // Schedule or cancel the weekly battery check worker based on toggle state
+                        if (event.enabled) {
+                            workerScheduler.scheduleLowBatteryNotification()
+                        } else {
+                            workerScheduler.cancelLowBatteryNotification()
+                        }
+                    }
+                }
+                is SettingsScreen.Event.LowBatteryThresholdChanged -> {
+                    coroutineScope.launch {
+                        userPreferencesRepository.setLowBatteryThreshold(event.percent)
+                        // Reschedule worker with updated threshold (uses REPLACE policy)
+                        workerScheduler.scheduleLowBatteryNotification()
+                    }
+                }
+                SettingsScreen.Event.TestLowBatteryNotificationClicked -> {
+                    // Trigger immediate one-time execution for testing (debug builds only)
+                    workerScheduler.triggerLowBatteryNotificationNow()
                 }
             }
         }
@@ -175,6 +231,21 @@ fun SettingsContent(
                 },
             )
 
+            // Low Battery Notification Section
+            LowBatteryNotificationSection(
+                isEnabled = state.isLowBatteryNotificationEnabled,
+                thresholdPercent = state.lowBatteryThresholdPercent,
+                onToggle = { enabled ->
+                    state.eventSink(SettingsScreen.Event.LowBatteryNotificationToggled(enabled))
+                },
+                onThresholdChange = { percent ->
+                    state.eventSink(SettingsScreen.Event.LowBatteryThresholdChanged(percent))
+                },
+                onTestNotification = {
+                    state.eventSink(SettingsScreen.Event.TestLowBatteryNotificationClicked)
+                },
+            )
+
             // App Information Section
             AppInformationSection()
         }
@@ -229,6 +300,208 @@ private fun BatteryTrackingSection(
                         containerColor = MaterialTheme.colorScheme.surface,
                     ),
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+private fun LowBatteryNotificationSection(
+    isEnabled: Boolean,
+    thresholdPercent: Int,
+    onToggle: (Boolean) -> Unit,
+    onThresholdChange: (Int) -> Unit,
+    onTestNotification: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    var showPermissionDialog by remember { mutableStateOf(false) }
+
+    // Battery threshold range constants
+    val minThreshold = 5
+    val maxThreshold = 50
+
+    // Permission state for Android 13+ (API 33+)
+    // For older Android versions, this permission is automatically granted
+    val notificationPermissionState =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS) { isGranted ->
+                // Callback when permission result is received
+                if (isGranted) {
+                    // Permission granted, enable notifications
+                    onToggle(true)
+                } else {
+                    // Permission denied, show explanation dialog
+                    showPermissionDialog = true
+                }
+            }
+        } else {
+            null // No permission needed for Android 12 and below
+        }
+
+    // Handle toggle with permission check
+    fun handleToggle(enabled: Boolean) {
+        if (enabled) {
+            // User wants to enable notifications
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val permissionState = notificationPermissionState
+                if (permissionState != null) {
+                    if (permissionState.status.isGranted) {
+                        // Permission already granted
+                        onToggle(true)
+                    } else {
+                        // Request permission (result handled in callback)
+                        permissionState.launchPermissionRequest()
+                    }
+                }
+            } else {
+                // No permission needed for older Android versions
+                onToggle(true)
+            }
+        } else {
+            // User wants to disable notifications, no permission check needed
+            onToggle(false)
+        }
+    }
+
+    // Permission denied dialog
+    if (showPermissionDialog) {
+        AlertDialog(
+            onDismissRequest = { showPermissionDialog = false },
+            title = { Text("Notification Permission Required") },
+            text = {
+                Text(
+                    "To receive low battery alerts, please grant notification permission in your device settings.\n\nSettings > Apps > TRMNL Buddy > Notifications",
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { showPermissionDialog = false }) {
+                    Text("OK")
+                }
+            },
+        )
+    }
+
+    Column(modifier = modifier) {
+        Text(
+            text = "Low Battery Alerts",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            Column {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Low Battery Notifications",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text =
+                                if (isEnabled) {
+                                    "Get notified when device battery falls below threshold"
+                                } else {
+                                    "Enable to receive low battery alerts"
+                                },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = isEnabled,
+                            onCheckedChange = { handleToggle(it) },
+                        )
+                    },
+                    colors =
+                        ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                )
+
+                AnimatedVisibility(
+                    visible = isEnabled,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut(),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 16.dp, top = 16.dp),
+                    ) {
+                        Text(
+                            text = "Alert Threshold: $thresholdPercent%",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 8.dp),
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = "$minThreshold%",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+
+                            Slider(
+                                value = thresholdPercent.toFloat(),
+                                onValueChange = { onThresholdChange(it.toInt()) },
+                                valueRange = minThreshold.toFloat()..maxThreshold.toFloat(),
+                                // Calculate steps to create discrete 1% increments
+                                // Formula: steps = range - 1 (e.g., 5-50 requires 44 steps for 45 values)
+                                steps = maxThreshold - minThreshold - 1,
+                                modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                            )
+
+                            Text(
+                                text = "$maxThreshold%",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+
+                        Text(
+                            text = "Check battery levels weekly and notify when below threshold",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+
+                        // Debug: Test notification button (debug builds only)
+                        if (BuildConfig.DEBUG) {
+                            OutlinedButton(
+                                onClick = onTestNotification,
+                                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    ),
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.notification_important_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                )
+                                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Test Notification Now (Debug)")
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -334,6 +607,8 @@ private fun SettingsContentPreview() {
             state =
                 SettingsScreen.State(
                     isBatteryTrackingEnabled = true,
+                    isLowBatteryNotificationEnabled = false,
+                    lowBatteryThresholdPercent = 20,
                     eventSink = {},
                 ),
         )
@@ -348,6 +623,24 @@ private fun SettingsContentDisabledPreview() {
             state =
                 SettingsScreen.State(
                     isBatteryTrackingEnabled = false,
+                    isLowBatteryNotificationEnabled = false,
+                    lowBatteryThresholdPercent = 20,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun SettingsContentWithNotificationEnabledPreview() {
+    TrmnlBuddyAppTheme {
+        SettingsContent(
+            state =
+                SettingsScreen.State(
+                    isBatteryTrackingEnabled = true,
+                    isLowBatteryNotificationEnabled = true,
+                    lowBatteryThresholdPercent = 30,
                     eventSink = {},
                 ),
         )

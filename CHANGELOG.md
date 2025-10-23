@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Low Battery Notification Settings**: New settings section for configuring low battery alerts
+  - Master toggle to enable/disable low battery notifications
+  - Animated slider to set alert threshold (5% to 50%)
+  - Weekly background worker checks battery levels across all devices
+  - Aggregated notifications when multiple devices meet the threshold
+  - Notification channel for low battery alerts with proper Android O+ support
+  - Runtime permission handling for Android 13+ using Accompanist Permissions library
+  - WorkerScheduler interface for testable worker management
+  - Comprehensive unit tests for new settings and preferences
 - **Download Display Image Feature**: Added ability to save device preview images to Pictures directory
   - Download button in DevicePreviewScreen top app bar
   - Uses Material 3 image icon with loading indicator during download

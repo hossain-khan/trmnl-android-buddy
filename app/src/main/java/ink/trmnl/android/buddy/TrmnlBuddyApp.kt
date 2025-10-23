@@ -12,7 +12,9 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dev.zacsweers.metro.createGraphFactory
 import ink.trmnl.android.buddy.di.AppGraph
+import ink.trmnl.android.buddy.notification.NotificationHelper
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
+import ink.trmnl.android.buddy.work.LowBatteryNotificationWorker
 import ink.trmnl.android.buddy.work.SampleWorker
 import java.util.concurrent.TimeUnit
 
@@ -31,6 +33,7 @@ class TrmnlBuddyApp :
 
     override fun onCreate() {
         super.onCreate()
+        NotificationHelper.createNotificationChannels(this)
         scheduleBackgroundWork()
         scheduleBatteryCollection()
     }

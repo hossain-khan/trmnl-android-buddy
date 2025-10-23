@@ -245,6 +245,18 @@ private class FakeUserPreferencesRepository : UserPreferencesRepository {
             userPreferencesFlow.value.copy(isBatteryTrackingEnabled = enabled)
     }
 
+    override suspend fun setLowBatteryNotificationEnabled(enabled: Boolean) {
+        preferences["low_battery_notification_enabled"] = enabled
+        userPreferencesFlow.value =
+            userPreferencesFlow.value.copy(isLowBatteryNotificationEnabled = enabled)
+    }
+
+    override suspend fun setLowBatteryThreshold(percent: Int) {
+        preferences["low_battery_threshold"] = percent
+        userPreferencesFlow.value =
+            userPreferencesFlow.value.copy(lowBatteryThresholdPercent = percent)
+    }
+
     override suspend fun clearAll() {
         wasCleared = true
         preferences.clear()

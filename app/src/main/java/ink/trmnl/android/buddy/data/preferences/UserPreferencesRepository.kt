@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dev.zacsweers.metro.AppScope
@@ -48,6 +49,16 @@ interface UserPreferencesRepository {
     suspend fun setBatteryTrackingEnabled(enabled: Boolean)
 
     /**
+     * Set low battery notification preference.
+     */
+    suspend fun setLowBatteryNotificationEnabled(enabled: Boolean)
+
+    /**
+     * Set low battery threshold percentage.
+     */
+    suspend fun setLowBatteryThreshold(percent: Int)
+
+    /**
      * Clear all preferences.
      */
     suspend fun clearAll()
@@ -63,6 +74,8 @@ class UserPreferencesRepositoryImpl
             val API_TOKEN = stringPreferencesKey("api_token")
             val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
             val BATTERY_TRACKING_ENABLED = booleanPreferencesKey("battery_tracking_enabled")
+            val LOW_BATTERY_NOTIFICATION_ENABLED = booleanPreferencesKey("low_battery_notification_enabled")
+            val LOW_BATTERY_THRESHOLD = intPreferencesKey("low_battery_threshold")
         }
 
         override val userPreferencesFlow: Flow<UserPreferences> =
@@ -71,6 +84,11 @@ class UserPreferencesRepositoryImpl
                     apiToken = preferences[PreferencesKeys.API_TOKEN],
                     isOnboardingCompleted = preferences[PreferencesKeys.ONBOARDING_COMPLETED] ?: false,
                     isBatteryTrackingEnabled = preferences[PreferencesKeys.BATTERY_TRACKING_ENABLED] ?: true,
+                    isLowBatteryNotificationEnabled =
+                        preferences[PreferencesKeys.LOW_BATTERY_NOTIFICATION_ENABLED] ?: false,
+                    lowBatteryThresholdPercent =
+                        preferences[PreferencesKeys.LOW_BATTERY_THRESHOLD]
+                            ?: UserPreferences.DEFAULT_LOW_BATTERY_THRESHOLD,
                 )
             }
 
@@ -95,6 +113,18 @@ class UserPreferencesRepositoryImpl
         override suspend fun setBatteryTrackingEnabled(enabled: Boolean) {
             context.dataStore.edit { preferences ->
                 preferences[PreferencesKeys.BATTERY_TRACKING_ENABLED] = enabled
+            }
+        }
+
+        override suspend fun setLowBatteryNotificationEnabled(enabled: Boolean) {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.LOW_BATTERY_NOTIFICATION_ENABLED] = enabled
+            }
+        }
+
+        override suspend fun setLowBatteryThreshold(percent: Int) {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.LOW_BATTERY_THRESHOLD] = percent
             }
         }
 
