@@ -252,6 +252,12 @@ class TrmnlDevicesPresenter
 
                     TrmnlDevicesScreen.Event.TogglePrivacy -> {
                         isPrivacyEnabled = !isPrivacyEnabled
+                        snackbarMessage =
+                            if (isPrivacyEnabled) {
+                                "Personal information hidden for privacy"
+                            } else {
+                                "Personal information now visible"
+                            }
                     }
 
                     TrmnlDevicesScreen.Event.ResetToken -> {
