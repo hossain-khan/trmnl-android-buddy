@@ -87,7 +87,7 @@ object NotificationHelper {
         val notification =
             NotificationCompat
                 .Builder(context, CHANNEL_ID_LOW_BATTERY)
-                .setSmallIcon(R.drawable.outline_battery_android_1_24)
+                .setSmallIcon(R.drawable.trmnl_glyph__black)
                 .setContentTitle(title)
                 .setContentText(contentText)
                 .setStyle(
