@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Critical Crash Fix**: Fixed `ClassCastException` crash on app startup in release builds
+  - Added ProGuard rules to prevent R8 from obfuscating Metro DI classes
+  - Keeps `TrmnlBuddyApp`, `AppGraph`, and `ComposeAppComponentFactory` classes
+  - Prevents dependency injection failures in production builds
+  - Resolves crashes reported on Google Pixel 10 Pro (Android 16) and Samsung Galaxy S23 (Android 15)
+
 ### Added
 - **Low Battery Notification Settings**: New settings section for configuring low battery alerts
   - Master toggle to enable/disable low battery notifications

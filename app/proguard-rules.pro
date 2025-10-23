@@ -19,3 +19,22 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Metro DI - Keep Application class and its DI graph
+# Required to prevent ClassCastException in ComposeAppComponentFactory
+-keep class ink.trmnl.android.buddy.TrmnlBuddyApp {
+    public <methods>;
+}
+-keep class ink.trmnl.android.buddy.di.AppGraph** { *; }
+
+# Keep ComposeAppComponentFactory and its methods
+-keep class ink.trmnl.android.buddy.di.ComposeAppComponentFactory {
+    public <methods>;
+}
+
+# Metro - Keep all generated factories and components
+-keep class ink.trmnl.android.buddy.**_Factory { *; }
+-keep class ink.trmnl.android.buddy.**_Component { *; }
+
+# Keep Metro Provider interface
+-keep interface dev.zacsweers.metro.Provider { *; }
