@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
@@ -91,6 +92,8 @@ data object SettingsScreen : Screen {
         data class LowBatteryThresholdChanged(
             val percent: Int,
         ) : Event()
+
+        data object TestLowBatteryNotificationClicked : Event()
     }
 }
 
@@ -146,6 +149,10 @@ class SettingsPresenter(
                         // Reschedule worker with updated threshold (uses REPLACE policy)
                         workerScheduler.scheduleLowBatteryNotification()
                     }
+                }
+                SettingsScreen.Event.TestLowBatteryNotificationClicked -> {
+                    // Trigger immediate one-time execution for testing (debug builds only)
+                    workerScheduler.triggerLowBatteryNotificationNow()
                 }
             }
         }
@@ -224,6 +231,9 @@ fun SettingsContent(
                 onThresholdChange = { percent ->
                     state.eventSink(SettingsScreen.Event.LowBatteryThresholdChanged(percent))
                 },
+                onTestNotification = {
+                    state.eventSink(SettingsScreen.Event.TestLowBatteryNotificationClicked)
+                },
             )
 
             // App Information Section
@@ -290,6 +300,7 @@ private fun LowBatteryNotificationSection(
     thresholdPercent: Int,
     onToggle: (Boolean) -> Unit,
     onThresholdChange: (Int) -> Unit,
+    onTestNotification: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -387,6 +398,27 @@ private fun LowBatteryNotificationSection(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(top = 4.dp),
                         )
+
+                        // Debug: Test notification button (debug builds only)
+                        if (BuildConfig.DEBUG) {
+                            OutlinedButton(
+                                onClick = onTestNotification,
+                                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    ),
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.notification_important_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                )
+                                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Test Notification Now (Debug)")
+                            }
+                        }
                     }
                 }
             }

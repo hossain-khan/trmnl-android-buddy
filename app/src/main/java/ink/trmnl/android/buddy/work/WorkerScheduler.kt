@@ -26,6 +26,12 @@ interface WorkerScheduler {
      * Cancels the low battery notification worker.
      */
     fun cancelLowBatteryNotification()
+
+    /**
+     * Triggers an immediate one-time execution of the low battery notification check.
+     * Useful for testing in debug builds without waiting for the scheduled periodic work.
+     */
+    fun triggerLowBatteryNotificationNow()
 }
 
 /**
@@ -77,5 +83,28 @@ class WorkerSchedulerImpl(
     override fun cancelLowBatteryNotification() {
         Log.d(TAG, "Cancelling low battery notification worker")
         workManager.cancelUniqueWork(LowBatteryNotificationWorker.WORK_NAME)
+    }
+
+    /**
+     * Triggers an immediate one-time execution of the low battery notification check.
+     * Useful for testing in debug builds without waiting for the scheduled periodic work.
+     *
+     * This enqueues a one-time work request that runs immediately (or as soon as
+     * network is available) to check battery levels and send notifications.
+     */
+    override fun triggerLowBatteryNotificationNow() {
+        Log.d(TAG, "Triggering immediate low battery notification check (for testing)")
+
+        val immediateWorkRequest =
+            androidx.work
+                .OneTimeWorkRequestBuilder<LowBatteryNotificationWorker>()
+                .setConstraints(
+                    Constraints
+                        .Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build(),
+                ).build()
+
+        workManager.enqueue(immediateWorkRequest)
     }
 }
