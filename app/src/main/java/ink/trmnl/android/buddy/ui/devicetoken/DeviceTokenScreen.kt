@@ -340,20 +340,23 @@ private fun InstructionsCard(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
             )
-            
-            val instructionText = buildAnnotatedString {
-                append("The Device API Key (Access Token) is required to fetch the current display content for this device. You can find this key in your ")
-                withLink(
-                    LinkAnnotation.Url(
-                        url = "https://usetrmnl.com/devices/",
-                        styles = linkStyle,
-                    ),
-                ) {
-                    append("device settings")
+
+            val instructionText =
+                buildAnnotatedString {
+                    append(
+                        "The Device API Key (Access Token) is required to fetch the current display content for this device. You can find this key in your ",
+                    )
+                    withLink(
+                        LinkAnnotation.Url(
+                            url = "https://usetrmnl.com/devices/",
+                            styles = linkStyle,
+                        ),
+                    ) {
+                        append("device settings")
+                    }
+                    append(" on the TRMNL website.")
                 }
-                append(" on the TRMNL website.")
-            }
-            
+
             Text(
                 text = instructionText,
                 style = MaterialTheme.typography.bodyMedium,
