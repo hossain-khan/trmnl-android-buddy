@@ -55,6 +55,10 @@ eithernet = "2.0.0"
 # https://github.com/coil-kt/coil/releases
 coil = "3.3.0"
 
+# Accompanist - Compose utilities
+# https://google.github.io/accompanist/
+accompanist = "0.37.3"
+
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -126,6 +130,10 @@ eithernet-integration-retrofit = { group = "com.slack.eithernet", name = "either
 # https://coil-kt.github.io/coil/
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+
+# Accompanist - Compose utilities for permissions
+# https://google.github.io/accompanist/permissions/
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
