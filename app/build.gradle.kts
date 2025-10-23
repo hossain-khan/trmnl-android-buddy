@@ -20,8 +20,8 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
 
         // Google Play app versioning - keep in sync with release notes and changelog
-        versionCode = 12
-        versionName = "1.5.0"
+        versionCode = 13
+        versionName = "1.6.0"
 
         // Read key or other properties from local.properties
         val localProperties =
