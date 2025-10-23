@@ -32,9 +32,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -312,6 +318,16 @@ private fun DeviceInfoCard(
  */
 @Composable
 private fun InstructionsCard(modifier: Modifier = Modifier) {
+    val linkColor = MaterialTheme.colorScheme.primary
+    val linkStyle =
+        TextLinkStyles(
+            style =
+                SpanStyle(
+                    color = linkColor,
+                    textDecoration = TextDecoration.Underline,
+                ),
+        )
+
     Card(
         modifier = modifier.fillMaxWidth(),
     ) {
@@ -324,9 +340,25 @@ private fun InstructionsCard(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
             )
+
+            val instructionText =
+                buildAnnotatedString {
+                    append(
+                        "The Device API Key (Access Token) is required to fetch the current display content for this device. You can find this key in your ",
+                    )
+                    withLink(
+                        LinkAnnotation.Url(
+                            url = "https://usetrmnl.com/devices/",
+                            styles = linkStyle,
+                        ),
+                    ) {
+                        append("device settings")
+                    }
+                    append(" on the TRMNL website.")
+                }
+
             Text(
-                "The Device API Key (Access Token) is required to fetch the current display content for this device. " +
-                    "You can find this key in your device settings on the TRMNL website.",
+                text = instructionText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
