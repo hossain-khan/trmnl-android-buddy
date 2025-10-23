@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **DeviceTokenScreen UX**: Added clickable link to TRMNL devices page in Device API Key setup
+  - Users can now click "device settings" text to navigate directly to https://usetrmnl.com/devices/
+  - Improves user experience for finding device API keys during setup
+  - Uses Material 3 LinkAnnotation with theme-aware styling
+
 ## [1.5.0] - 2025-10-23
 
 ### Fixed
