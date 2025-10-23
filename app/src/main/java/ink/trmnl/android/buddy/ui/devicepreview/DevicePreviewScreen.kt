@@ -213,8 +213,9 @@ fun DevicePreviewContent(
                             )
                         } else {
                             Icon(
-                                painter = painterResource(R.drawable.image_inset_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                painter = painterResource(R.drawable.download_photo_outline),
                                 contentDescription = "Download image",
+                                modifier = Modifier.size(24.dp),
                             )
                         }
                     }
