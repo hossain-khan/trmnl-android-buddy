@@ -346,7 +346,7 @@ private fun LowBatteryNotificationSection(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
-                                .padding(bottom = 16.dp),
+                                .padding(bottom = 16.dp, top = 16.dp),
                     ) {
                         Text(
                             text = "Alert Threshold: $thresholdPercent%",
