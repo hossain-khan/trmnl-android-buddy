@@ -167,9 +167,9 @@ fun DevicePreviewContent(
                         fileName = state.deviceName.replace(" ", "_"),
                     )
                 if (result.isSuccess) {
-                    snackbarHostState.showSnackbar("Image saved to Pictures")
+                    snackbarHostState.showSnackbar("Image saved to your Pictures directory. Ready to view and share!")
                 } else {
-                    snackbarHostState.showSnackbar("Failed to save image")
+                    snackbarHostState.showSnackbar("Failed to save image to your Pictures directory.")
                 }
                 state.eventSink(DevicePreviewScreen.Event.DismissSnackbar)
             }
