@@ -80,38 +80,4 @@ class TrmnlBuddyApp :
             batteryWorkRequest,
         )
     }
-
-    /**
-     * Schedules or reschedules weekly low battery notification checks using WorkManager.
-     * The worker checks device battery levels and sends notifications when below threshold.
-     *
-     * Call this method when low battery notifications are enabled or threshold changes.
-     */
-    fun scheduleLowBatteryNotification() {
-        val notificationWorkRequest =
-            PeriodicWorkRequestBuilder<LowBatteryNotificationWorker>(
-                repeatInterval = 7,
-                repeatIntervalTimeUnit = TimeUnit.DAYS,
-            ).setConstraints(
-                Constraints
-                    .Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build(),
-            ).build()
-
-        // Use REPLACE policy to update the work when threshold changes
-        appGraph.workManager.enqueueUniquePeriodicWork(
-            LowBatteryNotificationWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            notificationWorkRequest,
-        )
-    }
-
-    /**
-     * Cancels the low battery notification worker.
-     * Call this method when low battery notifications are disabled.
-     */
-    fun cancelLowBatteryNotification() {
-        appGraph.workManager.cancelUniqueWork(LowBatteryNotificationWorker.WORK_NAME)
-    }
 }
