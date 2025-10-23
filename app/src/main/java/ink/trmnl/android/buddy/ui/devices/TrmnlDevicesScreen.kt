@@ -252,6 +252,12 @@ class TrmnlDevicesPresenter
 
                     TrmnlDevicesScreen.Event.TogglePrivacy -> {
                         isPrivacyEnabled = !isPrivacyEnabled
+                        snackbarMessage =
+                            if (isPrivacyEnabled) {
+                                "Device ID and MAC address hidden for privacy"
+                            } else {
+                                "Device ID and MAC address now visible"
+                            }
                     }
 
                     TrmnlDevicesScreen.Event.ResetToken -> {
