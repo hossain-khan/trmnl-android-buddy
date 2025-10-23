@@ -167,7 +167,7 @@ fun DevicePreviewContent(
                         fileName = state.deviceName.replace(" ", "_"),
                     )
                 if (result.isSuccess) {
-                    snackbarHostState.showSnackbar("Image saved to your Pictures directory. Ready to view and share!")
+                    snackbarHostState.showSnackbar("Image saved to your Pictures directory.\nDownloaded image is ready to view and share!")
                 } else {
                     snackbarHostState.showSnackbar("Failed to save image to your Pictures directory.")
                 }
@@ -207,7 +207,7 @@ fun DevicePreviewContent(
                     ) {
                         if (state.downloadState is DevicePreviewScreen.DownloadState.Downloading) {
                             CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
+                                modifier = Modifier.size(20.dp),
                                 color = MaterialTheme.colorScheme.onSurface,
                                 strokeWidth = 2.dp,
                             )
@@ -216,6 +216,7 @@ fun DevicePreviewContent(
                                 painter = painterResource(R.drawable.download_photo_outline),
                                 contentDescription = "Download image",
                                 modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary,
                             )
                         }
                     }
