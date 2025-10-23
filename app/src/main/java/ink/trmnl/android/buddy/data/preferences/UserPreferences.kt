@@ -7,4 +7,6 @@ data class UserPreferences(
     val apiToken: String? = null,
     val isOnboardingCompleted: Boolean = false,
     val isBatteryTrackingEnabled: Boolean = true,
+    val isLowBatteryNotificationEnabled: Boolean = false,
+    val lowBatteryThresholdPercent: Int = 20,
 )

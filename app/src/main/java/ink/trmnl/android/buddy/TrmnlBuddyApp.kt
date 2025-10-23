@@ -12,7 +12,9 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dev.zacsweers.metro.createGraphFactory
 import ink.trmnl.android.buddy.di.AppGraph
+import ink.trmnl.android.buddy.notification.NotificationHelper
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
+import ink.trmnl.android.buddy.work.LowBatteryNotificationWorker
 import ink.trmnl.android.buddy.work.SampleWorker
 import java.util.concurrent.TimeUnit
 
@@ -31,6 +33,7 @@ class TrmnlBuddyApp :
 
     override fun onCreate() {
         super.onCreate()
+        NotificationHelper.createNotificationChannels(this)
         scheduleBackgroundWork()
         scheduleBatteryCollection()
     }
@@ -76,5 +79,39 @@ class TrmnlBuddyApp :
             ExistingPeriodicWorkPolicy.KEEP,
             batteryWorkRequest,
         )
+    }
+
+    /**
+     * Schedules or reschedules weekly low battery notification checks using WorkManager.
+     * The worker checks device battery levels and sends notifications when below threshold.
+     *
+     * Call this method when low battery notifications are enabled or threshold changes.
+     */
+    fun scheduleLowBatteryNotification() {
+        val notificationWorkRequest =
+            PeriodicWorkRequestBuilder<LowBatteryNotificationWorker>(
+                repeatInterval = 7,
+                repeatIntervalTimeUnit = TimeUnit.DAYS,
+            ).setConstraints(
+                Constraints
+                    .Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build(),
+            ).build()
+
+        // Use REPLACE policy to update the work when threshold changes
+        appGraph.workManager.enqueueUniquePeriodicWork(
+            LowBatteryNotificationWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.REPLACE,
+            notificationWorkRequest,
+        )
+    }
+
+    /**
+     * Cancels the low battery notification worker.
+     * Call this method when low battery notifications are disabled.
+     */
+    fun cancelLowBatteryNotification() {
+        appGraph.workManager.cancelUniqueWork(LowBatteryNotificationWorker.WORK_NAME)
     }
 }
