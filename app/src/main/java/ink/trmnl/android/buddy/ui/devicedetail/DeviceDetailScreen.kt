@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -284,7 +286,9 @@ fun DeviceDetailContent(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { state.eventSink(DeviceDetailScreen.Event.SettingsClicked) }) {
+                    TextButton(
+                        onClick = { state.eventSink(DeviceDetailScreen.Event.SettingsClicked) },
+                    ) {
                         Icon(
                             painter =
                                 painterResource(
@@ -294,7 +298,13 @@ fun DeviceDetailContent(
                                         R.drawable.tv_options_input_settings_24dp_e8eaed_fill0_wght400_grad0_opsz24
                                     },
                                 ),
-                            contentDescription = "Settings",
+                            contentDescription =
+                                if (state.hasDeviceToken) {
+                                    "Device settings - configured"
+                                } else {
+                                    "Device settings - not configured"
+                                },
+                            modifier = Modifier.size(18.dp),
                             tint =
                                 if (state.hasDeviceToken) {
                                     MaterialTheme.colorScheme.primary
@@ -302,6 +312,8 @@ fun DeviceDetailContent(
                                     MaterialTheme.colorScheme.onSurfaceVariant
                                 },
                         )
+                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                        Text("Settings")
                     }
                 },
             )
