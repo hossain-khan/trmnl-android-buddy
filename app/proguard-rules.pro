@@ -33,8 +33,8 @@
 }
 
 # Metro - Keep all generated factories and components
--keep class **_Factory { *; }
--keep class **_Component { *; }
+-keep class ink.trmnl.android.buddy.**_Factory { *; }
+-keep class ink.trmnl.android.buddy.**_Component { *; }
 
 # Keep Metro Provider interface
 -keep interface dev.zacsweers.metro.Provider { *; }
