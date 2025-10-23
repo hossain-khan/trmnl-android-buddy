@@ -254,9 +254,9 @@ class TrmnlDevicesPresenter
                         isPrivacyEnabled = !isPrivacyEnabled
                         snackbarMessage =
                             if (isPrivacyEnabled) {
-                                "Personal information hidden for privacy"
+                                "Device ID and MAC address hidden for privacy"
                             } else {
-                                "Personal information now visible"
+                                "Device ID and MAC address now visible"
                             }
                     }
 
