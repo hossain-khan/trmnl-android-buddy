@@ -89,6 +89,12 @@ data object AccessTokenScreen : Screen {
 /**
  * Presenter for AccessTokenScreen.
  * Handles token input, validation, and saving to DataStore.
+ *
+ * Best Practices Applied:
+ * - Uses `rememberRetained` for form state (survives config changes)
+ * - Validates input in event handler before making API calls
+ * - Uses `rememberCoroutineScope` for user-triggered async operations
+ * - Provides clear error messages for validation failures
  */
 @Inject
 class AccessTokenPresenter
@@ -98,6 +104,7 @@ class AccessTokenPresenter
     ) : Presenter<AccessTokenScreen.State> {
         @Composable
         override fun present(): AccessTokenScreen.State {
+            // State: Form state that survives configuration changes
             var token by rememberRetained { mutableStateOf("") }
             var isLoading by rememberRetained { mutableStateOf(false) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }

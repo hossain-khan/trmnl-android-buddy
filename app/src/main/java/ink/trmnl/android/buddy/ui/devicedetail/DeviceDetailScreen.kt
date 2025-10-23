@@ -127,6 +127,12 @@ data class DeviceDetailScreen(
 
 /**
  * Presenter for DeviceDetailScreen.
+ *
+ * Best Practices Applied:
+ * - Uses Flow.collectAsState() for observing repository flows
+ * - Uses `derivedStateOf` for computed state based on other state
+ * - Uses `rememberRetained` for simple mutable state
+ * - Proper use of LaunchedEffect for side effects
  */
 @Inject
 class DeviceDetailPresenter
@@ -138,6 +144,7 @@ class DeviceDetailPresenter
     ) : Presenter<DeviceDetailScreen.State> {
         @Composable
         override fun present(): DeviceDetailScreen.State {
+            // State: Collect flows as state - automatically recomposes when flow emits
             val batteryHistory by batteryHistoryRepository
                 .getBatteryHistoryForDevice(screen.deviceId)
                 .collectAsState(initial = emptyList())
@@ -149,7 +156,8 @@ class DeviceDetailPresenter
             )
             val coroutineScope = rememberCoroutineScope()
 
-            // Check if battery has been recorded today
+            // Derived State: Compute hasRecordedToday based on batteryHistory
+            // derivedStateOf ensures this only recomputes when batteryHistory changes
             val hasRecordedToday by remember {
                 derivedStateOf {
                     val today =
@@ -166,7 +174,8 @@ class DeviceDetailPresenter
                 }
             }
 
-            // Mark loading complete when we have data or after initial load
+            // Side Effect: Mark loading complete when battery history is loaded
+            // LaunchedEffect(batteryHistory) re-runs when batteryHistory changes
             LaunchedEffect(batteryHistory) {
                 isLoading = false
             }

@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.retained.produceRetainedState
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
@@ -77,6 +77,11 @@ data object WelcomeScreen : Screen {
 /**
  * Presenter for WelcomeScreen.
  * Handles navigation logic based on whether user has configured API token.
+ *
+ * Best Practices Applied:
+ * - Uses `rememberRetained` for simple state that survives configuration changes
+ * - Uses `LaunchedEffect(Unit)` for one-time initialization on first composition
+ * - Separates loading state from data state for better control
  */
 @Inject
 class WelcomePresenter
@@ -86,15 +91,19 @@ class WelcomePresenter
     ) : Presenter<WelcomeScreen.State> {
         @Composable
         override fun present(): WelcomeScreen.State {
-            // Check if user has API token on first load
-            val userPreferences by produceRetainedState<UserPreferences?>(
-                initialValue = null,
-            ) {
-                value = userPreferencesRepository.userPreferencesFlow.first()
+            // State: Use rememberRetained to survive config changes (screen rotation, etc.)
+            var userPreferences by rememberRetained { mutableStateOf<UserPreferences?>(null) }
+            var isLoading by rememberRetained { mutableStateOf(true) }
+
+            // Side Effect: Fetch user preferences once on first composition
+            // LaunchedEffect(Unit) ensures this only runs once when the composable enters composition
+            LaunchedEffect(Unit) {
+                userPreferences = userPreferencesRepository.userPreferencesFlow.first()
+                isLoading = false
             }
 
             return WelcomeScreen.State(
-                isLoading = userPreferences == null,
+                isLoading = isLoading,
                 hasExistingToken = !userPreferences?.apiToken.isNullOrBlank(),
             ) { event ->
                 when (event) {

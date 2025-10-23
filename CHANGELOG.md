@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Improved Circuit presenter state management patterns following best practices
+  - Replaced `produceRetainedState` with `rememberRetained` + `LaunchedEffect` in WelcomeScreen for simpler, more predictable state initialization
+  - Better separation of loading state management for improved clarity
+
 ## [1.4.0] - 2025-10-22
 
 ### Changed

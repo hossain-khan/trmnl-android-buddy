@@ -95,6 +95,12 @@ data class DeviceTokenScreen(
 
 /**
  * Presenter for DeviceTokenScreen.
+ *
+ * Best Practices Applied:
+ * - Uses `rememberRetained` for form state
+ * - LaunchedEffect with screen parameter to reload when device changes
+ * - Input validation before saving
+ * - Separate current token vs input token for better UX
  */
 @Inject
 class DeviceTokenPresenter
@@ -105,13 +111,14 @@ class DeviceTokenPresenter
     ) : Presenter<DeviceTokenScreen.State> {
         @Composable
         override fun present(): DeviceTokenScreen.State {
+            // State: Form state that survives configuration changes
             var currentToken by rememberRetained { mutableStateOf("") }
             var tokenInput by rememberRetained { mutableStateOf("") }
             var isSaving by rememberRetained { mutableStateOf(false) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
-            // Load existing token on initial load
+            // Side Effect: Load existing token when screen device ID changes
             LaunchedEffect(screen.deviceFriendlyId) {
                 val token = deviceTokenRepository.getDeviceToken(screen.deviceFriendlyId)
                 if (token != null) {

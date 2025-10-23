@@ -64,6 +64,11 @@ data class DevicePreviewScreen(
 
 /**
  * Presenter for DevicePreviewScreen.
+ *
+ * Best Practices Applied:
+ * - Stateless presenter - all data comes from screen parameters
+ * - Simple event handling for navigation
+ * - No side effects needed - perfect for simple screens
  */
 @Inject
 class DevicePreviewPresenter
@@ -73,6 +78,8 @@ class DevicePreviewPresenter
     ) : Presenter<DevicePreviewScreen.State> {
         @Composable
         override fun present(): DevicePreviewScreen.State =
+            // State: Directly pass screen parameters to state
+            // No local state needed - all data comes from navigation args
             DevicePreviewScreen.State(
                 deviceId = screen.deviceId,
                 deviceName = screen.deviceName,

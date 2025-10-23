@@ -78,6 +78,11 @@ data object SettingsScreen : Screen {
 
 /**
  * Presenter for SettingsScreen.
+ *
+ * Best Practices Applied:
+ * - Uses Flow.collectAsState() for observing preferences
+ * - Uses `rememberCoroutineScope` for user-triggered updates
+ * - Simple, focused presenter for settings management
  */
 @Inject
 class SettingsPresenter(
@@ -86,6 +91,7 @@ class SettingsPresenter(
 ) : Presenter<SettingsScreen.State> {
     @Composable
     override fun present(): SettingsScreen.State {
+        // State: Collect preferences flow as state
         val preferences by userPreferencesRepository.userPreferencesFlow.collectAsState(
             initial =
                 ink.trmnl.android.buddy.data.preferences

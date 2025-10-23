@@ -108,6 +108,12 @@ data object UserAccountScreen : Screen {
 /**
  * Presenter for UserAccountScreen.
  * Fetches user info from API and manages state.
+ *
+ * Best Practices Applied:
+ * - Uses `rememberRetained` for all state
+ * - LaunchedEffect(Unit) for initial data load
+ * - Separate loading helper function for reusability
+ * - Proper error handling with user-friendly messages
  */
 @Inject
 class UserAccountPresenter(
@@ -117,13 +123,14 @@ class UserAccountPresenter(
 ) : Presenter<UserAccountScreen.State> {
     @Composable
     override fun present(): UserAccountScreen.State {
+        // State: All mutable state uses rememberRetained
         var user by rememberRetained { mutableStateOf<User?>(null) }
         var isLoading by rememberRetained { mutableStateOf(true) }
         var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
         var showLogoutDialog by rememberRetained { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
 
-        // Fetch user info on screen load
+        // Side Effect: Fetch user info once on screen load
         LaunchedEffect(Unit) {
             loadUserInfo(
                 onLoading = { isLoading = it },

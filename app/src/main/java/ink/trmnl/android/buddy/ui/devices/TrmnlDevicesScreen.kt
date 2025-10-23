@@ -151,6 +151,12 @@ data object TrmnlDevicesScreen : Screen {
 /**
  * Presenter for TrmnlDevicesScreen.
  * Fetches devices from API and manages state.
+ *
+ * Best Practices Applied:
+ * - Uses `rememberRetained` for all state to survive configuration changes
+ * - Multiple `LaunchedEffect` blocks with different keys for different side effects
+ * - Proper error handling with specific error states (unauthorized, network error, etc.)
+ * - Uses `rememberCoroutineScope` for user-triggered coroutines (refresh, etc.)
  */
 @Inject
 class TrmnlDevicesPresenter
@@ -162,6 +168,7 @@ class TrmnlDevicesPresenter
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
+            // State: All mutable state uses rememberRetained for config change survival
             var devices by rememberRetained { mutableStateOf<List<Device>>(emptyList()) }
             var deviceTokens by rememberRetained { mutableStateOf<Map<String, String?>>(emptyMap()) }
             var devicePreviews by rememberRetained { mutableStateOf<Map<String, DevicePreviewInfo?>>(emptyMap()) }
@@ -172,7 +179,8 @@ class TrmnlDevicesPresenter
             var snackbarMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
-            // Fetch devices on initial load only (when devices list is empty)
+            // Side Effect 1: Fetch devices on initial load only (when devices list is empty)
+            // LaunchedEffect(Unit) runs once when composable enters composition
             LaunchedEffect(Unit) {
                 if (devices.isEmpty() && errorMessage == null) {
                     loadDevices(
@@ -189,7 +197,8 @@ class TrmnlDevicesPresenter
                 }
             }
 
-            // Always reload device tokens on every visit
+            // Side Effect 2: Reload device tokens whenever devices list changes
+            // LaunchedEffect(devices) re-runs when devices list changes
             LaunchedEffect(devices) {
                 if (devices.isNotEmpty()) {
                     loadDeviceTokens(devices) { tokens ->
