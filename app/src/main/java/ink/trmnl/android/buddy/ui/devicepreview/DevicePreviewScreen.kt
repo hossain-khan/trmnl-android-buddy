@@ -67,10 +67,23 @@ data class DevicePreviewScreen(
         val deviceId: String,
         val deviceName: String,
         val imageUrl: String,
-        val snackbarMessage: String? = null,
-        val isDownloading: Boolean = false,
+        val downloadState: DownloadState = DownloadState.Idle,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
+
+    sealed class DownloadState {
+        data object Idle : DownloadState()
+
+        data object Downloading : DownloadState()
+
+        data class Success(
+            val message: String,
+        ) : DownloadState()
+
+        data class Error(
+            val message: String,
+        ) : DownloadState()
+    }
 
     sealed class Event : CircuitUiEvent {
         data object BackClicked : Event()
@@ -92,27 +105,27 @@ class DevicePreviewPresenter
     ) : Presenter<DevicePreviewScreen.State> {
         @Composable
         override fun present(): DevicePreviewScreen.State {
-            var snackbarMessage by rememberRetained { mutableStateOf<String?>(null) }
-            var isDownloading by rememberRetained { mutableStateOf(false) }
+            var downloadState by rememberRetained {
+                mutableStateOf<DevicePreviewScreen.DownloadState>(
+                    DevicePreviewScreen.DownloadState.Idle,
+                )
+            }
 
             return DevicePreviewScreen.State(
                 deviceId = screen.deviceId,
                 deviceName = screen.deviceName,
                 imageUrl = screen.imageUrl,
-                snackbarMessage = snackbarMessage,
-                isDownloading = isDownloading,
+                downloadState = downloadState,
             ) { event ->
                 when (event) {
                     DevicePreviewScreen.Event.BackClicked -> navigator.pop()
                     DevicePreviewScreen.Event.DownloadImageClicked -> {
-                        if (!isDownloading) {
-                            isDownloading = true
-                            snackbarMessage = "downloading"
+                        if (downloadState !is DevicePreviewScreen.DownloadState.Downloading) {
+                            downloadState = DevicePreviewScreen.DownloadState.Downloading
                         }
                     }
                     DevicePreviewScreen.Event.DismissSnackbar -> {
-                        snackbarMessage = null
-                        isDownloading = false
+                        downloadState = DevicePreviewScreen.DownloadState.Idle
                     }
                 }
             }
@@ -144,25 +157,33 @@ fun DevicePreviewContent(
     val coroutineScope = rememberCoroutineScope()
 
     // Handle image download when triggered
-    LaunchedEffect(state.snackbarMessage) {
-        if (state.snackbarMessage == "downloading") {
-            val result =
-                ImageDownloadUtils.downloadImage(
-                    context = context,
-                    imageUrl = state.imageUrl,
-                    fileName = state.deviceName.replace(" ", "_"),
-                )
-            val message =
+    LaunchedEffect(state.downloadState) {
+        when (val downloadState = state.downloadState) {
+            is DevicePreviewScreen.DownloadState.Downloading -> {
+                val result =
+                    ImageDownloadUtils.downloadImage(
+                        context = context,
+                        imageUrl = state.imageUrl,
+                        fileName = state.deviceName.replace(" ", "_"),
+                    )
                 if (result.isSuccess) {
-                    "Image saved to Pictures"
+                    snackbarHostState.showSnackbar("Image saved to Pictures")
                 } else {
-                    "Failed to save image"
+                    snackbarHostState.showSnackbar("Failed to save image")
                 }
-            state.eventSink(DevicePreviewScreen.Event.DismissSnackbar)
-            snackbarHostState.showSnackbar(message)
-        } else if (state.snackbarMessage != null) {
-            snackbarHostState.showSnackbar(state.snackbarMessage)
-            state.eventSink(DevicePreviewScreen.Event.DismissSnackbar)
+                state.eventSink(DevicePreviewScreen.Event.DismissSnackbar)
+            }
+            is DevicePreviewScreen.DownloadState.Success -> {
+                snackbarHostState.showSnackbar(downloadState.message)
+                state.eventSink(DevicePreviewScreen.Event.DismissSnackbar)
+            }
+            is DevicePreviewScreen.DownloadState.Error -> {
+                snackbarHostState.showSnackbar(downloadState.message)
+                state.eventSink(DevicePreviewScreen.Event.DismissSnackbar)
+            }
+            DevicePreviewScreen.DownloadState.Idle -> {
+                // No action needed
+            }
         }
     }
 
@@ -182,12 +203,12 @@ fun DevicePreviewContent(
                 actions = {
                     IconButton(
                         onClick = { state.eventSink(DevicePreviewScreen.Event.DownloadImageClicked) },
-                        enabled = !state.isDownloading,
+                        enabled = state.downloadState !is DevicePreviewScreen.DownloadState.Downloading,
                     ) {
-                        if (state.isDownloading) {
+                        if (state.downloadState is DevicePreviewScreen.DownloadState.Downloading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(24.dp),
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 strokeWidth = 2.dp,
                             )
                         } else {
@@ -200,22 +221,22 @@ fun DevicePreviewContent(
                 },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Black,
-                        titleContentColor = Color.White,
-                        navigationIconContentColor = Color.White,
-                        actionIconContentColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                        actionIconContentColor = MaterialTheme.colorScheme.onSurface,
                     ),
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        containerColor = Color.Black,
+        containerColor = MaterialTheme.colorScheme.surface,
     ) { innerPadding ->
         Box(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .background(Color.Black),
+                    .background(MaterialTheme.colorScheme.surface),
             contentAlignment = Alignment.Center,
         ) {
             SharedElementTransitionScope {
@@ -237,7 +258,7 @@ fun DevicePreviewContent(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center,
                         ) {
-                            CircularProgressIndicator(color = Color.White)
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.onSurface)
                         }
                     },
                     error = {
@@ -247,7 +268,7 @@ fun DevicePreviewContent(
                         ) {
                             Text(
                                 text = "Failed to load image",
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.bodyLarge,
                             )
                         }
