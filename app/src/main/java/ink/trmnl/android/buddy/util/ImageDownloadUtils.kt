@@ -64,9 +64,10 @@ object ImageDownloadUtils {
                         return@withContext Result.failure(Exception("Could not convert image to bitmap: ${e.message}"))
                     }
 
-                // Generate filename with timestamp
+                // Sanitize filename and generate with timestamp
+                val sanitizedFileName = sanitizeFileName(fileName)
                 val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-                val displayName = "${fileName}_$timestamp.png"
+                val displayName = "${sanitizedFileName}_$timestamp.png"
 
                 // Save to MediaStore (Pictures directory)
                 val savedUri = saveBitmapToMediaStore(context, bitmap, displayName)
@@ -136,5 +137,42 @@ object ImageDownloadUtils {
         } finally {
             outputStream?.close()
         }
+    }
+
+    /**
+     * Sanitizes a filename by removing or replacing special characters that could cause issues
+     * with Android file naming.
+     *
+     * Removes: / \ : * ? " ' < > | ( ) [ ] (reserved on Windows/Android and shell-problematic)
+     * Replaces: whitespace with underscores
+     * Limits: length to 50 characters to avoid excessively long filenames
+     *
+     * @param fileName The filename to sanitize
+     * @return A sanitized filename safe for Android file system
+     */
+    internal fun sanitizeFileName(fileName: String): String {
+        // Replace whitespace with underscores
+        var sanitized = fileName.replace(Regex("\\s+"), "_")
+
+        // Remove special characters that are not allowed in filenames
+        // Android/Linux: / null
+        // Windows (also restricted on Android): \ / : * ? " < > |
+        // Also remove quotes, brackets, and parentheses to avoid shell/parsing issues
+        sanitized = sanitized.replace(Regex("[/\\\\:*?\"'<>|()\\[\\]]"), "")
+
+        // Remove leading/trailing dots and underscores
+        sanitized = sanitized.trim('.', '_')
+
+        // Ensure the filename is not empty after sanitization
+        if (sanitized.isEmpty()) {
+            sanitized = "TRMNL_Display"
+        }
+
+        // Limit length to avoid excessively long filenames
+        if (sanitized.length > 50) {
+            sanitized = sanitized.take(50)
+        }
+
+        return sanitized
     }
 }
