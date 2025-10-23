@@ -3,14 +3,15 @@ package ink.trmnl.android.buddy.util
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import coil3.ImageLoader
+import coil3.asImage
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
+import coil3.toBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.OutputStream
@@ -50,12 +51,18 @@ object ImageDownloadUtils {
 
                 val result = imageLoader.execute(request)
                 if (result !is SuccessResult) {
+                    Log.e(TAG, "Failed to load image: $result")
                     return@withContext Result.failure(Exception("Failed to load image"))
                 }
 
+                // Convert Coil 3's Image to Android Bitmap
                 val bitmap =
-                    (result.image as? BitmapDrawable)?.bitmap
-                        ?: return@withContext Result.failure(Exception("Could not convert image to bitmap"))
+                    try {
+                        result.image.toBitmap()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to convert image to bitmap", e)
+                        return@withContext Result.failure(Exception("Could not convert image to bitmap: ${e.message}"))
+                    }
 
                 // Generate filename with timestamp
                 val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
