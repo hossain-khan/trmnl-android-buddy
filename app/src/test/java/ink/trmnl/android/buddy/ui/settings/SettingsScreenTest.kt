@@ -256,6 +256,10 @@ class SettingsScreenTest {
         override fun cancelLowBatteryNotification() {
             isScheduled = false
         }
+
+        override fun triggerLowBatteryNotificationNow() {
+            // No-op for testing - immediate execution not needed in unit tests
+        }
     }
 
     /**
