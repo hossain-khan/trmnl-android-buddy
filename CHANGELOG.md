@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Download Display Image Feature**: Added ability to save device preview images to Pictures directory
+  - Download button in DevicePreviewScreen top app bar
+  - Uses Material 3 image icon with loading indicator during download
+  - Downloads via Coil's image cache to avoid re-downloading
+  - Saves to device Pictures directory using MediaStore API (Android 10+)
+  - No runtime permissions required (uses scoped storage API)
+  - Snackbar notification confirms successful save or reports errors
+  - Downloaded files named with device name and timestamp (e.g., `Device_Name_20251023_120530.png`)
+
 ## [1.4.0] - 2025-10-22
 
 ### Changed
