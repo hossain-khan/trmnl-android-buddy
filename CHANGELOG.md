@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2025-10-23
+
 ### Fixed
 - **Critical Crash Fix**: Fixed `ClassCastException` crash on app startup in release builds
   - Added ProGuard rules to prevent R8 from obfuscating Metro DI classes
@@ -17,13 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Low Battery Notification Settings**: New settings section for configuring low battery alerts
   - Master toggle to enable/disable low battery notifications
-  - Animated slider to set alert threshold (5% to 50%)
+  - Animated slider to set alert threshold (5% to 50%) with calculated steps for 1% increments
   - Weekly background worker checks battery levels across all devices
   - Aggregated notifications when multiple devices meet the threshold
   - Notification channel for low battery alerts with proper Android O+ support
-  - Runtime permission handling for Android 13+ using Accompanist Permissions library
+  - Runtime permission handling for Android 13+ using Accompanist Permissions library (0.37.3)
+  - Tappable notifications that open the app via PendingIntent
   - WorkerScheduler interface for testable worker management
-  - Comprehensive unit tests for new settings and preferences
+  - Debug test button for immediate notification testing (debug builds only)
+  - Comprehensive unit tests for settings and preferences
+  - Testing documentation in `docs/TESTING_LOW_BATTERY_NOTIFICATIONS.md`
 - **Download Display Image Feature**: Added ability to save device preview images to Pictures directory
   - Download button in DevicePreviewScreen top app bar
   - Uses Material 3 image icon with loading indicator during download
@@ -32,7 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - No runtime permissions required (uses scoped storage API)
   - Snackbar notification confirms successful save or reports errors
   - Downloaded files named with device name and timestamp (e.g., `Device_Name_20251023_120530.png`)
-- Settings icon in Device Detail screen app bar
+  - Filename sanitization removes special characters for safe file naming
+- **Settings icon in Device Detail screen app bar**
   - Icon displays in top app bar alongside back button
   - Shows "Settings" icon (checkmark) when device token is configured
   - Shows "Configure" icon when device token is not set
@@ -322,7 +328,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.4.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.5.0...HEAD
+[1.5.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.3.0...1.4.0
 [1.3.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.2.0...1.3.0
 [1.2.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.1.0...1.2.0
