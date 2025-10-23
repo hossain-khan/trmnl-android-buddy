@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Privacy Toggle Feedback**: Added snackbar messages when privacy toggle is used in TrmnlDevicesScreen
+  - Shows "Personal information hidden for privacy" when privacy is enabled
+  - Shows "Personal information now visible" when privacy is disabled
+  - Provides clear feedback about PII visibility state changes
+
 ### Fixed
 - **DeviceTokenScreen UX**: Added clickable link to TRMNL devices page in Device API Key setup
   - Users can now click "device settings" text to navigate directly to https://usetrmnl.com/devices/
