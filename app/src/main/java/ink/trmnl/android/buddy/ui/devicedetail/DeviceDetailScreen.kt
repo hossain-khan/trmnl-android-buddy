@@ -48,17 +48,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
+import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
+import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
-import com.patrykandpatrick.vico.core.common.component.ShapeComponent
-import com.patrykandpatrick.vico.core.common.shape.Shape
+import com.patrykandpatrick.vico.core.common.Fill
+import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -654,9 +657,9 @@ private fun BatteryChart(
                             LineCartesianLayer.PointProvider.single(
                                 LineCartesianLayer.Point(
                                     component =
-                                        ShapeComponent(
-                                            shape = Shape.Pill,
-                                            color = primaryColor.hashCode(),
+                                        rememberShapeComponent(
+                                            fill = Fill(primaryColor.hashCode()),
+                                            shape = CorneredShape.Pill,
                                         ),
                                     sizeDp = 8f,
                                 ),
@@ -669,11 +672,11 @@ private fun BatteryChart(
             chart =
                 rememberCartesianChart(
                     lineLayer,
-                    startAxis = rememberStartAxis(title = "Battery %"),
+                    startAxis = VerticalAxis.rememberStart(title = "Battery %"),
                     bottomAxis =
-                        rememberBottomAxis(
+                        HorizontalAxis.rememberBottom(
                             title = "Time",
-                            valueFormatter = { value, _, _ ->
+                            valueFormatter = { _, value, _ ->
                                 // Convert index to date
                                 val index = value.toInt()
                                 if (index >= 0 && index < batteryHistory.size) {
