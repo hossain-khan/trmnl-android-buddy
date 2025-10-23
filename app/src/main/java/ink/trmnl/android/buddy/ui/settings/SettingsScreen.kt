@@ -317,6 +317,10 @@ private fun LowBatteryNotificationSection(
     val context = LocalContext.current
     var showPermissionDialog by remember { mutableStateOf(false) }
 
+    // Battery threshold range constants
+    val minThreshold = 5
+    val maxThreshold = 50
+
     // Permission state for Android 13+ (API 33+)
     // For older Android versions, this permission is automatically granted
     val notificationPermissionState =
@@ -446,7 +450,7 @@ private fun LowBatteryNotificationSection(
                             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = "5%",
+                                text = "$minThreshold%",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -454,14 +458,15 @@ private fun LowBatteryNotificationSection(
                             Slider(
                                 value = thresholdPercent.toFloat(),
                                 onValueChange = { onThresholdChange(it.toInt()) },
-                                valueRange = 5f..50f,
-                                // 44 steps creates 45 discrete values (5%, 6%, 7%, ..., 50%) for 1% increments
-                                steps = 44,
+                                valueRange = minThreshold.toFloat()..maxThreshold.toFloat(),
+                                // Calculate steps to create discrete 1% increments
+                                // Formula: steps = range - 1 (e.g., 5-50 requires 44 steps for 45 values)
+                                steps = maxThreshold - minThreshold - 1,
                                 modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                             )
 
                             Text(
-                                text = "50%",
+                                text = "$maxThreshold%",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
