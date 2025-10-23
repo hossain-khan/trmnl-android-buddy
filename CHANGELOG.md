@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Settings icon in Device Detail screen app bar
+  - Icon displays in top app bar alongside back button
+  - Shows "Settings" icon (checkmark) when device token is configured
+  - Shows "Configure" icon when device token is not set
+  - Icon color changes based on configuration status (primary for configured, onSurfaceVariant for unconfigured)
+  - Tapping the icon navigates to Device API Key configuration screen
+  - Maintains consistent UX with device list screen settings behavior
+
 ## [1.4.0] - 2025-10-22
 
 ### Changed

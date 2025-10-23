@@ -109,11 +109,14 @@ data class DeviceDetailScreen(
         val isLoading: Boolean = true,
         val isBatteryTrackingEnabled: Boolean = true,
         val hasRecordedToday: Boolean = false,
+        val hasDeviceToken: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
     sealed class Event : CircuitUiEvent {
         data object BackClicked : Event()
+
+        data object SettingsClicked : Event()
 
         data class PopulateBatteryHistory(
             val minBatteryLevel: Float,
@@ -135,6 +138,7 @@ class DeviceDetailPresenter
         @Assisted private val navigator: Navigator,
         private val batteryHistoryRepository: BatteryHistoryRepository,
         private val userPreferencesRepository: ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository,
+        private val deviceTokenRepository: ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository,
     ) : Presenter<DeviceDetailScreen.State> {
         @Composable
         override fun present(): DeviceDetailScreen.State {
@@ -142,12 +146,19 @@ class DeviceDetailPresenter
                 .getBatteryHistoryForDevice(screen.deviceId)
                 .collectAsState(initial = emptyList())
             var isLoading by rememberRetained { mutableStateOf(true) }
+            var hasDeviceToken by rememberRetained { mutableStateOf(false) }
             val preferences by userPreferencesRepository.userPreferencesFlow.collectAsState(
                 initial =
                     ink.trmnl.android.buddy.data.preferences
                         .UserPreferences(),
             )
             val coroutineScope = rememberCoroutineScope()
+
+            // Check if device token exists
+            LaunchedEffect(screen.deviceId) {
+                val token = deviceTokenRepository.getDeviceToken(screen.deviceId)
+                hasDeviceToken = token != null
+            }
 
             // Check if battery has been recorded today
             val hasRecordedToday by remember {
@@ -182,9 +193,18 @@ class DeviceDetailPresenter
                 isLoading = isLoading,
                 isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
                 hasRecordedToday = hasRecordedToday,
+                hasDeviceToken = hasDeviceToken,
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
+                    DeviceDetailScreen.Event.SettingsClicked -> {
+                        navigator.goTo(
+                            ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen(
+                                deviceFriendlyId = screen.deviceId,
+                                deviceName = screen.deviceName,
+                            ),
+                        )
+                    }
                     is DeviceDetailScreen.Event.PopulateBatteryHistory -> {
                         // Generate simulated battery history data
                         coroutineScope.launch(Dispatchers.IO) {
@@ -260,6 +280,27 @@ fun DeviceDetailContent(
                         Icon(
                             painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                             contentDescription = "Back",
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { state.eventSink(DeviceDetailScreen.Event.SettingsClicked) }) {
+                        Icon(
+                            painter =
+                                painterResource(
+                                    if (state.hasDeviceToken) {
+                                        R.drawable.settings_check_24dp_e8eaed_fill1_wght400_grad0_opsz24
+                                    } else {
+                                        R.drawable.tv_options_input_settings_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    },
+                                ),
+                            contentDescription = "Settings",
+                            tint =
+                                if (state.hasDeviceToken) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
                         )
                     }
                 },
