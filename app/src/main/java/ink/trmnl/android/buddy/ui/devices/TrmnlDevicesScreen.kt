@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -43,7 +47,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,6 +60,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
@@ -97,6 +104,7 @@ import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import ink.trmnl.android.buddy.util.formatRefreshRate
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -796,7 +804,9 @@ private fun DevicesList(
 /**
  * Content carousel composable.
  * Shows combined feed of announcements and blog posts with post type indicators.
+ * Features auto-rotation every 5 seconds and manual swipe gestures.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ContentCarousel(
     content: List<ContentItem>,
@@ -805,39 +815,64 @@ private fun ContentCarousel(
     onViewAllClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier) {
-        Column {
-            // Header
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Header with "View All" button
             Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "Announcements & Blog Posts",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                androidx.compose.material3.TextButton(onClick = onViewAllClick) {
-                    Text("View All")
+
+                TextButton(onClick = onViewAllClick) {
+                    Text(text = "View All")
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                        contentDescription = "View all content",
+                        modifier = Modifier.size(16.dp),
+                    )
                 }
             }
 
-            // Content items
             when {
                 isLoading -> {
                     // Loading state
                     Box(
-                        modifier = Modifier.fillMaxWidth().height(120.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(16.dp),
                         contentAlignment = Alignment.Center,
                     ) {
-                        CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                        CircularProgressIndicator()
                     }
                 }
+
                 content.isEmpty() -> {
                     // Empty state
                     Box(
-                        modifier = Modifier.fillMaxWidth().padding(24.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(16.dp),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -847,11 +882,50 @@ private fun ContentCarousel(
                         )
                     }
                 }
+
                 else -> {
-                    content.forEach { item ->
-                        ContentItemCard(
-                            item = item,
-                            onClick = { onContentClick(item) },
+                    // Display content carousel with auto-rotation
+                    val pagerState = rememberPagerState(pageCount = { content.size })
+
+                    // Auto-rotation every 5 seconds
+                    LaunchedEffect(pagerState, content.size) {
+                        while (true) {
+                            delay(5000) // 5 seconds
+                            val nextPage = (pagerState.currentPage + 1) % content.size
+                            pagerState.animateScrollToPage(nextPage)
+                        }
+                    }
+
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                    ) {
+                        HorizontalPager(
+                            state = pagerState,
+                            contentPadding = PaddingValues(horizontal = 16.dp),
+                            pageSpacing = 8.dp,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) { page ->
+                            val item = content[page]
+                            ContentItemCard(
+                                item = item,
+                                onClick = { onContentClick(item) },
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .animatePageAlpha(pagerState, page),
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Page indicators
+                        PageIndicators(
+                            pageCount = content.size,
+                            currentPage = pagerState.currentPage,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
                         )
                     }
                 }
@@ -871,98 +945,106 @@ private fun ContentItemCard(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.clickable(onClick = onClick),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surface,
             ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
-            // Post type chip
+            // Title, post type chip, and unread badge row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
             ) {
-                AssistChip(
-                    onClick = { /* Optional: filter by type */ },
-                    label = {
-                        Text(
-                            text =
-                                when (item) {
-                                    is ContentItem.Announcement -> "Announcement"
-                                    is ContentItem.BlogPost -> "Blog"
-                                },
-                            style = MaterialTheme.typography.labelSmall,
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter =
-                                painterResource(
+                Column(modifier = Modifier.weight(1f)) {
+                    // Post type chip
+                    AssistChip(
+                        onClick = { /* Optional: filter by type */ },
+                        label = {
+                            Text(
+                                text =
                                     when (item) {
-                                        is ContentItem.Announcement ->
-                                            R.drawable
-                                                .notification_important_24dp_e8eaed_fill0_wght400_grad0_opsz24
-                                        is ContentItem.BlogPost ->
-                                            R.drawable
-                                                .list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                                        is ContentItem.Announcement -> "Announcement"
+                                        is ContentItem.BlogPost -> "Blog"
                                     },
-                                ),
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                        )
-                    },
-                    colors =
-                        AssistChipDefaults.assistChipColors(
-                            containerColor =
-                                when (item) {
-                                    is ContentItem.Announcement -> MaterialTheme.colorScheme.primaryContainer
-                                    is ContentItem.BlogPost -> MaterialTheme.colorScheme.secondaryContainer
-                                },
-                            labelColor =
-                                when (item) {
-                                    is ContentItem.Announcement -> MaterialTheme.colorScheme.onPrimaryContainer
-                                    is ContentItem.BlogPost -> MaterialTheme.colorScheme.onSecondaryContainer
-                                },
-                        ),
-                )
-
-                // Unread indicator
-                if (!item.isRead) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .size(8.dp)
-                                .background(
-                                    MaterialTheme.colorScheme.primary,
-                                    shape = CircleShape,
-                                ),
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painter =
+                                    painterResource(
+                                        when (item) {
+                                            is ContentItem.Announcement ->
+                                                R.drawable
+                                                    .notification_important_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                            is ContentItem.BlogPost ->
+                                                R.drawable
+                                                    .list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                                        },
+                                    ),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                        },
+                        colors =
+                            AssistChipDefaults.assistChipColors(
+                                containerColor =
+                                    when (item) {
+                                        is ContentItem.Announcement -> MaterialTheme.colorScheme.primaryContainer
+                                        is ContentItem.BlogPost -> MaterialTheme.colorScheme.secondaryContainer
+                                    },
+                                labelColor =
+                                    when (item) {
+                                        is ContentItem.Announcement -> MaterialTheme.colorScheme.onPrimaryContainer
+                                        is ContentItem.BlogPost -> MaterialTheme.colorScheme.onSecondaryContainer
+                                    },
+                            ),
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Title
+                    Text(
+                        text = item.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 2,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    )
+                }
+
+                // Unread badge
+                if (!item.isRead) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(8.dp),
+                    ) {}
                 }
             }
 
-            // Title
-            Text(
-                text = item.title,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            )
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Summary
             Text(
                 text = item.summary,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Metadata row
             Row(
@@ -972,7 +1054,7 @@ private fun ContentItemCard(
                 Text(
                     text = formatRelativeDate(item.publishedDate),
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                 )
 
                 // Blog-specific metadata
@@ -986,13 +1068,60 @@ private fun ContentItemCard(
                         Text(
                             text = category,
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         )
                     }
                 }
             }
         }
     }
+}
+
+/**
+ * Page indicators showing current position in carousel.
+ */
+@Composable
+private fun PageIndicators(
+    pageCount: Int,
+    currentPage: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        repeat(pageCount) { index ->
+            val isSelected = index == currentPage
+            Surface(
+                shape = CircleShape,
+                color =
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                    },
+                modifier = Modifier.size(8.dp),
+            ) {}
+        }
+    }
+}
+
+/**
+ * Animate page alpha for fade effect during transitions.
+ */
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun Modifier.animatePageAlpha(
+    pagerState: PagerState,
+    page: Int,
+): Modifier {
+    val pageOffset = (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+    val alpha by animateFloatAsState(
+        targetValue = if (pageOffset.toFloat() == 0f) 1f else 0.6f,
+        animationSpec = tween(durationMillis = 300),
+        label = "pageAlpha",
+    )
+    return this.alpha(alpha)
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)

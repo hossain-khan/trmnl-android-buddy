@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Content Carousel UI**: Restored horizontal auto-rotating carousel behavior (#142)
+  - Fixed regression where carousel displayed 3 cards vertically instead of horizontal pager
+  - Re-implemented `HorizontalPager` with auto-rotation every 5 seconds
+  - Added page indicators showing current position in carousel
+  - Added page alpha animation for smooth fade effect during transitions
+  - Updated ContentItemCard to match AnnouncementCard layout style
+  - Card now uses surface color with proper elevation instead of surfaceVariant
+  - Post type chip (Announcement/Blog) displayed above title
+  - Unread badge positioned in top-right corner
+  - Improved spacing and typography (titleMedium for title, bodyMedium for summary)
+  - Loading and empty states display in fixed height box (120dp)
+  - All Material You colors preserved with proper theming support
+
 ### Added
 - **Combined Content Carousel**: Updated devices screen with unified announcements and blog posts carousel (#142, Phase 3)
   - Replaced announcements-only carousel with combined content feed showing both announcements and blog posts
