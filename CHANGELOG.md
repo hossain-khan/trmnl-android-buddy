@@ -24,22 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `isAnnouncementAuthBannerDismissed` preference to UserPreferences
   - Added `setAnnouncementAuthBannerDismissed()` method to UserPreferencesRepository
 
-### Changed
-- **Copilot Instructions**: Updated GitHub operations guidance for AI assistants
-  - Added requirement to always use GitHub MCP tools instead of `gh` CLI
-  - Specified MCP tools for PRs, issues, and search operations
-  - Added fallback instructions if MCP tools are unavailable
-  - Improved consistency and error handling for GitHub operations
-
-- **Always-Visible Filter Bar in Announcements**: Filter chips now permanently pinned at the top
-  - Moved filter chips outside the scrollable LazyColumn to ensure they're always visible
-  - Filters are now fixed at the top in a separate Surface layer above the pull-to-refresh list
-  - Date headers remain sticky within the scrollable area for category navigation
-  - Pull-to-refresh functionality preserved and working correctly
-  - Better UX: filters never scroll away, users can always change view without scrolling back to top
-  - Follows Material Design 3 pattern of persistent filter controls for long lists
-
-### Added
 - **UI/UX Refinements for Content Feed**: Complete Material Design 3 and accessibility overhaul
   - **Accessibility Improvements** (Phase 1):
     - Added comprehensive semantic descriptions to all interactive elements
@@ -107,38 +91,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Follows existing app pattern established in `TrmnlDevicesScreen`
   - All previews wrapped in `TrmnlBuddyAppTheme` for Material You theming
 
-### Fixed
-- **Announcement Summary Display**: Hide summary text when it's blank/empty
-  - AnnouncementItem now checks if summary is not blank before displaying
-  - Prevents showing empty summary text views in the announcements list
-  - Improves UI cleanliness when announcements lack summary content
-
-- **Chrome Custom Tabs Launch Fix**: Added FLAG_ACTIVITY_NEW_TASK to fix activity context issue
-  - Fixed AndroidRuntimeException when opening blog posts/announcements
-  - Error: "Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag"
-  - Root cause: Using Application context instead of Activity context to launch Custom Tabs
-  - Solution: Added `FLAG_ACTIVITY_NEW_TASK` flag to CustomTabsIntent
-  - Links now properly open in Chrome Custom Tabs without errors
-
-- **INTERNET Permission Missing**: Added missing INTERNET permission to AndroidManifest.xml
-  - Fixed critical bug where clicking blog posts and announcements didn't open browser
-  - Chrome Custom Tabs requires INTERNET permission to launch URLs
-  - Now blog post and announcement links properly open in Chrome Custom Tabs
-
-- **Blog Post Summary Logging**: Added Timber logging to help diagnose RSS parsing issues
-  - Replaced println statements with proper Timber.d() calls
-  - Logs content/description lengths and summary lengths during parsing
-  - Logs counter for updated summaries to track refresh behavior
-  - Tests prove parsing works correctly; production issues may be due to old cached data
-
-- **Blog Posts Favorite Persistence**: Fixed critical bug where favorite status was not persisted
-  - Root cause: `BlogPostDao.insertAll()` was using `OnConflictStrategy.REPLACE` which completely replaced existing rows
-  - This overwrote user state fields (`isFavorite`, `isRead`, `readingProgressPercent`) during refresh
-  - Solution: Changed to `OnConflictStrategy.IGNORE` to prevent overwriting existing posts
-  - Now only new posts are inserted, preserving all user interactions on existing posts
-  - Favorite toggle now correctly persists across app restarts and background syncs
 
 ### Changed
+- **Copilot Instructions**: Updated GitHub operations guidance for AI assistants
+  - Added requirement to always use GitHub MCP tools instead of `gh` CLI
+  - Specified MCP tools for PRs, issues, and search operations
+  - Added fallback instructions if MCP tools are unavailable
+  - Improved consistency and error handling for GitHub operations
+
+- **Always-Visible Filter Bar in Announcements**: Filter chips now permanently pinned at the top
+  - Moved filter chips outside the scrollable LazyColumn to ensure they're always visible
+  - Filters are now fixed at the top in a separate Surface layer above the pull-to-refresh list
+  - Date headers remain sticky within the scrollable area for category navigation
+  - Pull-to-refresh functionality preserved and working correctly
+  - Better UX: filters never scroll away, users can always change view without scrolling back to top
+  - Follows Material Design 3 pattern of persistent filter controls for long lists
+
 - **ContentHubScreen UI Refinement**: Eliminated nested TopAppBars for better space utilization
   - Embedded screens (AnnouncementsScreen, BlogPostsScreen) now hide their TopAppBars when displayed in ContentHubScreen
   - ContentHubScreen's single TopAppBar dynamically shows tab-specific content:
@@ -200,6 +168,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tests passing: 125 tasks
 
 ### Fixed
+- **Announcement Summary Display**: Hide summary text when it's blank/empty
+  - AnnouncementItem now checks if summary is not blank before displaying
+  - Prevents showing empty summary text views in the announcements list
+  - Improves UI cleanliness when announcements lack summary content
+
+- **Chrome Custom Tabs Launch Fix**: Added FLAG_ACTIVITY_NEW_TASK to fix activity context issue
+  - Fixed AndroidRuntimeException when opening blog posts/announcements
+  - Error: "Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag"
+  - Root cause: Using Application context instead of Activity context to launch Custom Tabs
+  - Solution: Added `FLAG_ACTIVITY_NEW_TASK` flag to CustomTabsIntent
+  - Links now properly open in Chrome Custom Tabs without errors
+
+- **INTERNET Permission Missing**: Added missing INTERNET permission to AndroidManifest.xml
+  - Fixed critical bug where clicking blog posts and announcements didn't open browser
+  - Chrome Custom Tabs requires INTERNET permission to launch URLs
+  - Now blog post and announcement links properly open in Chrome Custom Tabs
+
+- **Blog Post Summary Logging**: Added Timber logging to help diagnose RSS parsing issues
+  - Replaced println statements with proper Timber.d() calls
+  - Logs content/description lengths and summary lengths during parsing
+  - Logs counter for updated summaries to track refresh behavior
+  - Tests prove parsing works correctly; production issues may be due to old cached data
+
+- **Blog Posts Favorite Persistence**: Fixed critical bug where favorite status was not persisted
+  - Root cause: `BlogPostDao.insertAll()` was using `OnConflictStrategy.REPLACE` which completely replaced existing rows
+  - This overwrote user state fields (`isFavorite`, `isRead`, `readingProgressPercent`) during refresh
+  - Solution: Changed to `OnConflictStrategy.IGNORE` to prevent overwriting existing posts
+  - Now only new posts are inserted, preserving all user interactions on existing posts
+  - Favorite toggle now correctly persists across app restarts and background syncs
+
 - **Content Carousel UI**: Restored horizontal auto-rotating carousel behavior (#142)
   - Fixed regression where carousel displayed 3 cards vertically instead of horizontal pager
   - Re-implemented `HorizontalPager` with auto-rotation every 5 seconds
