@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import coil3.ImageLoader
 import coil3.asImage
 import coil3.request.ImageRequest
@@ -14,6 +13,7 @@ import coil3.request.SuccessResult
 import coil3.toBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -24,8 +24,6 @@ import java.util.Locale
  * Uses MediaStore API for Android 10+ (no runtime permissions required).
  */
 object ImageDownloadUtils {
-    private const val TAG = "ImageDownloadUtils"
-
     /**
      * Downloads an image from a URL and saves it to the Pictures directory.
      *
@@ -51,7 +49,7 @@ object ImageDownloadUtils {
 
                 val result = imageLoader.execute(request)
                 if (result !is SuccessResult) {
-                    Log.e(TAG, "Failed to load image: $result")
+                    Timber.e("Failed to load image: %s", result)
                     return@withContext Result.failure(Exception("Failed to load image"))
                 }
 
@@ -60,7 +58,7 @@ object ImageDownloadUtils {
                     try {
                         result.image.toBitmap()
                     } catch (e: Exception) {
-                        Log.e(TAG, "Failed to convert image to bitmap", e)
+                        Timber.e(e, "Failed to convert image to bitmap")
                         return@withContext Result.failure(Exception("Could not convert image to bitmap: ${e.message}"))
                     }
 
@@ -73,13 +71,13 @@ object ImageDownloadUtils {
                 val savedUri = saveBitmapToMediaStore(context, bitmap, displayName)
 
                 if (savedUri != null) {
-                    Log.d(TAG, "Image saved successfully: $savedUri")
+                    Timber.d("Image saved successfully: %s", savedUri)
                     Result.success(displayName)
                 } else {
                     Result.failure(Exception("Failed to save image to media store"))
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error downloading image", e)
+                Timber.e(e, "Error downloading image")
                 Result.failure(e)
             }
         }
@@ -130,7 +128,7 @@ object ImageDownloadUtils {
 
             return imageUri
         } catch (e: Exception) {
-            Log.e(TAG, "Error saving bitmap to MediaStore", e)
+            Timber.e(e, "Error saving bitmap to MediaStore")
             // Clean up on failure
             contentResolver.delete(imageUri, null, null)
             return null

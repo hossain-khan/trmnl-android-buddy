@@ -1,6 +1,5 @@
 package ink.trmnl.android.buddy.work
 
-import android.util.Log
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -9,6 +8,7 @@ import androidx.work.WorkManager
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 /**
@@ -43,10 +43,6 @@ interface WorkerScheduler {
 class WorkerSchedulerImpl(
     private val workManager: WorkManager,
 ) : WorkerScheduler {
-    companion object {
-        private const val TAG = "WorkerScheduler"
-    }
-
     /**
      * Schedules or reschedules the low battery notification worker.
      * Uses REPLACE policy to ensure only one instance runs and to update the work
@@ -55,7 +51,7 @@ class WorkerSchedulerImpl(
      * Worker will run weekly and requires network connectivity to fetch device data.
      */
     override fun scheduleLowBatteryNotification() {
-        Log.d(TAG, "Scheduling low battery notification worker (weekly, network required)")
+        Timber.d("Scheduling low battery notification worker (weekly, network required)")
 
         val notificationWorkRequest =
             PeriodicWorkRequestBuilder<LowBatteryNotificationWorker>(
@@ -81,7 +77,7 @@ class WorkerSchedulerImpl(
      * Called when user disables low battery notifications in settings.
      */
     override fun cancelLowBatteryNotification() {
-        Log.d(TAG, "Cancelling low battery notification worker")
+        Timber.d("Cancelling low battery notification worker")
         workManager.cancelUniqueWork(LowBatteryNotificationWorker.WORK_NAME)
     }
 
@@ -93,7 +89,7 @@ class WorkerSchedulerImpl(
      * network is available) to check battery levels and send notifications.
      */
     override fun triggerLowBatteryNotificationNow() {
-        Log.d(TAG, "Triggering immediate low battery notification check (for testing)")
+        Timber.d("Triggering immediate low battery notification check (for testing)")
 
         val immediateWorkRequest =
             androidx.work

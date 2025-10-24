@@ -151,6 +151,9 @@ dependencies {
     // Accompanist - Compose utilities for permissions
     implementation(libs.accompanist.permissions)
 
+    // Timber - Better Android logging
+    implementation(libs.timber)
+
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

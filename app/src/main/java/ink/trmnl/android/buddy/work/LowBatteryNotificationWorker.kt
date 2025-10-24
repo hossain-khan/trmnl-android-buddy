@@ -1,7 +1,6 @@
 package ink.trmnl.android.buddy.work
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.slack.eithernet.ApiResult
@@ -17,6 +16,7 @@ import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
 import ink.trmnl.android.buddy.di.WorkerKey
 import ink.trmnl.android.buddy.notification.NotificationHelper
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 
 /**
  * WorkManager worker that checks battery levels and sends notifications for low battery.
@@ -39,12 +39,11 @@ class LowBatteryNotificationWorker(
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : CoroutineWorker(context, params) {
     companion object {
-        private const val TAG = "LowBatteryNotificationWorker"
         const val WORK_NAME = "low_battery_notification_work"
     }
 
     override suspend fun doWork(): Result {
-        Log.d(TAG, "Starting low battery notification check")
+        Timber.d("Starting low battery notification check")
 
         try {
             // Get preferences
@@ -53,12 +52,12 @@ class LowBatteryNotificationWorker(
 
             // Check if notifications are enabled
             if (!preferences.isLowBatteryNotificationEnabled) {
-                Log.d(TAG, "Low battery notifications are disabled, skipping check")
+                Timber.d("Low battery notifications are disabled, skipping check")
                 return Result.success()
             }
 
             if (apiToken.isNullOrBlank()) {
-                Log.w(TAG, "No API token found, skipping notification check")
+                Timber.w("No API token found, skipping notification check")
                 return Result.success()
             }
 
@@ -69,7 +68,7 @@ class LowBatteryNotificationWorker(
             when (val result = apiService.getDevices(authHeader)) {
                 is ApiResult.Success -> {
                     val devices = result.value.data
-                    Log.d(TAG, "Fetched ${devices.size} devices")
+                    Timber.d("Fetched %d devices", devices.size)
 
                     // Find devices with low battery
                     val lowBatteryDevices =
@@ -78,9 +77,9 @@ class LowBatteryNotificationWorker(
                         }
 
                     if (lowBatteryDevices.isNotEmpty()) {
-                        Log.d(
-                            TAG,
-                            "Found ${lowBatteryDevices.size} devices with low battery",
+                        Timber.d(
+                            "Found %d devices with low battery",
+                            lowBatteryDevices.size,
                         )
                         val deviceNames = lowBatteryDevices.map { it.name }
 
@@ -91,15 +90,15 @@ class LowBatteryNotificationWorker(
                             thresholdPercent = thresholdPercent,
                         )
                     } else {
-                        Log.d(TAG, "No devices with low battery")
+                        Timber.d("No devices with low battery")
                     }
 
-                    Log.d(TAG, "Low battery notification check completed successfully")
+                    Timber.d("Low battery notification check completed successfully")
                     return Result.success()
                 }
 
                 is ApiResult.Failure.HttpFailure -> {
-                    Log.e(TAG, "HTTP error ${result.code} fetching devices")
+                    Timber.e("HTTP error %d fetching devices", result.code)
                     return if (result.code == 401) {
                         Result.failure()
                     } else {
@@ -108,22 +107,22 @@ class LowBatteryNotificationWorker(
                 }
 
                 is ApiResult.Failure.NetworkFailure -> {
-                    Log.e(TAG, "Network error fetching devices", result.error)
+                    Timber.e(result.error, "Network error fetching devices")
                     return Result.retry()
                 }
 
                 is ApiResult.Failure.ApiFailure -> {
-                    Log.e(TAG, "API error: ${result.error}")
+                    Timber.e("API error: %s", result.error)
                     return Result.failure()
                 }
 
                 is ApiResult.Failure.UnknownFailure -> {
-                    Log.e(TAG, "Unknown error fetching devices", result.error)
+                    Timber.e(result.error, "Unknown error fetching devices")
                     return Result.failure()
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error checking low battery", e)
+            Timber.e(e, "Error checking low battery")
             return Result.failure()
         }
     }

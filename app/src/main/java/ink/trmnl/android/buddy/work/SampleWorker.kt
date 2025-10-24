@@ -1,7 +1,6 @@
 package ink.trmnl.android.buddy.work
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dev.zacsweers.metro.AppScope
@@ -14,6 +13,7 @@ import ink.trmnl.android.buddy.di.AppWorkerFactory
 import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
 import ink.trmnl.android.buddy.di.WorkerKey
 import kotlinx.coroutines.delay
+import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -32,7 +32,7 @@ class SampleWorker(
 
     override suspend fun doWork(): Result {
         val workName = inputData.getString(KEY_WORK_NAME) ?: "unknown"
-        Log.d("SampleWorker", "Sample doWork running: $workName")
+        Timber.d("Sample doWork running: %s", workName)
 
         // Simulate some work
         delay(5.seconds)
