@@ -91,8 +91,8 @@ import ink.trmnl.android.buddy.content.models.ContentItem
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
-import ink.trmnl.android.buddy.ui.announcements.AnnouncementsScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
+import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
@@ -432,7 +432,7 @@ class TrmnlDevicesPresenter
                     }
 
                     TrmnlDevicesScreen.Event.ViewAllContentClicked -> {
-                        navigator.goTo(AnnouncementsScreen)
+                        navigator.goTo(ContentHubScreen)
                     }
 
                     TrmnlDevicesScreen.Event.DismissSnackbar -> {

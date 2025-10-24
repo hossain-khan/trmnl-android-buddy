@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Content Hub Screen**: Unified navigation for announcements and blog posts (#142, Phase 4)
+  - Created `ContentHubScreen` with Circuit architecture (Screen, Presenter, Content)
+  - Bottom navigation with two tabs: "Announcements" and "Blog Posts"
+  - Material 3 NavigationBar with proper icon and label styling
+  - Tab selection state management with `rememberRetained`
+  - Announcements tab embeds existing `AnnouncementsScreen` using `NavigableCircuitContent`
+  - Blog Posts tab shows placeholder UI ("Coming soon in Phase 5")
+  - TopAppBar title dynamically updates based on selected tab
+  - Updated "View All" navigation from devices screen to open ContentHubScreen
+  - Proper Material You theming with color schemes
+  - Tests passing: 125 tasks
+
 ### Fixed
 - **Content Carousel UI**: Restored horizontal auto-rotating carousel behavior (#142)
   - Fixed regression where carousel displayed 3 cards vertically instead of horizontal pager
