@@ -399,21 +399,6 @@ private fun BlogPostCard(
                     verticalAlignment = Alignment.Top,
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        // Category chip
-                        blogPost.category?.let { category ->
-                            AssistChip(
-                                onClick = { /* Optional: filter by category */ },
-                                label = { Text(text = category, style = MaterialTheme.typography.labelSmall) },
-                                colors =
-                                    AssistChipDefaults.assistChipColors(
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                        labelColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    ),
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-
                         // Title
                         Text(
                             text = blogPost.title,
@@ -443,9 +428,9 @@ private fun BlogPostCard(
                                 painter =
                                     painterResource(
                                         if (blogPost.isFavorite) {
-                                            R.drawable.settings_heart_24dp_e8eaed_fill1_wght400_grad0_opsz24
+                                            R.drawable.favorite_24dp_e8eaed_fill1_wght400_grad0_opsz24
                                         } else {
-                                            R.drawable.settings_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                            R.drawable.heart_plus_24dp_e8eaed_fill0_wght400_grad0_opsz24
                                         },
                                     ),
                                 contentDescription = if (blogPost.isFavorite) "Remove from favorites" else "Add to favorites",

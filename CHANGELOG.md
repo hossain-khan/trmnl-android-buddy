@@ -41,6 +41,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved vertical space efficiency by removing duplicate toolbar areas
   - Full content area now utilizes padding from Scaffold's innerPadding directly
   - Tests passing: 125 tasks
+- **Blog Posts List UI Polish**:
+  - Removed redundant category chip from list items (category already shown in TopAppBar filter)
+  - Updated favorite icon to use new Material Design icons:
+    - Unfavorited: `heart_plus` icon (add to favorites)
+    - Favorited: `favorite_fill1` icon (filled heart)
+  - Cleaner, more focused list item layout
 - **Blog Posts List Screen**: Full-featured blog posts viewer (#142, Phase 5)
   - Created `BlogPostsScreen` with Circuit architecture (Screen, State, Event, Presenter, Content)
   - List view of all blog posts from TRMNL RSS feed with pull-to-refresh
