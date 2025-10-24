@@ -325,10 +325,7 @@ fun BlogPostsContent(
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     LazyColumn(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(innerPadding),
+                        modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
