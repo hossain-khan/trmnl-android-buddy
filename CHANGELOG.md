@@ -8,6 +8,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Blog Posts Feed**: Incorporated TRMNL blog posts into the app (#142)
+  - **Database Layer**:
+    - Created `BlogPostEntity` Room entity with rich fields: id, title, summary, link, authorName, category, publishedDate, featuredImageUrl, isRead, readingProgressPercent, lastReadAt, fetchedAt, isFavorite
+    - Implemented `BlogPostDao` with comprehensive queries:
+      - Basic access: `getAll()`, `getLatest()`, `getByCategory()`, `getFavorites()`, `getUnread()`, `getRecentlyRead()`
+      - Mutations: `insertAll()`, `markAsRead()`, `updateReadingProgress()`, `toggleFavorite()`, `deleteOlderThan()`
+      - Search: `searchPosts()` with full-text search on title and summary
+      - Metrics: `getUnreadCount()`, `getFavoritesCount()`
+    - Updated `ContentDatabase` to version 2 with `MIGRATION_1_2` for safe schema evolution
+  - **Repository Layer**:
+    - Implemented `BlogPostRepository` with offline-first pattern
+    - Fetches blog posts from https://usetrmnl.com/feeds/posts.xml (Atom format)
+    - HTML content parsing to extract featured images from post content
+    - Preserves user state (read status, favorites, reading progress) during refresh
+    - Provides reactive Flow API for all data access methods
+  - **Dependency Injection**:
+    - Added `BlogPostDao` and `BlogPostRepository` providers in `AppBindings`
+    - Integrated database migration in `provideContentDatabase()`
+- **Combined Content Feed**: Unified announcements and blog posts in carousel (#142)
+  - Created `ContentItem` sealed class to represent both announcement and blog post types
+  - Renamed `AnnouncementCarousel` to `ContentCarousel` with backward-compatible wrapper
+  - Updated carousel title to "Announcements & Blog Posts"
+  - **Visual Type Indicators**: Material 3 chips distinguish content types:
+    - Announcements: Primary container color with "Announcement" label
+    - Blog Posts: Secondary container color with "Blog" label
+  - **Combined Feed Logic**:
+    - Fetches latest 10 announcements + latest 10 blog posts
+    - Combines and sorts by `publishedDate` DESC
+    - Displays top 3 most recent items regardless of type
+  - **Enhanced Display**: Blog posts show author name in metadata
+  - Modified `TrmnlDevicesPresenter` to inject both repositories and combine data sources
+  - Updated State and Events to use `ContentItem` instead of `AnnouncementEntity`
 - **Content Module**: Created new `:content` module for RSS feed management (#140, #141)
   - Added RSS-Parser 6.0.8 dependency for parsing Atom/RSS feeds
   - Added Chrome Custom Tabs 1.8.0 dependency for better in-app browser experience
