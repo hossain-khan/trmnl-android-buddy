@@ -7,24 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- **Material 3 Design Enhancements**: Improved UI animations and interactions across ContentHubScreen, BlogPostsScreen, and AnnouncementsScreen
-  - **ContentHubScreen**: Added smooth crossfade animation (300ms) when switching between tabs for better visual continuity
-  - **BlogPostsScreen**: 
-    - Added card press animation with spring physics (scale to 97% with medium bouncy damping) for tactile feedback
-    - Enhanced card elevation animation (2dp → 4dp on press) for depth perception
-    - Added slide-in animations for list items using `animateItem()` modifier
-    - Improved FAB appearance with combined slide, fade, and scale animations
-  - **AnnouncementsScreen**:
-    - Added list item press animation (scale to 98% with medium bouncy damping) with default Material 3 ripple effect for better interaction feedback
-    - Improved list item animations with `animateItem()` for smooth reordering and filtering
-    - Improved FAB appearance with combined slide, fade, and scale animations
-  - All animations follow Material 3 motion design principles with purposeful, smooth transitions
-  - Used spring-based animations for natural, responsive feel
-  - Enhanced user delight through micro-interactions and polished UI feedback
-  - Animations are consistent across both light and dark themes
-
 ### Added
+- **Blog Posts "Mark All Read" Feature**: Extended FAB to mark all blog posts as read
   - Added Extended FloatingActionButton with "Mark All Read" text and icon
   - Shows only when there are unread blog posts
   - Added `markAllAsRead()` method to BlogPostDao and BlogPostRepository
@@ -182,6 +166,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated "View All" navigation from devices screen to open ContentHubScreen
   - Proper Material You theming with color schemes
   - Tests passing: 125 tasks
+
+- **Material 3 Design Enhancements**: Improved UI animations and interactions across ContentHubScreen, BlogPostsScreen, and AnnouncementsScreen
+  - **ContentHubScreen**: Added smooth crossfade animation (300ms) when switching between tabs for better visual continuity
+  - **BlogPostsScreen**: 
+    - Added card press animation with spring physics (scale to 97% with medium bouncy damping) for tactile feedback
+    - Enhanced card elevation animation (2dp → 4dp on press) for depth perception
+    - Added slide-in animations for list items using `animateItem()` modifier
+    - Improved FAB appearance with combined slide, fade, and scale animations
+  - **AnnouncementsScreen**:
+    - Added list item press animation (scale to 98% with medium bouncy damping) with default Material 3 ripple effect for better interaction feedback
+    - Improved list item animations with `animateItem()` for smooth reordering and filtering
+    - Improved FAB appearance with combined slide, fade, and scale animations
+  - All animations follow Material 3 motion design principles with purposeful, smooth transitions
+  - Used spring-based animations for natural, responsive feel
+  - Enhanced user delight through micro-interactions and polished UI feedback
+  - Animations are consistent across both light and dark themes
 
 ### Fixed
 - **Announcement Summary Display**: Hide summary text when it's blank/empty
