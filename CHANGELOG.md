@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Copilot Instructions**: Updated GitHub operations guidance for AI assistants
+  - Added requirement to always use GitHub MCP tools instead of `gh` CLI
+  - Specified MCP tools for PRs, issues, and search operations
+  - Added fallback instructions if MCP tools are unavailable
+  - Improved consistency and error handling for GitHub operations
+
 - **Always-Visible Filter Bar in Announcements**: Filter chips now permanently pinned at the top
   - Moved filter chips outside the scrollable LazyColumn to ensure they're always visible
   - Filters are now fixed at the top in a separate Surface layer above the pull-to-refresh list
