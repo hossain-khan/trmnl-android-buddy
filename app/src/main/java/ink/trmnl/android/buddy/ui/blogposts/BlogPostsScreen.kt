@@ -1,6 +1,11 @@
 package ink.trmnl.android.buddy.ui.blogposts
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +20,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -35,6 +42,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -265,6 +273,15 @@ fun BlogPostsContent(
     modifier: Modifier = Modifier,
 ) {
     var showCategoryMenu by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+
+    // Track FAB visibility based on scroll direction
+    val fabVisible by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex == 0 ||
+                listState.firstVisibleItemScrollOffset < 100
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -320,12 +337,16 @@ fun BlogPostsContent(
             }
         },
         floatingActionButton = {
-            if (state.unreadCount > 0) {
+            AnimatedVisibility(
+                visible = state.unreadCount > 0 && fabVisible,
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+            ) {
                 androidx.compose.material3.ExtendedFloatingActionButton(
                     onClick = { state.eventSink(BlogPostsScreen.Event.MarkAllAsRead) },
                     icon = {
                         Icon(
-                            painter = painterResource(R.drawable.check_24dp_e8eaed_fill1_wght400_grad0_opsz24),
+                            painter = painterResource(R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                             contentDescription = "Mark all as read",
                         )
                     },
@@ -357,6 +378,7 @@ fun BlogPostsContent(
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     LazyColumn(
+                        state = listState,
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
