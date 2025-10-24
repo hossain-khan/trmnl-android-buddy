@@ -48,6 +48,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Presenters automatically set `showTopBar = false` when embedded
   - Improved vertical space efficiency by removing duplicate toolbar areas
   - Full content area now utilizes padding from Scaffold's innerPadding directly
+  - Bottom navigation icons updated for better semantic meaning:
+    - Announcements: `campaign` icon (megaphone/broadcast symbol)
+    - Blog Posts: `newspaper` icon (news/articles symbol)
   - Tests passing: 125 tasks
 - **Blog Posts List UI Polish**:
   - Removed redundant category chip from list items (category already shown in TopAppBar filter)

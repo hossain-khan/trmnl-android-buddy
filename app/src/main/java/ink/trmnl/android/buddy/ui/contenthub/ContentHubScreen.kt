@@ -231,7 +231,7 @@ fun ContentHubContent(
                     onClick = { state.eventSink(ContentHubScreen.Event.TabSelected(ContentHubScreen.Tab.ANNOUNCEMENTS)) },
                     icon = {
                         Icon(
-                            painter = painterResource(R.drawable.notification_important_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                             contentDescription = "Announcements",
                         )
                     },
@@ -243,7 +243,7 @@ fun ContentHubContent(
                     onClick = { state.eventSink(ContentHubScreen.Event.TabSelected(ContentHubScreen.Tab.BLOG_POSTS)) },
                     icon = {
                         Icon(
-                            painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                            painter = painterResource(R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                             contentDescription = "Blog Posts",
                         )
                     },
