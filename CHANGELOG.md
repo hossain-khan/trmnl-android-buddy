@@ -29,6 +29,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Scheduled in TrmnlBuddyApp.onCreate() with KEEP policy (prevents duplicates)
   - Timber logging for debugging
   - Added `getUnreadCount()` to BlogPostRepository (suspending function using Flow.first())
+
+### Changed
+- **ContentHubScreen UI Refinement**: Eliminated nested TopAppBars for better space utilization
+  - Embedded screens (AnnouncementsScreen, BlogPostsScreen) now hide their TopAppBars when displayed in ContentHubScreen
+  - ContentHubScreen's single TopAppBar dynamically shows tab-specific content:
+    - Announcements tab: displays unread count badge
+    - Blog Posts tab: displays selected category and filter dropdown
+  - Added `isEmbedded` parameter to both screen data classes (default: `false`)
+  - Presenters automatically set `showTopBar = false` when embedded
+  - Improved vertical space efficiency by removing duplicate toolbar areas
+  - Full content area now utilizes padding from Scaffold's innerPadding directly
   - Tests passing: 125 tasks
 - **Blog Posts List Screen**: Full-featured blog posts viewer (#142, Phase 5)
   - Created `BlogPostsScreen` with Circuit architecture (Screen, State, Event, Presenter, Content)

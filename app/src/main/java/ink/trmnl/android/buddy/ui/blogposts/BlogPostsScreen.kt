@@ -81,9 +81,13 @@ import java.time.temporal.ChronoUnit
  * - Filter by category
  * - Mark as read/favorite
  * - Click to open in Chrome Custom Tabs
+ *
+ * @param isEmbedded When true, hides the top app bar (for use in ContentHubScreen).
  */
 @Parcelize
-data object BlogPostsScreen : Screen {
+data class BlogPostsScreen(
+    val isEmbedded: Boolean = false,
+) : Screen {
     data class State(
         val blogPosts: List<BlogPostEntity> = emptyList(),
         val isLoading: Boolean = true,
@@ -91,6 +95,7 @@ data object BlogPostsScreen : Screen {
         val errorMessage: String? = null,
         val selectedCategory: String? = null, // null = All
         val availableCategories: List<String> = emptyList(),
+        val showTopBar: Boolean = true, // Control whether to show top app bar
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -118,6 +123,7 @@ data object BlogPostsScreen : Screen {
 @Inject
 class BlogPostsPresenter
     constructor(
+        @Assisted private val screen: BlogPostsScreen,
         @Assisted private val navigator: Navigator,
         @ApplicationContext private val context: Context,
         private val blogPostRepository: BlogPostRepository,
@@ -176,6 +182,7 @@ class BlogPostsPresenter
                 errorMessage = errorMessage,
                 selectedCategory = selectedCategory,
                 availableCategories = availableCategories,
+                showTopBar = !screen.isEmbedded, // Hide top bar when embedded
             ) { event ->
                 when (event) {
                     BlogPostsScreen.Event.Refresh -> {
@@ -220,7 +227,10 @@ class BlogPostsPresenter
         @CircuitInject(BlogPostsScreen::class, AppScope::class)
         @AssistedFactory
         interface Factory {
-            fun create(navigator: Navigator): BlogPostsPresenter
+            fun create(
+                screen: BlogPostsScreen,
+                navigator: Navigator,
+            ): BlogPostsPresenter
         }
     }
 
@@ -239,53 +249,55 @@ fun BlogPostsContent(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {
-                    TrmnlTitle(
-                        if (state.selectedCategory != null) {
-                            "Blog Posts - ${state.selectedCategory}"
-                        } else {
-                            "Blog Posts"
-                        },
-                    )
-                },
-                actions = {
-                    // Category filter button
-                    Box {
-                        IconButton(onClick = { showCategoryMenu = true }) {
-                            Icon(
-                                painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                                contentDescription = "Filter by category",
-                            )
-                        }
+            if (state.showTopBar) {
+                TopAppBar(
+                    title = {
+                        TrmnlTitle(
+                            if (state.selectedCategory != null) {
+                                "Blog Posts - ${state.selectedCategory}"
+                            } else {
+                                "Blog Posts"
+                            },
+                        )
+                    },
+                    actions = {
+                        // Category filter button
+                        Box {
+                            IconButton(onClick = { showCategoryMenu = true }) {
+                                Icon(
+                                    painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                                    contentDescription = "Filter by category",
+                                )
+                            }
 
-                        DropdownMenu(
-                            expanded = showCategoryMenu,
-                            onDismissRequest = { showCategoryMenu = false },
-                        ) {
-                            // All categories option
-                            DropdownMenuItem(
-                                text = { Text("All") },
-                                onClick = {
-                                    state.eventSink(BlogPostsScreen.Event.CategorySelected(null))
-                                    showCategoryMenu = false
-                                },
-                            )
-
-                            // Individual categories
-                            state.availableCategories.forEach { category ->
+                            DropdownMenu(
+                                expanded = showCategoryMenu,
+                                onDismissRequest = { showCategoryMenu = false },
+                            ) {
+                                // All categories option
                                 DropdownMenuItem(
-                                    text = { Text(category) },
+                                    text = { Text("All") },
                                     onClick = {
-                                        state.eventSink(BlogPostsScreen.Event.CategorySelected(category))
+                                        state.eventSink(BlogPostsScreen.Event.CategorySelected(null))
                                         showCategoryMenu = false
                                     },
                                 )
+
+                                // Individual categories
+                                state.availableCategories.forEach { category ->
+                                    DropdownMenuItem(
+                                        text = { Text(category) },
+                                        onClick = {
+                                            state.eventSink(BlogPostsScreen.Event.CategorySelected(category))
+                                            showCategoryMenu = false
+                                        },
+                                    )
+                                }
                             }
                         }
-                    }
-                },
-            )
+                    },
+                )
+            }
         },
     ) { innerPadding ->
         when {

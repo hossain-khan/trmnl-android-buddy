@@ -70,9 +70,13 @@ import java.time.temporal.ChronoUnit
 
 /**
  * Screen for displaying all announcements.
+ *
+ * @param isEmbedded When true, hides the top app bar (for use in ContentHubScreen)
  */
 @Parcelize
-data object AnnouncementsScreen : Screen {
+data class AnnouncementsScreen(
+    val isEmbedded: Boolean = false,
+) : Screen {
     data class State(
         val announcements: List<AnnouncementEntity> = emptyList(),
         val isLoading: Boolean = true,
@@ -80,6 +84,7 @@ data object AnnouncementsScreen : Screen {
         val filter: Filter = Filter.ALL,
         val unreadCount: Int = 0,
         val errorMessage: String? = null,
+        val showTopBar: Boolean = true, // Control whether to show top app bar
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -116,6 +121,7 @@ data object AnnouncementsScreen : Screen {
 @Inject
 class AnnouncementsPresenter
     constructor(
+        @Assisted private val screen: AnnouncementsScreen,
         @Assisted private val navigator: Navigator,
         @ApplicationContext private val context: Context,
         private val announcementRepository: AnnouncementRepository,
@@ -164,6 +170,7 @@ class AnnouncementsPresenter
                 filter = filter,
                 unreadCount = unreadCount,
                 errorMessage = errorMessage,
+                showTopBar = !screen.isEmbedded, // Hide top bar when embedded
             ) { event ->
                 when (event) {
                     AnnouncementsScreen.Event.BackClicked -> {
@@ -223,7 +230,10 @@ class AnnouncementsPresenter
         @CircuitInject(AnnouncementsScreen::class, AppScope::class)
         @AssistedFactory
         interface Factory {
-            fun create(navigator: Navigator): AnnouncementsPresenter
+            fun create(
+                screen: AnnouncementsScreen,
+                navigator: Navigator,
+            ): AnnouncementsPresenter
         }
     }
 
@@ -240,37 +250,39 @@ fun AnnouncementsContent(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Text("Announcements")
-                        if (state.unreadCount > 0) {
-                            Surface(
-                                shape = CircleShape,
-                                color = MaterialTheme.colorScheme.primary,
-                            ) {
-                                Text(
-                                    text = state.unreadCount.toString(),
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                )
+            if (state.showTopBar) {
+                TopAppBar(
+                    title = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Text("Announcements")
+                            if (state.unreadCount > 0) {
+                                Surface(
+                                    shape = CircleShape,
+                                    color = MaterialTheme.colorScheme.primary,
+                                ) {
+                                    Text(
+                                        text = state.unreadCount.toString(),
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                    )
+                                }
                             }
                         }
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = { state.eventSink(AnnouncementsScreen.Event.BackClicked) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-            )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { state.eventSink(AnnouncementsScreen.Event.BackClicked) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Back",
+                            )
+                        }
+                    },
+                )
+            }
         },
         floatingActionButton = {
             if (state.unreadCount > 0) {
