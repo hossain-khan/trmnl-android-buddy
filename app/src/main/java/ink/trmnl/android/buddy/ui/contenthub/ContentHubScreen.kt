@@ -1,5 +1,7 @@
 package ink.trmnl.android.buddy.ui.contenthub
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -256,34 +258,40 @@ fun ContentHubContent(
             }
         },
     ) { innerPadding ->
-        // Content area - no Box wrapper, direct content for full space utilization
-        when (state.selectedTab) {
-            ContentHubScreen.Tab.ANNOUNCEMENTS -> {
-                // Embed existing AnnouncementsScreen using Circuit
-                val backStack = rememberSaveableBackStack(root = AnnouncementsScreen(isEmbedded = true))
-                val circuitNavigator = rememberCircuitNavigator(backStack = backStack, onRootPop = {})
-                NavigableCircuitContent(
-                    navigator = circuitNavigator,
-                    backStack = backStack,
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                )
-            }
+        // Content area with crossfade animation for smooth tab transitions
+        Crossfade(
+            targetState = state.selectedTab,
+            animationSpec = tween(durationMillis = 300),
+            label = "Content Hub Tab Transition",
+        ) { selectedTab ->
+            when (selectedTab) {
+                ContentHubScreen.Tab.ANNOUNCEMENTS -> {
+                    // Embed existing AnnouncementsScreen using Circuit
+                    val backStack = rememberSaveableBackStack(root = AnnouncementsScreen(isEmbedded = true))
+                    val circuitNavigator = rememberCircuitNavigator(backStack = backStack, onRootPop = {})
+                    NavigableCircuitContent(
+                        navigator = circuitNavigator,
+                        backStack = backStack,
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
+                    )
+                }
 
-            ContentHubScreen.Tab.BLOG_POSTS -> {
-                // Embed BlogPostsScreen using Circuit
-                val backStack = rememberSaveableBackStack(root = BlogPostsScreen(isEmbedded = true))
-                val circuitNavigator = rememberCircuitNavigator(backStack = backStack, onRootPop = {})
-                NavigableCircuitContent(
-                    navigator = circuitNavigator,
-                    backStack = backStack,
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                )
+                ContentHubScreen.Tab.BLOG_POSTS -> {
+                    // Embed BlogPostsScreen using Circuit
+                    val backStack = rememberSaveableBackStack(root = BlogPostsScreen(isEmbedded = true))
+                    val circuitNavigator = rememberCircuitNavigator(backStack = backStack, onRootPop = {})
+                    NavigableCircuitContent(
+                        navigator = circuitNavigator,
+                        backStack = backStack,
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
+                    )
+                }
             }
         }
     }

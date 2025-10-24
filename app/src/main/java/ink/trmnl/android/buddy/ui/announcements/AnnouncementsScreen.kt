@@ -2,13 +2,20 @@ package ink.trmnl.android.buddy.ui.announcements
 
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +59,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -331,8 +339,8 @@ fun AnnouncementsContent(
         floatingActionButton = {
             AnimatedVisibility(
                 visible = state.unreadCount > 0 && fabVisible,
-                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn() + scaleIn(),
+                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut() + scaleOut(),
             ) {
                 FloatingActionButton(
                     onClick = { state.eventSink(AnnouncementsScreen.Event.MarkAllAsRead) },
@@ -402,17 +410,35 @@ private fun EmptyState(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        val message =
-            when (filter) {
-                AnnouncementsScreen.Filter.ALL -> "No announcements available"
-                AnnouncementsScreen.Filter.UNREAD -> "No unread announcements"
-                AnnouncementsScreen.Filter.READ -> "No read announcements"
-            }
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                painter =
+                    painterResource(
+                        when (filter) {
+                            AnnouncementsScreen.Filter.ALL -> R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                            AnnouncementsScreen.Filter.UNREAD -> R.drawable.markunread_mailbox_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                            AnnouncementsScreen.Filter.READ -> R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                        },
+                    ),
+                contentDescription = null,
+                modifier = Modifier.size(64.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            val message =
+                when (filter) {
+                    AnnouncementsScreen.Filter.ALL -> "No announcements available"
+                    AnnouncementsScreen.Filter.UNREAD -> "No unread announcements"
+                    AnnouncementsScreen.Filter.READ -> "No read announcements"
+                }
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 
@@ -501,6 +527,7 @@ private fun AnnouncementsList(
                             announcement = announcement,
                             onClick = { onAnnouncementClick(announcement) },
                             onToggleReadStatus = { onToggleReadStatus(announcement) },
+                            modifier = Modifier.animateItem(),
                         )
                     }
                 }
@@ -661,6 +688,17 @@ private fun AnnouncementItem(
             },
         )
 
+    // Track press state for animation
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    // Animate scale when pressed for better feedback
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.98f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "Announcement Item Press Scale",
+    )
+
     SwipeToDismissBox(
         state = dismissState,
         backgroundContent = {
@@ -739,7 +777,15 @@ private fun AnnouncementItem(
                     )
                 }
             },
-            modifier = Modifier.clickable(onClick = onClick),
+            modifier =
+                Modifier
+                    .clickable(
+                        onClick = onClick,
+                        interactionSource = interactionSource,
+                    ).graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
         )
     }
 }

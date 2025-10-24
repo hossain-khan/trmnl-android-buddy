@@ -2,11 +2,20 @@ package ink.trmnl.android.buddy.ui.blogposts
 
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +59,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -339,8 +349,8 @@ fun BlogPostsContent(
         floatingActionButton = {
             AnimatedVisibility(
                 visible = state.unreadCount > 0 && fabVisible,
-                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn() + scaleIn(),
+                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut() + scaleOut(),
             ) {
                 androidx.compose.material3.ExtendedFloatingActionButton(
                     onClick = { state.eventSink(BlogPostsScreen.Event.MarkAllAsRead) },
@@ -391,6 +401,7 @@ fun BlogPostsContent(
                                 blogPost = blogPost,
                                 onClick = { state.eventSink(BlogPostsScreen.Event.BlogPostClicked(blogPost)) },
                                 onToggleFavorite = { state.eventSink(BlogPostsScreen.Event.ToggleFavorite(blogPost.id)) },
+                                modifier = Modifier.animateItem(),
                             )
                         }
                     }
@@ -403,6 +414,7 @@ fun BlogPostsContent(
 /**
  * Blog post card composable.
  * Shows blog post details with featured image, title, summary, metadata.
+ * Includes press animation for better user feedback.
  */
 @Composable
 private fun BlogPostCard(
@@ -411,10 +423,36 @@ private fun BlogPostCard(
     onToggleFavorite: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Track press state for animation
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    // Animate scale when pressed - Material 3 emphasis pattern
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.97f else 1f,
+        animationSpec =
+            spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMedium,
+            ),
+        label = "Card Press Scale",
+    )
+
     Card(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                },
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 2.dp,
+                pressedElevation = 4.dp,
+            ),
+        interactionSource = interactionSource,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             // Featured image if available
@@ -536,7 +574,7 @@ private fun BlogPostCard(
 }
 
 /**
- * Loading state composable.
+ * Loading state composable with fade-in animation.
  */
 @Composable
 private fun LoadingState(modifier: Modifier = Modifier) {
@@ -590,7 +628,7 @@ private fun ErrorState(
 }
 
 /**
- * Empty state composable.
+ * Empty state composable with gentle animations.
  */
 @Composable
 private fun EmptyState(modifier: Modifier = Modifier) {
