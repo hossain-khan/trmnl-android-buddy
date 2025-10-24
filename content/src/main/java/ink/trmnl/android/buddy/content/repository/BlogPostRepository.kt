@@ -134,7 +134,7 @@ class BlogPostRepository(
                     }
                 }
 
-            // Insert posts into database (preserves read status due to REPLACE strategy)
+            // Insert posts into database (IGNORE strategy preserves existing user state like isFavorite, isRead)
             blogPostDao.insertAll(blogPosts)
 
             Result.success(Unit)

@@ -50,9 +50,12 @@ interface BlogPostDao {
     /**
      * Insert or replace blog posts in the database.
      *
+     * Uses IGNORE strategy to prevent overwriting existing posts,
+     * which preserves user state (isRead, isFavorite, readingProgress).
+     *
      * @param posts List of blog posts to insert
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(posts: List<BlogPostEntity>)
 
     /**

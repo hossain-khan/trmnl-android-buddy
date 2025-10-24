@@ -30,6 +30,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Timber logging for debugging
   - Added `getUnreadCount()` to BlogPostRepository (suspending function using Flow.first())
 
+### Fixed
+- **Blog Posts Favorite Persistence**: Fixed critical bug where favorite status was not persisted
+  - Root cause: `BlogPostDao.insertAll()` was using `OnConflictStrategy.REPLACE` which completely replaced existing rows
+  - This overwrote user state fields (`isFavorite`, `isRead`, `readingProgressPercent`) during refresh
+  - Solution: Changed to `OnConflictStrategy.IGNORE` to prevent overwriting existing posts
+  - Now only new posts are inserted, preserving all user interactions on existing posts
+  - Favorite toggle now correctly persists across app restarts and background syncs
+
 ### Changed
 - **ContentHubScreen UI Refinement**: Eliminated nested TopAppBars for better space utilization
   - Embedded screens (AnnouncementsScreen, BlogPostsScreen) now hide their TopAppBars when displayed in ContentHubScreen
