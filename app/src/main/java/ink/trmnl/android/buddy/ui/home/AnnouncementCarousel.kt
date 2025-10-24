@@ -30,7 +30,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -40,6 +39,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.db.AnnouncementEntity
+import ink.trmnl.android.buddy.content.db.BlogPostEntity
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.delay
 import java.time.Instant
@@ -48,29 +48,30 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 /**
- * Announcement carousel displaying latest announcements from TRMNL.
+ * Content carousel displaying latest content (announcements and blog posts) from TRMNL.
  *
  * Features:
  * - Auto-rotation every 5 seconds
  * - Manual swipe gestures
  * - Page indicators
- * - Unread announcement badges
+ * - Unread content badges
+ * - Content type indicators (Announcement vs Blog Post)
  * - Click to open in browser
  * - Loading and empty states
- * - View all button to navigate to full announcements screen
+ * - View all button to navigate to full content hub screen
  *
- * @param announcements List of announcements to display (max 3)
- * @param isLoading Whether announcements are being loaded
- * @param onAnnouncementClick Callback when announcement is clicked
+ * @param contentItems List of content items to display (max 3, combined announcements and blog posts)
+ * @param isLoading Whether content is being loaded
+ * @param onContentClick Callback when content item is clicked
  * @param onViewAllClick Callback when "View All" button is clicked
  * @param modifier Optional modifier for the carousel
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AnnouncementCarousel(
-    announcements: List<AnnouncementEntity>,
+fun ContentCarousel(
+    contentItems: List<ContentItem>,
     isLoading: Boolean,
-    onAnnouncementClick: (AnnouncementEntity) -> Unit,
+    onContentClick: (ContentItem) -> Unit,
     onViewAllClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -93,7 +94,7 @@ fun AnnouncementCarousel(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Announcements",
+                    text = "Announcements & Blog Posts",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -103,7 +104,7 @@ fun AnnouncementCarousel(
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                        contentDescription = "View all announcements",
+                        contentDescription = "View all content",
                         modifier = Modifier.size(16.dp),
                     )
                 }
@@ -124,7 +125,7 @@ fun AnnouncementCarousel(
                     }
                 }
 
-                announcements.isEmpty() -> {
+                contentItems.isEmpty() -> {
                     // Empty state
                     Box(
                         modifier =
@@ -135,7 +136,7 @@ fun AnnouncementCarousel(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "No announcements available",
+                            text = "No content available",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -143,14 +144,14 @@ fun AnnouncementCarousel(
                 }
 
                 else -> {
-                    // Display announcements carousel
-                    val pagerState = rememberPagerState(pageCount = { announcements.size })
+                    // Display content carousel
+                    val pagerState = rememberPagerState(pageCount = { contentItems.size })
 
                     // Auto-rotation every 5 seconds
-                    LaunchedEffect(pagerState, announcements.size) {
+                    LaunchedEffect(pagerState, contentItems.size) {
                         while (true) {
                             delay(5000) // 5 seconds
-                            val nextPage = (pagerState.currentPage + 1) % announcements.size
+                            val nextPage = (pagerState.currentPage + 1) % contentItems.size
                             pagerState.animateScrollToPage(nextPage)
                         }
                     }
@@ -167,10 +168,10 @@ fun AnnouncementCarousel(
                             pageSpacing = 8.dp,
                             modifier = Modifier.fillMaxWidth(),
                         ) { page ->
-                            val announcement = announcements[page]
-                            AnnouncementCard(
-                                announcement = announcement,
-                                onClick = { onAnnouncementClick(announcement) },
+                            val contentItem = contentItems[page]
+                            ContentCard(
+                                contentItem = contentItem,
+                                onClick = { onContentClick(contentItem) },
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
@@ -182,7 +183,7 @@ fun AnnouncementCarousel(
 
                         // Page indicators
                         PageIndicators(
-                            pageCount = announcements.size,
+                            pageCount = contentItems.size,
                             currentPage = pagerState.currentPage,
                             modifier = Modifier.align(Alignment.CenterHorizontally),
                         )
@@ -194,11 +195,12 @@ fun AnnouncementCarousel(
 }
 
 /**
- * Individual announcement card displayed in the carousel.
+ * Individual content card displayed in the carousel.
+ * Shows different layouts for announcements vs blog posts.
  */
 @Composable
-private fun AnnouncementCard(
-    announcement: AnnouncementEntity,
+private fun ContentCard(
+    contentItem: ContentItem,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -216,32 +218,36 @@ private fun AnnouncementCard(
                     .fillMaxWidth()
                     .padding(16.dp),
         ) {
-            // Title and unread badge row
+            // Type indicator chip and unread badge row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = announcement.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
-                )
+                // Content type chip
+                ContentTypeChip(contentItem = contentItem)
 
-                if (!announcement.isRead) {
-                    Spacer(modifier = Modifier.width(8.dp))
+                if (!contentItem.isRead) {
                     UnreadBadge()
                 }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Title
+            Text(
+                text = contentItem.title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             // Summary
             Text(
-                text = announcement.summary,
+                text = contentItem.summary,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2,
@@ -250,13 +256,66 @@ private fun AnnouncementCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Published date
-            Text(
-                text = formatRelativeDate(announcement.publishedDate),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-            )
+            // Published date and author (for blog posts)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = formatRelativeDate(contentItem.publishedDate),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                )
+
+                // Show author for blog posts
+                if (contentItem is ContentItem.BlogPost) {
+                    Text(
+                        text = "by ${contentItem.authorName}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    )
+                }
+            }
         }
+    }
+}
+
+/**
+ * Content type indicator chip.
+ */
+@Composable
+private fun ContentTypeChip(
+    contentItem: ContentItem,
+    modifier: Modifier = Modifier,
+) {
+    val (label, containerColor, contentColor) =
+        when (contentItem) {
+            is ContentItem.Announcement ->
+                Triple(
+                    "Announcement",
+                    MaterialTheme.colorScheme.primaryContainer,
+                    MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            is ContentItem.BlogPost ->
+                Triple(
+                    "Blog",
+                    MaterialTheme.colorScheme.secondaryContainer,
+                    MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+        }
+
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.small,
+        color = containerColor,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = contentColor,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+        )
     }
 }
 
@@ -299,6 +358,37 @@ private fun PageIndicators(
             ) {}
         }
     }
+}
+
+// Backward compatibility wrapper for existing code
+
+/**
+ * Announcement carousel displaying latest announcements from TRMNL.
+ * This is a backward-compatible wrapper around ContentCarousel.
+ *
+ * @deprecated Use ContentCarousel with ContentItem for combined announcements and blog posts
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AnnouncementCarousel(
+    announcements: List<AnnouncementEntity>,
+    isLoading: Boolean,
+    onAnnouncementClick: (AnnouncementEntity) -> Unit,
+    onViewAllClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val contentItems = announcements.map { ContentItem.Announcement(it) }
+    ContentCarousel(
+        contentItems = contentItems,
+        isLoading = isLoading,
+        onContentClick = { contentItem ->
+            if (contentItem is ContentItem.Announcement) {
+                onAnnouncementClick(contentItem.entity)
+            }
+        },
+        onViewAllClick = onViewAllClick,
+        modifier = modifier,
+    )
 }
 
 /**
@@ -344,66 +434,75 @@ private fun formatRelativeDate(instant: Instant): String {
 // Preview
 @PreviewLightDark
 @Composable
-private fun AnnouncementCarouselPreview() {
-    val sampleAnnouncements =
+private fun ContentCarouselPreview() {
+    val sampleContentItems =
         listOf(
-            AnnouncementEntity(
-                id = "1",
-                title = "New Feature: Custom Refresh Rates",
-                summary = "You can now set custom refresh rates for your TRMNL devices. Check out the settings page!",
-                link = "https://usetrmnl.com/posts/custom-refresh-rates",
-                publishedDate = Instant.now().minus(2, ChronoUnit.DAYS),
-                isRead = false,
-                fetchedAt = Instant.now(),
+            ContentItem.Announcement(
+                AnnouncementEntity(
+                    id = "1",
+                    title = "New Feature: Custom Refresh Rates",
+                    summary = "You can now set custom refresh rates for your TRMNL devices. Check out the settings page!",
+                    link = "https://usetrmnl.com/posts/custom-refresh-rates",
+                    publishedDate = Instant.now().minus(2, ChronoUnit.DAYS),
+                    isRead = false,
+                    fetchedAt = Instant.now(),
+                ),
             ),
-            AnnouncementEntity(
-                id = "2",
-                title = "Platform Updates",
-                summary = "We've made several improvements to the platform including better battery management.",
-                link = "https://usetrmnl.com/posts/platform-updates",
-                publishedDate = Instant.now().minus(5, ChronoUnit.DAYS),
-                isRead = true,
-                fetchedAt = Instant.now(),
+            ContentItem.BlogPost(
+                BlogPostEntity(
+                    id = "2",
+                    title = "No more flicker",
+                    summary = "We've made several improvements to the display rendering to eliminate flicker during updates.",
+                    link = "https://usetrmnl.com/blog/no-more-flicker",
+                    authorName = "Ryan Kulp",
+                    category = "trmnl",
+                    publishedDate = Instant.now().minus(5, ChronoUnit.DAYS),
+                    featuredImageUrl = null,
+                    isRead = true,
+                    fetchedAt = Instant.now(),
+                ),
             ),
-            AnnouncementEntity(
-                id = "3",
-                title = "Welcome to TRMNL Buddy",
-                summary = "Get started with your new TRMNL companion app. Manage devices, track battery, and more.",
-                link = "https://usetrmnl.com/posts/welcome",
-                publishedDate = Instant.now().minus(7, ChronoUnit.DAYS),
-                isRead = true,
-                fetchedAt = Instant.now(),
+            ContentItem.Announcement(
+                AnnouncementEntity(
+                    id = "3",
+                    title = "Welcome to TRMNL Buddy",
+                    summary = "Get started with your new TRMNL companion app. Manage devices, track battery, and more.",
+                    link = "https://usetrmnl.com/posts/welcome",
+                    publishedDate = Instant.now().minus(7, ChronoUnit.DAYS),
+                    isRead = true,
+                    fetchedAt = Instant.now(),
+                ),
             ),
         )
 
     TrmnlBuddyAppTheme {
         Surface {
             Column(modifier = Modifier.padding(16.dp)) {
-                // With announcements
-                AnnouncementCarousel(
-                    announcements = sampleAnnouncements,
+                // With content
+                ContentCarousel(
+                    contentItems = sampleContentItems,
                     isLoading = false,
-                    onAnnouncementClick = {},
+                    onContentClick = {},
                     onViewAllClick = {},
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Loading state
-                AnnouncementCarousel(
-                    announcements = emptyList(),
+                ContentCarousel(
+                    contentItems = emptyList(),
                     isLoading = true,
-                    onAnnouncementClick = {},
+                    onContentClick = {},
                     onViewAllClick = {},
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Empty state
-                AnnouncementCarousel(
-                    announcements = emptyList(),
+                ContentCarousel(
+                    contentItems = emptyList(),
                     isLoading = false,
-                    onAnnouncementClick = {},
+                    onContentClick = {},
                     onViewAllClick = {},
                 )
             }
