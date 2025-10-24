@@ -1,0 +1,1 @@
+# Content module consumer rules

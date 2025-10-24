@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Content Module**: Created new `:content` module for RSS feed management (#140, #141)
+  - Added RSS-Parser 6.0.8 dependency for parsing Atom/RSS feeds
+  - Added Chrome Custom Tabs 1.8.0 dependency for better in-app browser experience
+  - **Database Layer**:
+    - Created `AnnouncementEntity` Room entity with fields: id, title, summary, link, publishedDate, isRead, fetchedAt
+    - Implemented `AnnouncementDao` with queries for fetching, inserting, updating, and marking announcements as read
+    - Built `ContentDatabase` with Room type converters for `Instant` serialization
+    - Added support for tracking unread announcements and badge counts
+  - **Repository Layer**:
+    - Implemented `AnnouncementRepository` with offline-first pattern using RSS-Parser and Room
+    - Fetches announcements from https://usetrmnl.com/feeds/announcements.xml
+    - Provides reactive Flow API for UI updates when data changes
+    - Supports read tracking and batch operations
+  - **Dependency Injection**:
+    - Integrated content module with app's Metro DI system
+    - Added `ContentDatabase`, `AnnouncementDao`, and `AnnouncementRepository` providers in `AppBindings`
+    - RssParser instantiated directly in repository (workaround for Metro compiler limitation)
+  - Foundation complete for Issue #141 (Announcements Feed) and Issue #142 (Blog Posts Feed)
+- **Announcement Carousel**: Implemented carousel UI component on home screen (#141, Phase 1)
+  - Created `AnnouncementCarousel` composable with HorizontalPager
+  - Auto-rotation every 5 seconds with pause on manual interaction
+  - Displays latest 3 announcements with title, summary, and relative date ("2 days ago")
+  - Unread badges with green indicator on unread announcements
+  - Page indicators showing current position with circular dots
+  - Fade animation between pages for smooth transitions
+  - Loading state with CircularProgressIndicator
+  - Empty state when no announcements available
+  - Integrated into `TrmnlDevicesScreen` above device list
+  - Click handler marks announcements as read (browser integration pending)
+
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging
   - Added Timber 5.0.1 dependency

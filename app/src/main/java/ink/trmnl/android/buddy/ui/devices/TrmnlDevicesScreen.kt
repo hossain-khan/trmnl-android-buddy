@@ -115,6 +115,8 @@ data object TrmnlDevicesScreen : Screen {
         val isUnauthorized: Boolean = false,
         val isPrivacyEnabled: Boolean = true,
         val snackbarMessage: String? = null,
+        val announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity> = emptyList(),
+        val isAnnouncementsLoading: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -144,6 +146,10 @@ data object TrmnlDevicesScreen : Screen {
             val refreshRate: Int,
         ) : Event()
 
+        data class AnnouncementClicked(
+            val announcement: ink.trmnl.android.buddy.content.db.AnnouncementEntity,
+        ) : Event()
+
         data object DismissSnackbar : Event()
     }
 }
@@ -159,6 +165,7 @@ class TrmnlDevicesPresenter
         private val apiService: TrmnlApiService,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val deviceTokenRepository: DeviceTokenRepository,
+        private val announcementRepository: ink.trmnl.android.buddy.content.repository.AnnouncementRepository,
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
@@ -170,7 +177,19 @@ class TrmnlDevicesPresenter
             var isUnauthorized by rememberRetained { mutableStateOf(false) }
             var isPrivacyEnabled by rememberRetained { mutableStateOf(true) }
             var snackbarMessage by rememberRetained { mutableStateOf<String?>(null) }
+            var announcements by rememberRetained {
+                mutableStateOf<List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>>(emptyList())
+            }
+            var isAnnouncementsLoading by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
+
+            // Collect announcements from repository
+            LaunchedEffect(Unit) {
+                announcementRepository.getLatestAnnouncements(limit = 3).collect { latestAnnouncements ->
+                    announcements = latestAnnouncements
+                    isAnnouncementsLoading = false
+                }
+            }
 
             // Fetch devices on initial load only (when devices list is empty)
             LaunchedEffect(Unit) {
@@ -224,6 +243,8 @@ class TrmnlDevicesPresenter
                 isUnauthorized = isUnauthorized,
                 isPrivacyEnabled = isPrivacyEnabled,
                 snackbarMessage = snackbarMessage,
+                announcements = announcements,
+                isAnnouncementsLoading = isAnnouncementsLoading,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
@@ -303,6 +324,14 @@ class TrmnlDevicesPresenter
 
                     is TrmnlDevicesScreen.Event.RefreshRateInfoClicked -> {
                         snackbarMessage = formatRefreshRateExplanation(event.refreshRate)
+                    }
+
+                    is TrmnlDevicesScreen.Event.AnnouncementClicked -> {
+                        // TODO: Open announcement in Chrome Custom Tabs
+                        // For now, just mark as read
+                        coroutineScope.launch {
+                            announcementRepository.markAsRead(event.announcement.id)
+                        }
                     }
 
                     TrmnlDevicesScreen.Event.DismissSnackbar -> {
@@ -486,6 +515,8 @@ fun TrmnlDevicesContent(
                     devicePreviews = state.devicePreviews,
                     isPrivacyEnabled = state.isPrivacyEnabled,
                     innerPadding = innerPadding,
+                    announcements = state.announcements,
+                    isAnnouncementsLoading = state.isAnnouncementsLoading,
                     onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                     onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                     onPreviewClick = { device, previewInfo ->
@@ -495,6 +526,9 @@ fun TrmnlDevicesContent(
                                 previewInfo = previewInfo,
                             ),
                         )
+                    },
+                    onAnnouncementClick = { announcement ->
+                        state.eventSink(TrmnlDevicesScreen.Event.AnnouncementClicked(announcement))
                     },
                     eventSink = state.eventSink,
                 )
@@ -599,7 +633,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 
 /**
  * Devices list composable.
- * Shows scrollable list of device cards.
+ * Shows scrollable list of device cards with announcements carousel at top.
  */
 @Composable
 private fun DevicesList(
@@ -608,9 +642,12 @@ private fun DevicesList(
     devicePreviews: Map<String, DevicePreviewInfo?>,
     isPrivacyEnabled: Boolean,
     innerPadding: PaddingValues,
+    announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>,
+    isAnnouncementsLoading: Boolean,
     onDeviceClick: (Device) -> Unit,
     onSettingsClick: (Device) -> Unit,
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
+    onAnnouncementClick: (ink.trmnl.android.buddy.content.db.AnnouncementEntity) -> Unit,
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -622,6 +659,16 @@ private fun DevicesList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        // Announcements carousel at the top
+        item {
+            ink.trmnl.android.buddy.ui.home.AnnouncementCarousel(
+                announcements = announcements,
+                isLoading = isAnnouncementsLoading,
+                onAnnouncementClick = onAnnouncementClick,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
         items(
             items = devices,
             key = { device -> device.id },
@@ -1226,9 +1273,12 @@ private fun DevicesListPreview() {
             devicePreviews = emptyMap(),
             isPrivacyEnabled = false,
             innerPadding = PaddingValues(0.dp),
+            announcements = emptyList(),
+            isAnnouncementsLoading = false,
             onDeviceClick = {},
             onSettingsClick = {},
             onPreviewClick = { _, _ -> },
+            onAnnouncementClick = {},
             eventSink = {},
         )
     }

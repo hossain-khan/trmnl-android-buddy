@@ -106,6 +106,7 @@ kotlin {
 dependencies {
     // Modules
     implementation(project(":api"))
+    implementation(project(":content"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
