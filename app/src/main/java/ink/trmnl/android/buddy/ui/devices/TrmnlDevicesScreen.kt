@@ -1,5 +1,7 @@
 package ink.trmnl.android.buddy.ui.devices
 
+import android.content.Context
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -51,11 +53,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import coil3.compose.SubcomposeAsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
@@ -74,10 +78,14 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
+import ink.trmnl.android.buddy.content.db.AnnouncementEntity
+import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
+import ink.trmnl.android.buddy.ui.home.AnnouncementCarousel
+import ink.trmnl.android.buddy.ui.home.AnnouncementCarouselState
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.utils.getBatteryColor
@@ -115,6 +123,7 @@ data object TrmnlDevicesScreen : Screen {
         val isUnauthorized: Boolean = false,
         val isPrivacyEnabled: Boolean = true,
         val snackbarMessage: String? = null,
+        val announcementCarouselState: AnnouncementCarouselState = AnnouncementCarouselState(),
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -144,6 +153,10 @@ data object TrmnlDevicesScreen : Screen {
             val refreshRate: Int,
         ) : Event()
 
+        data class AnnouncementClicked(
+            val announcement: AnnouncementEntity,
+        ) : Event()
+
         data object DismissSnackbar : Event()
     }
 }
@@ -159,6 +172,7 @@ class TrmnlDevicesPresenter
         private val apiService: TrmnlApiService,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val deviceTokenRepository: DeviceTokenRepository,
+        private val announcementRepository: AnnouncementRepository,
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
@@ -171,6 +185,23 @@ class TrmnlDevicesPresenter
             var isPrivacyEnabled by rememberRetained { mutableStateOf(true) }
             var snackbarMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
+
+            // Announcements state
+            var announcements by rememberRetained { mutableStateOf<List<AnnouncementEntity>>(emptyList()) }
+            var announcementsLoading by rememberRetained { mutableStateOf(true) }
+
+            // Collect announcements from repository
+            LaunchedEffect(Unit) {
+                announcementRepository.getLatestAnnouncements(3).collect { fetchedAnnouncements ->
+                    announcements = fetchedAnnouncements
+                    announcementsLoading = false
+                }
+            }
+
+            // Refresh announcements on first load
+            LaunchedEffect(Unit) {
+                announcementRepository.refreshAnnouncements()
+            }
 
             // Fetch devices on initial load only (when devices list is empty)
             LaunchedEffect(Unit) {
@@ -224,6 +255,11 @@ class TrmnlDevicesPresenter
                 isUnauthorized = isUnauthorized,
                 isPrivacyEnabled = isPrivacyEnabled,
                 snackbarMessage = snackbarMessage,
+                announcementCarouselState =
+                    AnnouncementCarouselState(
+                        announcements = announcements,
+                        isLoading = announcementsLoading,
+                    ),
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
@@ -303,6 +339,14 @@ class TrmnlDevicesPresenter
 
                     is TrmnlDevicesScreen.Event.RefreshRateInfoClicked -> {
                         snackbarMessage = formatRefreshRateExplanation(event.refreshRate)
+                    }
+
+                    is TrmnlDevicesScreen.Event.AnnouncementClicked -> {
+                        // Mark as read and open in browser
+                        coroutineScope.launch {
+                            announcementRepository.markAsRead(event.announcement.id)
+                        }
+                        // Browser opening will be handled by the UI layer with Chrome Custom Tabs
                     }
 
                     TrmnlDevicesScreen.Event.DismissSnackbar -> {
@@ -486,6 +530,7 @@ fun TrmnlDevicesContent(
                     devicePreviews = state.devicePreviews,
                     isPrivacyEnabled = state.isPrivacyEnabled,
                     innerPadding = innerPadding,
+                    announcementCarouselState = state.announcementCarouselState,
                     onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                     onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                     onPreviewClick = { device, previewInfo ->
@@ -599,7 +644,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 
 /**
  * Devices list composable.
- * Shows scrollable list of device cards.
+ * Shows scrollable list of device cards with announcements carousel at top.
  */
 @Composable
 private fun DevicesList(
@@ -608,12 +653,15 @@ private fun DevicesList(
     devicePreviews: Map<String, DevicePreviewInfo?>,
     isPrivacyEnabled: Boolean,
     innerPadding: PaddingValues,
+    announcementCarouselState: AnnouncementCarouselState,
     onDeviceClick: (Device) -> Unit,
     onSettingsClick: (Device) -> Unit,
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+
     LazyColumn(
         modifier =
             modifier
@@ -622,6 +670,17 @@ private fun DevicesList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        // Announcements carousel at the top
+        item(key = "announcements_carousel") {
+            AnnouncementCarousel(
+                state = announcementCarouselState,
+                onAnnouncementClick = { announcement ->
+                    eventSink(TrmnlDevicesScreen.Event.AnnouncementClicked(announcement))
+                    openInCustomTab(context, announcement.link)
+                },
+            )
+        }
+
         items(
             items = devices,
             key = { device -> device.id },
@@ -1062,6 +1121,21 @@ private fun RefreshRateIndicator(
     }
 }
 
+/**
+ * Open URL in Chrome Custom Tabs.
+ */
+private fun openInCustomTab(
+    context: Context,
+    url: String,
+) {
+    try {
+        val customTabsIntent = CustomTabsIntent.Builder().build()
+        customTabsIntent.launchUrl(context, url.toUri())
+    } catch (e: Exception) {
+        Timber.e(e, "Failed to open URL in Custom Tab: $url")
+    }
+}
+
 // ========== Previews ==========
 
 /**
@@ -1226,6 +1300,7 @@ private fun DevicesListPreview() {
             devicePreviews = emptyMap(),
             isPrivacyEnabled = false,
             innerPadding = PaddingValues(0.dp),
+            announcementCarouselState = AnnouncementCarouselState(),
             onDeviceClick = {},
             onSettingsClick = {},
             onPreviewClick = { _, _ -> },

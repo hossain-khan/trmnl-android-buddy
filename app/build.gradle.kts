@@ -158,6 +158,9 @@ dependencies {
     // Chrome Custom Tabs - Open web content
     implementation(libs.androidx.browser)
 
+    // Kotlin datetime for date/time handling
+    implementation(libs.kotlinx.datetime)
+
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

@@ -8,22 +8,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Announcements Infrastructure (Phase 0)**: Foundation for TRMNL announcements feature
-  - Created `:content` module for RSS feed management
-  - Added RSS-Parser 6.0.8 dependency for parsing Atom/RSS feeds
-  - Added Chrome Custom Tabs 1.8.0 for opening external links
-  - Added kotlinx-datetime 0.6.1 for date/time handling
-  - Created Room database schema for announcement caching
-    - `AnnouncementEntity` with fields: id, title, summary, link, publishedDate, isRead, fetchedAt
-    - `AnnouncementDao` with reactive Flow-based queries
-    - `ContentDatabase` with Instant type converters
-  - Implemented `AnnouncementRepository` with offline-first pattern
-    - Fetches from https://usetrmnl.com/feeds/announcements.xml
-    - Caches to Room database
-    - Provides Flow API for reactive UI updates
-    - Supports read/unread tracking
-  - Setup Metro DI bindings in `AppBindings`
-  - Workaround for Metro compiler limitation with RssParser (using factory pattern)
+- **Announcements Feature**: Complete implementation of TRMNL announcements feed
+  - **Phase 0: Infrastructure**
+    - Created `:content` module for RSS feed management
+    - Added RSS-Parser 6.0.8 dependency for parsing Atom/RSS feeds
+    - Added Chrome Custom Tabs 1.8.0 for opening external links
+    - Added kotlinx-datetime 0.6.1 for date/time handling
+    - Created Room database schema for announcement caching
+      - `AnnouncementEntity` with fields: id, title, summary, link, publishedDate, isRead, fetchedAt
+      - `AnnouncementDao` with reactive Flow-based queries
+      - `ContentDatabase` with Instant type converters
+    - Implemented `AnnouncementRepository` with offline-first pattern
+      - Fetches from https://usetrmnl.com/feeds/announcements.xml
+      - Caches to Room database
+      - Provides Flow API for reactive UI updates
+      - Supports read/unread tracking
+    - Setup Metro DI bindings in `AppBindings`
+    - Workaround for Metro compiler limitation with RssParser (using factory pattern)
+  - **Phase 1: Announcement Carousel**
+    - Created `AnnouncementCarousel` composable with auto-rotating horizontal pager
+      - Displays latest 3 announcements from RSS feed
+      - Auto-rotates every 5 seconds when not interacting
+      - Manual swipe gestures supported
+      - Page indicators (dots) show current position
+      - Visual distinction for unread announcements (colored badge)
+      - Loading and empty states with appropriate messaging
+      - Relative date formatting (e.g., "2 days ago")
+      - Material 3 design system compliance (all colors from theme)
+    - Integrated carousel into `TrmnlDevicesScreen` at top of device list
+      - Announcements load from cache immediately for instant display
+      - Background refresh fetches new announcements on screen load
+      - Click on announcement opens in Chrome Custom Tabs
+      - Automatically marks announcements as read when clicked
+      - Carousel is part of scrollable list (not sticky)
 
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging

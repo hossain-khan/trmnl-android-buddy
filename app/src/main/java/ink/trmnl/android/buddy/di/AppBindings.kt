@@ -44,4 +44,9 @@ interface AppBindings {
 
     @Provides
     fun provideAnnouncementDao(database: ContentDatabase): AnnouncementDao = database.announcementDao()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideAnnouncementRepository(dao: AnnouncementDao): ink.trmnl.android.buddy.content.repository.AnnouncementRepository =
+        ink.trmnl.android.buddy.content.repository.AnnouncementRepository(dao)
 }
