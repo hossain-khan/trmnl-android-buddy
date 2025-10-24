@@ -381,47 +381,48 @@ private fun AnnouncementsList(
     onToggleReadStatus: (AnnouncementEntity) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    PullToRefreshBox(
-        isRefreshing = isRefreshing,
-        onRefresh = onRefresh,
-        modifier = modifier,
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 8.dp),
+    Column(modifier = modifier.fillMaxSize()) {
+        // Filter chips fixed at the top - always visible
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 2.dp,
         ) {
-            // Sticky filter chips at the top
-            stickyHeader {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.surface,
-                    tonalElevation = 2.dp,
-                ) {
-                    FilterChips(
-                        selectedFilter = filter,
-                        onFilterChanged = onFilterChanged,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                    )
-                }
-            }
+            FilterChips(
+                selectedFilter = filter,
+                onFilterChanged = onFilterChanged,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            )
+        }
 
-            // Group announcements by date
-            val groupedAnnouncements = announcements.groupByDate()
+        // Scrollable list with pull-to-refresh
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            modifier = Modifier.weight(1f),
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 8.dp),
+            ) {
+                // Group announcements by date
+                val groupedAnnouncements = announcements.groupByDate()
 
-            groupedAnnouncements.forEach { (dateCategory, items) ->
-                stickyHeader {
-                    DateHeader(dateCategory)
-                }
+                groupedAnnouncements.forEach { (dateCategory, items) ->
+                    stickyHeader(key = "date_$dateCategory") {
+                        DateHeader(dateCategory)
+                    }
 
-                items(
-                    items = items,
-                    key = { it.id },
-                ) { announcement ->
-                    AnnouncementItem(
-                        announcement = announcement,
-                        onClick = { onAnnouncementClick(announcement) },
-                        onToggleReadStatus = { onToggleReadStatus(announcement) },
-                    )
+                    items(
+                        items = items,
+                        key = { it.id },
+                    ) { announcement ->
+                        AnnouncementItem(
+                            announcement = announcement,
+                            onClick = { onAnnouncementClick(announcement) },
+                            onToggleReadStatus = { onToggleReadStatus(announcement) },
+                        )
+                    }
                 }
             }
         }
