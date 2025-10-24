@@ -80,7 +80,7 @@ class AnnouncementRepository
                     val announcements =
                         channel.items.map { item ->
                             AnnouncementEntity(
-                                id = item.link ?: item.guid ?: throw IllegalStateException("Missing ID"),
+                                id = item.link ?: item.guid ?: throw IllegalStateException("RSS item missing both link and guid"),
                                 title = item.title ?: "Untitled",
                                 summary = item.description ?: "",
                                 link = item.link ?: "",
