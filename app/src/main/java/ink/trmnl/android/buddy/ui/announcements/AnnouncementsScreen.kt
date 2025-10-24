@@ -397,12 +397,7 @@ private fun LoadingState(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        androidx.compose.animation.AnimatedVisibility(
-            visible = true,
-            enter = fadeIn() + scaleIn(initialScale = 0.8f),
-        ) {
-            CircularProgressIndicator()
-        }
+        CircularProgressIndicator()
     }
 }
 

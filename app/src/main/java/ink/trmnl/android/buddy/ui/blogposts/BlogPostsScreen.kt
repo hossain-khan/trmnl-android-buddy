@@ -582,17 +582,12 @@ private fun LoadingState(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        androidx.compose.animation.AnimatedVisibility(
-            visible = true,
-            enter = fadeIn(),
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                CircularProgressIndicator()
-                Text("Loading blog posts...")
-            }
+            CircularProgressIndicator()
+            Text("Loading blog posts...")
         }
     }
 }
