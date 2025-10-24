@@ -59,6 +59,11 @@ interface UserPreferencesRepository {
     suspend fun setLowBatteryThreshold(percent: Int)
 
     /**
+     * Set announcements feature enabled/disabled.
+     */
+    suspend fun setAnnouncementsEnabled(enabled: Boolean)
+
+    /**
      * Clear all preferences.
      */
     suspend fun clearAll()
@@ -76,6 +81,7 @@ class UserPreferencesRepositoryImpl
             val BATTERY_TRACKING_ENABLED = booleanPreferencesKey("battery_tracking_enabled")
             val LOW_BATTERY_NOTIFICATION_ENABLED = booleanPreferencesKey("low_battery_notification_enabled")
             val LOW_BATTERY_THRESHOLD = intPreferencesKey("low_battery_threshold")
+            val ANNOUNCEMENTS_ENABLED = booleanPreferencesKey("announcements_enabled")
         }
 
         override val userPreferencesFlow: Flow<UserPreferences> =
@@ -89,6 +95,7 @@ class UserPreferencesRepositoryImpl
                     lowBatteryThresholdPercent =
                         preferences[PreferencesKeys.LOW_BATTERY_THRESHOLD]
                             ?: UserPreferences.DEFAULT_LOW_BATTERY_THRESHOLD,
+                    isAnnouncementsEnabled = preferences[PreferencesKeys.ANNOUNCEMENTS_ENABLED] ?: true,
                 )
             }
 
@@ -125,6 +132,12 @@ class UserPreferencesRepositoryImpl
         override suspend fun setLowBatteryThreshold(percent: Int) {
             context.dataStore.edit { preferences ->
                 preferences[PreferencesKeys.LOW_BATTERY_THRESHOLD] = percent
+            }
+        }
+
+        override suspend fun setAnnouncementsEnabled(enabled: Boolean) {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.ANNOUNCEMENTS_ENABLED] = enabled
             }
         }
 

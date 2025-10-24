@@ -105,6 +105,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Initial Fetch**: Announcements automatically fetched on first app launch
     - Checks if database is empty and fetches from RSS feed
     - Runs in background without blocking UI
+- **Announcements Toggle**: Added setting to completely disable announcements feature
+  - New "Announcements" section in Settings screen with ON/OFF toggle
+  - Default: Enabled (announcements shown and synced)
+  - When disabled:
+    - Announcement carousel hidden from home screen
+    - Background sync job cancelled (no network usage)
+    - Announcements screen inaccessible
+  - Preference persisted in DataStore
+  - Added `isAnnouncementsEnabled` to UserPreferences (defaults to true)
+  - WorkerScheduler now includes `scheduleAnnouncementSync()` and `cancelAnnouncementSync()` methods
 
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging

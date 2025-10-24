@@ -83,6 +83,7 @@ data object SettingsScreen : Screen {
         val isBatteryTrackingEnabled: Boolean = true,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
+        val isAnnouncementsEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -101,6 +102,10 @@ data object SettingsScreen : Screen {
 
         data class LowBatteryThresholdChanged(
             val percent: Int,
+        ) : Event()
+
+        data class AnnouncementsToggled(
+            val enabled: Boolean,
         ) : Event()
 
         data object TestLowBatteryNotificationClicked : Event()
@@ -129,6 +134,7 @@ class SettingsPresenter(
             isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
             isLowBatteryNotificationEnabled = preferences.isLowBatteryNotificationEnabled,
             lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent,
+            isAnnouncementsEnabled = preferences.isAnnouncementsEnabled,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
@@ -158,6 +164,17 @@ class SettingsPresenter(
                         userPreferencesRepository.setLowBatteryThreshold(event.percent)
                         // Reschedule worker with updated threshold (uses REPLACE policy)
                         workerScheduler.scheduleLowBatteryNotification()
+                    }
+                }
+                is SettingsScreen.Event.AnnouncementsToggled -> {
+                    coroutineScope.launch {
+                        userPreferencesRepository.setAnnouncementsEnabled(event.enabled)
+                        // Schedule or cancel the announcement sync worker based on toggle state
+                        if (event.enabled) {
+                            workerScheduler.scheduleAnnouncementSync()
+                        } else {
+                            workerScheduler.cancelAnnouncementSync()
+                        }
                     }
                 }
                 SettingsScreen.Event.TestLowBatteryNotificationClicked -> {
@@ -223,6 +240,14 @@ fun SettingsContent(
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            // Announcements Section
+            AnnouncementsSection(
+                isEnabled = state.isAnnouncementsEnabled,
+                onToggle = { enabled ->
+                    state.eventSink(SettingsScreen.Event.AnnouncementsToggled(enabled))
+                },
+            )
+
             // Battery Tracking Section
             BatteryTrackingSection(
                 isEnabled = state.isBatteryTrackingEnabled,
@@ -248,6 +273,58 @@ fun SettingsContent(
 
             // App Information Section
             AppInformationSection()
+        }
+    }
+}
+
+@Composable
+private fun AnnouncementsSection(
+    isEnabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = "Announcements",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "Enable Announcements",
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        text =
+                            if (isEnabled) {
+                                "Show TRMNL announcements on home screen and sync automatically every 4 hours"
+                            } else {
+                                "Announcements are disabled. No announcements will be shown or synced."
+                            },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                },
+                trailingContent = {
+                    Switch(
+                        checked = isEnabled,
+                        onCheckedChange = onToggle,
+                    )
+                },
+                colors =
+                    ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+            )
         }
     }
 }

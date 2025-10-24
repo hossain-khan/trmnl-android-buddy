@@ -257,6 +257,12 @@ private class FakeUserPreferencesRepository : UserPreferencesRepository {
             userPreferencesFlow.value.copy(lowBatteryThresholdPercent = percent)
     }
 
+    override suspend fun setAnnouncementsEnabled(enabled: Boolean) {
+        preferences["announcements_enabled"] = enabled
+        userPreferencesFlow.value =
+            userPreferencesFlow.value.copy(isAnnouncementsEnabled = enabled)
+    }
+
     override suspend fun clearAll() {
         wasCleared = true
         preferences.clear()
