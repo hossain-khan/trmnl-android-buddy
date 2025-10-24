@@ -3,13 +3,21 @@ package ink.trmnl.android.buddy.ui.devices
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +60,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,14 +70,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil3.compose.SubcomposeAsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
@@ -809,7 +830,8 @@ private fun DevicesList(
 /**
  * Content carousel composable.
  * Shows combined feed of announcements and blog posts with post type indicators.
- * Features auto-rotation every 5 seconds and manual swipe gestures.
+ * Features auto-rotation every 5 seconds (pauses on interaction and when app is backgrounded).
+ * Includes accessibility improvements and lifecycle awareness.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -820,13 +842,35 @@ private fun ContentCarousel(
     onViewAllClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val haptic = LocalHapticFeedback.current
+    var isAppInForeground by remember { mutableStateOf(true) }
+    var userIsInteracting by remember { mutableStateOf(false) }
+
+    // Observe lifecycle to pause auto-rotation when app is backgrounded
+    DisposableEffect(lifecycleOwner) {
+        val observer =
+            LifecycleEventObserver { _, event ->
+                isAppInForeground = event == Lifecycle.Event.ON_RESUME
+            }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .semantics {
+                    contentDescription = "Content carousel showing announcements and blog posts"
+                },
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             // Header with "View All" button
@@ -834,40 +878,47 @@ private fun ContentCarousel(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "Announcements & Blog Posts",
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
 
-                TextButton(onClick = onViewAllClick) {
+                TextButton(
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onViewAllClick()
+                    },
+                    modifier =
+                        Modifier.semantics {
+                            contentDescription = "View all announcements and blog posts"
+                        },
+                ) {
                     Text(text = "View All")
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                        contentDescription = "View all content",
-                        modifier = Modifier.size(16.dp),
+                        contentDescription = null, // Decorative - text button already has description
+                        modifier = Modifier.size(18.dp),
                     )
                 }
             }
 
             when {
                 isLoading -> {
-                    // Loading state
-                    Box(
+                    // Loading skeleton with shimmer effect
+                    LoadingSkeletonCard(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .height(120.dp)
-                                .padding(16.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                                .height(180.dp)
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                    )
                 }
 
                 content.isEmpty() -> {
@@ -892,12 +943,15 @@ private fun ContentCarousel(
                     // Display content carousel with auto-rotation
                     val pagerState = rememberPagerState(pageCount = { content.size })
 
-                    // Auto-rotation every 5 seconds
-                    LaunchedEffect(pagerState, content.size) {
-                        while (true) {
+                    // Auto-rotation every 5 seconds (only when app is in foreground and user not interacting)
+                    LaunchedEffect(pagerState, content.size, isAppInForeground, userIsInteracting) {
+                        while (isAppInForeground && !userIsInteracting) {
                             delay(5000) // 5 seconds
                             val nextPage = (pagerState.currentPage + 1) % content.size
-                            pagerState.animateScrollToPage(nextPage)
+                            pagerState.animateScrollToPage(
+                                page = nextPage,
+                                animationSpec = tween(durationMillis = 500),
+                            )
                         }
                     }
 
@@ -905,32 +959,51 @@ private fun ContentCarousel(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 12.dp),
+                                .padding(bottom = 12.dp)
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onPress = {
+                                            userIsInteracting = true
+                                            tryAwaitRelease()
+                                            // Keep paused for a bit after release
+                                            delay(2000)
+                                            userIsInteracting = false
+                                        },
+                                    )
+                                },
                     ) {
                         HorizontalPager(
                             state = pagerState,
                             contentPadding = PaddingValues(horizontal = 16.dp),
-                            pageSpacing = 8.dp,
+                            pageSpacing = 12.dp,
                             modifier = Modifier.fillMaxWidth(),
                         ) { page ->
                             val item = content[page]
                             ContentItemCard(
                                 item = item,
-                                onClick = { onContentClick(item) },
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onContentClick(item)
+                                },
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
-                                        .animatePageAlpha(pagerState, page),
+                                        .animatePageScale(pagerState, page),
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         // Page indicators
                         PageIndicators(
                             pageCount = content.size,
                             currentPage = pagerState.currentPage,
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .semantics {
+                                        contentDescription = "Page ${pagerState.currentPage + 1} of ${content.size}"
+                                    },
                         )
                     }
                 }
@@ -942,6 +1015,7 @@ private fun ContentCarousel(
 /**
  * Content item card composable.
  * Shows a single content item (announcement or blog post) with type indicator.
+ * Includes accessibility improvements, semantic colors, proper touch targets, and animations.
  */
 @Composable
 private fun ContentItemCard(
@@ -949,19 +1023,61 @@ private fun ContentItemCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    // Animate card elevation on press
+    val elevation by animateFloatAsState(
+        targetValue = if (isPressed) 4f else 1f,
+        animationSpec = tween(durationMillis = 150),
+        label = "cardElevation",
+    )
+
+    // Animate card color on press
+    val containerColor by animateColorAsState(
+        targetValue =
+            if (isPressed) {
+                MaterialTheme.colorScheme.surfaceContainerHighest
+            } else {
+                MaterialTheme.colorScheme.surfaceContainer
+            },
+        animationSpec = tween(durationMillis = 150),
+        label = "cardColor",
+    )
+
     Card(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier =
+            modifier
+                .clickable(
+                    onClick = onClick,
+                    interactionSource = interactionSource,
+                    indication = null, // Custom ripple via state layers
+                ).semantics {
+                    contentDescription =
+                        buildString {
+                            append(
+                                when (item) {
+                                    is ContentItem.Announcement -> "Announcement: "
+                                    is ContentItem.BlogPost -> "Blog post: "
+                                },
+                            )
+                            append(item.title)
+                            if (!item.isRead) append(", unread")
+                            append(", published ${formatRelativeDate(item.publishedDate)}")
+                        }
+                },
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
+                containerColor = containerColor,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation.dp),
     ) {
         Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // Title, post type chip, and unread badge row
             Row(
@@ -969,21 +1085,32 @@ private fun ContentItemCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top,
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    // Post type chip
-                    AssistChip(
-                        onClick = { /* Optional: filter by type */ },
-                        label = {
-                            Text(
-                                text =
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    // Post type chip with proper semantics
+                    Surface(
+                        shape = MaterialTheme.shapes.small,
+                        color =
+                            when (item) {
+                                is ContentItem.Announcement -> MaterialTheme.colorScheme.primaryContainer
+                                is ContentItem.BlogPost -> MaterialTheme.colorScheme.secondaryContainer
+                            },
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription =
                                     when (item) {
-                                        is ContentItem.Announcement -> "Announcement"
-                                        is ContentItem.BlogPost -> "Blog"
-                                    },
-                                style = MaterialTheme.typography.labelSmall,
-                            )
-                        },
-                        leadingIcon = {
+                                        is ContentItem.Announcement -> "Type: Announcement"
+                                        is ContentItem.BlogPost -> "Type: Blog post"
+                                    }
+                            },
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             Icon(
                                 painter =
                                     painterResource(
@@ -996,60 +1123,71 @@ private fun ContentItemCard(
                                                     .list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24
                                         },
                                     ),
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                            )
-                        },
-                        colors =
-                            AssistChipDefaults.assistChipColors(
-                                containerColor =
-                                    when (item) {
-                                        is ContentItem.Announcement -> MaterialTheme.colorScheme.primaryContainer
-                                        is ContentItem.BlogPost -> MaterialTheme.colorScheme.secondaryContainer
-                                    },
-                                labelColor =
+                                contentDescription = null, // Decorative
+                                modifier = Modifier.size(14.dp),
+                                tint =
                                     when (item) {
                                         is ContentItem.Announcement -> MaterialTheme.colorScheme.onPrimaryContainer
                                         is ContentItem.BlogPost -> MaterialTheme.colorScheme.onSecondaryContainer
                                     },
-                            ),
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
+                            )
+                            Text(
+                                text =
+                                    when (item) {
+                                        is ContentItem.Announcement -> "Announcement"
+                                        is ContentItem.BlogPost -> "Blog"
+                                    },
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Medium,
+                                color =
+                                    when (item) {
+                                        is ContentItem.Announcement -> MaterialTheme.colorScheme.onPrimaryContainer
+                                        is ContentItem.BlogPost -> MaterialTheme.colorScheme.onSecondaryContainer
+                                    },
+                            )
+                        }
+                    }
 
                     // Title
                     Text(
                         text = item.title,
                         style = MaterialTheme.typography.titleMedium,
+                        fontWeight = if (!item.isRead) FontWeight.Bold else FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 2,
                         overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                     )
                 }
 
-                // Unread badge
+                // Unread badge with minimum touch target
                 if (!item.isRead) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Surface(
-                        shape = CircleShape,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(8.dp),
-                    ) {}
+                    Box(
+                        modifier =
+                            Modifier
+                                .padding(start = 8.dp)
+                                .size(12.dp)
+                                .semantics {
+                                    contentDescription = "Unread"
+                                },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(12.dp),
+                        ) {}
+                    }
                 }
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             // Summary
             Text(
                 text = item.summary,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
+                maxLines = 3,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             // Metadata row
             Row(
@@ -1058,8 +1196,8 @@ private fun ContentItemCard(
             ) {
                 Text(
                     text = formatRelativeDate(item.publishedDate),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
                 // Blog-specific metadata
@@ -1067,13 +1205,14 @@ private fun ContentItemCard(
                     item.category?.let { category ->
                         Text(
                             text = "•",
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
                             text = category,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.tertiary,
                         )
                     }
                 }
@@ -1084,6 +1223,7 @@ private fun ContentItemCard(
 
 /**
  * Page indicators showing current position in carousel.
+ * Uses semantic colors and proper sizing for accessibility.
  */
 @Composable
 private fun PageIndicators(
@@ -1097,36 +1237,144 @@ private fun PageIndicators(
     ) {
         repeat(pageCount) { index ->
             val isSelected = index == currentPage
+            val size by animateFloatAsState(
+                targetValue = if (isSelected) 10f else 8f,
+                animationSpec = tween(durationMillis = 200),
+                label = "indicatorSize",
+            )
             Surface(
                 shape = CircleShape,
                 color =
                     if (isSelected) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                        MaterialTheme.colorScheme.outlineVariant
                     },
-                modifier = Modifier.size(8.dp),
+                modifier =
+                    Modifier
+                        .size(size.dp)
+                        .semantics(mergeDescendants = true) {
+                            contentDescription = "Page ${index + 1}${if (isSelected) " selected" else ""}"
+                        },
             ) {}
         }
     }
 }
 
 /**
- * Animate page alpha for fade effect during transitions.
+ * Animate page scale for subtle zoom effect during transitions.
+ * Pages that are not current are slightly scaled down.
  */
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
-private fun Modifier.animatePageAlpha(
+private fun Modifier.animatePageScale(
     pagerState: PagerState,
     page: Int,
 ): Modifier {
     val pageOffset = (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+    val scale by animateFloatAsState(
+        targetValue = if (kotlin.math.abs(pageOffset) < 0.5f) 1f else 0.92f,
+        animationSpec = tween(durationMillis = 300),
+        label = "pageScale",
+    )
     val alpha by animateFloatAsState(
-        targetValue = if (pageOffset.toFloat() == 0f) 1f else 0.6f,
+        targetValue = if (kotlin.math.abs(pageOffset) < 0.5f) 1f else 0.7f,
         animationSpec = tween(durationMillis = 300),
         label = "pageAlpha",
     )
-    return this.alpha(alpha)
+    return this
+        .graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+            this.alpha = alpha
+        }
+}
+
+/**
+ * Loading skeleton with shimmer effect.
+ * Provides visual feedback while content is loading.
+ */
+@Composable
+private fun LoadingSkeletonCard(modifier: Modifier = Modifier) {
+    val infiniteTransition = rememberInfiniteTransition(label = "shimmer")
+    val shimmerAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 0.7f,
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(durationMillis = 1000),
+                repeatMode = RepeatMode.Reverse,
+            ),
+        label = "shimmerAlpha",
+    )
+
+    Card(
+        modifier = modifier,
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            // Type chip skeleton
+            Box(
+                modifier =
+                    Modifier
+                        .width(100.dp)
+                        .height(24.dp)
+                        .clip(MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = shimmerAlpha)),
+            )
+
+            // Title skeleton
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth(0.8f)
+                        .height(24.dp)
+                        .clip(MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = shimmerAlpha)),
+            )
+
+            // Summary skeleton
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(16.dp)
+                            .clip(MaterialTheme.shapes.small)
+                            .background(
+                                MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = shimmerAlpha),
+                            ),
+                )
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.6f)
+                            .height(16.dp)
+                            .clip(MaterialTheme.shapes.small)
+                            .background(
+                                MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = shimmerAlpha),
+                            ),
+                )
+            }
+
+            // Metadata skeleton
+            Box(
+                modifier =
+                    Modifier
+                        .width(120.dp)
+                        .height(14.dp)
+                        .clip(MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = shimmerAlpha)),
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)

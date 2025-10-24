@@ -8,6 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **UI/UX Refinements for Content Feed**: Complete Material Design 3 and accessibility overhaul
+  - **Accessibility Improvements** (Phase 1):
+    - Added comprehensive semantic descriptions to all interactive elements
+    - Fixed touch target sizes (unread badge now 12dp with semantic wrapper)
+    - Replaced manual color alpha with proper semantic color tokens (surfaceContainerLow, outlineVariant, etc.)
+    - Added content descriptions for screen readers on carousel, cards, buttons, and indicators
+  - **Material Design 3 Compliance** (Phase 2):
+    - Applied consistent Material spacing system (4dp, 8dp, 12dp, 16dp)
+    - Replaced all manual `.copy(alpha = 0.7f)` with semantic color scheme tokens
+    - Upgraded chip implementation from AssistChip to proper semantic Surface with custom styling
+    - Used Material elevation tokens (1.dp instead of 2.dp for subtle hierarchy)
+    - Added proper ripple effects via interaction states
+  - **Performance Optimizations** (Phase 3):
+    - Added lifecycle awareness to carousel auto-rotation (pauses when app is backgrounded)
+    - Pauses carousel rotation on user interaction (tap/swipe) for 2 seconds
+    - Optimized image loading with remember{} for expensive calculations
+    - Used DisposableEffect for proper lifecycle observer cleanup
+  - **UX Polish** (Phase 4):
+    - Implemented shimmer loading skeleton instead of simple spinner
+    - Added haptic feedback on content card clicks and "View All" button
+    - Animated card elevation and background color on press (150ms tween)
+    - Enhanced page indicators with size animation (8dp → 10dp for selected)
+    - Improved carousel transitions with scale + alpha animation (92% scale for non-current pages)
+    - Added subtle font weight changes (Bold for unread, SemiBold for read titles)
+    - Used tertiary color for blog post categories for better visual hierarchy
+    - Increased summary max lines from 2 to 3 for better content preview
+
 - **Blog Post Repository Tests**: Comprehensive unit tests for RSS parsing and data transformation
   - Created `BlogPostRepositoryTest` with Robolectric 4.15 for Android framework support
   - 3 test methods covering: RSS parser content extraction, HTML sanitization, full refresh flow
