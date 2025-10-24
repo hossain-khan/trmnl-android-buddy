@@ -13,6 +13,7 @@ import androidx.work.workDataOf
 import dev.zacsweers.metro.createGraphFactory
 import ink.trmnl.android.buddy.di.AppGraph
 import ink.trmnl.android.buddy.notification.NotificationHelper
+import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
 import ink.trmnl.android.buddy.work.LowBatteryNotificationWorker
 import ink.trmnl.android.buddy.work.SampleWorker
@@ -43,6 +44,7 @@ class TrmnlBuddyApp :
         NotificationHelper.createNotificationChannels(this)
         scheduleBackgroundWork()
         scheduleBatteryCollection()
+        scheduleAnnouncementSync()
     }
 
     /**
@@ -85,6 +87,30 @@ class TrmnlBuddyApp :
             BatteryCollectionWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             batteryWorkRequest,
+        )
+    }
+
+    /**
+     * Schedules periodic announcement sync using WorkManager.
+     * The worker fetches announcements from TRMNL RSS feed every 4 hours.
+     */
+    private fun scheduleAnnouncementSync() {
+        val announcementWorkRequest =
+            PeriodicWorkRequestBuilder<AnnouncementSyncWorker>(
+                repeatInterval = 4,
+                repeatIntervalTimeUnit = TimeUnit.HOURS,
+            ).setConstraints(
+                Constraints
+                    .Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build(),
+            ).build()
+
+        // Use KEEP policy to avoid duplicates
+        appGraph.workManager.enqueueUniquePeriodicWork(
+            "announcement_sync",
+            ExistingPeriodicWorkPolicy.KEEP,
+            announcementWorkRequest,
         )
     }
 }

@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.devices
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -50,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,6 +78,7 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.di.ApplicationContext
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
@@ -84,6 +87,7 @@ import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
 import ink.trmnl.android.buddy.ui.utils.getWifiIcon
+import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import ink.trmnl.android.buddy.util.formatRefreshRate
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
@@ -162,6 +166,7 @@ data object TrmnlDevicesScreen : Screen {
 class TrmnlDevicesPresenter
     constructor(
         @Assisted private val navigator: Navigator,
+        @ApplicationContext private val context: Context,
         private val apiService: TrmnlApiService,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val deviceTokenRepository: DeviceTokenRepository,
@@ -183,11 +188,26 @@ class TrmnlDevicesPresenter
             var isAnnouncementsLoading by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
 
+            // Capture theme colors for Custom Tabs
+            val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
+            val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
+
             // Collect announcements from repository
             LaunchedEffect(Unit) {
                 announcementRepository.getLatestAnnouncements(limit = 3).collect { latestAnnouncements ->
                     announcements = latestAnnouncements
                     isAnnouncementsLoading = false
+                }
+            }
+
+            // Fetch announcements on initial load (if database is empty)
+            LaunchedEffect(Unit) {
+                // Check if we have announcements, if not, fetch them
+                if (announcements.isEmpty()) {
+                    val result = announcementRepository.refreshAnnouncements()
+                    if (result.isFailure) {
+                        timber.log.Timber.d("Failed to fetch initial announcements: %s", result.exceptionOrNull()?.message)
+                    }
                 }
             }
 
@@ -249,9 +269,20 @@ class TrmnlDevicesPresenter
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
                         isLoading = true
+                        isAnnouncementsLoading = true
                         errorMessage = null
                         isUnauthorized = false
                         coroutineScope.launch {
+                            // Refresh announcements in background
+                            launch {
+                                val result = announcementRepository.refreshAnnouncements()
+                                if (result.isFailure) {
+                                    snackbarMessage = "Failed to refresh announcements: ${result.exceptionOrNull()?.message}"
+                                }
+                                isAnnouncementsLoading = false
+                            }
+
+                            // Refresh devices
                             loadDevices(
                                 onSuccess = { fetchedDevices ->
                                     devices = fetchedDevices
@@ -327,8 +358,14 @@ class TrmnlDevicesPresenter
                     }
 
                     is TrmnlDevicesScreen.Event.AnnouncementClicked -> {
-                        // TODO: Open announcement in Chrome Custom Tabs
-                        // For now, just mark as read
+                        // Open announcement in Chrome Custom Tabs
+                        BrowserUtils.openUrlInCustomTab(
+                            context = context,
+                            url = event.announcement.link,
+                            toolbarColor = primaryColor,
+                            secondaryColor = surfaceColor,
+                        )
+                        // Mark announcement as read
                         coroutineScope.launch {
                             announcementRepository.markAsRead(event.announcement.id)
                         }

@@ -36,7 +36,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Loading state with CircularProgressIndicator
   - Empty state when no announcements available
   - Integrated into `TrmnlDevicesScreen` above device list
-  - Click handler marks announcements as read (browser integration pending)
+  - **Chrome Custom Tabs Integration**: Clicking announcements opens links in in-app browser
+    - Created `BrowserUtils` utility with theme-aware Custom Tabs
+    - Uses Material 3 primary and surface colors for toolbar
+    - Falls back to default browser if Custom Tabs unavailable
+  - **Manual Refresh**: Pull-to-refresh now refreshes both devices and announcements
+    - Shows loading indicators for both operations
+    - Displays error messages if announcement sync fails
+  - **Background Sync**: Automatic announcement refresh every 4 hours
+    - Created `AnnouncementSyncWorker` with WorkManager
+    - Uses exponential backoff on failures
+    - Requires network connection
+    - Scheduled on app startup
+  - **Initial Fetch**: Announcements automatically fetched on first app launch
+    - Checks if database is empty and fetches from RSS feed
+    - Runs in background without blocking UI
 
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging

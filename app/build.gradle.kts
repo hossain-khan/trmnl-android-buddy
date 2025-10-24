@@ -155,6 +155,9 @@ dependencies {
     // Timber - Better Android logging
     implementation(libs.timber)
 
+    // Chrome Custom Tabs for in-app browser
+    implementation(libs.androidx.browser)
+
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
