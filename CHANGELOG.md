@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Combined Content Feed Feature (#142) - Complete Implementation**:
+  - **Phase 1-6 Complete**: Full blog posts integration with announcements
+  - **Architecture**: Offline-first, reactive Flow-based data layer with Room database
+  - **UI/UX**: Material You compliant throughout, supports dynamic theming and dark mode
+  
 - **Background Blog Post Sync**: Automatic periodic sync worker (#142, Phase 6)
   - Created `BlogPostSyncWorker` with CoroutineWorker and Metro DI integration
   - Periodic sync every 24 hours using WorkManager
