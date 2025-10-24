@@ -474,3 +474,40 @@ suspend fun fetchDevices(): Result<List<Device>> {
 - Don't use PII (Personally Identifiable Information) in code examples or tests
 - **Do NOT create summary markdown files** (like `FEATURE_SUMMARY.md`, `SCREENS_IMPLEMENTATION.md`, etc.) for features or bug fixes
 - Keep documentation in existing files like README.md, CHANGELOG.md, or inline code comments
+
+### GitHub Operations
+
+**ALWAYS use GitHub MCP tools for GitHub operations:**
+
+- **Creating Pull Requests**: Use `mcp_github_create_pull_request` tool
+  - Never use `gh pr create` CLI command
+  - Provide comprehensive PR description with changes, testing, and checklist
+  - Include code examples and screenshots when relevant
+
+- **Reading Pull Requests**: Use `mcp_github_pull_request_read` tool
+  - Get PR details, diff, status, files, reviews, or comments
+  - Never use `gh pr view` or `gh pr diff` CLI commands
+
+- **Reading Issues**: Use `mcp_github_get_issue` tool
+  - Never use `gh issue view` CLI command
+
+- **Creating Issues**: Use `mcp_github_create_issue` tool
+  - Never use `gh issue create` CLI command
+
+- **Searching**: Use MCP search tools for code, issues, PRs, or repositories
+  - `mcp_github_search_code` for code search
+  - `mcp_github_search_issues` for issue search
+  - `mcp_github_search_pull_requests` for PR search
+  - Never use `gh search` CLI commands
+
+**If GitHub MCP tools are not available:**
+- **DO NOT** fall back to `gh` CLI commands
+- Instead, inform the user that GitHub MCP tools are required
+- Ask the user to install the GitHub MCP server
+- Provide setup instructions if needed
+
+**Rationale:**
+- MCP tools provide better structured responses
+- Consistent API-based interaction
+- Better error handling and type safety
+- Avoid shell command parsing issues
