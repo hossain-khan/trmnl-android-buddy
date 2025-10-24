@@ -158,7 +158,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Uses `FakeBlogPostDao` for testing without Room dependencies
     - All tests use AssertK for assertions (per project guidelines)
     - Tests cover CRUD operations, filtering, search, and state management
-  - Foundation complete for Issue #142 (Blog Posts Feed) UI implementation
+- **Combined Content Feed UI**: Implemented unified carousel for announcements and blog posts (#142, Phase 5)
+  - **ContentItem Model**: Created sealed class to represent both announcements and blog posts
+    - `ContentItem.Announcement` wrapper for `AnnouncementEntity`
+    - `ContentItem.BlogPost` wrapper for `BlogPostEntity`
+    - Unified interface for title, summary, link, publishedDate, isRead
+    - Type-specific properties (authorName, category, featuredImageUrl for blog posts)
+  - **ContentCarousel Component**: Renamed and enhanced carousel for combined content display
+    - Changed title from "Announcements" to "Announcements & Blog Posts"
+    - Shows top 3 items from both announcements and blog posts, sorted by publishedDate DESC
+    - Added `ContentTypeChip` component with Material 3 color scheme:
+      - "Announcement" chip uses primaryContainer/onPrimaryContainer
+      - "Blog" chip uses secondaryContainer/onSecondaryContainer
+    - Maintains auto-rotation every 5 seconds, manual swipe, page indicators, and unread badges
+    - Click behavior opens content in Chrome Custom Tabs and marks as read (type-aware)
+  - **TrmnlDevicesScreen Updates**: Integrated combined content feed
+    - Added `BlogPostRepository` to presenter constructor
+    - Updated State to use `content: List<ContentItem>` instead of `announcements`
+    - Combines latest announcements (limit 10) and blog posts (limit 10)
+    - Sorts combined list by publishedDate DESC and takes top 3 for display
+    - Fetches both content types on initial load and refresh
+    - Click handler marks content as read based on type (announcement or blog post)
+    - Updated all preview functions to work with new ContentItem model
+  - **Reactive Updates**: Content automatically refreshes when either repository updates
+    - Uses `Flow.combine()` to merge announcements and blog posts streams
+    - Real-time sorting and filtering when database changes
+    - Preserves user preferences (read status, favorites) during refresh
+  - All UI components follow Material 3 design guidelines
+  - Compatible with existing announcements toggle setting
 
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging

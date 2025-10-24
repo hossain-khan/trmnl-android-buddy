@@ -120,8 +120,8 @@ data object TrmnlDevicesScreen : Screen {
         val isUnauthorized: Boolean = false,
         val isPrivacyEnabled: Boolean = true,
         val snackbarMessage: String? = null,
-        val announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity> = emptyList(),
-        val isAnnouncementsLoading: Boolean = true,
+        val content: List<ink.trmnl.android.buddy.ui.home.ContentItem> = emptyList(),
+        val isContentLoading: Boolean = true,
         val isAnnouncementsEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
@@ -153,7 +153,7 @@ data object TrmnlDevicesScreen : Screen {
         ) : Event()
 
         data class AnnouncementClicked(
-            val announcement: ink.trmnl.android.buddy.content.db.AnnouncementEntity,
+            val content: ink.trmnl.android.buddy.ui.home.ContentItem,
         ) : Event()
 
         data object ViewAllAnnouncementsClicked : Event()
@@ -175,6 +175,7 @@ class TrmnlDevicesPresenter
         private val userPreferencesRepository: UserPreferencesRepository,
         private val deviceTokenRepository: DeviceTokenRepository,
         private val announcementRepository: ink.trmnl.android.buddy.content.repository.AnnouncementRepository,
+        private val blogPostRepository: ink.trmnl.android.buddy.content.repository.BlogPostRepository,
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
@@ -186,10 +187,10 @@ class TrmnlDevicesPresenter
             var isUnauthorized by rememberRetained { mutableStateOf(false) }
             var isPrivacyEnabled by rememberRetained { mutableStateOf(true) }
             var snackbarMessage by rememberRetained { mutableStateOf<String?>(null) }
-            var announcements by rememberRetained {
-                mutableStateOf<List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>>(emptyList())
+            var content by rememberRetained {
+                mutableStateOf<List<ink.trmnl.android.buddy.ui.home.ContentItem>>(emptyList())
             }
-            var isAnnouncementsLoading by rememberRetained { mutableStateOf(true) }
+            var isContentLoading by rememberRetained { mutableStateOf(true) }
             var isAnnouncementsEnabled by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
 
@@ -204,21 +205,60 @@ class TrmnlDevicesPresenter
                 }
             }
 
-            // Collect announcements from repository
+            // Collect content from both announcements and blog posts repositories
             LaunchedEffect(Unit) {
-                announcementRepository.getLatestAnnouncements(limit = 3).collect { latestAnnouncements ->
-                    announcements = latestAnnouncements
-                    isAnnouncementsLoading = false
-                }
+                kotlinx.coroutines.flow
+                    .combine(
+                        announcementRepository.getLatestAnnouncements(limit = 10),
+                        blogPostRepository.getLatestPosts(limit = 10),
+                    ) { announcements, blogPosts ->
+                        // Convert to ContentItem and combine
+                        val announcementItems =
+                            announcements.map {
+                                ink.trmnl.android.buddy.ui.home.ContentItem
+                                    .Announcement(it)
+                            }
+                        val blogPostItems =
+                            blogPosts.map {
+                                ink.trmnl.android.buddy.ui.home.ContentItem
+                                    .BlogPost(it)
+                            }
+
+                        // Combine and sort by published date (newest first), limit to 3
+                        (announcementItems + blogPostItems)
+                            .sortedByDescending { it.publishedDate }
+                            .take(3)
+                    }.collect { combinedContent ->
+                        content = combinedContent
+                        isContentLoading = false
+                    }
             }
 
-            // Fetch announcements on initial load (if database is empty)
+            // Fetch content on initial load (if database is empty)
             LaunchedEffect(Unit) {
-                // Check if we have announcements, if not, fetch them
-                if (announcements.isEmpty()) {
-                    val result = announcementRepository.refreshAnnouncements()
-                    if (result.isFailure) {
-                        timber.log.Timber.d("Failed to fetch initial announcements: %s", result.exceptionOrNull()?.message)
+                // Check if we have content, if not, fetch them
+                if (content.isEmpty()) {
+                    coroutineScope.launch {
+                        // Fetch announcements
+                        launch {
+                            val result = announcementRepository.refreshAnnouncements()
+                            if (result.isFailure) {
+                                timber.log.Timber.d(
+                                    "Failed to fetch initial announcements: %s",
+                                    result.exceptionOrNull()?.message,
+                                )
+                            }
+                        }
+                        // Fetch blog posts
+                        launch {
+                            val result = blogPostRepository.refreshPosts()
+                            if (result.isFailure) {
+                                timber.log.Timber.d(
+                                    "Failed to fetch initial blog posts: %s",
+                                    result.exceptionOrNull()?.message,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -275,24 +315,36 @@ class TrmnlDevicesPresenter
                 isUnauthorized = isUnauthorized,
                 isPrivacyEnabled = isPrivacyEnabled,
                 snackbarMessage = snackbarMessage,
-                announcements = announcements,
-                isAnnouncementsLoading = isAnnouncementsLoading,
+                content = content,
+                isContentLoading = isContentLoading,
                 isAnnouncementsEnabled = isAnnouncementsEnabled,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
                         isLoading = true
-                        isAnnouncementsLoading = true
+                        isContentLoading = true
                         errorMessage = null
                         isUnauthorized = false
                         coroutineScope.launch {
-                            // Refresh announcements in background
+                            // Refresh content in background
                             launch {
-                                val result = announcementRepository.refreshAnnouncements()
-                                if (result.isFailure) {
-                                    snackbarMessage = "Failed to refresh announcements: ${result.exceptionOrNull()?.message}"
+                                // Refresh announcements
+                                launch {
+                                    val result = announcementRepository.refreshAnnouncements()
+                                    if (result.isFailure) {
+                                        snackbarMessage =
+                                            "Failed to refresh announcements: ${result.exceptionOrNull()?.message}"
+                                    }
                                 }
-                                isAnnouncementsLoading = false
+                                // Refresh blog posts
+                                launch {
+                                    val result = blogPostRepository.refreshPosts()
+                                    if (result.isFailure) {
+                                        snackbarMessage =
+                                            "Failed to refresh blog posts: ${result.exceptionOrNull()?.message}"
+                                    }
+                                }
+                                isContentLoading = false
                             }
 
                             // Refresh devices
@@ -371,16 +423,23 @@ class TrmnlDevicesPresenter
                     }
 
                     is TrmnlDevicesScreen.Event.AnnouncementClicked -> {
-                        // Open announcement in Chrome Custom Tabs
+                        // Open content in Chrome Custom Tabs
                         BrowserUtils.openUrlInCustomTab(
                             context = context,
-                            url = event.announcement.link,
+                            url = event.content.link,
                             toolbarColor = primaryColor,
                             secondaryColor = surfaceColor,
                         )
-                        // Mark announcement as read
+                        // Mark content as read based on type
                         coroutineScope.launch {
-                            announcementRepository.markAsRead(event.announcement.id)
+                            when (event.content) {
+                                is ink.trmnl.android.buddy.ui.home.ContentItem.Announcement -> {
+                                    announcementRepository.markAsRead(event.content.id)
+                                }
+                                is ink.trmnl.android.buddy.ui.home.ContentItem.BlogPost -> {
+                                    blogPostRepository.markAsRead(event.content.id)
+                                }
+                            }
                         }
                     }
 
@@ -569,8 +628,8 @@ fun TrmnlDevicesContent(
                     devicePreviews = state.devicePreviews,
                     isPrivacyEnabled = state.isPrivacyEnabled,
                     innerPadding = innerPadding,
-                    announcements = state.announcements,
-                    isAnnouncementsLoading = state.isAnnouncementsLoading,
+                    content = state.content,
+                    isContentLoading = state.isContentLoading,
                     isAnnouncementsEnabled = state.isAnnouncementsEnabled,
                     onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                     onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
@@ -582,8 +641,8 @@ fun TrmnlDevicesContent(
                             ),
                         )
                     },
-                    onAnnouncementClick = { announcement ->
-                        state.eventSink(TrmnlDevicesScreen.Event.AnnouncementClicked(announcement))
+                    onContentClick = { content ->
+                        state.eventSink(TrmnlDevicesScreen.Event.AnnouncementClicked(content))
                     },
                     onViewAllAnnouncementsClick = {
                         state.eventSink(TrmnlDevicesScreen.Event.ViewAllAnnouncementsClicked)
@@ -700,13 +759,13 @@ private fun DevicesList(
     devicePreviews: Map<String, DevicePreviewInfo?>,
     isPrivacyEnabled: Boolean,
     innerPadding: PaddingValues,
-    announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>,
-    isAnnouncementsLoading: Boolean,
+    content: List<ink.trmnl.android.buddy.ui.home.ContentItem>,
+    isContentLoading: Boolean,
     isAnnouncementsEnabled: Boolean,
     onDeviceClick: (Device) -> Unit,
     onSettingsClick: (Device) -> Unit,
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
-    onAnnouncementClick: (ink.trmnl.android.buddy.content.db.AnnouncementEntity) -> Unit,
+    onContentClick: (ink.trmnl.android.buddy.ui.home.ContentItem) -> Unit,
     onViewAllAnnouncementsClick: () -> Unit,
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
@@ -719,13 +778,13 @@ private fun DevicesList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // Announcements carousel at the top (only if enabled)
+        // Content carousel at the top (announcements & blog posts, only if enabled)
         if (isAnnouncementsEnabled) {
             item {
-                ink.trmnl.android.buddy.ui.home.AnnouncementCarousel(
-                    announcements = announcements,
-                    isLoading = isAnnouncementsLoading,
-                    onAnnouncementClick = onAnnouncementClick,
+                ink.trmnl.android.buddy.ui.home.ContentCarousel(
+                    content = content,
+                    isLoading = isContentLoading,
+                    onContentClick = onContentClick,
                     onViewAllClick = onViewAllAnnouncementsClick,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -1336,13 +1395,13 @@ private fun DevicesListPreview() {
             devicePreviews = emptyMap(),
             isPrivacyEnabled = false,
             innerPadding = PaddingValues(0.dp),
-            announcements = emptyList(),
-            isAnnouncementsLoading = false,
+            content = emptyList(),
+            isContentLoading = false,
             isAnnouncementsEnabled = true,
             onDeviceClick = {},
             onSettingsClick = {},
             onPreviewClick = { _, _ -> },
-            onAnnouncementClick = {},
+            onContentClick = {},
             onViewAllAnnouncementsClick = {},
             eventSink = {},
         )
