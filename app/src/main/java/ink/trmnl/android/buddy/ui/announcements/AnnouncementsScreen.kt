@@ -388,15 +388,21 @@ private fun AnnouncementsList(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 8.dp),
+            contentPadding = PaddingValues(bottom = 8.dp),
         ) {
-            // Filter chips
-            item {
-                FilterChips(
-                    selectedFilter = filter,
-                    onFilterChanged = onFilterChanged,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                )
+            // Sticky filter chips at the top
+            stickyHeader {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 2.dp,
+                ) {
+                    FilterChips(
+                        selectedFilter = filter,
+                        onFilterChanged = onFilterChanged,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    )
+                }
             }
 
             // Group announcements by date
@@ -451,9 +457,12 @@ private fun FilterChips(
                         painter =
                             painterResource(
                                 when (filter) {
-                                    AnnouncementsScreen.Filter.ALL -> R.drawable.list_24dp_e3e3e3_fill0_wght400_grad0_opsz24
-                                    AnnouncementsScreen.Filter.UNREAD -> R.drawable.markunread_mailbox_24dp_e8eaed_fill0_wght400_grad0_opsz24
-                                    AnnouncementsScreen.Filter.READ -> R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    AnnouncementsScreen.Filter.ALL ->
+                                        R.drawable.list_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                                    AnnouncementsScreen.Filter.UNREAD ->
+                                        R.drawable.markunread_mailbox_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    AnnouncementsScreen.Filter.READ ->
+                                        R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24
                                 },
                             ),
                         contentDescription = null,

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Sticky Filter Bar in Announcements**: Filter chips now remain visible when scrolling
+  - Changed from regular list item to sticky header using `stickyHeader` in LazyColumn
+  - Added Surface with 2.dp tonal elevation for better visual separation from scrolling content
+  - Improved UX by keeping filter controls always accessible during long scrolls
+  - Follows Material Design 3 best practices for persistent filters in list views
+
 ### Added
 - **UI/UX Refinements for Content Feed**: Complete Material Design 3 and accessibility overhaul
   - **Accessibility Improvements** (Phase 1):
