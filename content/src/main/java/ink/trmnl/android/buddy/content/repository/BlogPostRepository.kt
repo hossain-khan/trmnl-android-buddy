@@ -118,10 +118,13 @@ class BlogPostRepository(
                         // Extract featured image from content (first img tag)
                         val featuredImageUrl = extractFeaturedImage(item.content)
 
+                        // Sanitize summary to plain text (max 300 chars)
+                        val sanitizedSummary = sanitizeHtmlToPlainText(item.description)
+
                         BlogPostEntity(
                             id = item.link ?: item.guid ?: return@mapNotNull null,
                             title = item.title ?: return@mapNotNull null,
-                            summary = item.description ?: "",
+                            summary = sanitizedSummary,
                             link = item.link ?: return@mapNotNull null,
                             authorName = authorName,
                             category = category,
@@ -155,6 +158,45 @@ class BlogPostRepository(
         // Simple regex to find first img src
         val imgRegex = """<img[^>]+src\s*=\s*["']([^"']+)["']""".toRegex(RegexOption.IGNORE_CASE)
         return imgRegex.find(content)?.groupValues?.getOrNull(1)
+    }
+
+    /**
+     * Sanitize HTML content to plain text and limit to 300 characters.
+     * Removes all HTML tags and entities, then truncates to specified length.
+     *
+     * @param html HTML content string
+     * @param maxLength Maximum length of resulting text (default: 300)
+     * @return Sanitized plain text
+     */
+    private fun sanitizeHtmlToPlainText(
+        html: String?,
+        maxLength: Int = 300,
+    ): String {
+        if (html.isNullOrBlank()) return ""
+
+        // Remove HTML tags
+        var text = html.replace("""<[^>]*>""".toRegex(), "")
+
+        // Decode common HTML entities
+        text =
+            text
+                .replace("&nbsp;", " ")
+                .replace("&amp;", "&")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&quot;", "\"")
+                .replace("&#39;", "'")
+                .replace("&apos;", "'")
+
+        // Normalize whitespace (replace multiple spaces/newlines with single space)
+        text = text.replace("""\s+""".toRegex(), " ").trim()
+
+        // Truncate to max length
+        return if (text.length > maxLength) {
+            text.substring(0, maxLength).trim()
+        } else {
+            text
+        }
     }
 
     /**

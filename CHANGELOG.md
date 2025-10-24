@@ -30,6 +30,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Timber logging for debugging
   - Added `getUnreadCount()` to BlogPostRepository (suspending function using Flow.first())
 
+- **Compose Previews for Content Screens**: Added comprehensive preview coverage for better developer experience
+  - `AnnouncementsScreen`: 9 preview functions covering loading, empty (all/unread filters), individual items (read/unread), filter chips, full screen, and embedded mode
+  - `BlogPostsScreen`: 9 preview functions covering loading, error, empty, cards (with image/favorited/no image), full screen, filtered by category, and embedded mode
+  - `ContentHubScreen`: 5 preview functions covering both tabs (announcements/blog posts), unread badges, category filtering, and navigation bar
+  - All previews use `@PreviewLightDark` for both light and dark mode rendering
+  - Sample data entities created with realistic content and varied states
+  - Follows existing app pattern established in `TrmnlDevicesScreen`
+  - All previews wrapped in `TrmnlBuddyAppTheme` for Material You theming
+
 ### Fixed
 - **Blog Posts Favorite Persistence**: Fixed critical bug where favorite status was not persisted
   - Root cause: `BlogPostDao.insertAll()` was using `OnConflictStrategy.REPLACE` which completely replaced existing rows
@@ -58,6 +67,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Unfavorited: `heart_plus` icon (add to favorites)
     - Favorited: `favorite_fill1` icon (filled heart)
   - Cleaner, more focused list item layout
+  - **Summary Text Improvements**:
+    - HTML content sanitized to plain text (removes all HTML tags and entities)
+    - Summary limited to 300 characters maximum for cleaner display
+    - UI updated to show 4 lines max (previously 3) with ellipsis for overflow
+    - Normalized whitespace for better readability
 - **Blog Posts List Screen**: Full-featured blog posts viewer (#142, Phase 5)
   - Created `BlogPostsScreen` with Circuit architecture (Screen, State, Event, Presenter, Content)
   - List view of all blog posts from TRMNL RSS feed with pull-to-refresh
@@ -65,12 +79,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Featured image display when available using Coil (180dp height, crop scaling)
   - BlogPostCard component with:
     - Featured image with loading indicator
-    - Category chip with secondary container colors
     - Title (2 line max) with bold styling
-    - Summary (3 line max) with overflow ellipsis
+    - Summary (4 line max) with overflow ellipsis and sanitized plain text
     - Author name and relative date ("2 days ago")
     - Unread indicator (blue dot) for new posts
     - Favorite toggle button (heart icon with error color when active)
+    - **Card tap opens blog post in Chrome Custom Tabs** with theme-aware colors
   - Click to open blog post in Chrome Custom Tabs with theme colors
   - Auto-mark as read when clicked
   - Toggle favorite functionality

@@ -27,6 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -279,6 +281,244 @@ fun ContentHubContent(
                         Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
+                )
+            }
+        }
+    }
+}
+
+// ============================================================================
+// Compose Previews
+// ============================================================================
+
+/**
+ * Preview-only version of ContentHubContent that doesn't require Circuit navigation.
+ * Used for Compose previews to show the UI structure without embedded screens.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ContentHubContentPreview(
+    state: ContentHubScreen.State,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    when (state.selectedTab) {
+                        ContentHubScreen.Tab.ANNOUNCEMENTS -> {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                TrmnlTitle("Announcements")
+                                state.announcementsState?.let { announcementsState ->
+                                    if (announcementsState.unreadCount > 0) {
+                                        Surface(
+                                            shape = CircleShape,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        ) {
+                                            Text(
+                                                text = announcementsState.unreadCount.toString(),
+                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = MaterialTheme.colorScheme.onPrimary,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        ContentHubScreen.Tab.BLOG_POSTS -> {
+                            TrmnlTitle(
+                                state.blogPostsState?.selectedCategory?.let {
+                                    "Blog Posts - $it"
+                                } ?: "Blog Posts",
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    when (state.selectedTab) {
+                        ContentHubScreen.Tab.ANNOUNCEMENTS -> {
+                            // No additional actions
+                        }
+
+                        ContentHubScreen.Tab.BLOG_POSTS -> {
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                                    contentDescription = "Filter by category",
+                                )
+                            }
+                        }
+                    }
+                },
+            )
+        },
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    selected = state.selectedTab == ContentHubScreen.Tab.ANNOUNCEMENTS,
+                    onClick = { },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Announcements",
+                        )
+                    },
+                    label = { Text("Announcements") },
+                )
+
+                NavigationBarItem(
+                    selected = state.selectedTab == ContentHubScreen.Tab.BLOG_POSTS,
+                    onClick = { },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Blog Posts",
+                        )
+                    },
+                    label = { Text("Blog Posts") },
+                )
+            }
+        },
+    ) { innerPadding ->
+        // Placeholder content area for preview
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Icon(
+                    painter =
+                        painterResource(
+                            when (state.selectedTab) {
+                                ContentHubScreen.Tab.ANNOUNCEMENTS ->
+                                    R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24
+
+                                ContentHubScreen.Tab.BLOG_POSTS ->
+                                    R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                            },
+                        ),
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+                Text(
+                    text =
+                        when (state.selectedTab) {
+                            ContentHubScreen.Tab.ANNOUNCEMENTS -> "Announcements Content"
+                            ContentHubScreen.Tab.BLOG_POSTS -> "Blog Posts Content"
+                        },
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Content Hub - Announcements Tab")
+@Composable
+private fun ContentHubAnnouncementsTabPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        ContentHubContentPreview(
+            state =
+                ContentHubScreen.State(
+                    selectedTab = ContentHubScreen.Tab.ANNOUNCEMENTS,
+                    announcementsState = ContentHubScreen.AnnouncementsScreenState(),
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Content Hub - Announcements with Unread Badge")
+@Composable
+private fun ContentHubAnnouncementsUnreadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        ContentHubContentPreview(
+            state =
+                ContentHubScreen.State(
+                    selectedTab = ContentHubScreen.Tab.ANNOUNCEMENTS,
+                    announcementsState = ContentHubScreen.AnnouncementsScreenState(unreadCount = 5),
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Content Hub - Blog Posts Tab")
+@Composable
+private fun ContentHubBlogPostsTabPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        ContentHubContentPreview(
+            state =
+                ContentHubScreen.State(
+                    selectedTab = ContentHubScreen.Tab.BLOG_POSTS,
+                    blogPostsState = ContentHubScreen.BlogPostsScreenState(),
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Content Hub - Blog Posts with Category")
+@Composable
+private fun ContentHubBlogPostsCategoryPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        ContentHubContentPreview(
+            state =
+                ContentHubScreen.State(
+                    selectedTab = ContentHubScreen.Tab.BLOG_POSTS,
+                    blogPostsState =
+                        ContentHubScreen.BlogPostsScreenState(
+                            selectedCategory = "Product Updates",
+                            availableCategories = listOf("Product Updates", "Community", "Engineering"),
+                        ),
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Navigation Bar Only")
+@Composable
+private fun ContentHubNavigationBarPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            NavigationBar {
+                NavigationBarItem(
+                    selected = true,
+                    onClick = { },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Announcements",
+                        )
+                    },
+                    label = { Text("Announcements") },
+                )
+
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Blog Posts",
+                        )
+                    },
+                    label = { Text("Blog Posts") },
                 )
             }
         }

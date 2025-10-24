@@ -47,6 +47,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -450,7 +452,7 @@ private fun BlogPostCard(
                     text = blogPost.summary,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 3,
+                    maxLines = 4,
                     overflow = TextOverflow.Ellipsis,
                 )
 
@@ -583,5 +585,192 @@ private fun formatRelativeDate(instant: Instant): String {
         hours > 0 -> "$hours hour${if (hours == 1L) "" else "s"} ago"
         minutes > 0 -> "$minutes minute${if (minutes == 1L) "" else "s"} ago"
         else -> "Just now"
+    }
+}
+
+// ============================================================================
+// Compose Previews
+// ============================================================================
+
+private val sampleBlogPosts =
+    listOf(
+        BlogPostEntity(
+            id = "1",
+            title = "Introducing TRMNL Plugins: Extend Your Dashboard",
+            summary =
+                "We're excited to announce our new plugin system that lets you " +
+                    "customize your TRMNL experience with community-built integrations.",
+            link = "https://usetrmnl.com/blog/introducing-plugins",
+            authorName = "Ryan Kulp",
+            category = "Product Updates",
+            publishedDate = Instant.now().minus(2, ChronoUnit.HOURS),
+            featuredImageUrl = "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
+            isRead = false,
+            isFavorite = false,
+            fetchedAt = Instant.now(),
+        ),
+        BlogPostEntity(
+            id = "2",
+            title = "5 Creative Ways to Use TRMNL at Home",
+            summary = "From kitchen timers to family calendars, discover how TRMNL users are getting creative with their e-ink displays.",
+            link = "https://usetrmnl.com/blog/creative-uses",
+            authorName = "Mario Lurig",
+            category = "Community",
+            publishedDate = Instant.now().minus(1, ChronoUnit.DAYS),
+            featuredImageUrl = "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b",
+            isRead = true,
+            isFavorite = true,
+            fetchedAt = Instant.now(),
+        ),
+        BlogPostEntity(
+            id = "3",
+            title = "Behind the Scenes: Building TRMNL's Hardware",
+            summary = "A deep dive into the engineering challenges we faced creating a beautiful, low-power e-ink display.",
+            link = "https://usetrmnl.com/blog/hardware-engineering",
+            authorName = "Ryan Kulp",
+            category = "Engineering",
+            publishedDate = Instant.now().minus(3, ChronoUnit.DAYS),
+            featuredImageUrl = null, // No featured image
+            isRead = false,
+            isFavorite = false,
+            fetchedAt = Instant.now(),
+        ),
+    )
+
+@Preview(name = "Loading State")
+@Composable
+private fun BlogPostsLoadingPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        BlogPostsContent(
+            state = BlogPostsScreen.State(isLoading = true),
+        )
+    }
+}
+
+@Preview(name = "Error State")
+@Composable
+private fun BlogPostsErrorPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        BlogPostsContent(
+            state =
+                BlogPostsScreen.State(
+                    isLoading = false,
+                    errorMessage = "Failed to load blog posts. Please check your connection.",
+                ),
+        )
+    }
+}
+
+@Preview(name = "Empty State")
+@Composable
+private fun BlogPostsEmptyPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        BlogPostsContent(
+            state =
+                BlogPostsScreen.State(
+                    isLoading = false,
+                    blogPosts = emptyList(),
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Blog Post Card - With Image & Unread")
+@Composable
+private fun BlogPostCardWithImagePreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            BlogPostCard(
+                blogPost = sampleBlogPosts[0],
+                onClick = {},
+                onToggleFavorite = {},
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Blog Post Card - Read & Favorited")
+@Composable
+private fun BlogPostCardFavoritedPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            BlogPostCard(
+                blogPost = sampleBlogPosts[1],
+                onClick = {},
+                onToggleFavorite = {},
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Blog Post Card - No Image")
+@Composable
+private fun BlogPostCardNoImagePreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            BlogPostCard(
+                blogPost = sampleBlogPosts[2],
+                onClick = {},
+                onToggleFavorite = {},
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Full Screen - With Blog Posts")
+@Composable
+private fun BlogPostsFullScreenPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        BlogPostsContent(
+            state =
+                BlogPostsScreen.State(
+                    isLoading = false,
+                    blogPosts = sampleBlogPosts,
+                    availableCategories = listOf("Product Updates", "Community", "Engineering"),
+                    selectedCategory = null,
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Full Screen - Filtered by Category")
+@Composable
+private fun BlogPostsFilteredPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        BlogPostsContent(
+            state =
+                BlogPostsScreen.State(
+                    isLoading = false,
+                    blogPosts = listOf(sampleBlogPosts[0]),
+                    availableCategories = listOf("Product Updates", "Community", "Engineering"),
+                    selectedCategory = "Product Updates",
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Full Screen - Embedded (No TopBar)")
+@Composable
+private fun BlogPostsEmbeddedPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        BlogPostsContent(
+            state =
+                BlogPostsScreen.State(
+                    isLoading = false,
+                    blogPosts = sampleBlogPosts,
+                    availableCategories = listOf("Product Updates", "Community", "Engineering"),
+                    selectedCategory = null,
+                    showTopBar = false, // Embedded mode
+                ),
+        )
     }
 }

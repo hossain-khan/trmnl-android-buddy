@@ -44,6 +44,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
@@ -604,5 +606,182 @@ private fun formatRelativeDate(instant: Instant): String {
         hours > 0 -> "$hours hour${if (hours == 1L) "" else "s"} ago"
         minutes > 0 -> "$minutes minute${if (minutes == 1L) "" else "s"} ago"
         else -> "Just now"
+    }
+}
+
+// ============================================================================
+// Compose Previews
+// ============================================================================
+
+private val sampleAnnouncements =
+    listOf(
+        AnnouncementEntity(
+            id = "1",
+            title = "New Feature: Device Scheduling",
+            summary = "You can now schedule when your TRMNL device refreshes content automatically.",
+            link = "https://usetrmnl.com/announcements/device-scheduling",
+            publishedDate = Instant.now().minus(2, ChronoUnit.HOURS),
+            isRead = false,
+            fetchedAt = Instant.now().minus(2, ChronoUnit.HOURS),
+        ),
+        AnnouncementEntity(
+            id = "2",
+            title = "API Rate Limit Update",
+            summary = "We've increased the API rate limit for all paid plans. Check the docs for details.",
+            link = "https://usetrmnl.com/announcements/api-update",
+            publishedDate = Instant.now().minus(1, ChronoUnit.DAYS),
+            isRead = true,
+            fetchedAt = Instant.now().minus(1, ChronoUnit.DAYS),
+        ),
+        AnnouncementEntity(
+            id = "3",
+            title = "Maintenance Window Scheduled",
+            summary = "Brief maintenance scheduled for Saturday 2am-4am EST. Expect 5min downtime.",
+            link = "https://usetrmnl.com/announcements/maintenance",
+            publishedDate = Instant.now().minus(3, ChronoUnit.DAYS),
+            isRead = false,
+            fetchedAt = Instant.now().minus(3, ChronoUnit.DAYS),
+        ),
+    )
+
+@Preview(name = "Loading State")
+@Composable
+private fun AnnouncementsLoadingPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = true,
+                    showTopBar = true,
+                ),
+        )
+    }
+}
+
+@Preview(name = "Empty State - All Filter")
+@Composable
+private fun AnnouncementsEmptyAllPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = false,
+                    announcements = emptyList(),
+                    filter = AnnouncementsScreen.Filter.ALL,
+                    showTopBar = true,
+                ),
+        )
+    }
+}
+
+@Preview(name = "Empty State - Unread Filter")
+@Composable
+private fun AnnouncementsEmptyUnreadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = false,
+                    announcements = emptyList(),
+                    filter = AnnouncementsScreen.Filter.UNREAD,
+                    showTopBar = true,
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Announcement Item - Unread")
+@Composable
+private fun AnnouncementItemUnreadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            AnnouncementItem(
+                announcement = sampleAnnouncements[0],
+                onClick = {},
+                onToggleReadStatus = {},
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Announcement Item - Read")
+@Composable
+private fun AnnouncementItemReadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            AnnouncementItem(
+                announcement = sampleAnnouncements[1],
+                onClick = {},
+                onToggleReadStatus = {},
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Filter Chips - All Selected")
+@Composable
+private fun FilterChipsAllPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            FilterChips(
+                selectedFilter = AnnouncementsScreen.Filter.ALL,
+                onFilterChanged = {},
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Filter Chips - Unread Selected")
+@Composable
+private fun FilterChipsUnreadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            FilterChips(
+                selectedFilter = AnnouncementsScreen.Filter.UNREAD,
+                onFilterChanged = {},
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Full Screen - With Announcements")
+@Composable
+private fun AnnouncementsFullScreenPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = false,
+                    announcements = sampleAnnouncements,
+                    filter = AnnouncementsScreen.Filter.ALL,
+                    unreadCount = 2,
+                    showTopBar = true,
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Full Screen - Embedded (No TopBar)")
+@Composable
+private fun AnnouncementsEmbeddedPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = false,
+                    announcements = sampleAnnouncements,
+                    filter = AnnouncementsScreen.Filter.UNREAD,
+                    unreadCount = 2,
+                    showTopBar = false, // Embedded mode
+                ),
+        )
     }
 }
