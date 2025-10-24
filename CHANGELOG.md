@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Announcement Authentication Banner**: Informational banner explaining TRMNL account requirement
+  - Dismissible banner shown at top of announcements list
+  - Informs users that announcements require authentication to view full details on web
+  - Banner remembers dismissed state in user preferences (never shows again after dismissal)
+  - Material 3 design with info icon and close button
+  - Added `isAnnouncementAuthBannerDismissed` preference to UserPreferences
+  - Added `setAnnouncementAuthBannerDismissed()` method to UserPreferencesRepository
+
 ### Changed
 - **Copilot Instructions**: Updated GitHub operations guidance for AI assistants
   - Added requirement to always use GitHub MCP tools instead of `gh` CLI

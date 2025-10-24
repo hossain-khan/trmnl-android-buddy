@@ -91,6 +91,7 @@ data class AnnouncementsScreen(
         val unreadCount: Int = 0,
         val errorMessage: String? = null,
         val showTopBar: Boolean = true, // Control whether to show top app bar
+        val showAuthBanner: Boolean = false, // Control whether to show authentication banner
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -112,6 +113,8 @@ data class AnnouncementsScreen(
         ) : Event()
 
         data object MarkAllAsRead : Event()
+
+        data object DismissAuthBanner : Event()
     }
 
     enum class Filter {
@@ -131,6 +134,7 @@ class AnnouncementsPresenter
         @Assisted private val navigator: Navigator,
         @ApplicationContext private val context: Context,
         private val announcementRepository: AnnouncementRepository,
+        private val userPreferencesRepository: ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository,
     ) : Presenter<AnnouncementsScreen.State> {
         @Composable
         override fun present(): AnnouncementsScreen.State {
@@ -140,6 +144,7 @@ class AnnouncementsPresenter
             var filter by rememberRetained { mutableStateOf(AnnouncementsScreen.Filter.ALL) }
             var unreadCount by rememberRetained { mutableStateOf(0) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
+            var showAuthBanner by rememberRetained { mutableStateOf(false) }
             val coroutineScope = rememberCoroutineScope()
 
             // Capture theme colors for Custom Tabs
@@ -169,6 +174,13 @@ class AnnouncementsPresenter
                 }
             }
 
+            // Collect auth banner visibility preference
+            LaunchedEffect(Unit) {
+                userPreferencesRepository.userPreferencesFlow.collect { preferences ->
+                    showAuthBanner = !preferences.isAnnouncementAuthBannerDismissed
+                }
+            }
+
             return AnnouncementsScreen.State(
                 announcements = announcements,
                 isLoading = isLoading,
@@ -177,6 +189,7 @@ class AnnouncementsPresenter
                 unreadCount = unreadCount,
                 errorMessage = errorMessage,
                 showTopBar = !screen.isEmbedded, // Hide top bar when embedded
+                showAuthBanner = showAuthBanner,
             ) { event ->
                 when (event) {
                     AnnouncementsScreen.Event.BackClicked -> {
@@ -227,6 +240,12 @@ class AnnouncementsPresenter
                     AnnouncementsScreen.Event.MarkAllAsRead -> {
                         coroutineScope.launch {
                             announcementRepository.markAllAsRead()
+                        }
+                    }
+
+                    AnnouncementsScreen.Event.DismissAuthBanner -> {
+                        coroutineScope.launch {
+                            userPreferencesRepository.setAnnouncementAuthBannerDismissed(true)
                         }
                     }
                 }
@@ -320,6 +339,7 @@ fun AnnouncementsContent(
                     announcements = state.announcements,
                     isRefreshing = state.isRefreshing,
                     filter = state.filter,
+                    showAuthBanner = state.showAuthBanner,
                     onRefresh = { state.eventSink(AnnouncementsScreen.Event.Refresh) },
                     onFilterChanged = { newFilter ->
                         state.eventSink(AnnouncementsScreen.Event.FilterChanged(newFilter))
@@ -329,6 +349,9 @@ fun AnnouncementsContent(
                     },
                     onToggleReadStatus = { announcement ->
                         state.eventSink(AnnouncementsScreen.Event.ToggleReadStatus(announcement))
+                    },
+                    onDismissBanner = {
+                        state.eventSink(AnnouncementsScreen.Event.DismissAuthBanner)
                     },
                 )
             }
@@ -375,10 +398,12 @@ private fun AnnouncementsList(
     announcements: List<AnnouncementEntity>,
     isRefreshing: Boolean,
     filter: AnnouncementsScreen.Filter,
+    showAuthBanner: Boolean,
     onRefresh: () -> Unit,
     onFilterChanged: (AnnouncementsScreen.Filter) -> Unit,
     onAnnouncementClick: (AnnouncementEntity) -> Unit,
     onToggleReadStatus: (AnnouncementEntity) -> Unit,
+    onDismissBanner: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -405,6 +430,16 @@ private fun AnnouncementsList(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 8.dp),
             ) {
+                // Authentication info banner (if not dismissed)
+                if (showAuthBanner) {
+                    item(key = "auth_banner") {
+                        AuthenticationBanner(
+                            onDismiss = onDismissBanner,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        )
+                    }
+                }
+
                 // Group announcements by date
                 val groupedAnnouncements = announcements.groupByDate()
 
@@ -424,6 +459,63 @@ private fun AnnouncementsList(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+/**
+ * Authentication information banner shown at the top of announcements list.
+ * Informs users that they need a TRMNL account to view announcement details.
+ */
+@Composable
+private fun AuthenticationBanner(
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        shape = MaterialTheme.shapes.medium,
+        tonalElevation = 1.dp,
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Top,
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.outline_info_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(20.dp),
+                )
+                Text(
+                    text =
+                        "Announcements require authentication to view. " +
+                            "You must have a TRMNL account to view announcement details on the web.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+            }
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier.size(24.dp),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.close_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                    contentDescription = "Dismiss",
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(18.dp),
+                )
             }
         }
     }

@@ -64,6 +64,11 @@ interface UserPreferencesRepository {
     suspend fun setAnnouncementsEnabled(enabled: Boolean)
 
     /**
+     * Dismiss the announcement authentication banner.
+     */
+    suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean)
+
+    /**
      * Clear all preferences.
      */
     suspend fun clearAll()
@@ -82,6 +87,7 @@ class UserPreferencesRepositoryImpl
             val LOW_BATTERY_NOTIFICATION_ENABLED = booleanPreferencesKey("low_battery_notification_enabled")
             val LOW_BATTERY_THRESHOLD = intPreferencesKey("low_battery_threshold")
             val ANNOUNCEMENTS_ENABLED = booleanPreferencesKey("announcements_enabled")
+            val ANNOUNCEMENT_AUTH_BANNER_DISMISSED = booleanPreferencesKey("announcement_auth_banner_dismissed")
         }
 
         override val userPreferencesFlow: Flow<UserPreferences> =
@@ -96,6 +102,8 @@ class UserPreferencesRepositoryImpl
                         preferences[PreferencesKeys.LOW_BATTERY_THRESHOLD]
                             ?: UserPreferences.DEFAULT_LOW_BATTERY_THRESHOLD,
                     isAnnouncementsEnabled = preferences[PreferencesKeys.ANNOUNCEMENTS_ENABLED] ?: true,
+                    isAnnouncementAuthBannerDismissed =
+                        preferences[PreferencesKeys.ANNOUNCEMENT_AUTH_BANNER_DISMISSED] ?: false,
                 )
             }
 
@@ -138,6 +146,12 @@ class UserPreferencesRepositoryImpl
         override suspend fun setAnnouncementsEnabled(enabled: Boolean) {
             context.dataStore.edit { preferences ->
                 preferences[PreferencesKeys.ANNOUNCEMENTS_ENABLED] = enabled
+            }
+        }
+
+        override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.ANNOUNCEMENT_AUTH_BANNER_DISMISSED] = dismissed
             }
         }
 
