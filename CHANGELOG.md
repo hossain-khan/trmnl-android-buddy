@@ -109,12 +109,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - New "Announcements" section in Settings screen with ON/OFF toggle
   - Default: Enabled (announcements shown and synced)
   - When disabled:
-    - Announcement carousel hidden from home screen
+    - Announcement carousel hidden from home screen (TrmnlDevicesScreen)
     - Background sync job cancelled (no network usage)
-    - Announcements screen inaccessible
+    - Announcements screen still accessible via direct navigation
   - Preference persisted in DataStore
   - Added `isAnnouncementsEnabled` to UserPreferences (defaults to true)
   - WorkerScheduler now includes `scheduleAnnouncementSync()` and `cancelAnnouncementSync()` methods
+  - TrmnlDevicesScreen reactively hides/shows carousel based on preference
 
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging

@@ -122,6 +122,7 @@ data object TrmnlDevicesScreen : Screen {
         val snackbarMessage: String? = null,
         val announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity> = emptyList(),
         val isAnnouncementsLoading: Boolean = true,
+        val isAnnouncementsEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -189,11 +190,19 @@ class TrmnlDevicesPresenter
                 mutableStateOf<List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>>(emptyList())
             }
             var isAnnouncementsLoading by rememberRetained { mutableStateOf(true) }
+            var isAnnouncementsEnabled by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
 
             // Capture theme colors for Custom Tabs
             val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
             val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
+
+            // Collect announcements enabled preference
+            LaunchedEffect(Unit) {
+                userPreferencesRepository.userPreferencesFlow.collect { preferences ->
+                    isAnnouncementsEnabled = preferences.isAnnouncementsEnabled
+                }
+            }
 
             // Collect announcements from repository
             LaunchedEffect(Unit) {
@@ -268,6 +277,7 @@ class TrmnlDevicesPresenter
                 snackbarMessage = snackbarMessage,
                 announcements = announcements,
                 isAnnouncementsLoading = isAnnouncementsLoading,
+                isAnnouncementsEnabled = isAnnouncementsEnabled,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
@@ -561,6 +571,7 @@ fun TrmnlDevicesContent(
                     innerPadding = innerPadding,
                     announcements = state.announcements,
                     isAnnouncementsLoading = state.isAnnouncementsLoading,
+                    isAnnouncementsEnabled = state.isAnnouncementsEnabled,
                     onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                     onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                     onPreviewClick = { device, previewInfo ->
@@ -691,6 +702,7 @@ private fun DevicesList(
     innerPadding: PaddingValues,
     announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>,
     isAnnouncementsLoading: Boolean,
+    isAnnouncementsEnabled: Boolean,
     onDeviceClick: (Device) -> Unit,
     onSettingsClick: (Device) -> Unit,
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
@@ -707,15 +719,17 @@ private fun DevicesList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // Announcements carousel at the top
-        item {
-            ink.trmnl.android.buddy.ui.home.AnnouncementCarousel(
-                announcements = announcements,
-                isLoading = isAnnouncementsLoading,
-                onAnnouncementClick = onAnnouncementClick,
-                onViewAllClick = onViewAllAnnouncementsClick,
-                modifier = Modifier.fillMaxWidth(),
-            )
+        // Announcements carousel at the top (only if enabled)
+        if (isAnnouncementsEnabled) {
+            item {
+                ink.trmnl.android.buddy.ui.home.AnnouncementCarousel(
+                    announcements = announcements,
+                    isLoading = isAnnouncementsLoading,
+                    onAnnouncementClick = onAnnouncementClick,
+                    onViewAllClick = onViewAllAnnouncementsClick,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
 
         items(
@@ -1324,6 +1338,7 @@ private fun DevicesListPreview() {
             innerPadding = PaddingValues(0.dp),
             announcements = emptyList(),
             isAnnouncementsLoading = false,
+            isAnnouncementsEnabled = true,
             onDeviceClick = {},
             onSettingsClick = {},
             onPreviewClick = { _, _ -> },
