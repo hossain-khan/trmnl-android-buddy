@@ -49,6 +49,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All previews wrapped in `TrmnlBuddyAppTheme` for Material You theming
 
 ### Fixed
+- **INTERNET Permission Missing**: Added missing INTERNET permission to AndroidManifest.xml
+  - Fixed critical bug where clicking blog posts and announcements didn't open browser
+  - Chrome Custom Tabs requires INTERNET permission to launch URLs
+  - Now blog post and announcement links properly open in Chrome Custom Tabs
+
 - **Blog Post Summary Logging**: Added Timber logging to help diagnose RSS parsing issues
   - Replaced println statements with proper Timber.d() calls
   - Logs content/description lengths and summary lengths during parsing
