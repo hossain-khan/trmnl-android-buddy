@@ -123,12 +123,17 @@ class AnnouncementRepository
          */
         private fun parseDate(dateString: String): Instant =
             try {
-                // RssParser already provides parsed date as String
-                // We'll use a simple heuristic: if it contains T, it's ISO format
+                // RSS feeds may provide dates in several formats:
+                // - RFC 822 (e.g., "Mon, 01 Jan 2024 12:00:00 GMT")
+                // - ISO 8601 (e.g., "2024-01-01T12:00:00Z", which contains 'T')
+                // - Epoch milliseconds (e.g., "1704105600000", all digits)
+                // Heuristic:
+                //   If the string contains 'T', assume ISO 8601 and parse with Instant.parse.
+                //   Otherwise, if all digits, parse as epoch millis.
+                //   If neither, fallback to current time.
                 if (dateString.contains('T')) {
                     Instant.parse(dateString)
                 } else {
-                    // Try parsing as epoch millis if it's all digits
                     dateString.toLongOrNull()?.let { Instant.ofEpochMilli(it) } ?: Instant.now()
                 }
             } catch (e: Exception) {
