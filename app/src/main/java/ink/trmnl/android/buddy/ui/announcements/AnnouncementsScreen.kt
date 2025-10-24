@@ -8,6 +8,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -338,8 +339,8 @@ fun AnnouncementsContent(
         floatingActionButton = {
             AnimatedVisibility(
                 visible = state.unreadCount > 0 && fabVisible,
-                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn() + scaleIn(),
+                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut() + scaleOut(),
             ) {
                 FloatingActionButton(
                     onClick = { state.eventSink(AnnouncementsScreen.Event.MarkAllAsRead) },
@@ -396,7 +397,12 @@ private fun LoadingState(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        CircularProgressIndicator()
+        androidx.compose.animation.AnimatedVisibility(
+            visible = true,
+            enter = fadeIn() + scaleIn(initialScale = 0.8f),
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }
 

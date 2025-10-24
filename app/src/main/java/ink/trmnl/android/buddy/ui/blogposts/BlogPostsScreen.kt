@@ -349,8 +349,8 @@ fun BlogPostsContent(
         floatingActionButton = {
             AnimatedVisibility(
                 visible = state.unreadCount > 0 && fabVisible,
-                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn() + scaleIn(),
+                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut() + scaleOut(),
             ) {
                 androidx.compose.material3.ExtendedFloatingActionButton(
                     onClick = { state.eventSink(BlogPostsScreen.Event.MarkAllAsRead) },
@@ -574,7 +574,7 @@ private fun BlogPostCard(
 }
 
 /**
- * Loading state composable.
+ * Loading state composable with fade-in animation.
  */
 @Composable
 private fun LoadingState(modifier: Modifier = Modifier) {
@@ -582,12 +582,17 @@ private fun LoadingState(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+        androidx.compose.animation.AnimatedVisibility(
+            visible = true,
+            enter = fadeIn(),
         ) {
-            CircularProgressIndicator()
-            Text("Loading blog posts...")
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                CircularProgressIndicator()
+                Text("Loading blog posts...")
+            }
         }
     }
 }

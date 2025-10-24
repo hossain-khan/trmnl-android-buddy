@@ -15,13 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Enhanced card elevation animation (2dp → 4dp on press) for depth perception
     - Added slide-in animations for list items using `animateItem()` modifier
     - Improved empty state with scale-in and fade-in animation using spring physics
+    - Enhanced loading state with fade-in animation
+    - Improved FAB appearance with combined slide, fade, and scale animations
   - **AnnouncementsScreen**:
     - Added list item press animation (scale to 98% with medium bouncy damping) for better interaction feedback
     - Enhanced empty state with animated icon using scale-in and fade-in effects
     - Improved list item animations with `animateItem()` for smooth reordering and filtering
+    - Enhanced loading state with fade and scale-in animation (from 80% scale)
+    - Improved FAB appearance with combined slide, fade, and scale animations
   - All animations follow Material 3 motion design principles with purposeful, smooth transitions
   - Used spring-based animations for natural, responsive feel
   - Enhanced user delight through micro-interactions and polished UI feedback
+  - Animations are consistent across both light and dark themes
 
 - **Blog Posts "Mark All Read" Feature**: Extended FAB to mark all blog posts as read
   - Added Extended FloatingActionButton with "Mark All Read" text and icon
