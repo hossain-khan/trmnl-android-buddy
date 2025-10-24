@@ -20,6 +20,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
 import ink.trmnl.android.buddy.di.WorkerKey
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 /**
@@ -43,14 +44,14 @@ class BlogPostSyncWorker(
 
         return try {
             // Get unread count before refresh
-            val unreadCountBefore = blogPostRepository.getUnreadCount()
+            val unreadCountBefore = blogPostRepository.getUnreadCount().first()
 
             // Fetch blog posts from RSS feed
             val result = blogPostRepository.refreshBlogPosts()
 
             if (result.isSuccess) {
                 // Get unread count after refresh
-                val unreadCountAfter = blogPostRepository.getUnreadCount()
+                val unreadCountAfter = blogPostRepository.getUnreadCount().first()
                 val newPostsCount = unreadCountAfter - unreadCountBefore
 
                 Timber.d("BlogPostSyncWorker: Sync successful. New posts: $newPostsCount")
