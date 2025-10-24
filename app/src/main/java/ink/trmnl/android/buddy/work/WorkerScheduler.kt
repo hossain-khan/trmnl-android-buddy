@@ -32,6 +32,17 @@ interface WorkerScheduler {
      * Useful for testing in debug builds without waiting for the scheduled periodic work.
      */
     fun triggerLowBatteryNotificationNow()
+
+    /**
+     * Schedules or reschedules the announcement sync worker.
+     * The worker syncs announcements from TRMNL RSS feed every 4 hours.
+     */
+    fun scheduleAnnouncementSync()
+
+    /**
+     * Cancels the announcement sync worker.
+     */
+    fun cancelAnnouncementSync()
 }
 
 /**
@@ -102,5 +113,47 @@ class WorkerSchedulerImpl(
                 ).build()
 
         workManager.enqueue(immediateWorkRequest)
+    }
+
+    /**
+     * Schedules or reschedules the announcement sync worker.
+     * Uses KEEP policy to avoid duplicates on app restart.
+     *
+     * Worker will run every 4 hours and requires network connectivity to fetch announcements.
+     * Uses exponential backoff retry policy for handling transient network errors.
+     */
+    override fun scheduleAnnouncementSync() {
+        Timber.d("Scheduling announcement sync worker (every 4 hours, network required)")
+
+        val syncWorkRequest =
+            PeriodicWorkRequestBuilder<AnnouncementSyncWorker>(
+                repeatInterval = 4,
+                repeatIntervalTimeUnit = TimeUnit.HOURS,
+            ).setConstraints(
+                Constraints
+                    .Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build(),
+            ).setBackoffCriteria(
+                androidx.work.BackoffPolicy.EXPONENTIAL,
+                androidx.work.WorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS,
+            ).build()
+
+        // Use KEEP policy to avoid duplicates on app restart
+        workManager.enqueueUniquePeriodicWork(
+            AnnouncementSyncWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            syncWorkRequest,
+        )
+    }
+
+    /**
+     * Cancels the announcement sync worker.
+     * Called when user wants to disable automatic announcement syncing.
+     */
+    override fun cancelAnnouncementSync() {
+        Timber.d("Cancelling announcement sync worker")
+        workManager.cancelUniqueWork(AnnouncementSyncWorker.WORK_NAME)
     }
 }

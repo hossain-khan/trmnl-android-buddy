@@ -55,6 +55,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       - Empty states for each filter type
       - Material 3 design with full dynamic color support
       - Smooth animations and transitions
+  - **Phase 3: Background Sync & Refresh**
+    - Created `AnnouncementSyncWorker` for automatic background sync
+      - Syncs announcements every 4 hours using WorkManager
+      - Requires network connectivity
+      - Uses exponential backoff retry policy for transient errors
+      - Scheduled automatically on app start
+      - Runs in background even when app is closed
+      - Respects Android battery optimization guidelines
+    - Updated `WorkerScheduler` interface with announcement sync methods
+      - `scheduleAnnouncementSync()` - Schedule periodic sync
+      - `cancelAnnouncementSync()` - Cancel sync worker
+    - Integrated worker scheduling in `TrmnlBuddyApp`
+      - Worker scheduled on app initialization
+      - Uses KEEP policy to avoid duplicate workers on app restart
 
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging
