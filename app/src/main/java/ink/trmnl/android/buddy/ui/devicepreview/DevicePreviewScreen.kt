@@ -42,15 +42,18 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.sharedelements.SharedElementTransitionScope
 import com.slack.circuit.sharedelements.SharedElementTransitionScope.AnimatedScope.Navigation
+import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import ink.trmnl.android.buddy.util.ImageDownloadUtils
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -68,6 +71,7 @@ data class DevicePreviewScreen(
         val deviceName: String,
         val imageUrl: String,
         val downloadState: DownloadState = DownloadState.Idle,
+        val refreshState: RefreshState = RefreshState.Idle,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -85,12 +89,31 @@ data class DevicePreviewScreen(
         ) : DownloadState()
     }
 
+    sealed class RefreshState {
+        data object Idle : RefreshState()
+
+        data object Refreshing : RefreshState()
+
+        data class Success(
+            val newImageUrl: String,
+            val message: String,
+        ) : RefreshState()
+
+        data class Error(
+            val message: String,
+        ) : RefreshState()
+    }
+
     sealed class Event : CircuitUiEvent {
         data object BackClicked : Event()
 
         data object DownloadImageClicked : Event()
 
+        data object RefreshImageClicked : Event()
+
         data object DismissSnackbar : Event()
+
+        data object DismissRefreshSnackbar : Event()
     }
 }
 
@@ -102,6 +125,8 @@ class DevicePreviewPresenter
     constructor(
         @Assisted private val screen: DevicePreviewScreen,
         @Assisted private val navigator: Navigator,
+        private val apiService: TrmnlApiService,
+        private val deviceTokenRepository: DeviceTokenRepository,
     ) : Presenter<DevicePreviewScreen.State> {
         @Composable
         override fun present(): DevicePreviewScreen.State {
@@ -111,11 +136,22 @@ class DevicePreviewPresenter
                 )
             }
 
+            var refreshState by rememberRetained {
+                mutableStateOf<DevicePreviewScreen.RefreshState>(
+                    DevicePreviewScreen.RefreshState.Idle,
+                )
+            }
+
+            var currentImageUrl by rememberRetained { mutableStateOf(screen.imageUrl) }
+
+            val scope = rememberCoroutineScope()
+
             return DevicePreviewScreen.State(
                 deviceId = screen.deviceId,
                 deviceName = screen.deviceName,
-                imageUrl = screen.imageUrl,
+                imageUrl = currentImageUrl,
                 downloadState = downloadState,
+                refreshState = refreshState,
             ) { event ->
                 when (event) {
                     DevicePreviewScreen.Event.BackClicked -> navigator.pop()
@@ -124,8 +160,72 @@ class DevicePreviewPresenter
                             downloadState = DevicePreviewScreen.DownloadState.Downloading
                         }
                     }
+                    DevicePreviewScreen.Event.RefreshImageClicked -> {
+                        if (refreshState !is DevicePreviewScreen.RefreshState.Refreshing) {
+                            refreshState = DevicePreviewScreen.RefreshState.Refreshing
+                            scope.launch {
+                                val deviceToken = deviceTokenRepository.getDeviceToken(screen.deviceId)
+                                if (deviceToken != null) {
+                                    when (val result = apiService.getDisplayCurrent(deviceToken)) {
+                                        is ApiResult.Success -> {
+                                            val newImageUrl = result.value.imageUrl
+                                            if (newImageUrl != null) {
+                                                currentImageUrl = newImageUrl
+                                                refreshState =
+                                                    DevicePreviewScreen.RefreshState.Success(
+                                                        newImageUrl = newImageUrl,
+                                                        message = "Preview image refreshed successfully",
+                                                    )
+                                            } else {
+                                                refreshState =
+                                                    DevicePreviewScreen.RefreshState.Error(
+                                                        message = "No preview image available",
+                                                    )
+                                            }
+                                        }
+                                        is ApiResult.Failure.HttpFailure -> {
+                                            val errorMessage =
+                                                when (result.code) {
+                                                    429 -> "Too many requests. Please try again later."
+                                                    500 -> "Server error occurred. Please try again later."
+                                                    401 -> "Unauthorized. Please check device API key."
+                                                    else -> "Failed to refresh image (HTTP ${result.code})"
+                                                }
+                                            refreshState = DevicePreviewScreen.RefreshState.Error(message = errorMessage)
+                                        }
+                                        is ApiResult.Failure.NetworkFailure -> {
+                                            refreshState =
+                                                DevicePreviewScreen.RefreshState.Error(
+                                                    message = "Network error. Please check your connection.",
+                                                )
+                                        }
+                                        is ApiResult.Failure.ApiFailure -> {
+                                            refreshState =
+                                                DevicePreviewScreen.RefreshState.Error(
+                                                    message = "API error: ${result.error}",
+                                                )
+                                        }
+                                        is ApiResult.Failure.UnknownFailure -> {
+                                            refreshState =
+                                                DevicePreviewScreen.RefreshState.Error(
+                                                    message = "Unknown error occurred",
+                                                )
+                                        }
+                                    }
+                                } else {
+                                    refreshState =
+                                        DevicePreviewScreen.RefreshState.Error(
+                                            message = "Device API key not found. Please configure it in settings.",
+                                        )
+                                }
+                            }
+                        }
+                    }
                     DevicePreviewScreen.Event.DismissSnackbar -> {
                         downloadState = DevicePreviewScreen.DownloadState.Idle
+                    }
+                    DevicePreviewScreen.Event.DismissRefreshSnackbar -> {
+                        refreshState = DevicePreviewScreen.RefreshState.Idle
                     }
                 }
             }
@@ -187,6 +287,25 @@ fun DevicePreviewContent(
         }
     }
 
+    // Handle refresh state with snackbar messages
+    LaunchedEffect(state.refreshState) {
+        when (val refreshState = state.refreshState) {
+            is DevicePreviewScreen.RefreshState.Success -> {
+                snackbarHostState.showSnackbar(refreshState.message)
+                state.eventSink(DevicePreviewScreen.Event.DismissRefreshSnackbar)
+            }
+            is DevicePreviewScreen.RefreshState.Error -> {
+                snackbarHostState.showSnackbar(refreshState.message)
+                state.eventSink(DevicePreviewScreen.Event.DismissRefreshSnackbar)
+            }
+            DevicePreviewScreen.RefreshState.Idle,
+            DevicePreviewScreen.RefreshState.Refreshing,
+            -> {
+                // No action needed
+            }
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -201,6 +320,27 @@ fun DevicePreviewContent(
                     }
                 },
                 actions = {
+                    // Refresh button
+                    IconButton(
+                        onClick = { state.eventSink(DevicePreviewScreen.Event.RefreshImageClicked) },
+                        enabled = state.refreshState !is DevicePreviewScreen.RefreshState.Refreshing,
+                    ) {
+                        if (state.refreshState is DevicePreviewScreen.RefreshState.Refreshing) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                strokeWidth = 2.dp,
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Refresh preview image",
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+                    // Download button
                     IconButton(
                         onClick = { state.eventSink(DevicePreviewScreen.Event.DownloadImageClicked) },
                         enabled = state.downloadState !is DevicePreviewScreen.DownloadState.Downloading,
