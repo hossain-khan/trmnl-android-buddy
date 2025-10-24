@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <author>
+    <name>TRMNL</name>
+    <uri>https://usetrmnl.com</uri>
+  </author>
+  <category term="trmnl"
+    label="TRMNL"/>
+  <generator uri="https://usetrmnl.com"
+    version="0.0.0">TRMNL</generator>
+  <icon>https://usetrmnl.com/favicon.ico</icon>
+  <id>https://usetrmnl.com/news</id>
+  <link href="https://usetrmnl.com/news"
+    rel="alternate"
+    type="text/html"
+    title="TRMNL: Announcements (web)"/>
+  <link href="https://usetrmnl.com/feeds/news.xml"
+    rel="self"
+    type="application/atom+xml"
+    title="TRMNL: Announcements (feed)"/>
+  <logo>https://usetrmnl.com/images/brand/icons/icon--brand.png</logo>
+  <rights>Copyright 2025</rights>
+  <subtitle>Learn about latest changes.</subtitle>
+  <title>TRMNL: Announcements</title>
+  <updated>2025-10-23T19:29:00+00:00</updated>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Created by community member ucffool. &lt;a href=&quot;https://usetrmnl.com/recipes/166973&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Enable&lt;/a&gt; and build something Qwiic-ly.</content>
+    <id>https://usetrmnl.com/news/554</id>
+    <link href="https://usetrmnl.com/news/554"/>
+    <published>2025-10-23T19:29:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>New Recipe: SparkFun: Tutorials</title>
+    <updated>2025-10-23T19:29:00+00:00</updated>
+    <dc:date>2025-10-23T19:29:00+00:00</dc:date>
+  </entry>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Created by community member EanaHufwe. &lt;a href=&quot;https://usetrmnl.com/recipes/156095&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Enable&lt;/a&gt; and build some character.</content>
+    <id>https://usetrmnl.com/news/553</id>
+    <link href="https://usetrmnl.com/news/553"/>
+    <published>2025-10-23T16:09:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>New Recipe: Random Zi</title>
+    <updated>2025-10-23T16:09:00+00:00</updated>
+    <dc:date>2025-10-23T16:09:00+00:00</dc:date>
+  </entry>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Artisans - track sales over time with the  &lt;a href=&quot;https://usetrmnl.com/integrations/etsy&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Etsy&lt;/a&gt; plugin.</content>
+    <id>https://usetrmnl.com/news/518</id>
+    <link href="https://usetrmnl.com/news/518"/>
+    <published>2025-10-22T12:12:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>New Plugin: Etsy</title>
+    <updated>2025-10-22T12:12:00+00:00</updated>
+    <dc:date>2025-10-22T12:12:00+00:00</dc:date>
+  </entry>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Created by community member Hossain Khan, you can now monitor a fleet of TRMNL devices from your pocket. &lt;a href=&quot;https://play.google.com/store/apps/details?id=ink.trmnl.android.buddy&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Install TRMNL Buddy&lt;/a&gt;.</content>
+    <id>https://usetrmnl.com/news/520</id>
+    <link href="https://usetrmnl.com/news/520"/>
+    <published>2025-10-22T12:12:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>Introducing TRMNL Buddy for Android</title>
+    <updated>2025-10-22T12:12:00+00:00</updated>
+    <dc:date>2025-10-22T12:12:00+00:00</dc:date>
+  </entry>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Created by community member discogaucho. &lt;a href=&quot;https://usetrmnl.com/recipes/166082&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Enable&lt;/a&gt; now and tune in.</content>
+    <id>https://usetrmnl.com/news/519</id>
+    <link href="https://usetrmnl.com/news/519"/>
+    <published>2025-10-22T12:12:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>New Recipe: NTS Radio: Live Now</title>
+    <updated>2025-10-22T12:12:00+00:00</updated>
+    <dc:date>2025-10-22T12:12:00+00:00</dc:date>
+  </entry>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Keep tabs on recent product and merchant reviews from &lt;a href=&quot;https://usetrmnl.com/integrations/fera&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Fera&lt;/a&gt;, available for sellers on Shopify, BigCommerce, Magento, and beyond.</content>
+    <id>https://usetrmnl.com/news/517</id>
+    <link href="https://usetrmnl.com/news/517"/>
+    <published>2025-10-22T12:12:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>New Plugin: Fera</title>
+    <updated>2025-10-22T12:12:00+00:00</updated>
+    <dc:date>2025-10-22T12:12:00+00:00</dc:date>
+  </entry>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Created by community member jamescridland. &lt;a href=&quot;https://usetrmnl.com/recipes/74581&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Enable&lt;/a&gt; and never be surprised by Aussie headlines again.</content>
+    <id>https://usetrmnl.com/news/516</id>
+    <link href="https://usetrmnl.com/news/516"/>
+    <published>2025-10-22T07:32:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>New Recipe: ABC NEWS Australia</title>
+    <updated>2025-10-22T07:32:00+00:00</updated>
+    <dc:date>2025-10-22T07:32:00+00:00</dc:date>
+  </entry>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Created by community member Sitnik. &lt;a href=&quot;https://usetrmnl.com/recipes/168898&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Enable&lt;/a&gt; and check your npm street cred.</content>
+    <id>https://usetrmnl.com/news/515</id>
+    <link href="https://usetrmnl.com/news/515"/>
+    <published>2025-10-22T00:40:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>New Recipe: NPM Packages</title>
+    <updated>2025-10-22T00:40:00+00:00</updated>
+    <dc:date>2025-10-22T00:40:00+00:00</dc:date>
+  </entry>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Created by community member Cheaha. &lt;a href=&quot;https://usetrmnl.com/recipes/162296&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Enable&lt;/a&gt; and laugh (politically).</content>
+    <id>https://usetrmnl.com/news/514</id>
+    <link href="https://usetrmnl.com/news/514"/>
+    <published>2025-10-20T12:46:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>New Recipe: Fox News - Political Cartoon</title>
+    <updated>2025-10-20T12:46:00+00:00</updated>
+    <dc:date>2025-10-20T12:46:00+00:00</dc:date>
+  </entry>
+  <entry>
+    <author>
+      <name>TRMNL</name>
+      <uri>https://usetrmnl.com</uri>
+    </author>
+    <category term="trmnl"
+      label="TRMNL"/>
+    <content type="html">Created by community member Felix. &lt;a href=&quot;https://usetrmnl.com/recipes/161967&quot; target=&quot;_blank&quot; class=&quot;underline&quot;&gt;Enable&lt;/a&gt; and face the truth.</content>
+    <id>https://usetrmnl.com/news/512</id>
+    <link href="https://usetrmnl.com/news/512"/>
+    <published>2025-10-18T03:50:00+00:00</published>
+    <rights>Copyright 2025</rights>
+    <title>New Recipe: GitHub Workflow Runs</title>
+    <updated>2025-10-18T03:50:00+00:00</updated>
+    <dc:date>2025-10-18T03:50:00+00:00</dc:date>
+  </entry>
+  <dc:date>2025-10-23T19:29:00+00:00</dc:date>
+</feed>

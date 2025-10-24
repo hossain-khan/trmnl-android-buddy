@@ -71,6 +71,10 @@ rssParser = "6.0.8"
 # https://developer.android.com/reference/androidx/browser/customtabs/package-summary
 browser = "1.8.0"
 
+# Robolectric - Android unit testing framework
+# https://github.com/robolectric/robolectric
+robolectric = "4.15"
+
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -158,6 +162,10 @@ rss-parser = { group = "com.prof18.rssparser", name = "rssparser", version.ref =
 # Chrome Custom Tabs
 # https://developer.android.com/jetpack/androidx/releases/browser
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
+
+# Robolectric - Android unit testing framework
+# https://github.com/robolectric/robolectric
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

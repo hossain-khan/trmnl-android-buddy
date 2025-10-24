@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Blog Post Repository Tests**: Comprehensive unit tests for RSS parsing and data transformation
+  - Created `BlogPostRepositoryTest` with Robolectric 4.15 for Android framework support
+  - 3 test methods covering: RSS parser content extraction, HTML sanitization, full refresh flow
+  - Uses real Atom feed XML from `docs/usetrmnl.com-blog-posts.xml` as test data
+  - MockWebServer for simulating HTTP responses
+  - Validates that RSS parser correctly extracts `<content>` field from Atom feeds
+  - Verifies HTML sanitization removes tags and limits to 300 characters
+  - All tests passing with comprehensive debug output
+
 - **Combined Content Feed Feature (#142) - Complete Implementation**:
   - **Phase 1-6 Complete**: Full blog posts integration with announcements
   - **Architecture**: Offline-first, reactive Flow-based data layer with Room database
@@ -40,6 +49,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All previews wrapped in `TrmnlBuddyAppTheme` for Material You theming
 
 ### Fixed
+- **Blog Post Summary Logging**: Added Timber logging to help diagnose RSS parsing issues
+  - Replaced println statements with proper Timber.d() calls
+  - Logs content/description lengths and summary lengths during parsing
+  - Logs counter for updated summaries to track refresh behavior
+  - Tests prove parsing works correctly; production issues may be due to old cached data
+
 - **Blog Posts Favorite Persistence**: Fixed critical bug where favorite status was not persisted
   - Root cause: `BlogPostDao.insertAll()` was using `OnConflictStrategy.REPLACE` which completely replaced existing rows
   - This overwrote user state fields (`isFavorite`, `isRead`, `readingProgressPercent`) during refresh

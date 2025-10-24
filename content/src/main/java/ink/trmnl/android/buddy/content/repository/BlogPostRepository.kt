@@ -5,6 +5,7 @@ import ink.trmnl.android.buddy.content.db.BlogPostDao
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -123,6 +124,10 @@ class BlogPostRepository(
                         val rawSummary = item.content?.takeIf { it.isNotBlank() } ?: item.description
                         val sanitizedSummary = sanitizeHtmlToPlainText(rawSummary)
 
+                        Timber.d(
+                            "Parsing '${item.title}': content=${item.content?.length ?: 0}, desc=${item.description?.length ?: 0}, summary=${sanitizedSummary.length}",
+                        )
+
                         BlogPostEntity(
                             id = item.link ?: item.guid ?: return@mapNotNull null,
                             title = item.title ?: return@mapNotNull null,
@@ -143,11 +148,14 @@ class BlogPostRepository(
             blogPostDao.insertAll(blogPosts)
 
             // Update summaries for existing posts (in case they were inserted before sanitization was added)
+            var updatedCount = 0
             blogPosts.forEach { post ->
                 if (post.summary.isNotBlank()) {
                     blogPostDao.updateSummary(post.id, post.summary)
+                    updatedCount++
                 }
             }
+            Timber.d("BlogPostRepository: Inserted ${blogPosts.size} posts, updated summaries for $updatedCount posts")
 
             Result.success(Unit)
         } catch (e: Exception) {
