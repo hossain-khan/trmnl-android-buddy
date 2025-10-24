@@ -48,6 +48,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.db.AnnouncementEntity
@@ -187,6 +188,12 @@ class AnnouncementsPresenter
                     }
                 }
             }
+        }
+
+        @CircuitInject(AnnouncementsScreen::class, AppScope::class)
+        @AssistedFactory
+        interface Factory {
+            fun create(navigator: Navigator): AnnouncementsPresenter
         }
     }
 
