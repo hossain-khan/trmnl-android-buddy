@@ -10,6 +10,7 @@ data class UserPreferences(
     val isLowBatteryNotificationEnabled: Boolean = false,
     val lowBatteryThresholdPercent: Int = DEFAULT_LOW_BATTERY_THRESHOLD,
     val isAnnouncementsEnabled: Boolean = true,
+    val isAnnouncementAuthBannerDismissed: Boolean = false,
 ) {
     companion object {
         /**
