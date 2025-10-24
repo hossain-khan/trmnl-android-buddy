@@ -122,7 +122,7 @@ class BlogPostRepository(
                         // Sanitize summary to plain text (max 300 chars)
                         // Try content first, fall back to description
                         val rawSummary = item.content?.takeIf { it.isNotBlank() } ?: item.description
-                        val sanitizedSummary = sanitizeHtmlToPlainText(rawSummary)
+                        val sanitizedSummary = sanitizeHtmlToPlainText(rawSummary ?: "")
 
                         Timber.d(
                             "Parsing '${item.title}': content=${item.content?.length ?: 0}, desc=${item.description?.length ?: 0}, summary=${sanitizedSummary.length}",

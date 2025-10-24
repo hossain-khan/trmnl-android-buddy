@@ -65,18 +65,9 @@ class BlogPostRepositoryTest {
 
             // Verify we got items
             assertThat(channel.items).isNotEmpty()
-            println("Total items parsed: ${channel.items.size}")
 
             // Check first item (Model X Progress Report)
             val firstItem = channel.items[0]
-            println("=== First Item ===")
-            println("Title: ${firstItem.title}")
-            println("Link: ${firstItem.link}")
-            println("Description: ${firstItem.description?.take(100)}")
-            println("Content (length): ${firstItem.content?.length}")
-            println("Content (first 200 chars): ${firstItem.content?.take(200)}")
-            println("Author: ${firstItem.author}")
-            println("Categories: ${firstItem.categories}")
 
             assertThat(firstItem.title).isEqualTo("Model X Progress Report")
             assertThat(firstItem.link).isEqualTo("https://usetrmnl.com/blog/model-x-progress")
@@ -85,20 +76,13 @@ class BlogPostRepositoryTest {
             val hasContent = firstItem.content?.isNotBlank() == true
             val hasDescription = firstItem.description?.isNotBlank() == true
 
-            println("Has content: $hasContent")
-            println("Has description: $hasDescription")
-
             // At least ONE should have text
             val hasAnyText = hasContent || hasDescription
             assertThat(hasAnyText).isEqualTo(true)
 
             // If we have content, verify it contains expected text
             if (hasContent) {
-                println("Content field is populated!")
                 assertThat(firstItem.content!!).contains("introduced X")
-            } else if (hasDescription) {
-                println("WARNING: Using description instead of content!")
-                println("Description value: ${firstItem.description}")
             }
         }
 
@@ -130,8 +114,6 @@ class BlogPostRepositoryTest {
                     firstItem.content,
                     300,
                 ) as String
-
-            println("Sanitized from content: $plainTextFromContent")
 
             // Should have extracted plain text without HTML tags
             assertThat(plainTextFromContent).isNotEmpty()

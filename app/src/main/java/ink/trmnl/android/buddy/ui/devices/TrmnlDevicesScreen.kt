@@ -104,6 +104,8 @@ import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import ink.trmnl.android.buddy.util.formatRefreshRate
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -231,27 +233,30 @@ class TrmnlDevicesPresenter
             LaunchedEffect(Unit) {
                 // Check if we have content, if not, fetch both announcements and blog posts
                 if (latestContent.isEmpty()) {
+                    // Fetch announcements and blog posts in parallel
                     coroutineScope.launch {
-                        // Fetch announcements
-                        launch {
-                            val announcementResult = announcementRepository.refreshAnnouncements()
-                            if (announcementResult.isFailure) {
-                                timber.log.Timber.d(
-                                    "Failed to fetch initial announcements: %s",
-                                    announcementResult.exceptionOrNull()?.message,
-                                )
-                            }
-                        }
-                        // Fetch blog posts
-                        launch {
-                            val blogPostResult = blogPostRepository.refreshBlogPosts()
-                            if (blogPostResult.isFailure) {
-                                timber.log.Timber.d(
-                                    "Failed to fetch initial blog posts: %s",
-                                    blogPostResult.exceptionOrNull()?.message,
-                                )
-                            }
-                        }
+                        val jobs =
+                            listOf(
+                                async {
+                                    val announcementResult = announcementRepository.refreshAnnouncements()
+                                    if (announcementResult.isFailure) {
+                                        timber.log.Timber.d(
+                                            "Failed to fetch initial announcements: %s",
+                                            announcementResult.exceptionOrNull()?.message,
+                                        )
+                                    }
+                                },
+                                async {
+                                    val blogPostResult = blogPostRepository.refreshBlogPosts()
+                                    if (blogPostResult.isFailure) {
+                                        timber.log.Timber.d(
+                                            "Failed to fetch initial blog posts: %s",
+                                            blogPostResult.exceptionOrNull()?.message,
+                                        )
+                                    }
+                                },
+                            )
+                        jobs.awaitAll()
                     }
                 }
             }
