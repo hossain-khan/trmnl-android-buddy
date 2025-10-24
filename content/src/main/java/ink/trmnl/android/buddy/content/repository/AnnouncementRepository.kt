@@ -5,6 +5,7 @@ import ink.trmnl.android.buddy.content.db.AnnouncementDao
 import ink.trmnl.android.buddy.content.db.AnnouncementEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.time.Instant
 import javax.inject.Inject
@@ -67,7 +68,7 @@ class AnnouncementRepository
          * Refresh announcements from the RSS feed.
          *
          * Fetches the latest announcements from usetrmnl.com and stores them
-         * in the local database. Existing announcements are updated.
+         * in the local database. Preserves read status for existing announcements.
          *
          * @return Result indicating success or failure with error message.
          */
@@ -77,15 +78,20 @@ class AnnouncementRepository
                     val channel = rssParser.getRssChannel(ANNOUNCEMENTS_FEED_URL)
                     val fetchedAt = Instant.now()
 
+                    // Get existing announcements to preserve read status
+                    val existingAnnouncements = announcementDao.getAll().first()
+                    val existingReadIds = existingAnnouncements.filter { it.isRead }.map { it.id }.toSet()
+
                     val announcements =
                         channel.items.map { item ->
+                            val id = item.link ?: item.guid ?: throw IllegalStateException("Missing ID")
                             AnnouncementEntity(
-                                id = item.link ?: item.guid ?: throw IllegalStateException("RSS item missing both link and guid"),
+                                id = id,
                                 title = item.title ?: "Untitled",
                                 summary = item.description ?: "",
                                 link = item.link ?: "",
                                 publishedDate = item.pubDate?.let { parseDate(it) } ?: Instant.now(),
-                                isRead = false,
+                                isRead = existingReadIds.contains(id), // Preserve read status
                                 fetchedAt = fetchedAt,
                             )
                         }
@@ -105,6 +111,17 @@ class AnnouncementRepository
         suspend fun markAsRead(id: String) {
             withContext(Dispatchers.IO) {
                 announcementDao.markAsRead(id)
+            }
+        }
+
+        /**
+         * Mark an announcement as unread.
+         *
+         * @param id The announcement ID.
+         */
+        suspend fun markAsUnread(id: String) {
+            withContext(Dispatchers.IO) {
+                announcementDao.markAsUnread(id)
             }
         }
 

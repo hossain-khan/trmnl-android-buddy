@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Fetches announcements from https://usetrmnl.com/feeds/announcements.xml
     - Provides reactive Flow API for UI updates when data changes
     - Supports read tracking and batch operations
+    - Added `markAsUnread()` method for bidirectional read state management
+    - Read status preservation during refresh using Flow-based state lookup
   - **Dependency Injection**:
     - Integrated content module with app's Metro DI system
     - Added `ContentDatabase`, `AnnouncementDao`, and `AnnouncementRepository` providers in `AppBindings`
@@ -66,7 +68,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Pull-to-refresh for manual sync
     - FAB to mark all as read (only shown when unread exist)
     - Click announcement to open in Chrome Custom Tabs and mark as read
-    - "NEW" badge for unread announcements with bold title
+    - **Swipe-to-Toggle**: Swipe left or right on announcements to toggle read/unread status
+      - Visual feedback with eye icons (visibility/visibility_off)
+      - Bidirectional swipe support (both directions work)
+      - Instant state update without dismissing the item
+    - **Unread Count Badge**: Shows circular badge with count in TopAppBar
+      - Only visible when unread announcements exist
+      - Real-time updates using Flow-based reactive state
+    - **Read Status Preservation**: Read status preserved during background sync
+      - Existing read/unread states maintained when refreshing feed
+      - Prevents previously read announcements from appearing as unread
+    - Circular dot indicator for unread announcements (Material 3 design)
   - **Navigation**: ViewAllAnnouncementsClicked event from carousel
   - Material 3 design with proper theming throughout
   - Loading and empty states for each filter view

@@ -54,6 +54,14 @@ interface AnnouncementDao {
     suspend fun markAsRead(id: String)
 
     /**
+     * Mark an announcement as unread.
+     *
+     * @param id The announcement ID.
+     */
+    @Query("UPDATE announcements SET isRead = 0 WHERE id = :id")
+    suspend fun markAsUnread(id: String)
+
+    /**
      * Mark all announcements as read.
      */
     @Query("UPDATE announcements SET isRead = 1")

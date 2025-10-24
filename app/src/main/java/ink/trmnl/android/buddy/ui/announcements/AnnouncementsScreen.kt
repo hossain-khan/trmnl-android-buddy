@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -22,9 +24,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -72,6 +78,7 @@ data object AnnouncementsScreen : Screen {
         val isLoading: Boolean = true,
         val isRefreshing: Boolean = false,
         val filter: Filter = Filter.ALL,
+        val unreadCount: Int = 0,
         val errorMessage: String? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
@@ -86,6 +93,10 @@ data object AnnouncementsScreen : Screen {
         ) : Event()
 
         data class AnnouncementClicked(
+            val announcement: AnnouncementEntity,
+        ) : Event()
+
+        data class ToggleReadStatus(
             val announcement: AnnouncementEntity,
         ) : Event()
 
@@ -115,6 +126,7 @@ class AnnouncementsPresenter
             var isLoading by rememberRetained { mutableStateOf(true) }
             var isRefreshing by rememberRetained { mutableStateOf(false) }
             var filter by rememberRetained { mutableStateOf(AnnouncementsScreen.Filter.ALL) }
+            var unreadCount by rememberRetained { mutableStateOf(0) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
@@ -138,11 +150,19 @@ class AnnouncementsPresenter
                 }
             }
 
+            // Collect unread count
+            LaunchedEffect(Unit) {
+                announcementRepository.getUnreadCount().collect { count ->
+                    unreadCount = count
+                }
+            }
+
             return AnnouncementsScreen.State(
                 announcements = announcements,
                 isLoading = isLoading,
                 isRefreshing = isRefreshing,
                 filter = filter,
+                unreadCount = unreadCount,
                 errorMessage = errorMessage,
             ) { event ->
                 when (event) {
@@ -181,6 +201,16 @@ class AnnouncementsPresenter
                         }
                     }
 
+                    is AnnouncementsScreen.Event.ToggleReadStatus -> {
+                        coroutineScope.launch {
+                            if (event.announcement.isRead) {
+                                announcementRepository.markAsUnread(event.announcement.id)
+                            } else {
+                                announcementRepository.markAsRead(event.announcement.id)
+                            }
+                        }
+                    }
+
                     AnnouncementsScreen.Event.MarkAllAsRead -> {
                         coroutineScope.launch {
                             announcementRepository.markAllAsRead()
@@ -211,7 +241,27 @@ fun AnnouncementsContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Announcements") },
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text("Announcements")
+                        if (state.unreadCount > 0) {
+                            Surface(
+                                shape = CircleShape,
+                                color = MaterialTheme.colorScheme.primary,
+                            ) {
+                                Text(
+                                    text = state.unreadCount.toString(),
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                )
+                            }
+                        }
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(AnnouncementsScreen.Event.BackClicked) }) {
                         Icon(
@@ -223,7 +273,7 @@ fun AnnouncementsContent(
             )
         },
         floatingActionButton = {
-            if (state.announcements.any { !it.isRead }) {
+            if (state.unreadCount > 0) {
                 FloatingActionButton(
                     onClick = { state.eventSink(AnnouncementsScreen.Event.MarkAllAsRead) },
                 ) {
@@ -259,6 +309,9 @@ fun AnnouncementsContent(
                     },
                     onAnnouncementClick = { announcement ->
                         state.eventSink(AnnouncementsScreen.Event.AnnouncementClicked(announcement))
+                    },
+                    onToggleReadStatus = { announcement ->
+                        state.eventSink(AnnouncementsScreen.Event.ToggleReadStatus(announcement))
                     },
                 )
             }
@@ -309,6 +362,7 @@ private fun AnnouncementsList(
     onRefresh: () -> Unit,
     onFilterChanged: (AnnouncementsScreen.Filter) -> Unit,
     onAnnouncementClick: (AnnouncementEntity) -> Unit,
+    onToggleReadStatus: (AnnouncementEntity) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     PullToRefreshBox(
@@ -344,6 +398,7 @@ private fun AnnouncementsList(
                     AnnouncementItem(
                         announcement = announcement,
                         onClick = { onAnnouncementClick(announcement) },
+                        onToggleReadStatus = { onToggleReadStatus(announcement) },
                     )
                 }
             }
@@ -394,63 +449,104 @@ private fun DateHeader(dateCategory: String) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AnnouncementItem(
     announcement: AnnouncementEntity,
     onClick: () -> Unit,
+    onToggleReadStatus: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ListItem(
-        headlineContent = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+    val dismissState =
+        rememberSwipeToDismissBoxState(
+            confirmValueChange = { dismissValue ->
+                if (dismissValue == SwipeToDismissBoxValue.EndToStart || dismissValue == SwipeToDismissBoxValue.StartToEnd) {
+                    onToggleReadStatus()
+                    false // Don't actually dismiss, just toggle
+                } else {
+                    false
+                }
+            },
+        )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        backgroundContent = {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 8.dp),
+                contentAlignment =
+                    if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
+                        Alignment.CenterEnd
+                    } else {
+                        Alignment.CenterStart
+                    },
             ) {
-                Text(
-                    text = announcement.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = if (!announcement.isRead) FontWeight.Bold else FontWeight.Normal,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
+                Icon(
+                    painter =
+                        painterResource(
+                            if (announcement.isRead) {
+                                R.drawable.visibility_off_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                            } else {
+                                R.drawable.visibility_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                            },
+                        ),
+                    contentDescription =
+                        if (announcement.isRead) {
+                            "Mark as unread"
+                        } else {
+                            "Mark as read"
+                        },
+                    tint = MaterialTheme.colorScheme.primary,
                 )
-                if (!announcement.isRead) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .padding(4.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = "NEW",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            modifier =
-                                Modifier
-                                    .padding(horizontal = 6.dp, vertical = 2.dp),
-                        )
+            }
+        },
+        modifier = modifier,
+    ) {
+        ListItem(
+            headlineContent = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = announcement.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = if (!announcement.isRead) FontWeight.Bold else FontWeight.Normal,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (!announcement.isRead) {
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(8.dp),
+                        ) {}
                     }
                 }
-            }
-        },
-        supportingContent = {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(
-                    text = announcement.summary,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Text(
-                    text = formatRelativeDate(announcement.publishedDate),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        },
-        modifier = modifier.clickable(onClick = onClick),
-    )
+            },
+            supportingContent = {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = announcement.summary,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = formatRelativeDate(announcement.publishedDate),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            },
+            modifier = Modifier.clickable(onClick = onClick),
+        )
+    }
 }
 
 /**
