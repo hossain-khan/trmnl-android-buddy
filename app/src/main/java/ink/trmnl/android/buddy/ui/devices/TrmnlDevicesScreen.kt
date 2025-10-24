@@ -157,6 +157,8 @@ data object TrmnlDevicesScreen : Screen {
             val announcement: AnnouncementEntity,
         ) : Event()
 
+        data object ViewAllAnnouncementsClicked : Event()
+
         data object DismissSnackbar : Event()
     }
 }
@@ -347,6 +349,10 @@ class TrmnlDevicesPresenter
                             announcementRepository.markAsRead(event.announcement.id)
                         }
                         // Browser opening will be handled by the UI layer with Chrome Custom Tabs
+                    }
+
+                    TrmnlDevicesScreen.Event.ViewAllAnnouncementsClicked -> {
+                        navigator.goTo(ink.trmnl.android.buddy.ui.announcements.AnnouncementsScreen)
                     }
 
                     TrmnlDevicesScreen.Event.DismissSnackbar -> {
@@ -677,6 +683,9 @@ private fun DevicesList(
                 onAnnouncementClick = { announcement ->
                     eventSink(TrmnlDevicesScreen.Event.AnnouncementClicked(announcement))
                     openInCustomTab(context, announcement.link)
+                },
+                onViewAllClick = {
+                    eventSink(TrmnlDevicesScreen.Event.ViewAllAnnouncementsClicked)
                 },
             )
         }

@@ -72,6 +72,7 @@ data class AnnouncementCarouselState(
 fun AnnouncementCarousel(
     state: AnnouncementCarouselState,
     onAnnouncementClick: (AnnouncementEntity) -> Unit,
+    onViewAllClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when {
@@ -91,6 +92,7 @@ fun AnnouncementCarousel(
             CarouselContent(
                 announcements = state.announcements.take(3), // Show only top 3
                 onAnnouncementClick = onAnnouncementClick,
+                onViewAllClick = onViewAllClick,
                 modifier = modifier,
             )
         }
@@ -104,6 +106,7 @@ fun AnnouncementCarousel(
 private fun CarouselContent(
     announcements: List<AnnouncementEntity>,
     onAnnouncementClick: (AnnouncementEntity) -> Unit,
+    onViewAllClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(pageCount = { announcements.size })
@@ -145,15 +148,29 @@ private fun CarouselContent(
             )
         }
 
-        // Page indicators
-        PageIndicators(
-            pagerState = pagerState,
-            pageCount = announcements.size,
+        // Page indicators and View All button
+        Row(
             modifier =
                 Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 8.dp),
-        )
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PageIndicators(
+                pagerState = pagerState,
+                pageCount = announcements.size,
+            )
+
+            androidx.compose.material3.TextButton(
+                onClick = onViewAllClick,
+            ) {
+                Text(
+                    text = "View All",
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            }
+        }
     }
 }
 
@@ -411,6 +428,7 @@ private fun AnnouncementCarouselPreview() {
                         isLoading = false,
                     ),
                 onAnnouncementClick = {},
+                onViewAllClick = {},
                 modifier = Modifier.padding(vertical = 16.dp),
             )
         }
@@ -428,6 +446,7 @@ private fun AnnouncementCarouselLoadingPreview() {
                         isLoading = true,
                     ),
                 onAnnouncementClick = {},
+                onViewAllClick = {},
                 modifier = Modifier.padding(vertical = 16.dp),
             )
         }
@@ -446,6 +465,7 @@ private fun AnnouncementCarouselEmptyPreview() {
                         isLoading = false,
                     ),
                 onAnnouncementClick = {},
+                onViewAllClick = {},
                 modifier = Modifier.padding(vertical = 16.dp),
             )
         }

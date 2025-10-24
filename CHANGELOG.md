@@ -35,12 +35,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       - Loading and empty states with appropriate messaging
       - Relative date formatting (e.g., "2 days ago")
       - Material 3 design system compliance (all colors from theme)
+      - "View All" button to navigate to full announcements screen
     - Integrated carousel into `TrmnlDevicesScreen` at top of device list
       - Announcements load from cache immediately for instant display
       - Background refresh fetches new announcements on screen load
       - Click on announcement opens in Chrome Custom Tabs
       - Automatically marks announcements as read when clicked
       - Carousel is part of scrollable list (not sticky)
+  - **Phase 2: Dedicated Announcements Screen**
+    - Created `AnnouncementsScreen` for viewing all announcements
+      - Full list view with all announcements (not just top 3)
+      - Date grouping: Today, Yesterday, This Week, Older
+      - Filter options: All, Unread, Read with filter chips
+      - Swipe left/right on announcement to toggle read/unread status
+      - Pull-to-refresh to fetch new announcements
+      - Click announcement to open in Chrome Custom Tabs
+      - Top app bar with back navigation and unread count badge
+      - Floating Action Button to mark all as read (visible when unread > 0)
+      - Empty states for each filter type
+      - Material 3 design with full dynamic color support
+      - Smooth animations and transitions
 
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging
