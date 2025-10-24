@@ -414,25 +414,19 @@ private fun EmptyState(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // Animated icon for empty state
-            androidx.compose.animation.AnimatedVisibility(
-                visible = true,
-                enter = scaleIn(animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)) + fadeIn(),
-            ) {
-                Icon(
-                    painter =
-                        painterResource(
-                            when (filter) {
-                                AnnouncementsScreen.Filter.ALL -> R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24
-                                AnnouncementsScreen.Filter.UNREAD -> R.drawable.markunread_mailbox_24dp_e8eaed_fill0_wght400_grad0_opsz24
-                                AnnouncementsScreen.Filter.READ -> R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24
-                            },
-                        ),
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+            Icon(
+                painter =
+                    painterResource(
+                        when (filter) {
+                            AnnouncementsScreen.Filter.ALL -> R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                            AnnouncementsScreen.Filter.UNREAD -> R.drawable.markunread_mailbox_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                            AnnouncementsScreen.Filter.READ -> R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                        },
+                    ),
+                contentDescription = null,
+                modifier = Modifier.size(64.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             val message =
                 when (filter) {
                     AnnouncementsScreen.Filter.ALL -> "No announcements available"
@@ -788,7 +782,6 @@ private fun AnnouncementItem(
                     .clickable(
                         onClick = onClick,
                         interactionSource = interactionSource,
-                        indication = null, // Use default Material 3 ripple
                     ).graphicsLayer {
                         scaleX = scale
                         scaleY = scale
