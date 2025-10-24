@@ -8,6 +8,9 @@ import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.api.TrmnlApiClient
 import ink.trmnl.android.buddy.api.TrmnlApiService
+import ink.trmnl.android.buddy.content.RssParserFactory
+import ink.trmnl.android.buddy.content.db.AnnouncementDao
+import ink.trmnl.android.buddy.content.db.ContentDatabase
 import ink.trmnl.android.buddy.data.database.BatteryHistoryDao
 import ink.trmnl.android.buddy.data.database.TrmnlDatabase
 
@@ -32,4 +35,13 @@ interface AppBindings {
 
     @Provides
     fun provideBatteryHistoryDao(database: TrmnlDatabase): BatteryHistoryDao = database.batteryHistoryDao()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideContentDatabase(
+        @ApplicationContext context: Context,
+    ): ContentDatabase = ContentDatabase.getInstance(context)
+
+    @Provides
+    fun provideAnnouncementDao(database: ContentDatabase): AnnouncementDao = database.announcementDao()
 }

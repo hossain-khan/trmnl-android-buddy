@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Announcements Infrastructure (Phase 0)**: Foundation for TRMNL announcements feature
+  - Created `:content` module for RSS feed management
+  - Added RSS-Parser 6.0.8 dependency for parsing Atom/RSS feeds
+  - Added Chrome Custom Tabs 1.8.0 for opening external links
+  - Added kotlinx-datetime 0.6.1 for date/time handling
+  - Created Room database schema for announcement caching
+    - `AnnouncementEntity` with fields: id, title, summary, link, publishedDate, isRead, fetchedAt
+    - `AnnouncementDao` with reactive Flow-based queries
+    - `ContentDatabase` with Instant type converters
+  - Implemented `AnnouncementRepository` with offline-first pattern
+    - Fetches from https://usetrmnl.com/feeds/announcements.xml
+    - Caches to Room database
+    - Provides Flow API for reactive UI updates
+    - Supports read/unread tracking
+  - Setup Metro DI bindings in `AppBindings`
+  - Workaround for Metro compiler limitation with RssParser (using factory pattern)
+
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging
   - Added Timber 5.0.1 dependency

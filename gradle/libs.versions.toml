@@ -48,6 +48,8 @@ retrofit = "3.0.0"
 kotlinxSerializationJson = "1.9.0"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
 kotlinxCoroutines = "1.10.2"
+# https://github.com/Kotlin/kotlinx-datetime/releases
+kotlinxDatetime = "0.6.1"
 # https://github.com/slackhq/EitherNet/releases
 eithernet = "2.0.0"
 
@@ -62,6 +64,14 @@ accompanist = "0.37.3"
 # Timber - Better Android logging
 # https://github.com/JakeWharton/timber
 timber = "5.0.1"
+
+# RSS Parser - RSS/Atom feed parser
+# https://github.com/prof18/RSS-Parser
+rssparser = "6.0.8"
+
+# Chrome Custom Tabs - Open web content in custom tabs
+# https://developer.android.com/develop/ui/views/layout/chromecustomtabs
+browser = "1.8.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -127,6 +137,7 @@ retrofit-converter-kotlinx-serialization = { group = "com.squareup.retrofit2", n
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 eithernet = { group = "com.slack.eithernet", name = "eithernet", version.ref = "eithernet" }
 eithernet-integration-retrofit = { group = "com.slack.eithernet", name = "eithernet-integration-retrofit", version.ref = "eithernet" }
 
@@ -142,6 +153,14 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 # Timber - Better Android logging
 # https://github.com/JakeWharton/timber
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
+# RSS Parser - RSS/Atom feed parser
+# https://github.com/prof18/RSS-Parser
+rssparser = { group = "com.prof18.rssparser", name = "rssparser", version.ref = "rssparser" }
+
+# Chrome Custom Tabs
+# https://developer.android.com/develop/ui/views/layout/chromecustomtabs
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
