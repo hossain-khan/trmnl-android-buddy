@@ -116,6 +116,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `isAnnouncementsEnabled` to UserPreferences (defaults to true)
   - WorkerScheduler now includes `scheduleAnnouncementSync()` and `cancelAnnouncementSync()` methods
   - TrmnlDevicesScreen reactively hides/shows carousel based on preference
+- **Blog Posts Module**: Implemented database and repository layer for TRMNL blog posts (#142, Phase 1 & 2)
+  - **Database Layer**:
+    - Created `BlogPostEntity` Room entity with rich metadata fields
+      - Core fields: id, title, summary, link, authorName, category, publishedDate
+      - Featured image support: `featuredImageUrl` for post thumbnails
+      - Reading tracking: `isRead`, `readingProgressPercent`, `lastReadAt`
+      - User preferences: `isFavorite` for bookmarking posts
+      - Cache metadata: `fetchedAt` for cache invalidation
+    - Implemented `BlogPostDao` with comprehensive query methods
+      - Basic queries: `getAll()`, `getLatest(limit)`, `getByCategory()`
+      - User-centric queries: `getFavorites()`, `getUnread()`, `getRecentlyRead()`
+      - Search: `searchPosts(query)` for full-text search across title, summary, and author
+      - Utility queries: `getUnreadCount()`, `getCategories()`
+      - State management: `markAsRead()`, `updateReadingProgress()`, `toggleFavorite()`
+      - Cache cleanup: `deleteOlderThan(threshold)` for old post removal
+    - Updated `ContentDatabase` to version 2 with database migration
+      - Added `BlogPostEntity` to entities array
+      - Created `MIGRATION_1_2` to add blog_posts table
+      - Added `blogPostDao()` abstract method for DAO access
+  - **Repository Layer**:
+    - Implemented `BlogPostRepository` following offline-first pattern
+      - Fetches blog posts from https://usetrmnl.com/feeds/posts.xml (Atom format)
+      - Parses author, category, and publication metadata from feed
+      - Extracts featured images from HTML content using regex
+      - Generates summaries from post content (first 200 chars, HTML stripped)
+      - Preserves user preferences during refresh (read status, favorites, reading progress)
+      - Provides reactive Flow API for all queries
+    - Repository methods mirror DAO capabilities:
+      - `getLatestPosts()`, `getAllPosts()`, `getPostsByCategory()`
+      - `getFavoritePosts()`, `getUnreadPosts()`, `getRecentlyReadPosts()`
+      - `searchPosts()`, `getUnreadCount()`, `getCategories()`
+      - `refreshPosts()` for manual/background sync
+      - `markAsRead()`, `updateReadingProgress()`, `toggleFavorite()`
+  - **Dependency Injection**:
+    - Added `BlogPostDao` and `BlogPostRepository` providers in `AppBindings`
+    - Database migration integrated into ContentDatabase builder
+  - **Testing**:
+    - Created `BlogPostDaoTest` with 13 test cases covering all DAO operations
+    - Created `BlogPostRepositoryTest` with 11 test cases for repository logic
+    - Uses `FakeBlogPostDao` for testing without Room dependencies
+    - All tests use AssertK for assertions (per project guidelines)
+    - Tests cover CRUD operations, filtering, search, and state management
+  - Foundation complete for Issue #142 (Blog Posts Feed) UI implementation
 
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging

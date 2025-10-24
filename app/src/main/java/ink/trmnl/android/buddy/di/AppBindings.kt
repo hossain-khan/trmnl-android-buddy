@@ -47,7 +47,8 @@ interface AppBindings {
                 context,
                 ContentDatabase::class.java,
                 "trmnl_content.db",
-            ).build()
+            ).addMigrations(ContentDatabase.MIGRATION_1_2)
+            .build()
 
     @Provides
     fun provideAnnouncementDao(database: ContentDatabase): AnnouncementDao = database.announcementDao()
@@ -57,4 +58,15 @@ interface AppBindings {
     fun provideAnnouncementRepository(announcementDao: AnnouncementDao): ink.trmnl.android.buddy.content.repository.AnnouncementRepository =
         ink.trmnl.android.buddy.content.repository
             .AnnouncementRepository(announcementDao)
+
+    @Provides
+    fun provideBlogPostDao(database: ContentDatabase): ink.trmnl.android.buddy.content.db.BlogPostDao = database.blogPostDao()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideBlogPostRepository(
+        blogPostDao: ink.trmnl.android.buddy.content.db.BlogPostDao,
+    ): ink.trmnl.android.buddy.content.repository.BlogPostRepository =
+        ink.trmnl.android.buddy.content.repository
+            .BlogPostRepository(blogPostDao)
 }
