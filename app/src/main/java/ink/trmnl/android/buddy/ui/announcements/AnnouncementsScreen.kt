@@ -1,6 +1,9 @@
 package ink.trmnl.android.buddy.ui.announcements
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -67,6 +70,7 @@ import ink.trmnl.android.buddy.content.db.AnnouncementEntity
 import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
 import ink.trmnl.android.buddy.util.BrowserUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import java.time.Instant
@@ -406,6 +410,13 @@ private fun AnnouncementsList(
     onDismissBanner: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Local state for controlling banner visibility during animation
+    var isBannerDismissing by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
+    // Determine if banner should be shown (either not dismissed, or currently animating out)
+    val shouldShowBanner = showAuthBanner || isBannerDismissing
+
     Column(modifier = modifier.fillMaxSize()) {
         // Filter chips fixed at the top - always visible
         Surface(
@@ -430,12 +441,24 @@ private fun AnnouncementsList(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 8.dp),
             ) {
-                // Authentication info banner (if not dismissed)
-                if (showAuthBanner) {
+                // Authentication info banner (if not dismissed) with smooth slide-out animation
+                if (shouldShowBanner) {
                     item(key = "auth_banner") {
                         AuthenticationBanner(
-                            onDismiss = onDismissBanner,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            onDismiss = {
+                                // Start dismissing animation
+                                isBannerDismissing = true
+                                // Wait for animation, then save preference and clean up state
+                                coroutineScope.launch {
+                                    delay(300) // Match LazyColumn's default animation duration
+                                    onDismissBanner()
+                                    isBannerDismissing = false
+                                }
+                            },
+                            modifier =
+                                Modifier
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                                    .animateItem(), // Use LazyColumn's built-in item animation
                         )
                     }
                 }

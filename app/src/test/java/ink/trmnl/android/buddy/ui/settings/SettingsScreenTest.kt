@@ -323,6 +323,11 @@ class SettingsScreenTest {
             _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isAnnouncementsEnabled = enabled)
         }
 
+        override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
+            _userPreferencesFlow.value =
+                _userPreferencesFlow.value.copy(isAnnouncementAuthBannerDismissed = dismissed)
+        }
+
         override suspend fun clearAll() {
             _userPreferencesFlow.value = UserPreferences()
             batteryTrackingEnabled = true

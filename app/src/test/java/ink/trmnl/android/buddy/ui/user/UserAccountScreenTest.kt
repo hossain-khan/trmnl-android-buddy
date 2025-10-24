@@ -263,6 +263,12 @@ private class FakeUserPreferencesRepository : UserPreferencesRepository {
             userPreferencesFlow.value.copy(isAnnouncementsEnabled = enabled)
     }
 
+    override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
+        preferences["announcement_auth_banner_dismissed"] = dismissed
+        userPreferencesFlow.value =
+            userPreferencesFlow.value.copy(isAnnouncementAuthBannerDismissed = dismissed)
+    }
+
     override suspend fun clearAll() {
         wasCleared = true
         preferences.clear()
