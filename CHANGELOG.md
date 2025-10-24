@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Logging**: Migrated from `android.util.Log` to Timber library for better logging
+  - Added Timber 5.0.1 dependency
+  - Initialized Timber in `TrmnlBuddyApp` with `DebugTree` for debug builds
+  - Migrated all 7 files using `Log` calls to use Timber's fluent API
+  - Removed TAG constants as Timber automatically tags logs with the class name
+  - Updated logging patterns to use Timber's format string syntax for better performance
+
 ## [1.7.0] - 2025-10-23
 
 ### Added

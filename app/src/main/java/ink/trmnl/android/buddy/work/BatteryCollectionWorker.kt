@@ -1,7 +1,6 @@
 package ink.trmnl.android.buddy.work
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.slack.eithernet.ApiResult
@@ -19,6 +18,7 @@ import ink.trmnl.android.buddy.di.AppWorkerFactory
 import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
 import ink.trmnl.android.buddy.di.WorkerKey
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 
 /**
  * WorkManager worker that collects battery data for all user devices weekly.
@@ -41,12 +41,11 @@ class BatteryCollectionWorker(
     private val batteryHistoryRepository: BatteryHistoryRepository,
 ) : CoroutineWorker(context, params) {
     companion object {
-        private const val TAG = "BatteryCollectionWorker"
         const val WORK_NAME = "battery_collection_work"
     }
 
     override suspend fun doWork(): Result {
-        Log.d(TAG, "Starting battery collection work")
+        Timber.d("Starting battery collection work")
 
         try {
             // Get API token and preferences
@@ -55,12 +54,12 @@ class BatteryCollectionWorker(
 
             // Check if battery tracking is enabled
             if (!preferences.isBatteryTrackingEnabled) {
-                Log.d(TAG, "Battery tracking is disabled, skipping collection")
+                Timber.d("Battery tracking is disabled, skipping collection")
                 return Result.success()
             }
 
             if (apiToken.isNullOrBlank()) {
-                Log.w(TAG, "No API token found, skipping battery collection")
+                Timber.w("No API token found, skipping battery collection")
                 return Result.success()
             }
 
@@ -69,7 +68,7 @@ class BatteryCollectionWorker(
             when (val result = apiService.getDevices(authHeader)) {
                 is ApiResult.Success -> {
                     val devices = result.value.data
-                    Log.d(TAG, "Fetched ${devices.size} devices")
+                    Timber.d("Fetched %d devices", devices.size)
 
                     // Record battery data for each device
                     val timestamp = System.currentTimeMillis()
@@ -80,18 +79,19 @@ class BatteryCollectionWorker(
                             batteryVoltage = device.batteryVoltage,
                             timestamp = timestamp,
                         )
-                        Log.d(
-                            TAG,
-                            "Recorded battery data for ${device.name}: ${device.percentCharged}%",
+                        Timber.d(
+                            "Recorded battery data for %s: %.1f%%",
+                            device.name,
+                            device.percentCharged,
                         )
                     }
 
-                    Log.d(TAG, "Battery collection completed successfully")
+                    Timber.d("Battery collection completed successfully")
                     return Result.success()
                 }
 
                 is ApiResult.Failure.HttpFailure -> {
-                    Log.e(TAG, "HTTP error ${result.code} fetching devices")
+                    Timber.e("HTTP error %d fetching devices", result.code)
                     return if (result.code == 401) {
                         // Token is invalid, don't retry
                         Result.failure()
@@ -102,22 +102,22 @@ class BatteryCollectionWorker(
                 }
 
                 is ApiResult.Failure.NetworkFailure -> {
-                    Log.e(TAG, "Network error fetching devices", result.error)
+                    Timber.e(result.error, "Network error fetching devices")
                     return Result.retry()
                 }
 
                 is ApiResult.Failure.ApiFailure -> {
-                    Log.e(TAG, "API error: ${result.error}")
+                    Timber.e("API error: %s", result.error)
                     return Result.failure()
                 }
 
                 is ApiResult.Failure.UnknownFailure -> {
-                    Log.e(TAG, "Unknown error fetching devices", result.error)
+                    Timber.e(result.error, "Unknown error fetching devices")
                     return Result.failure()
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error collecting battery data", e)
+            Timber.e(e, "Error collecting battery data")
             return Result.failure()
         }
     }

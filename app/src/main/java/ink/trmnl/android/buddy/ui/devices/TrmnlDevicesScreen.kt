@@ -1,6 +1,5 @@
 package ink.trmnl.android.buddy.ui.devices
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -91,6 +90,7 @@ import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 
 /**
  * Data class to hold preview image information including refresh rate.
@@ -346,7 +346,7 @@ class TrmnlDevicesPresenter
                                     else -> null // Silently fail for preview images
                                 }
                             } catch (e: Exception) {
-                                Log.d("TrmnlDevicesPresenter", "Error loading preview for ${device.name}: ${e.message}")
+                                Timber.d(e, "Error loading preview for %s", device.name)
                                 null // Silently fail for preview images
                             }
                         } else {

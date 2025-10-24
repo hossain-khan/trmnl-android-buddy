@@ -8,19 +8,18 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import ink.trmnl.android.buddy.MainActivity
 import ink.trmnl.android.buddy.R
+import timber.log.Timber
 
 /**
  * Helper class for managing app notifications.
  * Handles notification channel creation and notification display.
  */
 object NotificationHelper {
-    private const val TAG = "NotificationHelper"
     const val CHANNEL_ID_LOW_BATTERY = "low_battery_alerts"
     private const val NOTIFICATION_ID_LOW_BATTERY = 1001
 
@@ -42,7 +41,7 @@ object NotificationHelper {
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-            Log.d(TAG, "Created notification channel: $CHANNEL_ID_LOW_BATTERY")
+            Timber.d("Created notification channel: %s", CHANNEL_ID_LOW_BATTERY)
         }
     }
 
@@ -62,8 +61,7 @@ object NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permission = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
             if (permission != PackageManager.PERMISSION_GRANTED) {
-                Log.w(
-                    TAG,
+                Timber.w(
                     "POST_NOTIFICATIONS permission not granted, cannot show notification. " +
                         "User needs to grant notification permission in app settings.",
                 )
@@ -85,7 +83,7 @@ object NotificationHelper {
                 "${deviceNames.joinToString(", ")} are below $thresholdPercent%"
             }
 
-        Log.d(TAG, "Showing low battery notification for ${deviceNames.size} device(s): $deviceNames")
+        Timber.d("Showing low battery notification for %d device(s): %s", deviceNames.size, deviceNames)
 
         // Create intent to open the app when notification is tapped
         val intent =

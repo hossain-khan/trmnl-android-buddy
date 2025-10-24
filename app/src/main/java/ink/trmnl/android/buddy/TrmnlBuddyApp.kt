@@ -16,6 +16,7 @@ import ink.trmnl.android.buddy.notification.NotificationHelper
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
 import ink.trmnl.android.buddy.work.LowBatteryNotificationWorker
 import ink.trmnl.android.buddy.work.SampleWorker
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 /**
@@ -33,6 +34,12 @@ class TrmnlBuddyApp :
 
     override fun onCreate() {
         super.onCreate()
+
+        // Initialize Timber for logging
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+
         NotificationHelper.createNotificationChannels(this)
         scheduleBackgroundWork()
         scheduleBatteryCollection()
