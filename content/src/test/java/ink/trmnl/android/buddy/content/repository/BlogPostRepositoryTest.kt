@@ -1,7 +1,11 @@
 package ink.trmnl.android.buddy.content.repository
 
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.contains
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isGreaterThan
+import assertk.assertions.isNotEmpty
 import com.prof18.rssparser.RssParser
 import ink.trmnl.android.buddy.content.db.BlogPostDao
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
