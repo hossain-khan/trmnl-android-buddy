@@ -49,6 +49,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All previews wrapped in `TrmnlBuddyAppTheme` for Material You theming
 
 ### Fixed
+- **Announcement Summary Display**: Hide summary text when it's blank/empty
+  - AnnouncementItem now checks if summary is not blank before displaying
+  - Prevents showing empty summary text views in the announcements list
+  - Improves UI cleanliness when announcements lack summary content
+
 - **Chrome Custom Tabs Launch Fix**: Added FLAG_ACTIVITY_NEW_TASK to fix activity context issue
   - Fixed AndroidRuntimeException when opening blog posts/announcements
   - Error: "Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag"

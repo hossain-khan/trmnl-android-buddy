@@ -544,13 +544,16 @@ private fun AnnouncementItem(
             },
             supportingContent = {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(
-                        text = announcement.summary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    // Only show summary if it's not blank
+                    if (announcement.summary.isNotBlank()) {
+                        Text(
+                            text = announcement.summary,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                     Text(
                         text = formatRelativeDate(announcement.publishedDate),
                         style = MaterialTheme.typography.bodySmall,
