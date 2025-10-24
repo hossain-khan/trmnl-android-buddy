@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.ui.announcements
 
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -316,7 +318,6 @@ fun AnnouncementsContent(
                     announcements = state.announcements,
                     isRefreshing = state.isRefreshing,
                     filter = state.filter,
-                    innerPadding = innerPadding,
                     onRefresh = { state.eventSink(AnnouncementsScreen.Event.Refresh) },
                     onFilterChanged = { newFilter ->
                         state.eventSink(AnnouncementsScreen.Event.FilterChanged(newFilter))
@@ -372,7 +373,6 @@ private fun AnnouncementsList(
     announcements: List<AnnouncementEntity>,
     isRefreshing: Boolean,
     filter: AnnouncementsScreen.Filter,
-    innerPadding: PaddingValues,
     onRefresh: () -> Unit,
     onFilterChanged: (AnnouncementsScreen.Filter) -> Unit,
     onAnnouncementClick: (AnnouncementEntity) -> Unit,
@@ -382,7 +382,7 @@ private fun AnnouncementsList(
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
-        modifier = modifier.padding(innerPadding),
+        modifier = modifier,
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -451,16 +451,22 @@ private fun FilterChips(
 
 @Composable
 private fun DateHeader(dateCategory: String) {
-    Text(
-        text = dateCategory,
-        style = MaterialTheme.typography.titleSmall,
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.primary,
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-    )
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp,
+    ) {
+        Text(
+            text = dateCategory,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

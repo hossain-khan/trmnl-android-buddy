@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.contenthub
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -391,6 +393,8 @@ private fun ContentHubContentPreview(
             modifier =
                 Modifier
                     .fillMaxSize()
+                    // For debug only - the tab screens are overridden here
+                    .background(Color.Red.copy(alpha = 0.1f))
                     .padding(innerPadding),
             contentAlignment = Alignment.Center,
         ) {
