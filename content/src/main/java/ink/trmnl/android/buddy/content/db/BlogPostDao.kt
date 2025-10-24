@@ -67,6 +67,12 @@ interface BlogPostDao {
     suspend fun markAsRead(id: String)
 
     /**
+     * Mark all blog posts as read.
+     */
+    @Query("UPDATE blog_posts SET isRead = 1")
+    suspend fun markAllAsRead()
+
+    /**
      * Update reading progress for a blog post.
      *
      * @param id Blog post ID

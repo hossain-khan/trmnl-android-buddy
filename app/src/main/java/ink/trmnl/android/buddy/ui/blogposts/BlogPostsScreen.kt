@@ -97,6 +97,7 @@ data class BlogPostsScreen(
         val errorMessage: String? = null,
         val selectedCategory: String? = null, // null = All
         val availableCategories: List<String> = emptyList(),
+        val unreadCount: Int = 0,
         val showTopBar: Boolean = true, // Control whether to show top app bar
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
@@ -115,6 +116,8 @@ data class BlogPostsScreen(
         data class CategorySelected(
             val category: String?, // null = All
         ) : Event()
+
+        data object MarkAllAsRead : Event()
     }
 }
 
@@ -138,6 +141,7 @@ class BlogPostsPresenter
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             var selectedCategory by rememberRetained { mutableStateOf<String?>(null) }
             var availableCategories by rememberRetained { mutableStateOf<List<String>>(emptyList()) }
+            var unreadCount by rememberRetained { mutableStateOf(0) }
             val coroutineScope = rememberCoroutineScope()
 
             // Capture theme colors for Custom Tabs
@@ -164,6 +168,13 @@ class BlogPostsPresenter
                 }
             }
 
+            // Collect unread count
+            LaunchedEffect(Unit) {
+                blogPostRepository.getUnreadBlogPosts().collect { unreadPosts ->
+                    unreadCount = unreadPosts.size
+                }
+            }
+
             // Fetch blog posts on initial load
             LaunchedEffect(Unit) {
                 if (blogPosts.isEmpty()) {
@@ -184,6 +195,7 @@ class BlogPostsPresenter
                 errorMessage = errorMessage,
                 selectedCategory = selectedCategory,
                 availableCategories = availableCategories,
+                unreadCount = unreadCount,
                 showTopBar = !screen.isEmbedded, // Hide top bar when embedded
             ) { event ->
                 when (event) {
@@ -221,6 +233,12 @@ class BlogPostsPresenter
 
                     is BlogPostsScreen.Event.CategorySelected -> {
                         selectedCategory = event.category
+                    }
+
+                    BlogPostsScreen.Event.MarkAllAsRead -> {
+                        coroutineScope.launch {
+                            blogPostRepository.markAllAsRead()
+                        }
                     }
                 }
             }
@@ -298,6 +316,20 @@ fun BlogPostsContent(
                             }
                         }
                     },
+                )
+            }
+        },
+        floatingActionButton = {
+            if (state.unreadCount > 0) {
+                androidx.compose.material3.ExtendedFloatingActionButton(
+                    onClick = { state.eventSink(BlogPostsScreen.Event.MarkAllAsRead) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.check_24dp_e8eaed_fill1_wght400_grad0_opsz24),
+                            contentDescription = "Mark all as read",
+                        )
+                    },
+                    text = { Text("Mark All Read") },
                 )
             }
         },

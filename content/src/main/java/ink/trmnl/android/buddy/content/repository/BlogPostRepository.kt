@@ -226,6 +226,13 @@ class BlogPostRepository(
     }
 
     /**
+     * Mark all blog posts as read.
+     */
+    suspend fun markAllAsRead() {
+        blogPostDao.markAllAsRead()
+    }
+
+    /**
      * Update reading progress for a blog post.
      *
      * @param id Blog post ID

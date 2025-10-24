@@ -256,6 +256,12 @@ class BlogPostRepositoryTest {
             }
         }
 
+        override suspend fun markAllAsRead() {
+            posts.forEachIndexed { index, post ->
+                posts[index] = post.copy(isRead = true, lastReadAt = java.time.Instant.now())
+            }
+        }
+
         override suspend fun updateReadingProgress(
             id: String,
             progress: Float,
