@@ -17,6 +17,7 @@ import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
 import ink.trmnl.android.buddy.work.LowBatteryNotificationWorker
 import ink.trmnl.android.buddy.work.SampleWorker
+import ink.trmnl.android.buddy.worker.BlogPostSyncWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -45,6 +46,7 @@ class TrmnlBuddyApp :
         scheduleBackgroundWork()
         scheduleBatteryCollection()
         scheduleAnnouncementSync()
+        scheduleBlogPostSync()
     }
 
     /**
@@ -111,6 +113,32 @@ class TrmnlBuddyApp :
             "announcement_sync",
             ExistingPeriodicWorkPolicy.KEEP,
             announcementWorkRequest,
+        )
+    }
+
+    /**
+     * Schedules periodic blog post sync using WorkManager.
+     * The worker fetches blog posts from TRMNL RSS feed daily.
+     * Shows notification when new posts are available.
+     */
+    private fun scheduleBlogPostSync() {
+        val blogPostWorkRequest =
+            PeriodicWorkRequestBuilder<BlogPostSyncWorker>(
+                repeatInterval = 1,
+                repeatIntervalTimeUnit = TimeUnit.DAYS,
+            ).setConstraints(
+                Constraints
+                    .Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .setRequiresBatteryNotLow(true)
+                    .build(),
+            ).build()
+
+        // Use KEEP policy to avoid duplicates
+        appGraph.workManager.enqueueUniquePeriodicWork(
+            BlogPostSyncWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            blogPostWorkRequest,
         )
     }
 }

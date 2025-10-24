@@ -4,6 +4,7 @@ import com.prof18.rssparser.RssParser
 import ink.trmnl.android.buddy.content.db.BlogPostDao
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -53,6 +54,13 @@ class BlogPostRepository(
      * @return Flow of unread blog posts
      */
     fun getUnreadBlogPosts(): Flow<List<BlogPostEntity>> = blogPostDao.getUnread()
+
+    /**
+     * Get count of unread blog posts.
+     *
+     * @return Number of unread posts
+     */
+    suspend fun getUnreadCount(): Int = blogPostDao.getUnread().first().size
 
     /**
      * Get recently read blog posts (up to 10).

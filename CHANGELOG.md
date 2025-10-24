@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Background Blog Post Sync**: Automatic periodic sync worker (#142, Phase 6)
+  - Created `BlogPostSyncWorker` with CoroutineWorker and Metro DI integration
+  - Periodic sync every 24 hours using WorkManager
+  - Work constraints: requires network connectivity and battery not low
+  - Smart notification system:
+    - Tracks unread count before/after refresh to detect new posts
+    - Shows notification only when new posts are available
+    - Custom notification channel "Blog Post Updates" (Android O+)
+    - Notification displays count (e.g., "3 new blog posts available")
+    - Tapping notification opens MainActivity
+    - Auto-dismiss on tap
+  - Error handling with exponential backoff retry
+  - Worker registered in AppWorkerFactory with AssistedFactory pattern
+  - Scheduled in TrmnlBuddyApp.onCreate() with KEEP policy (prevents duplicates)
+  - Timber logging for debugging
+  - Added `getUnreadCount()` to BlogPostRepository (suspending function using Flow.first())
+  - Tests passing: 125 tasks
 - **Blog Posts List Screen**: Full-featured blog posts viewer (#142, Phase 5)
   - Created `BlogPostsScreen` with Circuit architecture (Screen, State, Event, Presenter, Content)
   - List view of all blog posts from TRMNL RSS feed with pull-to-refresh
