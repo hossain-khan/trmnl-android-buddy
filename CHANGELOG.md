@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Combined Content Carousel**: Updated devices screen with unified announcements and blog posts carousel (#142, Phase 3)
+  - Replaced announcements-only carousel with combined content feed showing both announcements and blog posts
+  - Added `ContentCarousel` composable with "Announcements & Blog Posts" header
+  - Implemented `ContentItemCard` with Material 3 AssistChip for visual post type differentiation
+  - Post type indicators: 🔔 Notification icon for announcements (primaryContainer), 📄 List icon for blog posts (secondaryContainer)
+  - Displays unread indicator (8dp circle with primary color)
+  - Shows title (max 2 lines), summary (max 2 lines), and metadata row with relative date
+  - Blog posts include category badge when available
+  - Integrated `ContentFeedRepository` in `TrmnlDevicesPresenter` for fetching latest 3 content items
+  - Updated refresh logic to fetch both announcements and blog posts in parallel
+  - Type-aware event handling for marking content as read based on content type (Announcement vs BlogPost)
+  - Updated State, Event, and all composables to use `ContentItem` instead of `AnnouncementEntity`
+  - Added `formatRelativeDate()` helper function for user-friendly time display
+  - All preview data updated with sample announcements and blog posts
+  - Tests passing: 125 tasks
 - **Combined Content Feed Repository**: Unified content feed architecture for announcements and blog posts (#142, Phase 2)
   - Created `BlogPostRepository` for fetching, parsing, and managing blog posts from https://usetrmnl.com/feeds/posts.xml
   - Implemented `ContentItem` sealed class for type-safe representation of announcements and blog posts
