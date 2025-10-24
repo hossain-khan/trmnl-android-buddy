@@ -362,6 +362,47 @@ class TrmnlDeviceApiTest {
     }
 
     @Test
+    fun `verify user agent header is sent correctly`() = runTest {
+        // Given: Mock server
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody("""{"data": []}""")
+        )
+
+        // Create API service with custom app version
+        val appVersion = "1.6.0"
+        val okHttpClient = TrmnlApiClient.createOkHttpClient(appVersion = appVersion)
+        val retrofit = Retrofit.Builder()
+            .baseUrl(mockWebServer.url("/"))
+            .client(okHttpClient)
+            .addConverterFactory(
+                com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
+            )
+            .addConverterFactory(
+                json.asConverterFactory("application/json".toMediaType())
+            )
+            .addCallAdapterFactory(
+                com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
+            )
+            .build()
+        val apiService = retrofit.create(TrmnlApiService::class.java)
+
+        // When: Call API
+        apiService.getDevices("Bearer test_token")
+
+        // Then: Verify User-Agent header is present and contains expected values
+        val request = mockWebServer.takeRequest()
+        val userAgent = request.getHeader("User-Agent")
+        
+        assertThat(userAgent).isNotNull()
+        assertThat(userAgent!!).contains("TrmnlAndroidBuddy")
+        assertThat(userAgent).contains(appVersion)
+        assertThat(userAgent).contains("Android")
+        assertThat(userAgent).contains("OkHttp")
+    }
+
+    @Test
     fun `device health methods work correctly`() = runTest {
         // Given: Device with low battery
         val responseBody = """

@@ -38,11 +38,13 @@ object TrmnlApiClient {
      *
      * @param isDebug Enable debug logging (default: false for production)
      * @param apiKey Optional API key for authentication
+     * @param appVersion Application version for User-Agent header (default: "unknown")
      * @return Configured OkHttpClient instance
      */
     fun createOkHttpClient(
         isDebug: Boolean = false,
         apiKey: String? = null,
+        appVersion: String = "unknown",
     ): OkHttpClient {
         return OkHttpClient.Builder().apply {
             // Timeouts
@@ -72,7 +74,7 @@ object TrmnlApiClient {
             // User-Agent header
             addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                    .addHeader("User-Agent", "TrmnlAndroidBuddy/1.0")
+                    .addHeader("User-Agent", UserAgentProvider.getUserAgent(appVersion))
                     .build()
                 chain.proceed(request)
             }
@@ -107,13 +109,15 @@ object TrmnlApiClient {
      *
      * @param apiKey Optional API key for authentication
      * @param isDebug Enable debug logging (default: false for production)
+     * @param appVersion Application version for User-Agent header (default: "unknown")
      * @return TrmnlApiService instance
      */
     fun create(
         apiKey: String? = null,
         isDebug: Boolean = false,
+        appVersion: String = "unknown",
     ): TrmnlApiService {
-        val okHttpClient = createOkHttpClient(isDebug, apiKey)
+        val okHttpClient = createOkHttpClient(isDebug, apiKey, appVersion)
         val retrofit = createRetrofit(okHttpClient)
         return retrofit.create(TrmnlApiService::class.java)
     }
