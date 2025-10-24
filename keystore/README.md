@@ -17,7 +17,7 @@ As soon as a tagged release is created, the release workflow signs the APK using
 
 For example:
 
-![](../docs/github-release-build-assets.png)
+<img src="../docs/github-release-build-assets.png" width="500" alt="GitHub Release Assets with built APK" />
 
 ### Workflows
 
