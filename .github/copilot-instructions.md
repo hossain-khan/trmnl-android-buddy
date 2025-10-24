@@ -218,8 +218,33 @@ If either command fails, fix the issues before committing.
    - `Fixed` for any bug fixes
    - `Security` in case of vulnerabilities
 4. **Unreleased Section**: Add all changes to `[Unreleased]` section first
-5. **Release Process**: When releasing, move `[Unreleased]` changes to a new version section with date
-6. **Format Example**:
+5. **Avoid Duplicate Section Headers**: 
+   - **CRITICAL**: Before adding a new section header (e.g., `### Added`, `### Changed`, `### Fixed`), **always check if that section already exists** in the `[Unreleased]` section
+   - If the section header already exists, **add your entry to the existing section** rather than creating a duplicate header
+   - Only create a new section header if it doesn't already exist in `[Unreleased]`
+   - Example of CORRECT approach:
+     ```markdown
+     ## [Unreleased]
+     
+     ### Added
+     - Existing feature A
+     - NEW: Your new feature B  ← Add here, don't create another ### Added
+     
+     ### Fixed
+     - Existing bug fix
+     ```
+   - Example of INCORRECT approach (DO NOT DO THIS):
+     ```markdown
+     ## [Unreleased]
+     
+     ### Added
+     - Existing feature A
+     
+     ### Added  ← WRONG: Duplicate header
+     - Your new feature B
+     ```
+6. **Release Process**: When releasing, move `[Unreleased]` changes to a new version section with date
+7. **Format Example**:
    ```markdown
    ## [Unreleased]
    
@@ -234,7 +259,7 @@ If either command fails, fix the issues before committing.
    ### Fixed
    - Previous bug fix
    ```
-7. **Guidelines**:
+8. **Guidelines**:
    - Write for humans, not machines
    - Each version should have an entry
    - Group similar types of changes together
@@ -466,6 +491,10 @@ suspend fun fetchDevices(): Result<List<Device>> {
 - Always suggest running `formatKotlin` and `test` before commits
 - **Always update CHANGELOG.md** following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format
 - Add changes to `[Unreleased]` section with appropriate category (Added, Changed, Deprecated, Removed, Fixed, Security)
+- **CRITICAL: Avoid duplicate section headers in CHANGELOG.md**
+  - Before adding a new section header (e.g., `### Added`, `### Changed`, `### Fixed`), **always check if that section already exists** in the `[Unreleased]` section
+  - If the section header already exists, **add your entry to the existing section** rather than creating a duplicate header
+  - Only create a new section header if it doesn't already exist in `[Unreleased]`
 - Use [Semantic Versioning](https://semver.org/) for version numbers (MAJOR.MINOR.PATCH)
 - Use EitherNet's `ApiResult` for API responses, not custom Result types
 - Prefer constructor injection over field injection
