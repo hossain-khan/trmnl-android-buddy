@@ -43,6 +43,20 @@ class AnnouncementRepository
         fun getAllAnnouncements(): Flow<List<AnnouncementEntity>> = announcementDao.getAll()
 
         /**
+         * Get only unread announcements from local cache.
+         *
+         * @return Flow of unread announcements, ordered by published date.
+         */
+        fun getUnreadAnnouncements(): Flow<List<AnnouncementEntity>> = announcementDao.getUnread()
+
+        /**
+         * Get only read announcements from local cache.
+         *
+         * @return Flow of read announcements, ordered by published date.
+         */
+        fun getReadAnnouncements(): Flow<List<AnnouncementEntity>> = announcementDao.getRead()
+
+        /**
          * Get count of unread announcements.
          *
          * @return Flow of unread count that updates when database changes.

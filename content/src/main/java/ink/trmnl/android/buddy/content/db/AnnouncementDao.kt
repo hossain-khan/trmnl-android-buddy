@@ -32,6 +32,12 @@ interface AnnouncementDao {
     fun getUnread(): Flow<List<AnnouncementEntity>>
 
     /**
+     * Get only read announcements, ordered by published date.
+     */
+    @Query("SELECT * FROM announcements WHERE isRead = 1 ORDER BY publishedDate DESC")
+    fun getRead(): Flow<List<AnnouncementEntity>>
+
+    /**
      * Insert announcements, replacing existing ones with the same ID.
      *
      * @param announcements List of announcements to insert.

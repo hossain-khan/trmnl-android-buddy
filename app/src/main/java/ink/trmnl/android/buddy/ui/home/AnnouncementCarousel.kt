@@ -22,9 +22,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,9 +34,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.db.AnnouncementEntity
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.delay
@@ -53,10 +57,12 @@ import java.time.temporal.ChronoUnit
  * - Unread announcement badges
  * - Click to open in browser
  * - Loading and empty states
+ * - View all button to navigate to full announcements screen
  *
  * @param announcements List of announcements to display (max 3)
  * @param isLoading Whether announcements are being loaded
  * @param onAnnouncementClick Callback when announcement is clicked
+ * @param onViewAllClick Callback when "View All" button is clicked
  * @param modifier Optional modifier for the carousel
  */
 @OptIn(ExperimentalFoundationApi::class)
@@ -65,6 +71,7 @@ fun AnnouncementCarousel(
     announcements: List<AnnouncementEntity>,
     isLoading: Boolean,
     onAnnouncementClick: (AnnouncementEntity) -> Unit,
+    onViewAllClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -75,87 +82,115 @@ fun AnnouncementCarousel(
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
-        when {
-            isLoading -> {
-                // Loading state
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(16.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Header with "View All" button
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Announcements",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
 
-            announcements.isEmpty() -> {
-                // Empty state
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(16.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "No announcements available",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                TextButton(onClick = onViewAllClick) {
+                    Text(text = "View All")
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                        contentDescription = "View all announcements",
+                        modifier = Modifier.size(16.dp),
                     )
                 }
             }
 
-            else -> {
-                // Display announcements carousel
-                val pagerState = rememberPagerState(pageCount = { announcements.size })
-
-                // Auto-rotation every 5 seconds
-                LaunchedEffect(pagerState, announcements.size) {
-                    while (true) {
-                        delay(5000) // 5 seconds
-                        val nextPage = (pagerState.currentPage + 1) % announcements.size
-                        pagerState.animateScrollToPage(nextPage)
+            when {
+                isLoading -> {
+                    // Loading state
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(16.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
 
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
-                ) {
-                    HorizontalPager(
-                        state = pagerState,
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                        pageSpacing = 8.dp,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) { page ->
-                        val announcement = announcements[page]
-                        AnnouncementCard(
-                            announcement = announcement,
-                            onClick = { onAnnouncementClick(announcement) },
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .animatePageAlpha(pagerState, page),
+                announcements.isEmpty() -> {
+                    // Empty state
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(16.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "No announcements available",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                else -> {
+                    // Display announcements carousel
+                    val pagerState = rememberPagerState(pageCount = { announcements.size })
 
-                    // Page indicators
-                    PageIndicators(
-                        pageCount = announcements.size,
-                        currentPage = pagerState.currentPage,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                    )
+                    // Auto-rotation every 5 seconds
+                    LaunchedEffect(pagerState, announcements.size) {
+                        while (true) {
+                            delay(5000) // 5 seconds
+                            val nextPage = (pagerState.currentPage + 1) % announcements.size
+                            pagerState.animateScrollToPage(nextPage)
+                        }
+                    }
+
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                    ) {
+                        HorizontalPager(
+                            state = pagerState,
+                            contentPadding = PaddingValues(horizontal = 16.dp),
+                            pageSpacing = 8.dp,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) { page ->
+                            val announcement = announcements[page]
+                            AnnouncementCard(
+                                announcement = announcement,
+                                onClick = { onAnnouncementClick(announcement) },
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .animatePageAlpha(pagerState, page),
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Page indicators
+                        PageIndicators(
+                            pageCount = announcements.size,
+                            currentPage = pagerState.currentPage,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                        )
+                    }
                 }
             }
-        }
-    }
+        } // Close outer Column
+    } // Close Card
 }
 
 /**
@@ -349,6 +384,7 @@ private fun AnnouncementCarouselPreview() {
                     announcements = sampleAnnouncements,
                     isLoading = false,
                     onAnnouncementClick = {},
+                    onViewAllClick = {},
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -358,6 +394,7 @@ private fun AnnouncementCarouselPreview() {
                     announcements = emptyList(),
                     isLoading = true,
                     onAnnouncementClick = {},
+                    onViewAllClick = {},
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -367,6 +404,7 @@ private fun AnnouncementCarouselPreview() {
                     announcements = emptyList(),
                     isLoading = false,
                     onAnnouncementClick = {},
+                    onViewAllClick = {},
                 )
             }
         }

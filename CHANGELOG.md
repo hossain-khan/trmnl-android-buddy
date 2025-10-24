@@ -29,6 +29,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Announcement Carousel**: Implemented carousel UI component on home screen (#141, Phase 1)
   - Created `AnnouncementCarousel` composable with HorizontalPager
   - Auto-rotation every 5 seconds with pause on manual interaction
+  - "View All" button in header to navigate to full announcements screen
+  - Displays latest 3 announcements with title, summary, and publish date
+  - Shows unread badge for new announcements
+  - Page indicators for visual feedback
+  - Click to open announcement in Chrome Custom Tabs
+  - Manual swipe gestures supported alongside auto-rotation
+  - Loading and empty states with Material 3 design
+- **Chrome Custom Tabs Integration**: Added in-app browser for announcements (#141, Phase 1)
+  - Created `BrowserUtils` utility with theme-aware Custom Tabs configuration
+  - Uses Material 3 primary color for toolbar, surface color for secondary elements
+  - Share button enabled, URL bar visible for user transparency
+  - Automatically marks announcements as read when opened
+- **Background Sync**: Implemented WorkManager periodic sync for announcements (#141, Phase 1)
+  - Created `AnnouncementSyncWorker` running every 4 hours
+  - Network-required constraint to avoid unnecessary battery drain
+  - Metro DI integration with @AssistedFactory pattern
+  - Auto-scheduled on app startup with KEEP policy to avoid duplicates
+  - Timber logging for sync operations and error tracking
+- **Manual Refresh**: Added pull-to-refresh functionality (#141, Phase 1)
+  - Refresh button syncs both devices and announcements in parallel
+  - Shows loading indicators during sync
+  - Displays error messages via Snackbar
+  - Initial data fetch on first app launch (checks if database empty)
+- **Dedicated Announcements Screen**: Full-screen view for all announcements (#141, Phase 2)
+  - Created `AnnouncementsScreen` with Circuit architecture (Screen/State/Event/Presenter)
+  - **Filtering**: Filter chips for All/Unread/Read views
+    - Added `getUnreadAnnouncements()` and `getReadAnnouncements()` repository methods
+    - Added `getRead()` DAO query for read-only announcements
+    - Reactive filtering with Flow-based updates
+  - **Date Grouping**: Announcements grouped by date categories
+    - Today, Yesterday, This Week, Older sections
+    - Sticky headers for each category using LazyColumn
+    - Relative date formatting ("2 days ago")
+  - **Interactive Features**:
+    - Pull-to-refresh for manual sync
+    - FAB to mark all as read (only shown when unread exist)
+    - Click announcement to open in Chrome Custom Tabs and mark as read
+    - "NEW" badge for unread announcements with bold title
+  - **Navigation**: ViewAllAnnouncementsClicked event from carousel
+  - Material 3 design with proper theming throughout
+  - Loading and empty states for each filter view
+  - Back button in TopAppBar for easy navigation
   - Displays latest 3 announcements with title, summary, and relative date ("2 days ago")
   - Unread badges with green indicator on unread announcements
   - Page indicators showing current position with circular dots

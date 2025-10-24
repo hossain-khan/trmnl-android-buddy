@@ -79,6 +79,7 @@ import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
+import ink.trmnl.android.buddy.ui.announcements.AnnouncementsScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
@@ -153,6 +154,8 @@ data object TrmnlDevicesScreen : Screen {
         data class AnnouncementClicked(
             val announcement: ink.trmnl.android.buddy.content.db.AnnouncementEntity,
         ) : Event()
+
+        data object ViewAllAnnouncementsClicked : Event()
 
         data object DismissSnackbar : Event()
     }
@@ -371,6 +374,10 @@ class TrmnlDevicesPresenter
                         }
                     }
 
+                    TrmnlDevicesScreen.Event.ViewAllAnnouncementsClicked -> {
+                        navigator.goTo(AnnouncementsScreen)
+                    }
+
                     TrmnlDevicesScreen.Event.DismissSnackbar -> {
                         snackbarMessage = null
                     }
@@ -567,6 +574,9 @@ fun TrmnlDevicesContent(
                     onAnnouncementClick = { announcement ->
                         state.eventSink(TrmnlDevicesScreen.Event.AnnouncementClicked(announcement))
                     },
+                    onViewAllAnnouncementsClick = {
+                        state.eventSink(TrmnlDevicesScreen.Event.ViewAllAnnouncementsClicked)
+                    },
                     eventSink = state.eventSink,
                 )
             }
@@ -685,6 +695,7 @@ private fun DevicesList(
     onSettingsClick: (Device) -> Unit,
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
     onAnnouncementClick: (ink.trmnl.android.buddy.content.db.AnnouncementEntity) -> Unit,
+    onViewAllAnnouncementsClick: () -> Unit,
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -702,6 +713,7 @@ private fun DevicesList(
                 announcements = announcements,
                 isLoading = isAnnouncementsLoading,
                 onAnnouncementClick = onAnnouncementClick,
+                onViewAllClick = onViewAllAnnouncementsClick,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -1316,6 +1328,7 @@ private fun DevicesListPreview() {
             onSettingsClick = {},
             onPreviewClick = { _, _ -> },
             onAnnouncementClick = {},
+            onViewAllAnnouncementsClick = {},
             eventSink = {},
         )
     }
