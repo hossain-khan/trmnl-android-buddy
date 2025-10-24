@@ -38,7 +38,9 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.di.ApplicationContext
 import ink.trmnl.android.buddy.ui.announcements.AnnouncementsScreen
+import ink.trmnl.android.buddy.ui.blogposts.BlogPostsScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import kotlinx.parcelize.Parcelize
 
@@ -176,45 +178,16 @@ fun ContentHubContent(
                 }
 
                 ContentHubScreen.Tab.BLOG_POSTS -> {
-                    // Placeholder for Blog Posts screen
-                    BlogPostsPlaceholder()
+                    // Embed BlogPostsScreen using Circuit
+                    val backStack = rememberSaveableBackStack(root = BlogPostsScreen)
+                    val circuitNavigator = rememberCircuitNavigator(backStack = backStack, onRootPop = {})
+                    NavigableCircuitContent(
+                        navigator = circuitNavigator,
+                        backStack = backStack,
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
             }
-        }
-    }
-}
-
-/**
- * Placeholder composable for Blog Posts tab.
- * Will be replaced with full BlogPostsScreen in Phase 5.
- */
-@Composable
-private fun BlogPostsPlaceholder(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = androidx.compose.ui.Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-            verticalArrangement =
-                androidx.compose.foundation.layout.Arrangement
-                    .spacedBy(16.dp),
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                contentDescription = "Blog Posts",
-                modifier = Modifier.size(64.dp),
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = "Blog Posts",
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            Text(
-                text = "Coming soon in Phase 5",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }

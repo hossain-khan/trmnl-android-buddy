@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Blog Posts List Screen**: Full-featured blog posts viewer (#142, Phase 5)
+  - Created `BlogPostsScreen` with Circuit architecture (Screen, State, Event, Presenter, Content)
+  - List view of all blog posts from TRMNL RSS feed with pull-to-refresh
+  - Category filter dropdown with "All" option and dynamic categories from posts
+  - Featured image display when available using Coil (180dp height, crop scaling)
+  - BlogPostCard component with:
+    - Featured image with loading indicator
+    - Category chip with secondary container colors
+    - Title (2 line max) with bold styling
+    - Summary (3 line max) with overflow ellipsis
+    - Author name and relative date ("2 days ago")
+    - Unread indicator (blue dot) for new posts
+    - Favorite toggle button (heart icon with error color when active)
+  - Click to open blog post in Chrome Custom Tabs with theme colors
+  - Auto-mark as read when clicked
+  - Toggle favorite functionality
+  - Loading, error, and empty states with retry functionality
+  - TopAppBar with dynamic title showing selected category
+  - Replaced placeholder in ContentHubScreen with actual BlogPostsScreen
+  - Integrated with existing BlogPostRepository (RSS parsing, offline-first)
+  - Material You theming throughout (color schemes, typography, proper contrast)
+  - Tests passing: 125 tasks
 - **Content Hub Screen**: Unified navigation for announcements and blog posts (#142, Phase 4)
   - Created `ContentHubScreen` with Circuit architecture (Screen, Presenter, Content)
   - Bottom navigation with two tabs: "Announcements" and "Blog Posts"
