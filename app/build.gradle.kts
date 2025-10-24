@@ -106,6 +106,7 @@ kotlin {
 dependencies {
     // Modules
     implementation(project(":api"))
+    implementation(project(":content"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -153,6 +154,9 @@ dependencies {
 
     // Timber - Better Android logging
     implementation(libs.timber)
+
+    // Chrome Custom Tabs for in-app browser
+    implementation(libs.androidx.browser)
 
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)

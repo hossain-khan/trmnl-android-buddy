@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "TRMNL Buddy"
 include(":app")
 include(":api")
+include(":content")

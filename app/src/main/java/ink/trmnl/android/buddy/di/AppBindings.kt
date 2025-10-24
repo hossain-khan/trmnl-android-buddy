@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.di
 
 import android.content.Context
+import androidx.room.Room
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
@@ -8,6 +9,8 @@ import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.api.TrmnlApiClient
 import ink.trmnl.android.buddy.api.TrmnlApiService
+import ink.trmnl.android.buddy.content.db.AnnouncementDao
+import ink.trmnl.android.buddy.content.db.ContentDatabase
 import ink.trmnl.android.buddy.data.database.BatteryHistoryDao
 import ink.trmnl.android.buddy.data.database.TrmnlDatabase
 
@@ -32,4 +35,26 @@ interface AppBindings {
 
     @Provides
     fun provideBatteryHistoryDao(database: TrmnlDatabase): BatteryHistoryDao = database.batteryHistoryDao()
+
+    // Content module bindings
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideContentDatabase(
+        @ApplicationContext context: Context,
+    ): ContentDatabase =
+        Room
+            .databaseBuilder(
+                context,
+                ContentDatabase::class.java,
+                "trmnl_content.db",
+            ).build()
+
+    @Provides
+    fun provideAnnouncementDao(database: ContentDatabase): AnnouncementDao = database.announcementDao()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideAnnouncementRepository(announcementDao: AnnouncementDao): ink.trmnl.android.buddy.content.repository.AnnouncementRepository =
+        ink.trmnl.android.buddy.content.repository
+            .AnnouncementRepository(announcementDao)
 }

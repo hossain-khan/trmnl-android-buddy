@@ -63,6 +63,14 @@ accompanist = "0.37.3"
 # https://github.com/JakeWharton/timber
 timber = "5.0.1"
 
+# RSS Parser - For parsing Atom/RSS feeds
+# https://github.com/prof18/RSS-Parser
+rssParser = "6.0.8"
+
+# Chrome Custom Tabs - Better in-app browser experience
+# https://developer.android.com/reference/androidx/browser/customtabs/package-summary
+browser = "1.8.0"
+
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -142,6 +150,14 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 # Timber - Better Android logging
 # https://github.com/JakeWharton/timber
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
+# RSS Parser - For parsing Atom/RSS feeds
+# https://github.com/prof18/RSS-Parser
+rss-parser = { group = "com.prof18.rssparser", name = "rssparser", version.ref = "rssParser" }
+
+# Chrome Custom Tabs
+# https://developer.android.com/jetpack/androidx/releases/browser
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

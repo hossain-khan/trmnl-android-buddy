@@ -32,6 +32,17 @@ interface WorkerScheduler {
      * Useful for testing in debug builds without waiting for the scheduled periodic work.
      */
     fun triggerLowBatteryNotificationNow()
+
+    /**
+     * Schedules or reschedules the announcement sync worker.
+     * The worker fetches announcements from TRMNL RSS feed every 4 hours.
+     */
+    fun scheduleAnnouncementSync()
+
+    /**
+     * Cancels the announcement sync worker.
+     */
+    fun cancelAnnouncementSync()
 }
 
 /**
@@ -102,5 +113,44 @@ class WorkerSchedulerImpl(
                 ).build()
 
         workManager.enqueue(immediateWorkRequest)
+    }
+
+    /**
+     * Schedules or reschedules the announcement sync worker.
+     * The worker fetches announcements from TRMNL RSS feed every 4 hours.
+     * Uses KEEP policy to avoid duplicates.
+     */
+    override fun scheduleAnnouncementSync() {
+        Timber.d("Scheduling announcement sync worker (every 4 hours, network required)")
+
+        val announcementWorkRequest =
+            PeriodicWorkRequestBuilder<AnnouncementSyncWorker>(
+                repeatInterval = 4,
+                repeatIntervalTimeUnit = TimeUnit.HOURS,
+            ).setConstraints(
+                Constraints
+                    .Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build(),
+            ).build()
+
+        workManager.enqueueUniquePeriodicWork(
+            ANNOUNCEMENT_SYNC_WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            announcementWorkRequest,
+        )
+    }
+
+    /**
+     * Cancels the announcement sync worker.
+     * Called when user disables announcements in settings.
+     */
+    override fun cancelAnnouncementSync() {
+        Timber.d("Cancelling announcement sync worker")
+        workManager.cancelUniqueWork(ANNOUNCEMENT_SYNC_WORK_NAME)
+    }
+
+    companion object {
+        private const val ANNOUNCEMENT_SYNC_WORK_NAME = "announcement_sync"
     }
 }

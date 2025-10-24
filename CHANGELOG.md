@@ -7,6 +7,116 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Content Module**: Created new `:content` module for RSS feed management (#140, #141)
+  - Added RSS-Parser 6.0.8 dependency for parsing Atom/RSS feeds
+  - Added Chrome Custom Tabs 1.8.0 dependency for better in-app browser experience
+  - **Database Layer**:
+    - Created `AnnouncementEntity` Room entity with fields: id, title, summary, link, publishedDate, isRead, fetchedAt
+    - Implemented `AnnouncementDao` with queries for fetching, inserting, updating, and marking announcements as read
+    - Built `ContentDatabase` with Room type converters for `Instant` serialization
+    - Added support for tracking unread announcements and badge counts
+  - **Repository Layer**:
+    - Implemented `AnnouncementRepository` with offline-first pattern using RSS-Parser and Room
+    - Fetches announcements from https://usetrmnl.com/feeds/announcements.xml
+    - Provides reactive Flow API for UI updates when data changes
+    - Supports read tracking and batch operations
+    - Added `markAsUnread()` method for bidirectional read state management
+    - Read status preservation during refresh using Flow-based state lookup
+  - **Dependency Injection**:
+    - Integrated content module with app's Metro DI system
+    - Added `ContentDatabase`, `AnnouncementDao`, and `AnnouncementRepository` providers in `AppBindings`
+    - RssParser instantiated directly in repository (workaround for Metro compiler limitation)
+  - Foundation complete for Issue #141 (Announcements Feed) and Issue #142 (Blog Posts Feed)
+- **Announcement Carousel**: Implemented carousel UI component on home screen (#141, Phase 1)
+  - Created `AnnouncementCarousel` composable with HorizontalPager
+  - Auto-rotation every 5 seconds with pause on manual interaction
+  - "View All" button in header to navigate to full announcements screen
+  - Displays latest 3 announcements with title, summary, and publish date
+  - Shows unread badge for new announcements
+  - Page indicators for visual feedback
+  - Click to open announcement in Chrome Custom Tabs
+  - Manual swipe gestures supported alongside auto-rotation
+  - Loading and empty states with Material 3 design
+- **Chrome Custom Tabs Integration**: Added in-app browser for announcements (#141, Phase 1)
+  - Created `BrowserUtils` utility with theme-aware Custom Tabs configuration
+  - Uses Material 3 primary color for toolbar, surface color for secondary elements
+  - Share button enabled, URL bar visible for user transparency
+  - Automatically marks announcements as read when opened
+- **Background Sync**: Implemented WorkManager periodic sync for announcements (#141, Phase 1)
+  - Created `AnnouncementSyncWorker` running every 4 hours
+  - Network-required constraint to avoid unnecessary battery drain
+  - Metro DI integration with @AssistedFactory pattern
+  - Auto-scheduled on app startup with KEEP policy to avoid duplicates
+  - Timber logging for sync operations and error tracking
+- **Manual Refresh**: Added pull-to-refresh functionality (#141, Phase 1)
+  - Refresh button syncs both devices and announcements in parallel
+  - Shows loading indicators during sync
+  - Displays error messages via Snackbar
+  - Initial data fetch on first app launch (checks if database empty)
+- **Dedicated Announcements Screen**: Full-screen view for all announcements (#141, Phase 2)
+  - Created `AnnouncementsScreen` with Circuit architecture (Screen/State/Event/Presenter)
+  - **Filtering**: Filter chips for All/Unread/Read views
+    - Added `getUnreadAnnouncements()` and `getReadAnnouncements()` repository methods
+    - Added `getRead()` DAO query for read-only announcements
+    - Reactive filtering with Flow-based updates
+  - **Date Grouping**: Announcements grouped by date categories
+    - Today, Yesterday, This Week, Older sections
+    - Sticky headers for each category using LazyColumn
+    - Relative date formatting ("2 days ago")
+  - **Interactive Features**:
+    - Pull-to-refresh for manual sync
+    - FAB to mark all as read (only shown when unread exist)
+    - Click announcement to open in Chrome Custom Tabs and mark as read
+    - **Swipe-to-Toggle**: Swipe left or right on announcements to toggle read/unread status
+      - Visual feedback with eye icons (visibility/visibility_off)
+      - Bidirectional swipe support (both directions work)
+      - Instant state update without dismissing the item
+    - **Unread Count Badge**: Shows circular badge with count in TopAppBar
+      - Only visible when unread announcements exist
+      - Real-time updates using Flow-based reactive state
+    - **Read Status Preservation**: Read status preserved during background sync
+      - Existing read/unread states maintained when refreshing feed
+      - Prevents previously read announcements from appearing as unread
+    - Circular dot indicator for unread announcements (Material 3 design)
+  - **Navigation**: ViewAllAnnouncementsClicked event from carousel
+  - Material 3 design with proper theming throughout
+  - Loading and empty states for each filter view
+  - Back button in TopAppBar for easy navigation
+  - Displays latest 3 announcements with title, summary, and relative date ("2 days ago")
+  - Unread badges with green indicator on unread announcements
+  - Page indicators showing current position with circular dots
+  - Fade animation between pages for smooth transitions
+  - Loading state with CircularProgressIndicator
+  - Empty state when no announcements available
+  - Integrated into `TrmnlDevicesScreen` above device list
+  - **Chrome Custom Tabs Integration**: Clicking announcements opens links in in-app browser
+    - Created `BrowserUtils` utility with theme-aware Custom Tabs
+    - Uses Material 3 primary and surface colors for toolbar
+    - Falls back to default browser if Custom Tabs unavailable
+  - **Manual Refresh**: Pull-to-refresh now refreshes both devices and announcements
+    - Shows loading indicators for both operations
+    - Displays error messages if announcement sync fails
+  - **Background Sync**: Automatic announcement refresh every 4 hours
+    - Created `AnnouncementSyncWorker` with WorkManager
+    - Uses exponential backoff on failures
+    - Requires network connection
+    - Scheduled on app startup
+  - **Initial Fetch**: Announcements automatically fetched on first app launch
+    - Checks if database is empty and fetches from RSS feed
+    - Runs in background without blocking UI
+- **Announcements Toggle**: Added setting to completely disable announcements feature
+  - New "Announcements" section in Settings screen with ON/OFF toggle
+  - Default: Enabled (announcements shown and synced)
+  - When disabled:
+    - Announcement carousel hidden from home screen (TrmnlDevicesScreen)
+    - Background sync job cancelled (no network usage)
+    - Announcements screen still accessible via direct navigation
+  - Preference persisted in DataStore
+  - Added `isAnnouncementsEnabled` to UserPreferences (defaults to true)
+  - WorkerScheduler now includes `scheduleAnnouncementSync()` and `cancelAnnouncementSync()` methods
+  - TrmnlDevicesScreen reactively hides/shows carousel based on preference
+
 ### Changed
 - **Logging**: Migrated from `android.util.Log` to Timber library for better logging
   - Added Timber 5.0.1 dependency

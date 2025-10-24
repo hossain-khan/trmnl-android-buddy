@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.devices
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -50,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,6 +78,8 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.di.ApplicationContext
+import ink.trmnl.android.buddy.ui.announcements.AnnouncementsScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
@@ -84,6 +88,7 @@ import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
 import ink.trmnl.android.buddy.ui.utils.getWifiIcon
+import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import ink.trmnl.android.buddy.util.formatRefreshRate
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
@@ -115,6 +120,9 @@ data object TrmnlDevicesScreen : Screen {
         val isUnauthorized: Boolean = false,
         val isPrivacyEnabled: Boolean = true,
         val snackbarMessage: String? = null,
+        val announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity> = emptyList(),
+        val isAnnouncementsLoading: Boolean = true,
+        val isAnnouncementsEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -144,6 +152,12 @@ data object TrmnlDevicesScreen : Screen {
             val refreshRate: Int,
         ) : Event()
 
+        data class AnnouncementClicked(
+            val announcement: ink.trmnl.android.buddy.content.db.AnnouncementEntity,
+        ) : Event()
+
+        data object ViewAllAnnouncementsClicked : Event()
+
         data object DismissSnackbar : Event()
     }
 }
@@ -156,9 +170,11 @@ data object TrmnlDevicesScreen : Screen {
 class TrmnlDevicesPresenter
     constructor(
         @Assisted private val navigator: Navigator,
+        @ApplicationContext private val context: Context,
         private val apiService: TrmnlApiService,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val deviceTokenRepository: DeviceTokenRepository,
+        private val announcementRepository: ink.trmnl.android.buddy.content.repository.AnnouncementRepository,
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
@@ -170,7 +186,42 @@ class TrmnlDevicesPresenter
             var isUnauthorized by rememberRetained { mutableStateOf(false) }
             var isPrivacyEnabled by rememberRetained { mutableStateOf(true) }
             var snackbarMessage by rememberRetained { mutableStateOf<String?>(null) }
+            var announcements by rememberRetained {
+                mutableStateOf<List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>>(emptyList())
+            }
+            var isAnnouncementsLoading by rememberRetained { mutableStateOf(true) }
+            var isAnnouncementsEnabled by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
+
+            // Capture theme colors for Custom Tabs
+            val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
+            val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
+
+            // Collect announcements enabled preference
+            LaunchedEffect(Unit) {
+                userPreferencesRepository.userPreferencesFlow.collect { preferences ->
+                    isAnnouncementsEnabled = preferences.isAnnouncementsEnabled
+                }
+            }
+
+            // Collect announcements from repository
+            LaunchedEffect(Unit) {
+                announcementRepository.getLatestAnnouncements(limit = 3).collect { latestAnnouncements ->
+                    announcements = latestAnnouncements
+                    isAnnouncementsLoading = false
+                }
+            }
+
+            // Fetch announcements on initial load (if database is empty)
+            LaunchedEffect(Unit) {
+                // Check if we have announcements, if not, fetch them
+                if (announcements.isEmpty()) {
+                    val result = announcementRepository.refreshAnnouncements()
+                    if (result.isFailure) {
+                        timber.log.Timber.d("Failed to fetch initial announcements: %s", result.exceptionOrNull()?.message)
+                    }
+                }
+            }
 
             // Fetch devices on initial load only (when devices list is empty)
             LaunchedEffect(Unit) {
@@ -224,13 +275,27 @@ class TrmnlDevicesPresenter
                 isUnauthorized = isUnauthorized,
                 isPrivacyEnabled = isPrivacyEnabled,
                 snackbarMessage = snackbarMessage,
+                announcements = announcements,
+                isAnnouncementsLoading = isAnnouncementsLoading,
+                isAnnouncementsEnabled = isAnnouncementsEnabled,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
                         isLoading = true
+                        isAnnouncementsLoading = true
                         errorMessage = null
                         isUnauthorized = false
                         coroutineScope.launch {
+                            // Refresh announcements in background
+                            launch {
+                                val result = announcementRepository.refreshAnnouncements()
+                                if (result.isFailure) {
+                                    snackbarMessage = "Failed to refresh announcements: ${result.exceptionOrNull()?.message}"
+                                }
+                                isAnnouncementsLoading = false
+                            }
+
+                            // Refresh devices
                             loadDevices(
                                 onSuccess = { fetchedDevices ->
                                     devices = fetchedDevices
@@ -303,6 +368,24 @@ class TrmnlDevicesPresenter
 
                     is TrmnlDevicesScreen.Event.RefreshRateInfoClicked -> {
                         snackbarMessage = formatRefreshRateExplanation(event.refreshRate)
+                    }
+
+                    is TrmnlDevicesScreen.Event.AnnouncementClicked -> {
+                        // Open announcement in Chrome Custom Tabs
+                        BrowserUtils.openUrlInCustomTab(
+                            context = context,
+                            url = event.announcement.link,
+                            toolbarColor = primaryColor,
+                            secondaryColor = surfaceColor,
+                        )
+                        // Mark announcement as read
+                        coroutineScope.launch {
+                            announcementRepository.markAsRead(event.announcement.id)
+                        }
+                    }
+
+                    TrmnlDevicesScreen.Event.ViewAllAnnouncementsClicked -> {
+                        navigator.goTo(AnnouncementsScreen)
                     }
 
                     TrmnlDevicesScreen.Event.DismissSnackbar -> {
@@ -486,6 +569,9 @@ fun TrmnlDevicesContent(
                     devicePreviews = state.devicePreviews,
                     isPrivacyEnabled = state.isPrivacyEnabled,
                     innerPadding = innerPadding,
+                    announcements = state.announcements,
+                    isAnnouncementsLoading = state.isAnnouncementsLoading,
+                    isAnnouncementsEnabled = state.isAnnouncementsEnabled,
                     onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                     onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                     onPreviewClick = { device, previewInfo ->
@@ -495,6 +581,12 @@ fun TrmnlDevicesContent(
                                 previewInfo = previewInfo,
                             ),
                         )
+                    },
+                    onAnnouncementClick = { announcement ->
+                        state.eventSink(TrmnlDevicesScreen.Event.AnnouncementClicked(announcement))
+                    },
+                    onViewAllAnnouncementsClick = {
+                        state.eventSink(TrmnlDevicesScreen.Event.ViewAllAnnouncementsClicked)
                     },
                     eventSink = state.eventSink,
                 )
@@ -599,7 +691,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 
 /**
  * Devices list composable.
- * Shows scrollable list of device cards.
+ * Shows scrollable list of device cards with announcements carousel at top.
  */
 @Composable
 private fun DevicesList(
@@ -608,9 +700,14 @@ private fun DevicesList(
     devicePreviews: Map<String, DevicePreviewInfo?>,
     isPrivacyEnabled: Boolean,
     innerPadding: PaddingValues,
+    announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>,
+    isAnnouncementsLoading: Boolean,
+    isAnnouncementsEnabled: Boolean,
     onDeviceClick: (Device) -> Unit,
     onSettingsClick: (Device) -> Unit,
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
+    onAnnouncementClick: (ink.trmnl.android.buddy.content.db.AnnouncementEntity) -> Unit,
+    onViewAllAnnouncementsClick: () -> Unit,
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -622,6 +719,19 @@ private fun DevicesList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        // Announcements carousel at the top (only if enabled)
+        if (isAnnouncementsEnabled) {
+            item {
+                ink.trmnl.android.buddy.ui.home.AnnouncementCarousel(
+                    announcements = announcements,
+                    isLoading = isAnnouncementsLoading,
+                    onAnnouncementClick = onAnnouncementClick,
+                    onViewAllClick = onViewAllAnnouncementsClick,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
+
         items(
             items = devices,
             key = { device -> device.id },
@@ -1226,9 +1336,14 @@ private fun DevicesListPreview() {
             devicePreviews = emptyMap(),
             isPrivacyEnabled = false,
             innerPadding = PaddingValues(0.dp),
+            announcements = emptyList(),
+            isAnnouncementsLoading = false,
+            isAnnouncementsEnabled = true,
             onDeviceClick = {},
             onSettingsClick = {},
             onPreviewClick = { _, _ -> },
+            onAnnouncementClick = {},
+            onViewAllAnnouncementsClick = {},
             eventSink = {},
         )
     }

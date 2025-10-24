@@ -248,6 +248,7 @@ class SettingsScreenTest {
      */
     private class FakeWorkerScheduler : WorkerScheduler {
         var isScheduled = false
+        var isAnnouncementSyncScheduled = false
 
         override fun scheduleLowBatteryNotification() {
             isScheduled = true
@@ -259,6 +260,14 @@ class SettingsScreenTest {
 
         override fun triggerLowBatteryNotificationNow() {
             // No-op for testing - immediate execution not needed in unit tests
+        }
+
+        override fun scheduleAnnouncementSync() {
+            isAnnouncementSyncScheduled = true
+        }
+
+        override fun cancelAnnouncementSync() {
+            isAnnouncementSyncScheduled = false
         }
     }
 
@@ -308,6 +317,10 @@ class SettingsScreenTest {
         override suspend fun setLowBatteryThreshold(percent: Int) {
             lowBatteryThreshold = percent
             _userPreferencesFlow.value = _userPreferencesFlow.value.copy(lowBatteryThresholdPercent = percent)
+        }
+
+        override suspend fun setAnnouncementsEnabled(enabled: Boolean) {
+            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isAnnouncementsEnabled = enabled)
         }
 
         override suspend fun clearAll() {
