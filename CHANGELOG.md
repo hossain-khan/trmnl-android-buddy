@@ -49,6 +49,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All previews wrapped in `TrmnlBuddyAppTheme` for Material You theming
 
 ### Fixed
+- **Chrome Custom Tabs Launch Fix**: Added FLAG_ACTIVITY_NEW_TASK to fix activity context issue
+  - Fixed AndroidRuntimeException when opening blog posts/announcements
+  - Error: "Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag"
+  - Root cause: Using Application context instead of Activity context to launch Custom Tabs
+  - Solution: Added `FLAG_ACTIVITY_NEW_TASK` flag to CustomTabsIntent
+  - Links now properly open in Chrome Custom Tabs without errors
+
 - **INTERNET Permission Missing**: Added missing INTERNET permission to AndroidManifest.xml
   - Fixed critical bug where clicking blog posts and announcements didn't open browser
   - Chrome Custom Tabs requires INTERNET permission to launch URLs
