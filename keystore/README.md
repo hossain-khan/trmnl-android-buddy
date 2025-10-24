@@ -13,6 +13,11 @@ See https://developer.android.com/studio/publish/app-signing#debug-mode
 
 ### Release Keystore (Production)
 Release builds are signed by workflows using securely stored keystore files and credentials.
+As soon as a tagged release is created, the release workflow signs the APK using the production keystore and uploads it to GitHub Releases.
+
+For example:
+
+![](../docs/github-release-build-assets.png)
 
 ### Workflows
 
@@ -22,4 +27,4 @@ Three GitHub Actions workflows are available for testing and building releases:
 2. **test-keystore-apk-signing.yml**: Validates keystore configuration and APK signing
 3. **test-keystore.yml**: Comprehensive keystore diagnostics and troubleshooting
 
-See [release setup](../docs/RELEASE_SETUP.md) for details on how the workflows are setup with secrets.
+See [release setup](../docs/RELEASE_SETUP.md) for details on how the workflows are _already_ setup with secrets.
