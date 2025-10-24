@@ -67,6 +67,22 @@ interface BlogPostDao {
     suspend fun markAsRead(id: String)
 
     /**
+     * Mark all blog posts as read.
+     *
+     * @param timestamp When the posts were marked as read
+     */
+    @Query("UPDATE blog_posts SET isRead = 1, lastReadAt = :timestamp WHERE isRead = 0")
+    suspend fun markAllAsRead(timestamp: Instant)
+
+    /**
+     * Get count of unread blog posts.
+     *
+     * @return Flow of unread count
+     */
+    @Query("SELECT COUNT(*) FROM blog_posts WHERE isRead = 0")
+    fun getUnreadCount(): Flow<Int>
+
+    /**
      * Update reading progress for a blog post.
      *
      * @param id Blog post ID

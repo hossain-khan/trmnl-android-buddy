@@ -59,9 +59,11 @@ class BlogPostRepository(
     /**
      * Get count of unread blog posts.
      *
-     * @return Number of unread posts
+     * Efficiently counts unread posts without loading them into memory.
+     *
+     * @return Flow of unread count
      */
-    suspend fun getUnreadCount(): Int = blogPostDao.getUnread().first().size
+    fun getUnreadCount(): Flow<Int> = blogPostDao.getUnreadCount()
 
     /**
      * Get recently read blog posts (up to 10).
@@ -223,6 +225,13 @@ class BlogPostRepository(
      */
     suspend fun markAsRead(id: String) {
         blogPostDao.markAsRead(id)
+    }
+
+    /**
+     * Mark all blog posts as read.
+     */
+    suspend fun markAllAsRead() {
+        blogPostDao.markAllAsRead(Instant.now())
     }
 
     /**

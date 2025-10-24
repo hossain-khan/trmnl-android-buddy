@@ -2,7 +2,9 @@ package ink.trmnl.android.buddy.ui.announcements
 
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -17,7 +19,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +43,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -276,6 +281,16 @@ fun AnnouncementsContent(
     state: AnnouncementsScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val listState = rememberLazyListState()
+
+    // Track FAB visibility based on scroll position
+    val fabVisible by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex == 0 ||
+                listState.firstVisibleItemScrollOffset < 100
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -314,12 +329,16 @@ fun AnnouncementsContent(
             }
         },
         floatingActionButton = {
-            if (state.unreadCount > 0) {
+            AnimatedVisibility(
+                visible = state.unreadCount > 0 && fabVisible,
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+            ) {
                 FloatingActionButton(
                     onClick = { state.eventSink(AnnouncementsScreen.Event.MarkAllAsRead) },
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.check_24dp_e8eaed_fill1_wght400_grad0_opsz24),
+                        painter = painterResource(R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                         contentDescription = "Mark all as read",
                     )
                 }
@@ -344,6 +363,7 @@ fun AnnouncementsContent(
                     isRefreshing = state.isRefreshing,
                     filter = state.filter,
                     showAuthBanner = state.showAuthBanner,
+                    listState = listState,
                     onRefresh = { state.eventSink(AnnouncementsScreen.Event.Refresh) },
                     onFilterChanged = { newFilter ->
                         state.eventSink(AnnouncementsScreen.Event.FilterChanged(newFilter))
@@ -403,6 +423,7 @@ private fun AnnouncementsList(
     isRefreshing: Boolean,
     filter: AnnouncementsScreen.Filter,
     showAuthBanner: Boolean,
+    listState: LazyListState,
     onRefresh: () -> Unit,
     onFilterChanged: (AnnouncementsScreen.Filter) -> Unit,
     onAnnouncementClick: (AnnouncementEntity) -> Unit,
@@ -438,6 +459,7 @@ private fun AnnouncementsList(
             modifier = Modifier.weight(1f),
         ) {
             LazyColumn(
+                state = listState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 8.dp),
             ) {

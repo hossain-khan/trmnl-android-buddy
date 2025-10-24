@@ -256,6 +256,16 @@ class BlogPostRepositoryTest {
             }
         }
 
+        override suspend fun markAllAsRead(timestamp: java.time.Instant) {
+            posts.forEachIndexed { index, post ->
+                if (!post.isRead) {
+                    posts[index] = post.copy(isRead = true, lastReadAt = timestamp)
+                }
+            }
+        }
+
+        override fun getUnreadCount() = flowOf(posts.count { !it.isRead })
+
         override suspend fun updateReadingProgress(
             id: String,
             progress: Float,

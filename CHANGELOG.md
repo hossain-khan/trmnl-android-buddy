@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Blog Posts "Mark All Read" Feature**: Extended FAB to mark all blog posts as read
+  - Added Extended FloatingActionButton with "Mark All Read" text and icon
+  - Shows only when there are unread blog posts
+  - Added `markAllAsRead()` method to BlogPostDao and BlogPostRepository
+  - Added `MarkAllAsRead` event to BlogPostsScreen
+  - Added `unreadCount` to BlogPostsScreen state to track unread posts
+  - Consistent with Announcements screen FAB functionality
+
 - **Announcement Authentication Banner**: Informational banner explaining TRMNL account requirement
   - Dismissible banner shown at top of announcements list
   - Informs users that announcements require authentication to view full details on web
