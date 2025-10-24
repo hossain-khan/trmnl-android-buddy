@@ -20,7 +20,8 @@ interface AppBindings {
     ): TrmnlApiService {
         // Create API service with debug logging in debug builds
         val isDebug = BuildConfig.DEBUG
-        return TrmnlApiClient.create(isDebug = isDebug)
+        val appVersion = BuildConfig.VERSION_NAME
+        return TrmnlApiClient.create(isDebug = isDebug, appVersion = appVersion)
     }
 
     @Provides

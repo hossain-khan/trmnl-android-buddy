@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Handles HTTP 500 (server error) and 429 (rate limit) with user-friendly messages
   - Updates preview image URL when refresh succeeds
 
+### Changed
+- **User Agent**: Implemented dynamic user agent for API requests following industry best practices
+  - Format: `TrmnlAndroidBuddy/Version (Android APILevel; DeviceModel) OkHttp/Version`
+  - Includes app version from BuildConfig.VERSION_NAME
+  - Includes Android API level and device model
+  - Includes OkHttp version for better server-side debugging
+  - Replaces hardcoded "TrmnlAndroidBuddy/1.0" with dynamic version information
+
 ## [1.6.0] - 2025-10-23
 
 ### Changed
