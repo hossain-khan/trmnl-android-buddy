@@ -176,10 +176,10 @@ class BlogPostsPresenter
                 }
             }
 
-            // Collect unread count
+            // Collect unread count efficiently
             LaunchedEffect(Unit) {
-                blogPostRepository.getUnreadBlogPosts().collect { unreadPosts ->
-                    unreadCount = unreadPosts.size
+                blogPostRepository.getUnreadCount().collect { count ->
+                    unreadCount = count
                 }
             }
 

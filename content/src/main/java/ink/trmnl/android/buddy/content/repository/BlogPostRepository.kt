@@ -229,8 +229,17 @@ class BlogPostRepository(
      * Mark all blog posts as read.
      */
     suspend fun markAllAsRead() {
-        blogPostDao.markAllAsRead()
+        blogPostDao.markAllAsRead(Instant.now())
     }
+
+    /**
+     * Get count of unread blog posts.
+     *
+     * Efficiently counts unread posts without loading them into memory.
+     *
+     * @return Flow of unread count
+     */
+    fun getUnreadCount(): Flow<Int> = blogPostDao.getUnreadCount()
 
     /**
      * Update reading progress for a blog post.
