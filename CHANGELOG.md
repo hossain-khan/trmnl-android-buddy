@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Blog Posts Database Schema**: Extended ContentDatabase for combined announcements and blog posts feed (#142, Phase 1)
+  - Created `BlogPostEntity` Room entity with rich metadata: id, title, summary, link, authorName, category, publishedDate, featuredImageUrl, isRead, readingProgressPercent, lastReadAt, fetchedAt, isFavorite
+  - Implemented `BlogPostDao` with queries for filtering by category, favorites, unread status, search, and reading progress tracking
+  - Migrated `ContentDatabase` from version 1 to version 2 with backward-compatible migration
+  - Added `ContentDatabase.MIGRATION_1_2` to create blog_posts table
+  - Updated `AppBindings` to provide `BlogPostDao` and include migration in Room builder
+  - Foundation complete for unified content feed architecture (announcements + blog posts)
 - **Content Module**: Created new `:content` module for RSS feed management (#140, #141)
   - Added RSS-Parser 6.0.8 dependency for parsing Atom/RSS feeds
   - Added Chrome Custom Tabs 1.8.0 dependency for better in-app browser experience
