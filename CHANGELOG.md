@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Always-Visible Filter Bar in Announcements**: Filter chips now permanently pinned at the top
+  - Moved filter chips outside the scrollable LazyColumn to ensure they're always visible
+  - Filters are now fixed at the top in a separate Surface layer above the pull-to-refresh list
+  - Date headers remain sticky within the scrollable area for category navigation
+  - Pull-to-refresh functionality preserved and working correctly
+  - Better UX: filters never scroll away, users can always change view without scrolling back to top
+  - Follows Material Design 3 pattern of persistent filter controls for long lists
+
 ### Added
 - **UI/UX Refinements for Content Feed**: Complete Material Design 3 and accessibility overhaul
   - **Accessibility Improvements** (Phase 1):

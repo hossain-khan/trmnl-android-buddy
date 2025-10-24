@@ -18,13 +18,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -379,72 +381,105 @@ private fun AnnouncementsList(
     onToggleReadStatus: (AnnouncementEntity) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    PullToRefreshBox(
-        isRefreshing = isRefreshing,
-        onRefresh = onRefresh,
-        modifier = modifier,
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 8.dp),
+    Column(modifier = modifier.fillMaxSize()) {
+        // Filter chips fixed at the top - always visible
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 2.dp,
         ) {
-            // Filter chips
-            item {
-                FilterChips(
-                    selectedFilter = filter,
-                    onFilterChanged = onFilterChanged,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                )
-            }
+            FilterChips(
+                selectedFilter = filter,
+                onFilterChanged = onFilterChanged,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            )
+        }
 
-            // Group announcements by date
-            val groupedAnnouncements = announcements.groupByDate()
+        // Scrollable list with pull-to-refresh
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            modifier = Modifier.weight(1f),
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 8.dp),
+            ) {
+                // Group announcements by date
+                val groupedAnnouncements = announcements.groupByDate()
 
-            groupedAnnouncements.forEach { (dateCategory, items) ->
-                stickyHeader {
-                    DateHeader(dateCategory)
-                }
+                groupedAnnouncements.forEach { (dateCategory, items) ->
+                    stickyHeader(key = "date_$dateCategory") {
+                        DateHeader(dateCategory)
+                    }
 
-                items(
-                    items = items,
-                    key = { it.id },
-                ) { announcement ->
-                    AnnouncementItem(
-                        announcement = announcement,
-                        onClick = { onAnnouncementClick(announcement) },
-                        onToggleReadStatus = { onToggleReadStatus(announcement) },
-                    )
+                    items(
+                        items = items,
+                        key = { it.id },
+                    ) { announcement ->
+                        AnnouncementItem(
+                            announcement = announcement,
+                            onClick = { onAnnouncementClick(announcement) },
+                            onToggleReadStatus = { onToggleReadStatus(announcement) },
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+/**
+ * Modern segmented button row for filter selection.
+ * Uses Material Design 3 SingleChoiceSegmentedButtonRow for better UX.
+ */
 @Composable
 private fun FilterChips(
     selectedFilter: AnnouncementsScreen.Filter,
     onFilterChanged: (AnnouncementsScreen.Filter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    SingleChoiceSegmentedButtonRow(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        AnnouncementsScreen.Filter.entries.forEach { filter ->
-            FilterChip(
+        AnnouncementsScreen.Filter.entries.forEachIndexed { index, filter ->
+            SegmentedButton(
                 selected = selectedFilter == filter,
                 onClick = { onFilterChanged(filter) },
-                label = {
-                    Text(
-                        text =
-                            when (filter) {
-                                AnnouncementsScreen.Filter.ALL -> "All"
-                                AnnouncementsScreen.Filter.UNREAD -> "Unread"
-                                AnnouncementsScreen.Filter.READ -> "Read"
-                            },
+                shape =
+                    SegmentedButtonDefaults.itemShape(
+                        index = index,
+                        count = AnnouncementsScreen.Filter.entries.size,
+                    ),
+                icon = {
+                    // Directly provide icon without using SegmentedButtonDefaults.Icon
+                    // to prevent default checkmark behavior
+                    Icon(
+                        painter =
+                            painterResource(
+                                when (filter) {
+                                    AnnouncementsScreen.Filter.ALL ->
+                                        R.drawable.list_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                                    AnnouncementsScreen.Filter.UNREAD ->
+                                        R.drawable.markunread_mailbox_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    AnnouncementsScreen.Filter.READ ->
+                                        R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                },
+                            ),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
                     )
                 },
-            )
+            ) {
+                Text(
+                    text =
+                        when (filter) {
+                            AnnouncementsScreen.Filter.ALL -> "All"
+                            AnnouncementsScreen.Filter.UNREAD -> "Unread"
+                            AnnouncementsScreen.Filter.READ -> "Read"
+                        },
+                )
+            }
         }
     }
 }
