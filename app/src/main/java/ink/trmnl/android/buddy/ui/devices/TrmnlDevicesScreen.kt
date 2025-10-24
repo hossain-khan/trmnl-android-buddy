@@ -7,6 +7,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +25,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,7 +47,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,6 +60,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
@@ -76,11 +87,12 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
+import ink.trmnl.android.buddy.content.models.ContentItem
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
-import ink.trmnl.android.buddy.ui.announcements.AnnouncementsScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
+import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
@@ -92,6 +104,9 @@ import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import ink.trmnl.android.buddy.util.formatRefreshRate
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -120,8 +135,8 @@ data object TrmnlDevicesScreen : Screen {
         val isUnauthorized: Boolean = false,
         val isPrivacyEnabled: Boolean = true,
         val snackbarMessage: String? = null,
-        val announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity> = emptyList(),
-        val isAnnouncementsLoading: Boolean = true,
+        val latestContent: List<ContentItem> = emptyList(),
+        val isContentLoading: Boolean = true,
         val isAnnouncementsEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
@@ -152,11 +167,11 @@ data object TrmnlDevicesScreen : Screen {
             val refreshRate: Int,
         ) : Event()
 
-        data class AnnouncementClicked(
-            val announcement: ink.trmnl.android.buddy.content.db.AnnouncementEntity,
+        data class ContentItemClicked(
+            val item: ContentItem,
         ) : Event()
 
-        data object ViewAllAnnouncementsClicked : Event()
+        data object ViewAllContentClicked : Event()
 
         data object DismissSnackbar : Event()
     }
@@ -174,7 +189,9 @@ class TrmnlDevicesPresenter
         private val apiService: TrmnlApiService,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val deviceTokenRepository: DeviceTokenRepository,
+        private val contentFeedRepository: ink.trmnl.android.buddy.content.repository.ContentFeedRepository,
         private val announcementRepository: ink.trmnl.android.buddy.content.repository.AnnouncementRepository,
+        private val blogPostRepository: ink.trmnl.android.buddy.content.repository.BlogPostRepository,
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
@@ -186,10 +203,10 @@ class TrmnlDevicesPresenter
             var isUnauthorized by rememberRetained { mutableStateOf(false) }
             var isPrivacyEnabled by rememberRetained { mutableStateOf(true) }
             var snackbarMessage by rememberRetained { mutableStateOf<String?>(null) }
-            var announcements by rememberRetained {
-                mutableStateOf<List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>>(emptyList())
+            var latestContent by rememberRetained {
+                mutableStateOf<List<ContentItem>>(emptyList())
             }
-            var isAnnouncementsLoading by rememberRetained { mutableStateOf(true) }
+            var isContentLoading by rememberRetained { mutableStateOf(true) }
             var isAnnouncementsEnabled by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
 
@@ -204,21 +221,42 @@ class TrmnlDevicesPresenter
                 }
             }
 
-            // Collect announcements from repository
+            // Collect latest content (announcements + blog posts) from combined feed
             LaunchedEffect(Unit) {
-                announcementRepository.getLatestAnnouncements(limit = 3).collect { latestAnnouncements ->
-                    announcements = latestAnnouncements
-                    isAnnouncementsLoading = false
+                contentFeedRepository.getLatestContent(limit = 3).collect { content ->
+                    latestContent = content
+                    isContentLoading = false
                 }
             }
 
-            // Fetch announcements on initial load (if database is empty)
+            // Fetch content on initial load (if database is empty)
             LaunchedEffect(Unit) {
-                // Check if we have announcements, if not, fetch them
-                if (announcements.isEmpty()) {
-                    val result = announcementRepository.refreshAnnouncements()
-                    if (result.isFailure) {
-                        timber.log.Timber.d("Failed to fetch initial announcements: %s", result.exceptionOrNull()?.message)
+                // Check if we have content, if not, fetch both announcements and blog posts
+                if (latestContent.isEmpty()) {
+                    // Fetch announcements and blog posts in parallel
+                    coroutineScope.launch {
+                        val jobs =
+                            listOf(
+                                async {
+                                    val announcementResult = announcementRepository.refreshAnnouncements()
+                                    if (announcementResult.isFailure) {
+                                        timber.log.Timber.d(
+                                            "Failed to fetch initial announcements: %s",
+                                            announcementResult.exceptionOrNull()?.message,
+                                        )
+                                    }
+                                },
+                                async {
+                                    val blogPostResult = blogPostRepository.refreshBlogPosts()
+                                    if (blogPostResult.isFailure) {
+                                        timber.log.Timber.d(
+                                            "Failed to fetch initial blog posts: %s",
+                                            blogPostResult.exceptionOrNull()?.message,
+                                        )
+                                    }
+                                },
+                            )
+                        jobs.awaitAll()
                     }
                 }
             }
@@ -275,24 +313,31 @@ class TrmnlDevicesPresenter
                 isUnauthorized = isUnauthorized,
                 isPrivacyEnabled = isPrivacyEnabled,
                 snackbarMessage = snackbarMessage,
-                announcements = announcements,
-                isAnnouncementsLoading = isAnnouncementsLoading,
+                latestContent = latestContent,
+                isContentLoading = isContentLoading,
                 isAnnouncementsEnabled = isAnnouncementsEnabled,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
                         isLoading = true
-                        isAnnouncementsLoading = true
+                        isContentLoading = true
                         errorMessage = null
                         isUnauthorized = false
                         coroutineScope.launch {
-                            // Refresh announcements in background
+                            // Refresh content (announcements + blog posts) in background
                             launch {
-                                val result = announcementRepository.refreshAnnouncements()
-                                if (result.isFailure) {
-                                    snackbarMessage = "Failed to refresh announcements: ${result.exceptionOrNull()?.message}"
+                                val announcementResult = announcementRepository.refreshAnnouncements()
+                                if (announcementResult.isFailure) {
+                                    snackbarMessage =
+                                        "Failed to refresh announcements: ${announcementResult.exceptionOrNull()?.message}"
                                 }
-                                isAnnouncementsLoading = false
+                            }
+                            launch {
+                                val blogPostResult = blogPostRepository.refreshBlogPosts()
+                                if (blogPostResult.isFailure) {
+                                    snackbarMessage =
+                                        "Failed to refresh blog posts: ${blogPostResult.exceptionOrNull()?.message}"
+                                }
                             }
 
                             // Refresh devices
@@ -370,22 +415,29 @@ class TrmnlDevicesPresenter
                         snackbarMessage = formatRefreshRateExplanation(event.refreshRate)
                     }
 
-                    is TrmnlDevicesScreen.Event.AnnouncementClicked -> {
-                        // Open announcement in Chrome Custom Tabs
+                    is TrmnlDevicesScreen.Event.ContentItemClicked -> {
+                        // Open content in Chrome Custom Tabs
                         BrowserUtils.openUrlInCustomTab(
                             context = context,
-                            url = event.announcement.link,
+                            url = event.item.link,
                             toolbarColor = primaryColor,
                             secondaryColor = surfaceColor,
                         )
-                        // Mark announcement as read
+                        // Mark content as read based on type
                         coroutineScope.launch {
-                            announcementRepository.markAsRead(event.announcement.id)
+                            when (event.item) {
+                                is ContentItem.Announcement -> {
+                                    announcementRepository.markAsRead(event.item.id)
+                                }
+                                is ContentItem.BlogPost -> {
+                                    blogPostRepository.markAsRead(event.item.id)
+                                }
+                            }
                         }
                     }
 
-                    TrmnlDevicesScreen.Event.ViewAllAnnouncementsClicked -> {
-                        navigator.goTo(AnnouncementsScreen)
+                    TrmnlDevicesScreen.Event.ViewAllContentClicked -> {
+                        navigator.goTo(ContentHubScreen)
                     }
 
                     TrmnlDevicesScreen.Event.DismissSnackbar -> {
@@ -569,8 +621,8 @@ fun TrmnlDevicesContent(
                     devicePreviews = state.devicePreviews,
                     isPrivacyEnabled = state.isPrivacyEnabled,
                     innerPadding = innerPadding,
-                    announcements = state.announcements,
-                    isAnnouncementsLoading = state.isAnnouncementsLoading,
+                    latestContent = state.latestContent,
+                    isContentLoading = state.isContentLoading,
                     isAnnouncementsEnabled = state.isAnnouncementsEnabled,
                     onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                     onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
@@ -582,11 +634,11 @@ fun TrmnlDevicesContent(
                             ),
                         )
                     },
-                    onAnnouncementClick = { announcement ->
-                        state.eventSink(TrmnlDevicesScreen.Event.AnnouncementClicked(announcement))
+                    onContentItemClick = { item ->
+                        state.eventSink(TrmnlDevicesScreen.Event.ContentItemClicked(item))
                     },
-                    onViewAllAnnouncementsClick = {
-                        state.eventSink(TrmnlDevicesScreen.Event.ViewAllAnnouncementsClicked)
+                    onViewAllContentClick = {
+                        state.eventSink(TrmnlDevicesScreen.Event.ViewAllContentClicked)
                     },
                     eventSink = state.eventSink,
                 )
@@ -691,7 +743,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 
 /**
  * Devices list composable.
- * Shows scrollable list of device cards with announcements carousel at top.
+ * Shows scrollable list of device cards with content carousel at top.
  */
 @Composable
 private fun DevicesList(
@@ -700,14 +752,14 @@ private fun DevicesList(
     devicePreviews: Map<String, DevicePreviewInfo?>,
     isPrivacyEnabled: Boolean,
     innerPadding: PaddingValues,
-    announcements: List<ink.trmnl.android.buddy.content.db.AnnouncementEntity>,
-    isAnnouncementsLoading: Boolean,
+    latestContent: List<ContentItem>,
+    isContentLoading: Boolean,
     isAnnouncementsEnabled: Boolean,
     onDeviceClick: (Device) -> Unit,
     onSettingsClick: (Device) -> Unit,
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
-    onAnnouncementClick: (ink.trmnl.android.buddy.content.db.AnnouncementEntity) -> Unit,
-    onViewAllAnnouncementsClick: () -> Unit,
+    onContentItemClick: (ContentItem) -> Unit,
+    onViewAllContentClick: () -> Unit,
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -719,14 +771,14 @@ private fun DevicesList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // Announcements carousel at the top (only if enabled)
+        // Content carousel at the top (only if enabled)
         if (isAnnouncementsEnabled) {
             item {
-                ink.trmnl.android.buddy.ui.home.AnnouncementCarousel(
-                    announcements = announcements,
-                    isLoading = isAnnouncementsLoading,
-                    onAnnouncementClick = onAnnouncementClick,
-                    onViewAllClick = onViewAllAnnouncementsClick,
+                ContentCarousel(
+                    content = latestContent,
+                    isLoading = isContentLoading,
+                    onContentClick = onContentItemClick,
+                    onViewAllClick = onViewAllContentClick,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -752,6 +804,329 @@ private fun DevicesList(
             )
         }
     }
+}
+
+/**
+ * Content carousel composable.
+ * Shows combined feed of announcements and blog posts with post type indicators.
+ * Features auto-rotation every 5 seconds and manual swipe gestures.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ContentCarousel(
+    content: List<ContentItem>,
+    isLoading: Boolean,
+    onContentClick: (ContentItem) -> Unit,
+    onViewAllClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Header with "View All" button
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Announcements & Blog Posts",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                TextButton(onClick = onViewAllClick) {
+                    Text(text = "View All")
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        painter = painterResource(R.drawable.list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                        contentDescription = "View all content",
+                        modifier = Modifier.size(16.dp),
+                    )
+                }
+            }
+
+            when {
+                isLoading -> {
+                    // Loading state
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(16.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                content.isEmpty() -> {
+                    // Empty state
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(16.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "No content available",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+
+                else -> {
+                    // Display content carousel with auto-rotation
+                    val pagerState = rememberPagerState(pageCount = { content.size })
+
+                    // Auto-rotation every 5 seconds
+                    LaunchedEffect(pagerState, content.size) {
+                        while (true) {
+                            delay(5000) // 5 seconds
+                            val nextPage = (pagerState.currentPage + 1) % content.size
+                            pagerState.animateScrollToPage(nextPage)
+                        }
+                    }
+
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                    ) {
+                        HorizontalPager(
+                            state = pagerState,
+                            contentPadding = PaddingValues(horizontal = 16.dp),
+                            pageSpacing = 8.dp,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) { page ->
+                            val item = content[page]
+                            ContentItemCard(
+                                item = item,
+                                onClick = { onContentClick(item) },
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .animatePageAlpha(pagerState, page),
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Page indicators
+                        PageIndicators(
+                            pageCount = content.size,
+                            currentPage = pagerState.currentPage,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Content item card composable.
+ * Shows a single content item (announcement or blog post) with type indicator.
+ */
+@Composable
+private fun ContentItemCard(
+    item: ContentItem,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.clickable(onClick = onClick),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+        ) {
+            // Title, post type chip, and unread badge row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    // Post type chip
+                    AssistChip(
+                        onClick = { /* Optional: filter by type */ },
+                        label = {
+                            Text(
+                                text =
+                                    when (item) {
+                                        is ContentItem.Announcement -> "Announcement"
+                                        is ContentItem.BlogPost -> "Blog"
+                                    },
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painter =
+                                    painterResource(
+                                        when (item) {
+                                            is ContentItem.Announcement ->
+                                                R.drawable
+                                                    .notification_important_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                            is ContentItem.BlogPost ->
+                                                R.drawable
+                                                    .list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                                        },
+                                    ),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                        },
+                        colors =
+                            AssistChipDefaults.assistChipColors(
+                                containerColor =
+                                    when (item) {
+                                        is ContentItem.Announcement -> MaterialTheme.colorScheme.primaryContainer
+                                        is ContentItem.BlogPost -> MaterialTheme.colorScheme.secondaryContainer
+                                    },
+                                labelColor =
+                                    when (item) {
+                                        is ContentItem.Announcement -> MaterialTheme.colorScheme.onPrimaryContainer
+                                        is ContentItem.BlogPost -> MaterialTheme.colorScheme.onSecondaryContainer
+                                    },
+                            ),
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Title
+                    Text(
+                        text = item.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 2,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    )
+                }
+
+                // Unread badge
+                if (!item.isRead) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(8.dp),
+                    ) {}
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Summary
+            Text(
+                text = item.summary,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Metadata row
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = formatRelativeDate(item.publishedDate),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                )
+
+                // Blog-specific metadata
+                if (item is ContentItem.BlogPost) {
+                    item.category?.let { category ->
+                        Text(
+                            text = "•",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = category,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Page indicators showing current position in carousel.
+ */
+@Composable
+private fun PageIndicators(
+    pageCount: Int,
+    currentPage: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        repeat(pageCount) { index ->
+            val isSelected = index == currentPage
+            Surface(
+                shape = CircleShape,
+                color =
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                    },
+                modifier = Modifier.size(8.dp),
+            ) {}
+        }
+    }
+}
+
+/**
+ * Animate page alpha for fade effect during transitions.
+ */
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun Modifier.animatePageAlpha(
+    pagerState: PagerState,
+    page: Int,
+): Modifier {
+    val pageOffset = (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+    val alpha by animateFloatAsState(
+        targetValue = if (pageOffset.toFloat() == 0f) 1f else 0.6f,
+        animationSpec = tween(durationMillis = 300),
+        label = "pageAlpha",
+    )
+    return this.alpha(alpha)
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -1172,6 +1547,31 @@ private fun RefreshRateIndicator(
     }
 }
 
+// ========== Helper Functions ==========
+
+/**
+ * Format Instant as relative time string (e.g., "2 days ago").
+ */
+private fun formatRelativeDate(instant: java.time.Instant): String {
+    val now = java.time.Instant.now()
+    val days =
+        java.time.temporal.ChronoUnit.DAYS
+            .between(instant, now)
+    val hours =
+        java.time.temporal.ChronoUnit.HOURS
+            .between(instant, now)
+    val minutes =
+        java.time.temporal.ChronoUnit.MINUTES
+            .between(instant, now)
+
+    return when {
+        days > 0 -> "$days day${if (days == 1L) "" else "s"} ago"
+        hours > 0 -> "$hours hour${if (hours == 1L) "" else "s"} ago"
+        minutes > 0 -> "$minutes minute${if (minutes == 1L) "" else "s"} ago"
+        else -> "Just now"
+    }
+}
+
 // ========== Previews ==========
 
 /**
@@ -1211,6 +1611,49 @@ private val sampleDevice3 =
         rssi = -80,
         percentCharged = 15.0,
         wifiStrength = 25.0,
+    )
+
+/**
+ * Sample content items for previews.
+ */
+private val sampleAnnouncement =
+    ContentItem.Announcement(
+        id = "1",
+        title = "New Feature: Screen Sharing",
+        summary =
+            "We've added the ability to share your screen content with others. " +
+                "Check out the new settings panel to get started.",
+        link = "https://usetrmnl.com/announcements/screen-sharing",
+        publishedDate =
+            java.time.Instant
+                .now()
+                .minus(2, java.time.temporal.ChronoUnit.DAYS),
+        isRead = false,
+    )
+
+private val sampleBlogPost =
+    ContentItem.BlogPost(
+        id = "2",
+        title = "Building the Perfect E-Ink Dashboard",
+        summary =
+            "Learn how to create an efficient and beautiful dashboard for your TRMNL device. " +
+                "We'll cover layout design, data sources, and optimization tips.",
+        link = "https://usetrmnl.com/blog/perfect-dashboard",
+        publishedDate =
+            java.time.Instant
+                .now()
+                .minus(5, java.time.temporal.ChronoUnit.HOURS),
+        isRead = false,
+        authorName = "John Doe",
+        category = "Tutorial",
+        featuredImageUrl = "https://usetrmnl.com/images/blog/dashboard.jpg",
+        isFavorite = false,
+    )
+
+private val sampleContentList =
+    listOf(
+        sampleBlogPost, // Recent blog post (5 hours ago)
+        sampleAnnouncement, // Older announcement (2 days ago)
     )
 
 @Preview(name = "Loading State")
@@ -1336,14 +1779,14 @@ private fun DevicesListPreview() {
             devicePreviews = emptyMap(),
             isPrivacyEnabled = false,
             innerPadding = PaddingValues(0.dp),
-            announcements = emptyList(),
-            isAnnouncementsLoading = false,
+            latestContent = sampleContentList,
+            isContentLoading = false,
             isAnnouncementsEnabled = true,
             onDeviceClick = {},
             onSettingsClick = {},
             onPreviewClick = { _, _ -> },
-            onAnnouncementClick = {},
-            onViewAllAnnouncementsClick = {},
+            onContentItemClick = {},
+            onViewAllContentClick = {},
             eventSink = {},
         )
     }

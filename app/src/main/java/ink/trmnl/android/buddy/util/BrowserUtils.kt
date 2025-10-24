@@ -43,6 +43,9 @@ object BrowserUtils {
                     .setUrlBarHidingEnabled(false)
                     .build()
 
+            // Add FLAG_ACTIVITY_NEW_TASK when launching from Application context
+            customTabsIntent.intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+
             customTabsIntent.launchUrl(context, url.toUri())
             Timber.d("Opened URL in Custom Tabs: %s", url)
         } catch (e: Exception) {

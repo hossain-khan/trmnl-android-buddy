@@ -8,6 +8,183 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Blog Post Repository Tests**: Comprehensive unit tests for RSS parsing and data transformation
+  - Created `BlogPostRepositoryTest` with Robolectric 4.15 for Android framework support
+  - 3 test methods covering: RSS parser content extraction, HTML sanitization, full refresh flow
+  - Uses real Atom feed XML from `docs/usetrmnl.com-blog-posts.xml` as test data
+  - MockWebServer for simulating HTTP responses
+  - Validates that RSS parser correctly extracts `<content>` field from Atom feeds
+  - Verifies HTML sanitization removes tags and limits to 300 characters
+  - All tests passing with comprehensive debug output
+
+- **Combined Content Feed Feature (#142) - Complete Implementation**:
+  - **Phase 1-6 Complete**: Full blog posts integration with announcements
+  - **Architecture**: Offline-first, reactive Flow-based data layer with Room database
+  - **UI/UX**: Material You compliant throughout, supports dynamic theming and dark mode
+  
+- **Background Blog Post Sync**: Automatic periodic sync worker (#142, Phase 6)
+  - Created `BlogPostSyncWorker` with CoroutineWorker and Metro DI integration
+  - Periodic sync every 24 hours using WorkManager
+  - Work constraints: requires network connectivity and battery not low
+  - Smart notification system:
+    - Tracks unread count before/after refresh to detect new posts
+    - Shows notification only when new posts are available
+    - Custom notification channel "Blog Post Updates" (Android O+)
+    - Notification displays count (e.g., "3 new blog posts available")
+    - Tapping notification opens MainActivity
+    - Auto-dismiss on tap
+  - Error handling with exponential backoff retry
+  - Worker registered in AppWorkerFactory with AssistedFactory pattern
+  - Scheduled in TrmnlBuddyApp.onCreate() with KEEP policy (prevents duplicates)
+  - Timber logging for debugging
+  - Added `getUnreadCount()` to BlogPostRepository (suspending function using Flow.first())
+
+- **Compose Previews for Content Screens**: Added comprehensive preview coverage for better developer experience
+  - `AnnouncementsScreen`: 9 preview functions covering loading, empty (all/unread filters), individual items (read/unread), filter chips, full screen, and embedded mode
+  - `BlogPostsScreen`: 9 preview functions covering loading, error, empty, cards (with image/favorited/no image), full screen, filtered by category, and embedded mode
+  - `ContentHubScreen`: 5 preview functions covering both tabs (announcements/blog posts), unread badges, category filtering, and navigation bar
+  - All previews use `@PreviewLightDark` for both light and dark mode rendering
+  - Sample data entities created with realistic content and varied states
+  - Follows existing app pattern established in `TrmnlDevicesScreen`
+  - All previews wrapped in `TrmnlBuddyAppTheme` for Material You theming
+
+### Fixed
+- **Announcement Summary Display**: Hide summary text when it's blank/empty
+  - AnnouncementItem now checks if summary is not blank before displaying
+  - Prevents showing empty summary text views in the announcements list
+  - Improves UI cleanliness when announcements lack summary content
+
+- **Chrome Custom Tabs Launch Fix**: Added FLAG_ACTIVITY_NEW_TASK to fix activity context issue
+  - Fixed AndroidRuntimeException when opening blog posts/announcements
+  - Error: "Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag"
+  - Root cause: Using Application context instead of Activity context to launch Custom Tabs
+  - Solution: Added `FLAG_ACTIVITY_NEW_TASK` flag to CustomTabsIntent
+  - Links now properly open in Chrome Custom Tabs without errors
+
+- **INTERNET Permission Missing**: Added missing INTERNET permission to AndroidManifest.xml
+  - Fixed critical bug where clicking blog posts and announcements didn't open browser
+  - Chrome Custom Tabs requires INTERNET permission to launch URLs
+  - Now blog post and announcement links properly open in Chrome Custom Tabs
+
+- **Blog Post Summary Logging**: Added Timber logging to help diagnose RSS parsing issues
+  - Replaced println statements with proper Timber.d() calls
+  - Logs content/description lengths and summary lengths during parsing
+  - Logs counter for updated summaries to track refresh behavior
+  - Tests prove parsing works correctly; production issues may be due to old cached data
+
+- **Blog Posts Favorite Persistence**: Fixed critical bug where favorite status was not persisted
+  - Root cause: `BlogPostDao.insertAll()` was using `OnConflictStrategy.REPLACE` which completely replaced existing rows
+  - This overwrote user state fields (`isFavorite`, `isRead`, `readingProgressPercent`) during refresh
+  - Solution: Changed to `OnConflictStrategy.IGNORE` to prevent overwriting existing posts
+  - Now only new posts are inserted, preserving all user interactions on existing posts
+  - Favorite toggle now correctly persists across app restarts and background syncs
+
+### Changed
+- **ContentHubScreen UI Refinement**: Eliminated nested TopAppBars for better space utilization
+  - Embedded screens (AnnouncementsScreen, BlogPostsScreen) now hide their TopAppBars when displayed in ContentHubScreen
+  - ContentHubScreen's single TopAppBar dynamically shows tab-specific content:
+    - Announcements tab: displays unread count badge
+    - Blog Posts tab: displays selected category and filter dropdown
+  - Added `isEmbedded` parameter to both screen data classes (default: `false`)
+  - Presenters automatically set `showTopBar = false` when embedded
+  - Improved vertical space efficiency by removing duplicate toolbar areas
+  - Full content area now utilizes padding from Scaffold's innerPadding directly
+  - Bottom navigation icons updated for better semantic meaning:
+    - Announcements: `campaign` icon (megaphone/broadcast symbol)
+    - Blog Posts: `newspaper` icon (news/articles symbol)
+  - Tests passing: 125 tasks
+- **Blog Posts List UI Polish**:
+  - Removed redundant category chip from list items (category already shown in TopAppBar filter)
+  - Updated favorite icon to use new Material Design icons:
+    - Unfavorited: `heart_plus` icon (add to favorites)
+    - Favorited: `favorite_fill1` icon (filled heart)
+  - Cleaner, more focused list item layout
+  - **Summary Text Improvements**:
+    - HTML content sanitized to plain text (removes all HTML tags and entities)
+    - Summary limited to 300 characters maximum for cleaner display
+    - UI updated to show 4 lines max (previously 3) with ellipsis for overflow
+    - Normalized whitespace for better readability
+    - **Tries content field first, falls back to description** for better summary extraction
+    - **Existing posts automatically updated** with sanitized summaries on refresh
+- **Blog Posts List Screen**: Full-featured blog posts viewer (#142, Phase 5)
+  - Created `BlogPostsScreen` with Circuit architecture (Screen, State, Event, Presenter, Content)
+  - List view of all blog posts from TRMNL RSS feed with pull-to-refresh
+  - Category filter dropdown with "All" option and dynamic categories from posts
+  - Featured image display when available using Coil (180dp height, crop scaling)
+  - BlogPostCard component with:
+    - Featured image with loading indicator
+    - Title (2 line max) with bold styling
+    - Summary (4 line max) with overflow ellipsis and sanitized plain text
+    - Author name and relative date ("2 days ago")
+    - Unread indicator (blue dot) for new posts
+    - Favorite toggle button (heart icon with error color when active)
+    - **Card tap opens blog post in Chrome Custom Tabs** with theme-aware colors
+  - Click to open blog post in Chrome Custom Tabs with theme colors
+  - Auto-mark as read when clicked
+  - Toggle favorite functionality
+  - Loading, error, and empty states with retry functionality
+  - TopAppBar with dynamic title showing selected category
+  - Replaced placeholder in ContentHubScreen with actual BlogPostsScreen
+  - Integrated with existing BlogPostRepository (RSS parsing, offline-first)
+  - Material You theming throughout (color schemes, typography, proper contrast)
+  - Tests passing: 125 tasks
+- **Content Hub Screen**: Unified navigation for announcements and blog posts (#142, Phase 4)
+  - Created `ContentHubScreen` with Circuit architecture (Screen, Presenter, Content)
+  - Bottom navigation with two tabs: "Announcements" and "Blog Posts"
+  - Material 3 NavigationBar with proper icon and label styling
+  - Tab selection state management with `rememberRetained`
+  - Announcements tab embeds existing `AnnouncementsScreen` using `NavigableCircuitContent`
+  - Blog Posts tab shows placeholder UI ("Coming soon in Phase 5")
+  - TopAppBar title dynamically updates based on selected tab
+  - Updated "View All" navigation from devices screen to open ContentHubScreen
+  - Proper Material You theming with color schemes
+  - Tests passing: 125 tasks
+
+### Fixed
+- **Content Carousel UI**: Restored horizontal auto-rotating carousel behavior (#142)
+  - Fixed regression where carousel displayed 3 cards vertically instead of horizontal pager
+  - Re-implemented `HorizontalPager` with auto-rotation every 5 seconds
+  - Added page indicators showing current position in carousel
+  - Added page alpha animation for smooth fade effect during transitions
+  - Updated ContentItemCard to match AnnouncementCard layout style
+  - Card now uses surface color with proper elevation instead of surfaceVariant
+  - Post type chip (Announcement/Blog) displayed above title
+  - Unread badge positioned in top-right corner
+  - Improved spacing and typography (titleMedium for title, bodyMedium for summary)
+  - Loading and empty states display in fixed height box (120dp)
+  - All Material You colors preserved with proper theming support
+
+### Added
+- **Combined Content Carousel**: Updated devices screen with unified announcements and blog posts carousel (#142, Phase 3)
+  - Replaced announcements-only carousel with combined content feed showing both announcements and blog posts
+  - Added `ContentCarousel` composable with "Announcements & Blog Posts" header
+  - Implemented `ContentItemCard` with Material 3 AssistChip for visual post type differentiation
+  - Post type indicators: 🔔 Notification icon for announcements (primaryContainer), 📄 List icon for blog posts (secondaryContainer)
+  - Displays unread indicator (8dp circle with primary color)
+  - Shows title (max 2 lines), summary (max 2 lines), and metadata row with relative date
+  - Blog posts include category badge when available
+  - Integrated `ContentFeedRepository` in `TrmnlDevicesPresenter` for fetching latest 3 content items
+  - Updated refresh logic to fetch both announcements and blog posts in parallel
+  - Type-aware event handling for marking content as read based on content type (Announcement vs BlogPost)
+  - Updated State, Event, and all composables to use `ContentItem` instead of `AnnouncementEntity`
+  - Added `formatRelativeDate()` helper function for user-friendly time display
+  - All preview data updated with sample announcements and blog posts
+  - Tests passing: 125 tasks
+- **Combined Content Feed Repository**: Unified content feed architecture for announcements and blog posts (#142, Phase 2)
+  - Created `BlogPostRepository` for fetching, parsing, and managing blog posts from https://usetrmnl.com/feeds/posts.xml
+  - Implemented `ContentItem` sealed class for type-safe representation of announcements and blog posts
+  - Built `ContentFeedRepository` to combine both content types, sorted by published date
+  - RSS-Parser integration with author extraction, category parsing, and featured image detection
+  - Offline-first pattern with read status preservation during refresh
+  - Added providers in `AppBindings` for `BlogPostRepository` and `ContentFeedRepository`
+  - Support for favorites, reading progress tracking, and search functionality
+- **Blog Posts Database Schema**: Extended ContentDatabase for combined announcements and blog posts feed (#142, Phase 1)
+  - Created `BlogPostEntity` Room entity with rich metadata: id, title, summary, link, authorName, category, publishedDate, featuredImageUrl, isRead, readingProgressPercent, lastReadAt, fetchedAt, isFavorite
+  - Implemented `BlogPostDao` with queries for filtering by category, favorites, unread status, search, and reading progress tracking
+  - Migrated `ContentDatabase` from version 1 to version 2 with backward-compatible migration
+  - Added `ContentDatabase.MIGRATION_1_2` to create blog_posts table
+  - Updated `AppBindings` to provide `BlogPostDao` and include migration in Room builder
+  - Foundation complete for unified content feed architecture (announcements + blog posts)
 - **Content Module**: Created new `:content` module for RSS feed management (#140, #141)
   - Added RSS-Parser 6.0.8 dependency for parsing Atom/RSS feeds
   - Added Chrome Custom Tabs 1.8.0 dependency for better in-app browser experience

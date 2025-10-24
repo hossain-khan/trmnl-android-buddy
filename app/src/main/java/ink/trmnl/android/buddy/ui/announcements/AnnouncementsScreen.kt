@@ -44,6 +44,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
@@ -70,9 +72,13 @@ import java.time.temporal.ChronoUnit
 
 /**
  * Screen for displaying all announcements.
+ *
+ * @param isEmbedded When true, hides the top app bar (for use in ContentHubScreen)
  */
 @Parcelize
-data object AnnouncementsScreen : Screen {
+data class AnnouncementsScreen(
+    val isEmbedded: Boolean = false,
+) : Screen {
     data class State(
         val announcements: List<AnnouncementEntity> = emptyList(),
         val isLoading: Boolean = true,
@@ -80,6 +86,7 @@ data object AnnouncementsScreen : Screen {
         val filter: Filter = Filter.ALL,
         val unreadCount: Int = 0,
         val errorMessage: String? = null,
+        val showTopBar: Boolean = true, // Control whether to show top app bar
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -116,6 +123,7 @@ data object AnnouncementsScreen : Screen {
 @Inject
 class AnnouncementsPresenter
     constructor(
+        @Assisted private val screen: AnnouncementsScreen,
         @Assisted private val navigator: Navigator,
         @ApplicationContext private val context: Context,
         private val announcementRepository: AnnouncementRepository,
@@ -164,6 +172,7 @@ class AnnouncementsPresenter
                 filter = filter,
                 unreadCount = unreadCount,
                 errorMessage = errorMessage,
+                showTopBar = !screen.isEmbedded, // Hide top bar when embedded
             ) { event ->
                 when (event) {
                     AnnouncementsScreen.Event.BackClicked -> {
@@ -223,7 +232,10 @@ class AnnouncementsPresenter
         @CircuitInject(AnnouncementsScreen::class, AppScope::class)
         @AssistedFactory
         interface Factory {
-            fun create(navigator: Navigator): AnnouncementsPresenter
+            fun create(
+                screen: AnnouncementsScreen,
+                navigator: Navigator,
+            ): AnnouncementsPresenter
         }
     }
 
@@ -240,37 +252,39 @@ fun AnnouncementsContent(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Text("Announcements")
-                        if (state.unreadCount > 0) {
-                            Surface(
-                                shape = CircleShape,
-                                color = MaterialTheme.colorScheme.primary,
-                            ) {
-                                Text(
-                                    text = state.unreadCount.toString(),
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                )
+            if (state.showTopBar) {
+                TopAppBar(
+                    title = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Text("Announcements")
+                            if (state.unreadCount > 0) {
+                                Surface(
+                                    shape = CircleShape,
+                                    color = MaterialTheme.colorScheme.primary,
+                                ) {
+                                    Text(
+                                        text = state.unreadCount.toString(),
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                    )
+                                }
                             }
                         }
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = { state.eventSink(AnnouncementsScreen.Event.BackClicked) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-            )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { state.eventSink(AnnouncementsScreen.Event.BackClicked) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Back",
+                            )
+                        }
+                    },
+                )
+            }
         },
         floatingActionButton = {
             if (state.unreadCount > 0) {
@@ -530,13 +544,16 @@ private fun AnnouncementItem(
             },
             supportingContent = {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(
-                        text = announcement.summary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    // Only show summary if it's not blank
+                    if (announcement.summary.isNotBlank()) {
+                        Text(
+                            text = announcement.summary,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                     Text(
                         text = formatRelativeDate(announcement.publishedDate),
                         style = MaterialTheme.typography.bodySmall,
@@ -592,5 +609,182 @@ private fun formatRelativeDate(instant: Instant): String {
         hours > 0 -> "$hours hour${if (hours == 1L) "" else "s"} ago"
         minutes > 0 -> "$minutes minute${if (minutes == 1L) "" else "s"} ago"
         else -> "Just now"
+    }
+}
+
+// ============================================================================
+// Compose Previews
+// ============================================================================
+
+private val sampleAnnouncements =
+    listOf(
+        AnnouncementEntity(
+            id = "1",
+            title = "New Feature: Device Scheduling",
+            summary = "You can now schedule when your TRMNL device refreshes content automatically.",
+            link = "https://usetrmnl.com/announcements/device-scheduling",
+            publishedDate = Instant.now().minus(2, ChronoUnit.HOURS),
+            isRead = false,
+            fetchedAt = Instant.now().minus(2, ChronoUnit.HOURS),
+        ),
+        AnnouncementEntity(
+            id = "2",
+            title = "API Rate Limit Update",
+            summary = "We've increased the API rate limit for all paid plans. Check the docs for details.",
+            link = "https://usetrmnl.com/announcements/api-update",
+            publishedDate = Instant.now().minus(1, ChronoUnit.DAYS),
+            isRead = true,
+            fetchedAt = Instant.now().minus(1, ChronoUnit.DAYS),
+        ),
+        AnnouncementEntity(
+            id = "3",
+            title = "Maintenance Window Scheduled",
+            summary = "Brief maintenance scheduled for Saturday 2am-4am EST. Expect 5min downtime.",
+            link = "https://usetrmnl.com/announcements/maintenance",
+            publishedDate = Instant.now().minus(3, ChronoUnit.DAYS),
+            isRead = false,
+            fetchedAt = Instant.now().minus(3, ChronoUnit.DAYS),
+        ),
+    )
+
+@Preview(name = "Loading State")
+@Composable
+private fun AnnouncementsLoadingPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = true,
+                    showTopBar = true,
+                ),
+        )
+    }
+}
+
+@Preview(name = "Empty State - All Filter")
+@Composable
+private fun AnnouncementsEmptyAllPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = false,
+                    announcements = emptyList(),
+                    filter = AnnouncementsScreen.Filter.ALL,
+                    showTopBar = true,
+                ),
+        )
+    }
+}
+
+@Preview(name = "Empty State - Unread Filter")
+@Composable
+private fun AnnouncementsEmptyUnreadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = false,
+                    announcements = emptyList(),
+                    filter = AnnouncementsScreen.Filter.UNREAD,
+                    showTopBar = true,
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Announcement Item - Unread")
+@Composable
+private fun AnnouncementItemUnreadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            AnnouncementItem(
+                announcement = sampleAnnouncements[0],
+                onClick = {},
+                onToggleReadStatus = {},
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Announcement Item - Read")
+@Composable
+private fun AnnouncementItemReadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            AnnouncementItem(
+                announcement = sampleAnnouncements[1],
+                onClick = {},
+                onToggleReadStatus = {},
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Filter Chips - All Selected")
+@Composable
+private fun FilterChipsAllPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            FilterChips(
+                selectedFilter = AnnouncementsScreen.Filter.ALL,
+                onFilterChanged = {},
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Filter Chips - Unread Selected")
+@Composable
+private fun FilterChipsUnreadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        Surface {
+            FilterChips(
+                selectedFilter = AnnouncementsScreen.Filter.UNREAD,
+                onFilterChanged = {},
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Full Screen - With Announcements")
+@Composable
+private fun AnnouncementsFullScreenPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = false,
+                    announcements = sampleAnnouncements,
+                    filter = AnnouncementsScreen.Filter.ALL,
+                    unreadCount = 2,
+                    showTopBar = true,
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Full Screen - Embedded (No TopBar)")
+@Composable
+private fun AnnouncementsEmbeddedPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = false,
+                    announcements = sampleAnnouncements,
+                    filter = AnnouncementsScreen.Filter.UNREAD,
+                    unreadCount = 2,
+                    showTopBar = false, // Embedded mode
+                ),
+        )
     }
 }
