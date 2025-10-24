@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Combined Content Feed Repository**: Unified content feed architecture for announcements and blog posts (#142, Phase 2)
+  - Created `BlogPostRepository` for fetching, parsing, and managing blog posts from https://usetrmnl.com/feeds/posts.xml
+  - Implemented `ContentItem` sealed class for type-safe representation of announcements and blog posts
+  - Built `ContentFeedRepository` to combine both content types, sorted by published date
+  - RSS-Parser integration with author extraction, category parsing, and featured image detection
+  - Offline-first pattern with read status preservation during refresh
+  - Added providers in `AppBindings` for `BlogPostRepository` and `ContentFeedRepository`
+  - Support for favorites, reading progress tracking, and search functionality
 - **Blog Posts Database Schema**: Extended ContentDatabase for combined announcements and blog posts feed (#142, Phase 1)
   - Created `BlogPostEntity` Room entity with rich metadata: id, title, summary, link, authorName, category, publishedDate, featuredImageUrl, isRead, readingProgressPercent, lastReadAt, fetchedAt, isFavorite
   - Implemented `BlogPostDao` with queries for filtering by category, favorites, unread status, search, and reading progress tracking
