@@ -119,7 +119,9 @@ class BlogPostRepository(
                         val featuredImageUrl = extractFeaturedImage(item.content)
 
                         // Sanitize summary to plain text (max 300 chars)
-                        val sanitizedSummary = sanitizeHtmlToPlainText(item.description)
+                        // Try content first, fall back to description
+                        val rawSummary = item.content?.takeIf { it.isNotBlank() } ?: item.description
+                        val sanitizedSummary = sanitizeHtmlToPlainText(rawSummary)
 
                         BlogPostEntity(
                             id = item.link ?: item.guid ?: return@mapNotNull null,
@@ -139,6 +141,13 @@ class BlogPostRepository(
 
             // Insert posts into database (IGNORE strategy preserves existing user state like isFavorite, isRead)
             blogPostDao.insertAll(blogPosts)
+
+            // Update summaries for existing posts (in case they were inserted before sanitization was added)
+            blogPosts.forEach { post ->
+                if (post.summary.isNotBlank()) {
+                    blogPostDao.updateSummary(post.id, post.summary)
+                }
+            }
 
             Result.success(Unit)
         } catch (e: Exception) {

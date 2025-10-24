@@ -89,6 +89,19 @@ interface BlogPostDao {
     suspend fun toggleFavorite(id: String)
 
     /**
+     * Update summary for a blog post.
+     * Used to update existing posts with sanitized summaries.
+     *
+     * @param id Blog post ID
+     * @param summary Updated summary text
+     */
+    @Query("UPDATE blog_posts SET summary = :summary WHERE id = :id")
+    suspend fun updateSummary(
+        id: String,
+        summary: String,
+    )
+
+    /**
      * Delete blog posts older than a threshold timestamp.
      * Used for cache cleanup.
      *

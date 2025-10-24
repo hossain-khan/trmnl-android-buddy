@@ -72,6 +72,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Summary limited to 300 characters maximum for cleaner display
     - UI updated to show 4 lines max (previously 3) with ellipsis for overflow
     - Normalized whitespace for better readability
+    - **Tries content field first, falls back to description** for better summary extraction
+    - **Existing posts automatically updated** with sanitized summaries on refresh
 - **Blog Posts List Screen**: Full-featured blog posts viewer (#142, Phase 5)
   - Created `BlogPostsScreen` with Circuit architecture (Screen, State, Event, Presenter, Content)
   - List view of all blog posts from TRMNL RSS feed with pull-to-refresh
