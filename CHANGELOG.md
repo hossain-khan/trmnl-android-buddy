@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2025-10-25
+
 ### Changed
 
 - **Background Sync Optimization**: Updated RSS feed sync workers to reduce server load
   - Changed announcement sync interval from every 4 hours to every 2 days
   - Changed blog post sync interval from daily to every 2 days
   - Added device constraints: runs only when device is idle, charging, and has network connection
+  - Uses REPLACE policy to ensure existing users get updated to optimized schedule
   - Reduces unnecessary API calls while ensuring users get updates during optimal conditions
 
 ### Added
@@ -861,7 +864,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.7.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.7.0...2.0.0
 [1.7.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.4.0...1.5.0
