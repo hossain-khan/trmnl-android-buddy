@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **RSS Feed Content Notification Toggle**: Granular control over notifications for new blog posts and announcements
+  - Added expandable notification toggle under main RSS feed content setting
+  - Disabled by default to respect user privacy and battery life
+  - Users can now sync RSS content without receiving notifications
+  - Similar UX pattern to Low Battery Notifications with expandable section
+  - Added `isRssFeedContentNotificationEnabled` preference field
+  - Notifications only sent when user explicitly enables the toggle
+
 - **Unified RSS Feed Content Toggle**: Single setting to control both blog posts and announcements
   - Renamed `isAnnouncementsEnabled` preference to `isRssFeedContentEnabled` for clarity
   - Toggle now controls both AnnouncementSyncWorker and BlogPostSyncWorker together

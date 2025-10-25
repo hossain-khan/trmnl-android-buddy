@@ -332,6 +332,10 @@ class SettingsScreenTest {
             _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isRssFeedContentEnabled = enabled)
         }
 
+        override suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean) {
+            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isRssFeedContentNotificationEnabled = enabled)
+        }
+
         override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
             _userPreferencesFlow.value =
                 _userPreferencesFlow.value.copy(isAnnouncementAuthBannerDismissed = dismissed)

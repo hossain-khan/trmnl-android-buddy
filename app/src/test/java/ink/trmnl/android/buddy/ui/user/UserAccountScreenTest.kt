@@ -263,6 +263,12 @@ private class FakeUserPreferencesRepository : UserPreferencesRepository {
             userPreferencesFlow.value.copy(isRssFeedContentEnabled = enabled)
     }
 
+    override suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean) {
+        preferences["rss_feed_content_notification_enabled"] = enabled
+        userPreferencesFlow.value =
+            userPreferencesFlow.value.copy(isRssFeedContentNotificationEnabled = enabled)
+    }
+
     override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
         preferences["announcement_auth_banner_dismissed"] = dismissed
         userPreferencesFlow.value =
