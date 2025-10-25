@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Automatic migration from legacy `announcements_enabled` preference key
   - Consistent UX: both content types enabled/disabled together
   - Battery-friendly: users can disable all RSS feed content syncing with one toggle
+  - WelcomeScreen now respects `isRssFeedContentEnabled` preference (hides "What's New" section when disabled)
 
 - **Image Carousel for Blog Posts**: Enhanced blog post cards with multi-image support and auto-rotation
   - Extracts all images from RSS feed content (previously only showed first image)
