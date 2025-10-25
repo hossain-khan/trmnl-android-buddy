@@ -367,7 +367,7 @@ private fun WhatsNewSection(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -399,9 +399,9 @@ private fun WhatsNewSection(
                     } else {
                         "Updates from TRMNL"
                     },
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(2.dp))
             Icon(
                 painter = painterResource(id = R.drawable.arrow_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                 contentDescription = null,
