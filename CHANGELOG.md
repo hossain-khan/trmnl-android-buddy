@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Similar UX pattern to Low Battery Notifications with expandable section
   - Added `isRssFeedContentNotificationEnabled` preference field
   - Notifications only sent when user explicitly enables the toggle
+  - **Unified notification channel** (`RSS Feed Updates`) for both blog posts and announcements
+  - **Permission check** for Android 13+ (`POST_NOTIFICATIONS`)
+  - **Consistent branding** using `trmnl_glyph__black` icon for all RSS notifications
+  - **BigTextStyle** support for expandable notification content
+  - **Auto-cancel** enabled (dismisses when tapped)
+  - Announcements now show notifications when new content is available
+  - Centralized notification logic in `NotificationHelper` for maintainability
 
 - **Unified RSS Feed Content Toggle**: Single setting to control both blog posts and announcements
   - Renamed `isAnnouncementsEnabled` preference to `isRssFeedContentEnabled` for clarity
