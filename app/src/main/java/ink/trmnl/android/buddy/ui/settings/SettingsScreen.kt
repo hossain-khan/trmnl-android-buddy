@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -302,6 +303,23 @@ private fun RssFeedContentSection(
     onNotificationToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Track if this is the first composition to prevent initial animation
+    var hasComposed by remember { mutableStateOf(false) }
+
+    // Remember the enabled state to detect changes
+    var previousEnabled by remember { mutableStateOf(isEnabled) }
+
+    // Only animate after first composition and when state actually changes
+    val shouldAnimate = hasComposed && (previousEnabled != isEnabled)
+
+    // Update tracking variables after composition
+    LaunchedEffect(isEnabled) {
+        if (!hasComposed) {
+            hasComposed = true
+        }
+        previousEnabled = isEnabled
+    }
+
     Column(modifier = modifier) {
         Text(
             text = "RSS Feed Content",
@@ -348,8 +366,8 @@ private fun RssFeedContentSection(
 
                 AnimatedVisibility(
                     visible = isEnabled,
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut(),
+                    enter = if (shouldAnimate) expandVertically() + fadeIn() else expandVertically(),
+                    exit = if (shouldAnimate) shrinkVertically() + fadeOut() else shrinkVertically(),
                 ) {
                     Column(
                         modifier =
