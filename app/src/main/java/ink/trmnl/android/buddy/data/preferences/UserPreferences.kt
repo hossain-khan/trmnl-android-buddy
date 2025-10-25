@@ -12,6 +12,10 @@ data class UserPreferences(
     val isRssFeedContentEnabled: Boolean = false,
     val isRssFeedContentNotificationEnabled: Boolean = false,
     val isAnnouncementAuthBannerDismissed: Boolean = false,
+    // Security preferences
+    val isSecurityEnabled: Boolean = false,
+    val pinHash: String? = null,
+    val isBiometricEnabled: Boolean = false,
 ) {
     companion object {
         /**

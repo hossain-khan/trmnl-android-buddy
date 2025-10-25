@@ -341,6 +341,18 @@ class SettingsScreenTest {
                 _userPreferencesFlow.value.copy(isAnnouncementAuthBannerDismissed = dismissed)
         }
 
+        override suspend fun setSecurityEnabled(enabled: Boolean) {
+            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isSecurityEnabled = enabled)
+        }
+
+        override suspend fun setPinHash(hash: String?) {
+            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(pinHash = hash)
+        }
+
+        override suspend fun setBiometricEnabled(enabled: Boolean) {
+            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isBiometricEnabled = enabled)
+        }
+
         override suspend fun clearAll() {
             _userPreferencesFlow.value = UserPreferences()
             batteryTrackingEnabled = true
