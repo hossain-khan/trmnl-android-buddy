@@ -12,6 +12,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -311,7 +312,7 @@ private fun RssFeedContentSection(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = "RSS Feed Content",
+            text = "TRMNL News Updates",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -364,7 +365,7 @@ private fun RssFeedContentSection(
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.surface),
                     ) {
-                        HorizontalDivider(color = Color.Gray.copy(alpha = 0.4f))
+                        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f), modifier = Modifier.padding(horizontal = 16.dp))
                         ListItem(
                             headlineContent = {
                                 Text(
@@ -394,6 +395,7 @@ private fun RssFeedContentSection(
                                 ListItemDefaults.colors(
                                     containerColor = MaterialTheme.colorScheme.surface,
                                 ),
+                            modifier = Modifier.padding(start = 16.dp),
                         )
                     }
                 }
@@ -574,18 +576,20 @@ private fun LowBatteryNotificationSection(
                             containerColor = MaterialTheme.colorScheme.surface,
                         ),
                 )
-
+                if (isEnabled) {
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = Color.Red.copy(alpha = 0.3f))
+                }
                 AnimatedVisibility(
                     visible = isEnabled,
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut(),
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface),
                 ) {
                     Column(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 16.dp, top = 16.dp),
+                                .padding(bottom = 16.dp, top = 16.dp, start = 32.dp, end = 16.dp),
                     ) {
                         Text(
                             text = "Alert Threshold: $thresholdPercent%",
