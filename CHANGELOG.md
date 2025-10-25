@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Announcements "Mark All Read" Feature**: Extended FAB to mark all announcements as read
+  - Upgraded from icon-only FAB to Extended FloatingActionButton with "Mark All Read" text and icon
+  - Consistent with BlogPostsScreen FAB implementation
+  - Shows only when there are unread announcements
+  - Improved accessibility with explicit text label
+  - Better UX: clearer action intent for users
+
 - **Blog Posts "Mark All Read" Feature**: Extended FAB to mark all blog posts as read
   - Added Extended FloatingActionButton with "Mark All Read" text and icon
   - Shows only when there are unread blog posts
@@ -184,6 +191,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Animations are consistent across both light and dark themes
 
 ### Fixed
+- **Announcement Filter Visibility**: Filter chips now remain visible in all content states
+  - Fixed critical UX issue where filter UI disappeared when selected filter had no matching items
+  - Users were trapped without ability to change filters except by backing out or switching screens
+  - Solution: Moved FilterChips from child component (AnnouncementsList) to parent (AnnouncementsContent)
+  - Filters now pinned at top of screen above content area, always accessible
+  - Works correctly in all states: loading, empty (any filter), and with data
+
+- **Announcement Filter Animations**: Smooth item transitions when switching between filters
+  - Fixed jarring experience where switching filters showed loading spinner instead of animations
+  - Removed `isLoading = true` from FilterChanged event handler that was unmounting entire list
+  - LazyColumn's `animateItem()` modifier now works properly for enter/exit transitions
+  - Items now smoothly fade in/out when changing filters (e.g., "All" → "Unread")
+  - LaunchedEffect(filter) handles data updates naturally without disrupting UI
+
 - **Announcement Summary Display**: Hide summary text when it's blank/empty
   - AnnouncementItem now checks if summary is not blank before displaying
   - Prevents showing empty summary text views in the announcements list

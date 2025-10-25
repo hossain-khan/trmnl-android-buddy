@@ -227,7 +227,9 @@ class AnnouncementsPresenter
 
                     is AnnouncementsScreen.Event.FilterChanged -> {
                         filter = event.filter
-                        isLoading = true
+                        // Don't set isLoading = true here, as it would unmount the list
+                        // and prevent smooth animations. The LaunchedEffect(filter) will
+                        // handle updating the announcements list automatically.
                     }
 
                     is AnnouncementsScreen.Event.AnnouncementClicked -> {
@@ -342,50 +344,67 @@ fun AnnouncementsContent(
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn() + scaleIn(),
                 exit = slideOutVertically(targetOffsetY = { it }) + fadeOut() + scaleOut(),
             ) {
-                FloatingActionButton(
+                androidx.compose.material3.ExtendedFloatingActionButton(
                     onClick = { state.eventSink(AnnouncementsScreen.Event.MarkAllAsRead) },
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                        contentDescription = "Mark all as read",
-                    )
-                }
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Mark all as read",
+                        )
+                    },
+                    text = { Text("Mark All Read") },
+                )
             }
         },
     ) { innerPadding ->
-        when {
-            state.isLoading -> {
-                LoadingState(modifier = Modifier.padding(innerPadding))
-            }
-
-            state.announcements.isEmpty() -> {
-                EmptyState(
-                    filter = state.filter,
-                    modifier = Modifier.padding(innerPadding),
-                )
-            }
-
-            else -> {
-                AnnouncementsList(
-                    announcements = state.announcements,
-                    isRefreshing = state.isRefreshing,
-                    filter = state.filter,
-                    showAuthBanner = state.showAuthBanner,
-                    listState = listState,
-                    onRefresh = { state.eventSink(AnnouncementsScreen.Event.Refresh) },
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Filter chips fixed at the top - always visible regardless of content state
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 2.dp,
+            ) {
+                FilterChips(
+                    selectedFilter = state.filter,
                     onFilterChanged = { newFilter ->
                         state.eventSink(AnnouncementsScreen.Event.FilterChanged(newFilter))
                     },
-                    onAnnouncementClick = { announcement ->
-                        state.eventSink(AnnouncementsScreen.Event.AnnouncementClicked(announcement))
-                    },
-                    onToggleReadStatus = { announcement ->
-                        state.eventSink(AnnouncementsScreen.Event.ToggleReadStatus(announcement))
-                    },
-                    onDismissBanner = {
-                        state.eventSink(AnnouncementsScreen.Event.DismissAuthBanner)
-                    },
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                 )
+            }
+
+            // Content area below filters
+            when {
+                state.isLoading -> {
+                    LoadingState(modifier = Modifier.padding(innerPadding))
+                }
+
+                state.announcements.isEmpty() -> {
+                    EmptyState(
+                        filter = state.filter,
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                }
+
+                else -> {
+                    AnnouncementsList(
+                        announcements = state.announcements,
+                        isRefreshing = state.isRefreshing,
+                        filter = state.filter,
+                        showAuthBanner = state.showAuthBanner,
+                        listState = listState,
+                        onRefresh = { state.eventSink(AnnouncementsScreen.Event.Refresh) },
+                        onAnnouncementClick = { announcement ->
+                            state.eventSink(AnnouncementsScreen.Event.AnnouncementClicked(announcement))
+                        },
+                        onToggleReadStatus = { announcement ->
+                            state.eventSink(AnnouncementsScreen.Event.ToggleReadStatus(announcement))
+                        },
+                        onDismissBanner = {
+                            state.eventSink(AnnouncementsScreen.Event.DismissAuthBanner)
+                        },
+                    )
+                }
             }
         }
     }
@@ -451,7 +470,6 @@ private fun AnnouncementsList(
     showAuthBanner: Boolean,
     listState: LazyListState,
     onRefresh: () -> Unit,
-    onFilterChanged: (AnnouncementsScreen.Filter) -> Unit,
     onAnnouncementClick: (AnnouncementEntity) -> Unit,
     onToggleReadStatus: (AnnouncementEntity) -> Unit,
     onDismissBanner: () -> Unit,
@@ -464,72 +482,57 @@ private fun AnnouncementsList(
     // Determine if banner should be shown (either not dismissed, or currently animating out)
     val shouldShowBanner = showAuthBanner || isBannerDismissing
 
-    Column(modifier = modifier.fillMaxSize()) {
-        // Filter chips fixed at the top - always visible
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 2.dp,
+    // Scrollable list with pull-to-refresh
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        modifier = modifier.fillMaxSize(),
+    ) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 8.dp),
         ) {
-            FilterChips(
-                selectedFilter = filter,
-                onFilterChanged = onFilterChanged,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            )
-        }
+            // Authentication info banner (if not dismissed) with smooth slide-out animation
+            if (shouldShowBanner) {
+                item(key = "auth_banner") {
+                    AuthenticationBanner(
+                        onDismiss = {
+                            // Start dismissing animation
+                            isBannerDismissing = true
+                            // Wait for animation, then save preference and clean up state
+                            coroutineScope.launch {
+                                delay(300) // Match LazyColumn's default animation duration
+                                onDismissBanner()
+                                isBannerDismissing = false
+                            }
+                        },
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .animateItem(), // Use LazyColumn's built-in item animation
+                    )
+                }
+            }
 
-        // Scrollable list with pull-to-refresh
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = onRefresh,
-            modifier = Modifier.weight(1f),
-        ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 8.dp),
-            ) {
-                // Authentication info banner (if not dismissed) with smooth slide-out animation
-                if (shouldShowBanner) {
-                    item(key = "auth_banner") {
-                        AuthenticationBanner(
-                            onDismiss = {
-                                // Start dismissing animation
-                                isBannerDismissing = true
-                                // Wait for animation, then save preference and clean up state
-                                coroutineScope.launch {
-                                    delay(300) // Match LazyColumn's default animation duration
-                                    onDismissBanner()
-                                    isBannerDismissing = false
-                                }
-                            },
-                            modifier =
-                                Modifier
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                                    .animateItem(), // Use LazyColumn's built-in item animation
-                        )
-                    }
+            // Group announcements by date
+            val groupedAnnouncements = announcements.groupByDate()
+
+            groupedAnnouncements.forEach { (dateCategory, items) ->
+                stickyHeader(key = "date_$dateCategory") {
+                    DateHeader(dateCategory)
                 }
 
-                // Group announcements by date
-                val groupedAnnouncements = announcements.groupByDate()
-
-                groupedAnnouncements.forEach { (dateCategory, items) ->
-                    stickyHeader(key = "date_$dateCategory") {
-                        DateHeader(dateCategory)
-                    }
-
-                    items(
-                        items = items,
-                        key = { it.id },
-                    ) { announcement ->
-                        AnnouncementItem(
-                            announcement = announcement,
-                            onClick = { onAnnouncementClick(announcement) },
-                            onToggleReadStatus = { onToggleReadStatus(announcement) },
-                            modifier = Modifier.animateItem(),
-                        )
-                    }
+                items(
+                    items = items,
+                    key = { it.id },
+                ) { announcement ->
+                    AnnouncementItem(
+                        announcement = announcement,
+                        onClick = { onAnnouncementClick(announcement) },
+                        onToggleReadStatus = { onToggleReadStatus(announcement) },
+                        modifier = Modifier.animateItem(),
+                    )
                 }
             }
         }
