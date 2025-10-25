@@ -14,7 +14,7 @@ TRMNL Android Buddy - E-ink Display Manager
 
 *Maximum 80 characters*
 
-Monitor and manage your TRMNL e-ink displays with battery tracking & health insights
+Monitor TRMNL displays, track battery, get news & blog updates - all in one app
 
 ---
 
@@ -22,7 +22,18 @@ Monitor and manage your TRMNL e-ink displays with battery tracking & health insi
 
 *Maximum 4000 characters*
 
-**TRMNL Android Buddy** is the essential companion app for managing your TRMNL e-ink display devices. Monitor device health, track battery life, and stay on top of your displays' status—all from your Android phone.
+**TRMNL Android Buddy** is the essential companion app for managing your TRMNL e-ink display devices. Monitor device health, track battery life, stay updated with TRMNL announcements and blog posts, and manage your displays—all from your Android phone.
+
+**📰 STAY INFORMED**
+• Unified content feed with announcements and blog posts
+• Auto-rotating carousel showing latest updates
+• Smart visibility: only displays unread content
+• Filter by category, read/unread status
+• Multi-image blog post previews with auto-rotation
+• Mark as favorite for quick access
+• Chrome Custom Tabs for in-app browsing
+• Background sync every 2 days (optimized for battery)
+• Optional notifications for new content
 
 **📊 DEVICE MONITORING**
 • View all your TRMNL devices in one place
@@ -35,9 +46,9 @@ Monitor and manage your TRMNL e-ink displays with battery tracking & health insi
 • Automatic weekly battery data collection
 • Historical battery charts with trajectory visualization
 • Manual battery recording when needed
+• Low battery notifications with configurable threshold
 • Opt-out option for privacy-conscious users
 • Battery health predictions based on historical data
-• Debug tools for testing battery simulation (development builds)
 
 **📱 DEVICE DETAILS**
 • Comprehensive device information screen
@@ -50,8 +61,9 @@ Monitor and manage your TRMNL e-ink displays with battery tracking & health insi
 • Material You support with dynamic theming (Android 12+)
 • Automatic dark mode based on system preferences
 • Edge-to-edge display for modern aesthetics
-• Smooth animations and transitions
+• Smooth animations and haptic feedback
 • Material Design 3 components throughout
+• Shimmer loading effects
 
 **🔐 PRIVACY & SECURITY**
 • Encrypted storage for API tokens
@@ -59,40 +71,44 @@ Monitor and manage your TRMNL e-ink displays with battery tracking & health insi
 • Toggle privacy mode to show/hide sensitive information
 • Secure DataStore for all preferences
 • No data shared with third parties
+• Offline-first architecture
 
 **⚙️ CUSTOMIZATION**
 • Settings screen for app configuration
 • Battery tracking toggle (enable/disable automatic collection)
+• RSS feed content toggle (announcements & blog posts)
+• Granular notification controls
 • Account management and logout
 • App version and build information
-• Direct link to report issues on GitHub
 
 **🚀 KEY FEATURES**
-• Welcome screen for new and returning users
+• Welcome screen with "What's New" section
 • Guided onboarding for API key setup
 • Device token management for display previews
-• User account information display
+• Content Hub with announcements and blog posts tabs
+• Date-grouped announcements (Today, Yesterday, This Week, Older)
+• Swipe-to-toggle read/unread status
+• Pull-to-refresh for manual sync
+• Extended FABs for "Mark All Read" functionality
 • Seamless navigation between all screens
-• Material 3 icons for all device indicators
-• Refresh rate explanations via snackbars
 
-**📈 BATTERY INSIGHTS**
-• Line charts showing battery drain over time
-• Date-based x-axis with percentage y-axis
-• Data point indicators for precise readings
-• Horizontal scrolling for long history
-• Empty states with friendly messages
-• Weekly automatic data collection in background
+**📈 CONTENT INSIGHTS**
+• Unread count badges in real-time
+• Read status preservation during sync
+• Category filtering for blog posts
+• Search functionality for finding specific posts
+• Relative date formatting ("2 days ago")
+• Announcement authentication banner (dismissible)
 
 **🛠️ DEVELOPER-FRIENDLY**
-• Debug battery simulator (debug builds only)
-• Clear battery history for testing
-• Slider to generate simulated data
-• Comprehensive error handling
+• Debug development screen (debug builds only)
+• Test notifications without waiting for schedules
+• Worker triggers for background sync testing
+• Battery simulation tools
 • Open source on GitHub
 
 **📱 REQUIREMENTS**
-• Android 8.0 (API 26) or higher
+• Android 9.0 (API 28) or higher
 • TRMNL account with API key
 • Internet connection for device data sync
 
@@ -100,14 +116,24 @@ Monitor and manage your TRMNL e-ink displays with battery tracking & health insi
 • TRMNL Website: https://usetrmnl.com
 • Report Issues: https://github.com/hossain-khan/trmnl-android-buddy/issues
 
-Perfect for TRMNL device owners who want to keep their e-ink displays running smoothly and monitor battery health over time!
+Perfect for TRMNL device owners who want to keep their e-ink displays running smoothly, monitor battery health, and stay updated with the latest TRMNL news and blog posts!
 
 ---
 
 ## Simplified Full Description (Plain Text for Google Play - Copy/Paste Ready)
 
 ```
-TRMNL Android Buddy is the essential companion app for managing your TRMNL e-ink display devices. Monitor device health, track battery life, and stay on top of your displays' status—all from your Android phone.
+TRMNL Android Buddy is the essential companion app for managing your TRMNL e-ink display devices. Monitor device health, track battery life, stay updated with TRMNL announcements and blog posts, and manage your displays—all from your Android phone.
+
+📰 STAY INFORMED
+• Unified content feed with announcements and blog posts
+• Auto-rotating carousel showing latest updates
+• Smart visibility: only displays unread content
+• Filter by category, read/unread status
+• Multi-image blog post previews
+• Mark favorites for quick access
+• Background sync every 2 days (battery optimized)
+• Optional notifications for new content
 
 📊 DEVICE MONITORING
 • View all your TRMNL devices in one place
@@ -120,8 +146,8 @@ TRMNL Android Buddy is the essential companion app for managing your TRMNL e-ink
 • Automatic weekly battery data collection
 • Historical battery charts with trajectory visualization
 • Manual battery recording when needed
+• Low battery notifications with configurable threshold
 • Opt-out option for privacy-conscious users
-• Battery health predictions based on historical data
 
 📱 DEVICE DETAILS
 • Comprehensive device information screen
@@ -134,7 +160,7 @@ TRMNL Android Buddy is the essential companion app for managing your TRMNL e-ink
 • Material You support with dynamic theming (Android 12+)
 • Automatic dark mode based on system preferences
 • Edge-to-edge display for modern aesthetics
-• Smooth animations and transitions
+• Smooth animations and haptic feedback
 • Material Design 3 components throughout
 
 🔐 PRIVACY & SECURITY
@@ -143,17 +169,18 @@ TRMNL Android Buddy is the essential companion app for managing your TRMNL e-ink
 • Toggle privacy mode to show/hide sensitive information
 • Secure DataStore for all preferences
 • No data shared with third parties
+• Offline-first architecture
 
 📱 REQUIREMENTS
-• Android 8.0 (API 26) or higher
+• Android 9.0 (API 28) or higher
 • TRMNL account with API key
 • Internet connection for device data sync
 
 🔗 USEFUL LINKS
 • TRMNL Website: https://usetrmnl.com
-• Report Issues on GitHub: https://github.com/hossain-khan/trmnl-android-buddy/issues
+• Report Issues: https://github.com/hossain-khan/trmnl-android-buddy/issues
 
-Perfect for TRMNL device owners who want to keep their e-ink displays running smoothly and monitor battery health over time!
+Perfect for TRMNL device owners who want to keep their e-ink displays running smoothly, monitor battery health, and stay updated with the latest TRMNL news!
 ```
 
 ---
@@ -162,18 +189,16 @@ Perfect for TRMNL device owners who want to keep their e-ink displays running sm
 
 *Maximum 500 characters for latest version*
 
-**Version 1.1.0 - Enhanced Release Distribution**
+**Version 2.0.0 - Major Feature Release**
 
-🚀 Now available as Android App Bundle (AAB) for optimized downloads from Google Play Store
-🔧 Fixed release workflow keystore path resolution for automated builds
-📦 Both APK and AAB formats included in GitHub releases
-
-Plus all features from 1.0.6:
-• App version & build info in Settings
-• Manual battery recording button
-• Enhanced battery charts with data points
-• Horizontal scrolling for long history
-• GitHub issue reporting link
+� NEW: Combined content feed with TRMNL announcements & blog posts
+🎯 Smart carousel: only shows unread content for cleaner UX
+📱 Content Hub with category filtering & favorites
+🔋 Optimized background sync: every 2 days with smart constraints
+✨ Multi-image blog post carousel with auto-rotation
+🎨 Material Design 3 polish with haptic feedback & smooth animations
+🐛 Bug fixes: Chrome Custom Tabs, filters, favorites persistence
+📊 Updated to Android 9 (Pie) minimum
 
 ---
 
@@ -189,7 +214,7 @@ Plus all features from 1.0.6:
 
 ## Tags/Keywords
 
-TRMNL, e-ink display, device manager, battery tracking, device monitoring, IoT devices, smart display, battery health, device status, Material You, Material Design 3
+TRMNL, e-ink display, device manager, battery tracking, device monitoring, IoT devices, smart display, battery health, device status, Material You, Material Design 3, RSS feed, announcements, blog posts, content feed, news reader
 
 ---
 
@@ -228,9 +253,10 @@ Everyone
 ### Suggested Text Overlays
 
 1. "Monitor Your TRMNL Displays"
-2. "Track Battery Health Over Time"
-3. "Beautiful Material You Design"
-4. "Privacy-First Device Management"
+2. "Stay Updated with News & Blog Posts"
+3. "Track Battery Health Over Time"
+4. "Beautiful Material You Design"
+5. "Privacy-First Device Management"
 
 ### Visual Elements
 
@@ -245,14 +271,16 @@ Everyone
 
 *Suggested captions for app screenshots*
 
-1. **Device List Screen**: "View all your TRMNL devices with real-time status"
-2. **Device Detail Screen**: "Monitor battery health and WiFi signal strength"
-3. **Battery Chart**: "Track battery trajectory over weeks and months"
-4. **Settings Screen**: "Customize app behavior and privacy settings"
-5. **Privacy Mode**: "Toggle privacy to show or hide device identifiers"
-6. **Dark Mode**: "Beautiful dark theme follows your system preferences"
-7. **Device Preview**: "See current display content for each device"
-8. **Account Screen**: "Manage your TRMNL account and logout securely"
+1. **Device List Screen**: "View all your TRMNL devices with real-time status and latest updates"
+2. **Content Carousel**: "Stay informed with announcements and blog posts carousel"
+3. **Content Hub**: "Browse all announcements and blog posts by category"
+4. **Blog Posts**: "Read TRMNL blog posts with multi-image previews"
+5. **Device Detail Screen**: "Monitor battery health and WiFi signal strength"
+6. **Battery Chart**: "Track battery trajectory over weeks and months"
+7. **Settings Screen**: "Customize app behavior, notifications, and privacy settings"
+8. **Privacy Mode**: "Toggle privacy to show or hide device identifiers"
+9. **Dark Mode**: "Beautiful dark theme follows your system preferences"
+10. **Device Preview**: "See current display content for each device"
 
 ---
 
@@ -260,7 +288,7 @@ Everyone
 
 *Maximum 170 characters*
 
-Keep your TRMNL e-ink displays healthy! Monitor battery life, track device status, and visualize battery drain—all with beautiful Material You design. 🔋📊✨
+Monitor TRMNL displays, track battery health, get news & blog updates! Beautiful Material You design with smart notifications. 🔋�✨
 
 ---
 
