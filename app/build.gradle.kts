@@ -152,6 +152,9 @@ dependencies {
     // Accompanist - Compose utilities for permissions
     implementation(libs.accompanist.permissions)
 
+    // AndroidX Biometric - Biometric authentication
+    implementation(libs.androidx.biometric)
+
     // Timber - Better Android logging
     implementation(libs.timber)
 
