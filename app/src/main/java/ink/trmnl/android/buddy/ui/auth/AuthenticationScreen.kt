@@ -1,29 +1,21 @@
 package ink.trmnl.android.buddy.ui.auth
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,15 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
@@ -57,42 +45,29 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.security.BiometricAuthHelper
-import ink.trmnl.android.buddy.security.SecurityHelper
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 /**
- * Screen for authentication (PIN entry or biometric).
- * Shown when user has enabled security and needs to authenticate to access the app.
+ * Screen for authentication using device credentials (biometric or PIN/pattern/password).
+ * Uses Android's native BiometricPrompt for authentication following best practices:
+ * - https://developer.android.com/identity/sign-in/biometric-auth
+ * - https://medium.com/androiddevelopers/migrating-from-fingerprintmanager-to-biometricprompt-4bc5f570dccd
  */
 @Parcelize
 data object AuthenticationScreen : Screen {
     data class State(
-        val isSetupMode: Boolean = false,
-        val isBiometricAvailable: Boolean = false,
-        val isBiometricEnabled: Boolean = false,
-        val errorMessage: String? = null,
+        val isAuthenticationAvailable: Boolean = false,
+        val showRetryPrompt: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
     sealed class Event : CircuitUiEvent {
-        data class PinEntered(
-            val pin: String,
-        ) : Event()
+        data object AuthenticateRequested : Event()
 
-        data object BiometricAuthRequested : Event()
-
-        data class SetupPin(
-            val pin: String,
-            val confirmPin: String,
-        ) : Event()
-
-        data object CancelSetup : Event()
-
-        data object DismissError : Event()
+        data object CancelAuthentication : Event()
     }
 }
 
@@ -107,88 +82,51 @@ class AuthenticationPresenter
     ) : Presenter<AuthenticationScreen.State> {
         @Composable
         override fun present(): AuthenticationScreen.State {
-            var isSetupMode by rememberRetained { mutableStateOf(false) }
-            var isBiometricAvailable by rememberRetained { mutableStateOf(false) }
-            var isBiometricEnabled by rememberRetained { mutableStateOf(false) }
-            var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
+            var isAuthenticationAvailable by remember { mutableStateOf(false) }
+            var showRetryPrompt by remember { mutableStateOf(false) }
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
 
-            // Check biometric availability and preferences
+            // Check authentication availability
             LaunchedEffect(Unit) {
                 val biometricHelper = BiometricAuthHelper(context)
-                isBiometricAvailable = biometricHelper.isBiometricAvailable()
-
-                val preferences = userPreferencesRepository.userPreferencesFlow.first()
-                isBiometricEnabled = preferences.isBiometricEnabled
-
-                // Check if this is setup mode (no PIN set yet)
-                isSetupMode = preferences.pinHash == null
+                isAuthenticationAvailable = biometricHelper.isBiometricAvailable()
             }
 
             return AuthenticationScreen.State(
-                isSetupMode = isSetupMode,
-                isBiometricAvailable = isBiometricAvailable,
-                isBiometricEnabled = isBiometricEnabled,
-                errorMessage = errorMessage,
+                isAuthenticationAvailable = isAuthenticationAvailable,
+                showRetryPrompt = showRetryPrompt,
             ) { event ->
                 when (event) {
-                    is AuthenticationScreen.Event.PinEntered -> {
-                        coroutineScope.launch {
-                            val preferences = userPreferencesRepository.userPreferencesFlow.first()
-                            val storedHash = preferences.pinHash
-
-                            if (storedHash != null && SecurityHelper.verifyPin(event.pin, storedHash)) {
-                                // PIN verified, navigate to devices screen
-                                navigator.resetRoot(TrmnlDevicesScreen)
-                            } else {
-                                errorMessage = "Incorrect PIN. Please try again."
-                            }
-                        }
-                    }
-
-                    is AuthenticationScreen.Event.BiometricAuthRequested -> {
+                    is AuthenticationScreen.Event.AuthenticateRequested -> {
                         val activity = context as? FragmentActivity
-                        if (activity != null) {
+                        if (activity != null && isAuthenticationAvailable) {
                             val biometricHelper = BiometricAuthHelper(context)
                             biometricHelper.authenticate(
                                 activity = activity,
                                 title = "Authenticate to continue",
-                                subtitle = "Use your biometric to unlock",
+                                subtitle = "Unlock to access your TRMNL dashboard",
                                 onSuccess = {
                                     navigator.resetRoot(TrmnlDevicesScreen)
                                 },
                                 onError = { error ->
-                                    errorMessage = error
+                                    // Show retry prompt on error
+                                    showRetryPrompt = true
+                                },
+                                onUserCancelled = {
+                                    // User cancelled, show retry prompt
+                                    showRetryPrompt = true
                                 },
                             )
                         }
                     }
 
-                    is AuthenticationScreen.Event.SetupPin -> {
-                        if (event.pin != event.confirmPin) {
-                            errorMessage = "PINs do not match"
-                        } else if (!SecurityHelper.isValidPin(event.pin)) {
-                            errorMessage = "PIN must be at least ${SecurityHelper.MIN_PIN_LENGTH} digits"
-                        } else {
-                            coroutineScope.launch {
-                                val hash = SecurityHelper.hashPin(event.pin)
-                                userPreferencesRepository.setPinHash(hash)
-                                userPreferencesRepository.setSecurityEnabled(true)
-                                navigator.resetRoot(TrmnlDevicesScreen)
-                            }
-                        }
-                    }
-
-                    AuthenticationScreen.Event.CancelSetup -> {
+                    AuthenticationScreen.Event.CancelAuthentication -> {
                         coroutineScope.launch {
+                            // Disable security and navigate to devices screen
                             userPreferencesRepository.setSecurityEnabled(false)
                             navigator.resetRoot(TrmnlDevicesScreen)
                         }
-                    }
-
-                    AuthenticationScreen.Event.DismissError -> {
-                        errorMessage = null
                     }
                 }
             }
@@ -210,6 +148,13 @@ fun AuthenticationContent(
     state: AuthenticationScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    // Auto-trigger authentication on first load
+    LaunchedEffect(Unit) {
+        if (state.isAuthenticationAvailable && !state.showRetryPrompt) {
+            state.eventSink(AuthenticationScreen.Event.AuthenticateRequested)
+        }
+    }
+
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier =
@@ -219,27 +164,21 @@ fun AuthenticationContent(
                     .padding(32.dp),
             contentAlignment = Alignment.Center,
         ) {
-            if (state.isSetupMode) {
-                PinSetupCard(
-                    errorMessage = state.errorMessage,
-                    onSetupPin = { pin, confirmPin ->
-                        state.eventSink(AuthenticationScreen.Event.SetupPin(pin, confirmPin))
+            if (state.isAuthenticationAvailable) {
+                AuthenticationCard(
+                    showRetryPrompt = state.showRetryPrompt,
+                    onAuthenticateClick = {
+                        state.eventSink(AuthenticationScreen.Event.AuthenticateRequested)
                     },
-                    onCancel = { state.eventSink(AuthenticationScreen.Event.CancelSetup) },
-                    onDismissError = { state.eventSink(AuthenticationScreen.Event.DismissError) },
+                    onCancelClick = {
+                        state.eventSink(AuthenticationScreen.Event.CancelAuthentication)
+                    },
                 )
             } else {
-                PinEntryCard(
-                    isBiometricAvailable = state.isBiometricAvailable,
-                    isBiometricEnabled = state.isBiometricEnabled,
-                    errorMessage = state.errorMessage,
-                    onPinEntered = { pin ->
-                        state.eventSink(AuthenticationScreen.Event.PinEntered(pin))
+                NoAuthenticationAvailableCard(
+                    onDisableSecurity = {
+                        state.eventSink(AuthenticationScreen.Event.CancelAuthentication)
                     },
-                    onBiometricAuth = {
-                        state.eventSink(AuthenticationScreen.Event.BiometricAuthRequested)
-                    },
-                    onDismissError = { state.eventSink(AuthenticationScreen.Event.DismissError) },
                 )
             }
         }
@@ -247,44 +186,44 @@ fun AuthenticationContent(
 }
 
 /**
- * Card for PIN setup (first time setup).
+ * Card shown when authentication is available.
  */
 @Composable
-private fun PinSetupCard(
-    errorMessage: String?,
-    onSetupPin: (String, String) -> Unit,
-    onCancel: () -> Unit,
-    onDismissError: () -> Unit,
+private fun AuthenticationCard(
+    showRetryPrompt: Boolean,
+    onAuthenticateClick: () -> Unit,
+    onCancelClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var pin by remember { mutableStateOf("") }
-    var confirmPin by remember { mutableStateOf("") }
-    var showPin by remember { mutableStateOf(false) }
-
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier.padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Icon(
-                painter = painterResource(R.drawable.password_2_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                contentDescription = "Set up PIN",
-                modifier = Modifier.size(48.dp),
+                painter = painterResource(R.drawable.fingerprint_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                contentDescription = "Authentication",
+                modifier = Modifier.size(64.dp),
                 tint = MaterialTheme.colorScheme.primary,
             )
 
             Text(
-                text = "Set up PIN",
+                text = if (showRetryPrompt) "Authentication Required" else "Authenticating...",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
-                text = "Create a PIN (minimum ${SecurityHelper.MIN_PIN_LENGTH} digits) to secure your TRMNL dashboard",
+                text =
+                    if (showRetryPrompt) {
+                        "Use your fingerprint, face, or device PIN to unlock"
+                    } else {
+                        "Please authenticate to continue"
+                    },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -292,80 +231,19 @@ private fun PinSetupCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
-                value = pin,
-                onValueChange = {
-                    if (it.all { char -> char.isDigit() }) {
-                        pin = it
-                    }
-                },
-                label = { Text("Enter PIN") },
-                visualTransformation =
-                    if (showPin) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                modifier = Modifier.fillMaxWidth(),
-                trailingIcon = {
-                    IconButton(onClick = { showPin = !showPin }) {
-                        Icon(
-                            painter =
-                                painterResource(
-                                    if (showPin) {
-                                        R.drawable.baseline_visibility_off_24
-                                    } else {
-                                        R.drawable.baseline_visibility_24
-                                    },
-                                ),
-                            contentDescription = if (showPin) "Hide PIN" else "Show PIN",
-                        )
-                    }
-                },
-            )
-
-            OutlinedTextField(
-                value = confirmPin,
-                onValueChange = {
-                    if (it.all { char -> char.isDigit() }) {
-                        confirmPin = it
-                    }
-                },
-                label = { Text("Confirm PIN") },
-                visualTransformation =
-                    if (showPin) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            AnimatedVisibility(visible = errorMessage != null) {
-                Text(
-                    text = errorMessage ?: "",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.Center,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                OutlinedButton(
-                    onClick = onCancel,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text("Cancel")
-                }
-
+            if (showRetryPrompt) {
                 Button(
-                    onClick = {
-                        onDismissError()
-                        onSetupPin(pin, confirmPin)
-                    },
-                    modifier = Modifier.weight(1f),
-                    enabled = pin.isNotEmpty() && confirmPin.isNotEmpty(),
+                    onClick = onAuthenticateClick,
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 ) {
-                    Text("Set PIN")
+                    Text("Authenticate")
+                }
+
+                OutlinedButton(
+                    onClick = onCancelClick,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                ) {
+                    Text("Disable Security")
                 }
             }
         }
@@ -373,52 +251,39 @@ private fun PinSetupCard(
 }
 
 /**
- * Card for PIN entry (authentication).
+ * Card shown when no authentication method is available on the device.
  */
 @Composable
-private fun PinEntryCard(
-    isBiometricAvailable: Boolean,
-    isBiometricEnabled: Boolean,
-    errorMessage: String?,
-    onPinEntered: (String) -> Unit,
-    onBiometricAuth: () -> Unit,
-    onDismissError: () -> Unit,
+private fun NoAuthenticationAvailableCard(
+    onDisableSecurity: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var pin by remember { mutableStateOf("") }
-    var showPin by remember { mutableStateOf(false) }
-
-    // Auto-trigger biometric on first load if enabled
-    LaunchedEffect(Unit) {
-        if (isBiometricAvailable && isBiometricEnabled) {
-            onBiometricAuth()
-        }
-    }
-
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier.padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.password_2_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                contentDescription = "Enter PIN",
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = "No authentication available",
+                modifier = Modifier.size(64.dp),
+                tint = MaterialTheme.colorScheme.error,
             )
 
             Text(
-                text = "Enter PIN",
+                text = "No Authentication Available",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
-                text = "Enter your PIN to access TRMNL dashboard",
+                text =
+                    "Your device doesn't have a screen lock (PIN, pattern, password, or biometric) set up. " +
+                        "Please set up a screen lock in your device settings to use this feature.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -426,65 +291,11 @@ private fun PinEntryCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
-                value = pin,
-                onValueChange = {
-                    if (it.all { char -> char.isDigit() }) {
-                        pin = it
-                    }
-                },
-                label = { Text("PIN") },
-                visualTransformation =
-                    if (showPin) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                modifier = Modifier.fillMaxWidth(),
-                trailingIcon = {
-                    IconButton(onClick = { showPin = !showPin }) {
-                        Icon(
-                            painter =
-                                painterResource(
-                                    if (showPin) {
-                                        R.drawable.baseline_visibility_off_24
-                                    } else {
-                                        R.drawable.baseline_visibility_24
-                                    },
-                                ),
-                            contentDescription = if (showPin) "Hide PIN" else "Show PIN",
-                        )
-                    }
-                },
-            )
-
-            AnimatedVisibility(visible = errorMessage != null) {
-                Text(
-                    text = errorMessage ?: "",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.Center,
-                )
-            }
-
-            Button(
-                onClick = {
-                    onDismissError()
-                    onPinEntered(pin)
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = pin.isNotEmpty(),
+            OutlinedButton(
+                onClick = onDisableSecurity,
+                modifier = Modifier.padding(horizontal = 16.dp),
             ) {
-                Text("Unlock")
-            }
-
-            if (isBiometricAvailable && isBiometricEnabled) {
-                TextButton(onClick = onBiometricAuth) {
-                    Icon(
-                        painter = painterResource(R.drawable.fingerprint_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                        contentDescription = "Use biometric",
-                        modifier = Modifier.size(20.dp),
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Use Biometric")
-                }
+                Text("Disable Security")
             }
         }
     }
@@ -492,87 +303,77 @@ private fun PinEntryCard(
 
 // ========== Previews ==========
 
-@Preview(name = "PIN Setup")
+@Preview(name = "Authentication Card - Initial")
 @Composable
-private fun PinSetupCardPreview() {
+private fun AuthenticationCardPreview() {
     TrmnlBuddyAppTheme {
-        PinSetupCard(
-            errorMessage = null,
-            onSetupPin = { _, _ -> },
-            onCancel = {},
-            onDismissError = {},
+        AuthenticationCard(
+            showRetryPrompt = false,
+            onAuthenticateClick = {},
+            onCancelClick = {},
         )
     }
 }
 
-@Preview(name = "PIN Setup - With Error")
+@Preview(name = "Authentication Card - Retry")
 @Composable
-private fun PinSetupCardErrorPreview() {
+private fun AuthenticationCardRetryPreview() {
     TrmnlBuddyAppTheme {
-        PinSetupCard(
-            errorMessage = "PINs do not match",
-            onSetupPin = { _, _ -> },
-            onCancel = {},
-            onDismissError = {},
+        AuthenticationCard(
+            showRetryPrompt = true,
+            onAuthenticateClick = {},
+            onCancelClick = {},
         )
     }
 }
 
-@Preview(name = "PIN Entry")
+@Preview(name = "No Authentication Available")
 @Composable
-private fun PinEntryCardPreview() {
+private fun NoAuthenticationAvailableCardPreview() {
     TrmnlBuddyAppTheme {
-        PinEntryCard(
-            isBiometricAvailable = true,
-            isBiometricEnabled = true,
-            errorMessage = null,
-            onPinEntered = {},
-            onBiometricAuth = {},
-            onDismissError = {},
+        NoAuthenticationAvailableCard(
+            onDisableSecurity = {},
         )
     }
 }
 
-@Preview(name = "PIN Entry - With Error")
+@Preview(name = "Full Screen - Available")
 @Composable
-private fun PinEntryCardErrorPreview() {
-    TrmnlBuddyAppTheme {
-        PinEntryCard(
-            isBiometricAvailable = false,
-            isBiometricEnabled = false,
-            errorMessage = "Incorrect PIN. Please try again.",
-            onPinEntered = {},
-            onBiometricAuth = {},
-            onDismissError = {},
-        )
-    }
-}
-
-@Preview(name = "Authentication Screen - Setup Mode")
-@Composable
-private fun AuthenticationScreenSetupPreview() {
+private fun AuthenticationContentPreview() {
     TrmnlBuddyAppTheme {
         AuthenticationContent(
             state =
                 AuthenticationScreen.State(
-                    isSetupMode = true,
-                    isBiometricAvailable = false,
-                    isBiometricEnabled = false,
+                    isAuthenticationAvailable = true,
+                    showRetryPrompt = false,
                 ),
         )
     }
 }
 
-@Preview(name = "Authentication Screen - Entry Mode")
+@Preview(name = "Full Screen - Retry")
 @Composable
-private fun AuthenticationScreenEntryPreview() {
+private fun AuthenticationContentRetryPreview() {
     TrmnlBuddyAppTheme {
         AuthenticationContent(
             state =
                 AuthenticationScreen.State(
-                    isSetupMode = false,
-                    isBiometricAvailable = true,
-                    isBiometricEnabled = true,
+                    isAuthenticationAvailable = true,
+                    showRetryPrompt = true,
+                ),
+        )
+    }
+}
+
+@Preview(name = "Full Screen - Not Available")
+@Composable
+private fun AuthenticationContentNotAvailablePreview() {
+    TrmnlBuddyAppTheme {
+        AuthenticationContent(
+            state =
+                AuthenticationScreen.State(
+                    isAuthenticationAvailable = false,
+                    showRetryPrompt = false,
                 ),
         )
     }

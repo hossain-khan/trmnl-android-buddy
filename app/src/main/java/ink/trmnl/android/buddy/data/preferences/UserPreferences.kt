@@ -14,8 +14,6 @@ data class UserPreferences(
     val isAnnouncementAuthBannerDismissed: Boolean = false,
     // Security preferences
     val isSecurityEnabled: Boolean = false,
-    val pinHash: String? = null,
-    val isBiometricEnabled: Boolean = false,
 ) {
     companion object {
         /**

@@ -7,17 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Changed
 
-- **PIN and Biometric Security**: Added optional PIN and biometric authentication to secure dashboard access
-  - Created `AuthenticationScreen` with PIN setup and entry modes
-  - Implemented `SecurityHelper` for PIN hashing using SHA-256
-  - Integrated AndroidX BiometricPrompt for fingerprint/face recognition authentication
-  - Added security settings section in Settings screen
-  - Users can enable/disable security, configure PIN, and toggle biometric authentication
-  - Security check integrated in navigation flow from Welcome screen
-  - Biometric authentication auto-triggers when enabled for faster access
-  - Added confirmation dialog when disabling security
+- **Security Feature Update**: Migrated from custom PIN to device native authentication following Android best practices
+  - Updated to AndroidX Biometric library 1.4.0 (latest stable)
+  - Now uses `BIOMETRIC_STRONG | DEVICE_CREDENTIAL` authenticators for better UX
+  - Removed custom PIN implementation in favor of device's native biometric/credential authentication (fingerprint, face, PIN, pattern, password)
+  - BiometricPrompt now auto-triggers on authentication screen for seamless experience
+  - Simplified security settings to single toggle (no separate PIN/biometric configuration needed)
+  - Follows official Android guidelines: https://developer.android.com/identity/sign-in/biometric-auth
 
 ## [2.0.0] - 2025-10-25
 

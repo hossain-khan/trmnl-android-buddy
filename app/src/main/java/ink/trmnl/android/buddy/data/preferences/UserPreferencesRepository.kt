@@ -74,19 +74,9 @@ interface UserPreferencesRepository {
     suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean)
 
     /**
-     * Enable or disable security (PIN/biometric authentication).
+     * Enable or disable security (biometric/device credential authentication).
      */
     suspend fun setSecurityEnabled(enabled: Boolean)
-
-    /**
-     * Set PIN hash for authentication.
-     */
-    suspend fun setPinHash(hash: String?)
-
-    /**
-     * Enable or disable biometric authentication.
-     */
-    suspend fun setBiometricEnabled(enabled: Boolean)
 
     /**
      * Clear all preferences.
@@ -111,8 +101,6 @@ class UserPreferencesRepositoryImpl
             val ANNOUNCEMENTS_ENABLED = booleanPreferencesKey("announcements_enabled") // Legacy key for migration
             val ANNOUNCEMENT_AUTH_BANNER_DISMISSED = booleanPreferencesKey("announcement_auth_banner_dismissed")
             val SECURITY_ENABLED = booleanPreferencesKey("security_enabled")
-            val PIN_HASH = stringPreferencesKey("pin_hash")
-            val BIOMETRIC_ENABLED = booleanPreferencesKey("biometric_enabled")
         }
 
         override val userPreferencesFlow: Flow<UserPreferences> =
@@ -136,8 +124,7 @@ class UserPreferencesRepositoryImpl
                     isAnnouncementAuthBannerDismissed =
                         preferences[PreferencesKeys.ANNOUNCEMENT_AUTH_BANNER_DISMISSED] ?: false,
                     isSecurityEnabled = preferences[PreferencesKeys.SECURITY_ENABLED] ?: false,
-                    pinHash = preferences[PreferencesKeys.PIN_HASH],
-                    isBiometricEnabled = preferences[PreferencesKeys.BIOMETRIC_ENABLED] ?: false,
+                )
                 )
             }
 
@@ -200,22 +187,6 @@ class UserPreferencesRepositoryImpl
         override suspend fun setSecurityEnabled(enabled: Boolean) {
             context.dataStore.edit { preferences ->
                 preferences[PreferencesKeys.SECURITY_ENABLED] = enabled
-            }
-        }
-
-        override suspend fun setPinHash(hash: String?) {
-            context.dataStore.edit { preferences ->
-                if (hash != null) {
-                    preferences[PreferencesKeys.PIN_HASH] = hash
-                } else {
-                    preferences.remove(PreferencesKeys.PIN_HASH)
-                }
-            }
-        }
-
-        override suspend fun setBiometricEnabled(enabled: Boolean) {
-            context.dataStore.edit { preferences ->
-                preferences[PreferencesKeys.BIOMETRIC_ENABLED] = enabled
             }
         }
 

@@ -281,22 +281,6 @@ private class FakeUserPreferencesRepository : UserPreferencesRepository {
             userPreferencesFlow.value.copy(isSecurityEnabled = enabled)
     }
 
-    override suspend fun setPinHash(hash: String?) {
-        if (hash != null) {
-            preferences["pin_hash"] = hash
-        } else {
-            preferences.remove("pin_hash")
-        }
-        userPreferencesFlow.value =
-            userPreferencesFlow.value.copy(pinHash = hash)
-    }
-
-    override suspend fun setBiometricEnabled(enabled: Boolean) {
-        preferences["biometric_enabled"] = enabled
-        userPreferencesFlow.value =
-            userPreferencesFlow.value.copy(isBiometricEnabled = enabled)
-    }
-
     override suspend fun clearAll() {
         wasCleared = true
         preferences.clear()

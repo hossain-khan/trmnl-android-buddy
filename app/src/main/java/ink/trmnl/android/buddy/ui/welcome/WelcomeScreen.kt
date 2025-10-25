@@ -192,7 +192,7 @@ class WelcomePresenter
                             navigator.goTo(AccessTokenScreen)
                         } else {
                             // Check if security is enabled
-                            if (prefs != null && prefs.isSecurityEnabled && prefs.pinHash != null) {
+                            if (prefs != null && prefs.isSecurityEnabled) {
                                 // Navigate to authentication screen
                                 navigator.resetRoot(ink.trmnl.android.buddy.ui.auth.AuthenticationScreen)
                             } else {
