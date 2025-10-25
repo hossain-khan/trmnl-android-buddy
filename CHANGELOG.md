@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Announcements "Mark All Read" Feature**: Extended FAB to mark all announcements as read
+  - Upgraded from icon-only FAB to Extended FloatingActionButton with "Mark All Read" text and icon
+  - Consistent with BlogPostsScreen FAB implementation
+  - Shows only when there are unread announcements
+  - Improved accessibility with explicit text label
+  - Better UX: clearer action intent for users
+
 - **Blog Posts "Mark All Read" Feature**: Extended FAB to mark all blog posts as read
   - Added Extended FloatingActionButton with "Mark All Read" text and icon
   - Shows only when there are unread blog posts
