@@ -1,9 +1,9 @@
 package ink.trmnl.android.buddy.dev
 
-import ink.trmnl.android.buddy.worker.BlogPostSyncWorker
-import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
-import ink.trmnl.android.buddy.notification.NotificationHelper
 import ink.trmnl.android.buddy.BuildConfig
+import ink.trmnl.android.buddy.notification.NotificationHelper
+import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
+import ink.trmnl.android.buddy.worker.BlogPostSyncWorker
 
 /**
  * Development configuration flags for testing and debugging.
@@ -23,7 +23,7 @@ object AppDevConfig {
      * - Bypasses `isRssFeedContentNotificationEnabled` preference check
      * - Shows notification for ANY new announcements detected
      * - Uses real announcement content from the feed
-     * - Still respects POST_NOTIFICATIONS permission (Android 13+)
+     * - ⚠️ Still respects POST_NOTIFICATIONS permission (Android 13+)
      *
      * Use case: Testing announcement notification content, styling, and behavior
      *
@@ -38,7 +38,7 @@ object AppDevConfig {
      * - Bypasses `isRssFeedContentNotificationEnabled` preference check
      * - Shows notification for ANY new blog posts detected
      * - Uses real blog post content from the feed
-     * - Still respects POST_NOTIFICATIONS permission (Android 13+)
+     * - ⚠️Still respects POST_NOTIFICATIONS permission (Android 13+)
      *
      * Use case: Testing blog post notification content, styling, and behavior
      *
