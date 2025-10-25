@@ -115,6 +115,8 @@ data object SettingsScreen : Screen {
         ) : Event()
 
         data object TestLowBatteryNotificationClicked : Event()
+
+        data object DevelopmentClicked : Event()
     }
 }
 
@@ -194,6 +196,9 @@ class SettingsPresenter(
                 SettingsScreen.Event.TestLowBatteryNotificationClicked -> {
                     // Trigger immediate one-time execution for testing (debug builds only)
                     workerScheduler.triggerLowBatteryNotificationNow()
+                }
+                SettingsScreen.Event.DevelopmentClicked -> {
+                    navigator.goTo(ink.trmnl.android.buddy.dev.DevelopmentScreen)
                 }
             }
         }
@@ -288,6 +293,13 @@ fun SettingsContent(
                     state.eventSink(SettingsScreen.Event.TestLowBatteryNotificationClicked)
                 },
             )
+
+            // Development Section (Debug builds only)
+            if (BuildConfig.DEBUG) {
+                DevelopmentSection(
+                    onClick = { state.eventSink(SettingsScreen.Event.DevelopmentClicked) },
+                )
+            }
 
             // App Information Section
             AppInformationSection()
@@ -646,6 +658,58 @@ private fun LowBatteryNotificationSection(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun DevelopmentSection(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = "Development",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        Card(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .clickable(onClick = onClick),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "Development Tools",
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        text = "Test notifications, trigger workers, and more",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.android_circle_thin_outline),
+                        contentDescription = "Development",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(32.dp),
+                    )
+                },
+                colors =
+                    ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+            )
         }
     }
 }
