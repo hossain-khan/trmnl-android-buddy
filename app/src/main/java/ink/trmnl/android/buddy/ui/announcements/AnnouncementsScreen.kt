@@ -550,7 +550,7 @@ private fun AuthenticationBanner(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.secondaryContainer,
+        color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f),
         shape = MaterialTheme.shapes.medium,
         tonalElevation = 1.dp,
     ) {
@@ -993,6 +993,25 @@ private fun AnnouncementsFullScreenPreview() {
                     filter = AnnouncementsScreen.Filter.ALL,
                     unreadCount = 2,
                     showTopBar = true,
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Preview(name = "Full Screen - With Auth Banner")
+@Composable
+private fun AnnouncementsWithAuthBannerPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        AnnouncementsContent(
+            state =
+                AnnouncementsScreen.State(
+                    isLoading = false,
+                    announcements = sampleAnnouncements,
+                    filter = AnnouncementsScreen.Filter.ALL,
+                    unreadCount = 2,
+                    showTopBar = true,
+                    showAuthBanner = true, // Show the authentication banner
                 ),
         )
     }
