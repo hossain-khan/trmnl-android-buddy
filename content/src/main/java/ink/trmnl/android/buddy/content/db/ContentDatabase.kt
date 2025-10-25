@@ -15,10 +15,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
  * Version History:
  * - Version 1: Initial schema with announcements
  * - Version 2: Added blog posts table
+ * - Version 3: Added imageUrls field to blog posts table for multi-image support
  */
 @Database(
     entities = [AnnouncementEntity::class, BlogPostEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -58,6 +59,21 @@ abstract class ContentDatabase : RoomDatabase() {
                             fetchedAt INTEGER NOT NULL,
                             isFavorite INTEGER NOT NULL DEFAULT 0
                         )
+                        """.trimIndent(),
+                    )
+                }
+            }
+
+        /**
+         * Migration from version 2 to version 3.
+         * Adds imageUrls column to blog_posts table.
+         */
+        val MIGRATION_2_3 =
+            object : Migration(2, 3) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+                        ALTER TABLE blog_posts ADD COLUMN imageUrls TEXT
                         """.trimIndent(),
                     )
                 }
