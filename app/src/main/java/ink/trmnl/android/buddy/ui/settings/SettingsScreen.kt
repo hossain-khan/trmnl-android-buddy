@@ -84,7 +84,7 @@ data object SettingsScreen : Screen {
         val isBatteryTrackingEnabled: Boolean = true,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
-        val isRssFeedContentEnabled: Boolean = true,
+        val isRssFeedContentEnabled: Boolean = false,
         val isRssFeedContentNotificationEnabled: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
@@ -303,23 +303,6 @@ private fun RssFeedContentSection(
     onNotificationToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Track if this is the first composition to prevent initial animation
-    var hasComposed by remember { mutableStateOf(false) }
-
-    // Remember the enabled state to detect changes
-    var previousEnabled by remember { mutableStateOf(isEnabled) }
-
-    // Only animate after first composition and when state actually changes
-    val shouldAnimate = hasComposed && (previousEnabled != isEnabled)
-
-    // Update tracking variables after composition
-    LaunchedEffect(isEnabled) {
-        if (!hasComposed) {
-            hasComposed = true
-        }
-        previousEnabled = isEnabled
-    }
-
     Column(modifier = modifier) {
         Text(
             text = "RSS Feed Content",
@@ -366,8 +349,8 @@ private fun RssFeedContentSection(
 
                 AnimatedVisibility(
                     visible = isEnabled,
-                    enter = if (shouldAnimate) expandVertically() + fadeIn() else expandVertically(),
-                    exit = if (shouldAnimate) shrinkVertically() + fadeOut() else shrinkVertically(),
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut(),
                 ) {
                     Column(
                         modifier =
