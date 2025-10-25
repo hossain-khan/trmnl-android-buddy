@@ -367,7 +367,7 @@ private fun WhatsNewSection(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -376,7 +376,7 @@ private fun WhatsNewSection(
             Icon(
                 painter = painterResource(id = R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(20.dp),
             )
             Text(
