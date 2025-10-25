@@ -13,11 +13,14 @@ import androidx.work.workDataOf
 import dev.zacsweers.metro.createGraphFactory
 import ink.trmnl.android.buddy.di.AppGraph
 import ink.trmnl.android.buddy.notification.NotificationHelper
-import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
-import ink.trmnl.android.buddy.work.LowBatteryNotificationWorker
 import ink.trmnl.android.buddy.work.SampleWorker
-import ink.trmnl.android.buddy.worker.BlogPostSyncWorker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -28,6 +31,9 @@ class TrmnlBuddyApp :
     Application(),
     Configuration.Provider {
     val appGraph by lazy { createGraphFactory<AppGraph.Factory>().create(this) }
+
+    // Application-scoped coroutine scope for background tasks
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     fun appGraph(): AppGraph = appGraph
 
@@ -45,8 +51,7 @@ class TrmnlBuddyApp :
         NotificationHelper.createNotificationChannels(this)
         scheduleBackgroundWork()
         scheduleBatteryCollection()
-        scheduleAnnouncementSync()
-        scheduleBlogPostSync()
+        scheduleRssFeedContentWorkers()
     }
 
     /**
@@ -93,52 +98,26 @@ class TrmnlBuddyApp :
     }
 
     /**
-     * Schedules periodic announcement sync using WorkManager.
-     * The worker fetches announcements from TRMNL RSS feed every 4 hours.
+     * Schedules RSS feed content workers (announcements and blog posts) based on user preferences.
+     * Checks the user's RSS feed content preference and schedules or cancels workers accordingly.
      */
-    private fun scheduleAnnouncementSync() {
-        val announcementWorkRequest =
-            PeriodicWorkRequestBuilder<AnnouncementSyncWorker>(
-                repeatInterval = 4,
-                repeatIntervalTimeUnit = TimeUnit.HOURS,
-            ).setConstraints(
-                Constraints
-                    .Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build(),
-            ).build()
-
-        // Use KEEP policy to avoid duplicates
-        appGraph.workManager.enqueueUniquePeriodicWork(
-            "announcement_sync",
-            ExistingPeriodicWorkPolicy.KEEP,
-            announcementWorkRequest,
-        )
+    private fun scheduleRssFeedContentWorkers() {
+        applicationScope.launch {
+            val preferences = appGraph.userPreferencesRepository.userPreferencesFlow.first()
+            if (preferences.isRssFeedContentEnabled) {
+                Timber.d("RSS feed content enabled - scheduling announcement and blog post sync workers")
+                appGraph.workerScheduler.scheduleAnnouncementSync()
+                appGraph.workerScheduler.scheduleBlogPostSync()
+            } else {
+                Timber.d("RSS feed content disabled - canceling announcement and blog post sync workers")
+                appGraph.workerScheduler.cancelAnnouncementSync()
+                appGraph.workerScheduler.cancelBlogPostSync()
+            }
+        }
     }
 
-    /**
-     * Schedules periodic blog post sync using WorkManager.
-     * The worker fetches blog posts from TRMNL RSS feed daily.
-     * Shows notification when new posts are available.
-     */
-    private fun scheduleBlogPostSync() {
-        val blogPostWorkRequest =
-            PeriodicWorkRequestBuilder<BlogPostSyncWorker>(
-                repeatInterval = 1,
-                repeatIntervalTimeUnit = TimeUnit.DAYS,
-            ).setConstraints(
-                Constraints
-                    .Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .setRequiresBatteryNotLow(true)
-                    .build(),
-            ).build()
-
-        // Use KEEP policy to avoid duplicates
-        appGraph.workManager.enqueueUniquePeriodicWork(
-            BlogPostSyncWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
-            blogPostWorkRequest,
-        )
+    override fun onTerminate() {
+        super.onTerminate()
+        applicationScope.cancel()
     }
 }

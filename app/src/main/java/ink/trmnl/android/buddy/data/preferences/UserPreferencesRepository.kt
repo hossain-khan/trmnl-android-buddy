@@ -59,9 +59,9 @@ interface UserPreferencesRepository {
     suspend fun setLowBatteryThreshold(percent: Int)
 
     /**
-     * Set announcements feature enabled/disabled.
+     * Set RSS feed content (announcements and blog posts) enabled/disabled.
      */
-    suspend fun setAnnouncementsEnabled(enabled: Boolean)
+    suspend fun setRssFeedContentEnabled(enabled: Boolean)
 
     /**
      * Dismiss the announcement authentication banner.
@@ -86,7 +86,8 @@ class UserPreferencesRepositoryImpl
             val BATTERY_TRACKING_ENABLED = booleanPreferencesKey("battery_tracking_enabled")
             val LOW_BATTERY_NOTIFICATION_ENABLED = booleanPreferencesKey("low_battery_notification_enabled")
             val LOW_BATTERY_THRESHOLD = intPreferencesKey("low_battery_threshold")
-            val ANNOUNCEMENTS_ENABLED = booleanPreferencesKey("announcements_enabled")
+            val RSS_FEED_CONTENT_ENABLED = booleanPreferencesKey("rss_feed_content_enabled")
+            val ANNOUNCEMENTS_ENABLED = booleanPreferencesKey("announcements_enabled") // Legacy key for migration
             val ANNOUNCEMENT_AUTH_BANNER_DISMISSED = booleanPreferencesKey("announcement_auth_banner_dismissed")
         }
 
@@ -101,7 +102,11 @@ class UserPreferencesRepositoryImpl
                     lowBatteryThresholdPercent =
                         preferences[PreferencesKeys.LOW_BATTERY_THRESHOLD]
                             ?: UserPreferences.DEFAULT_LOW_BATTERY_THRESHOLD,
-                    isAnnouncementsEnabled = preferences[PreferencesKeys.ANNOUNCEMENTS_ENABLED] ?: true,
+                    // Migrate from old ANNOUNCEMENTS_ENABLED key to new RSS_FEED_CONTENT_ENABLED key
+                    isRssFeedContentEnabled =
+                        preferences[PreferencesKeys.RSS_FEED_CONTENT_ENABLED]
+                            ?: preferences[PreferencesKeys.ANNOUNCEMENTS_ENABLED]
+                            ?: true,
                     isAnnouncementAuthBannerDismissed =
                         preferences[PreferencesKeys.ANNOUNCEMENT_AUTH_BANNER_DISMISSED] ?: false,
                 )
@@ -143,9 +148,11 @@ class UserPreferencesRepositoryImpl
             }
         }
 
-        override suspend fun setAnnouncementsEnabled(enabled: Boolean) {
+        override suspend fun setRssFeedContentEnabled(enabled: Boolean) {
             context.dataStore.edit { preferences ->
-                preferences[PreferencesKeys.ANNOUNCEMENTS_ENABLED] = enabled
+                preferences[PreferencesKeys.RSS_FEED_CONTENT_ENABLED] = enabled
+                // Remove legacy key if it exists
+                preferences.remove(PreferencesKeys.ANNOUNCEMENTS_ENABLED)
             }
         }
 

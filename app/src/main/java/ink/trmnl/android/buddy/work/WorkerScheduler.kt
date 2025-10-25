@@ -43,6 +43,17 @@ interface WorkerScheduler {
      * Cancels the announcement sync worker.
      */
     fun cancelAnnouncementSync()
+
+    /**
+     * Schedules or reschedules the blog post sync worker.
+     * The worker fetches blog posts from TRMNL RSS feed daily.
+     */
+    fun scheduleBlogPostSync()
+
+    /**
+     * Cancels the blog post sync worker.
+     */
+    fun cancelBlogPostSync()
 }
 
 /**
@@ -150,7 +161,44 @@ class WorkerSchedulerImpl(
         workManager.cancelUniqueWork(ANNOUNCEMENT_SYNC_WORK_NAME)
     }
 
+    /**
+     * Schedules or reschedules the blog post sync worker.
+     * The worker fetches blog posts from TRMNL RSS feed daily.
+     * Uses KEEP policy to avoid duplicates.
+     */
+    override fun scheduleBlogPostSync() {
+        Timber.d("Scheduling blog post sync worker (daily, network required)")
+
+        val blogPostWorkRequest =
+            PeriodicWorkRequestBuilder<ink.trmnl.android.buddy.worker.BlogPostSyncWorker>(
+                repeatInterval = 1,
+                repeatIntervalTimeUnit = TimeUnit.DAYS,
+            ).setConstraints(
+                Constraints
+                    .Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .setRequiresBatteryNotLow(true)
+                    .build(),
+            ).build()
+
+        workManager.enqueueUniquePeriodicWork(
+            BLOG_POST_SYNC_WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            blogPostWorkRequest,
+        )
+    }
+
+    /**
+     * Cancels the blog post sync worker.
+     * Called when user disables RSS feed content in settings.
+     */
+    override fun cancelBlogPostSync() {
+        Timber.d("Cancelling blog post sync worker")
+        workManager.cancelUniqueWork(BLOG_POST_SYNC_WORK_NAME)
+    }
+
     companion object {
         private const val ANNOUNCEMENT_SYNC_WORK_NAME = "announcement_sync"
+        private const val BLOG_POST_SYNC_WORK_NAME = "blog_post_sync"
     }
 }

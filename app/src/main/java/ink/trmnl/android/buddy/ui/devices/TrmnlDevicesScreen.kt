@@ -158,7 +158,7 @@ data object TrmnlDevicesScreen : Screen {
         val snackbarMessage: String? = null,
         val latestContent: List<ContentItem> = emptyList(),
         val isContentLoading: Boolean = true,
-        val isAnnouncementsEnabled: Boolean = true,
+        val isRssFeedContentEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -228,17 +228,17 @@ class TrmnlDevicesPresenter
                 mutableStateOf<List<ContentItem>>(emptyList())
             }
             var isContentLoading by rememberRetained { mutableStateOf(true) }
-            var isAnnouncementsEnabled by rememberRetained { mutableStateOf(true) }
+            var isRssFeedContentEnabled by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
 
             // Capture theme colors for Custom Tabs
             val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
             val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
 
-            // Collect announcements enabled preference
+            // Collect RSS feed content enabled preference
             LaunchedEffect(Unit) {
                 userPreferencesRepository.userPreferencesFlow.collect { preferences ->
-                    isAnnouncementsEnabled = preferences.isAnnouncementsEnabled
+                    isRssFeedContentEnabled = preferences.isRssFeedContentEnabled
                 }
             }
 
@@ -336,7 +336,7 @@ class TrmnlDevicesPresenter
                 snackbarMessage = snackbarMessage,
                 latestContent = latestContent,
                 isContentLoading = isContentLoading,
-                isAnnouncementsEnabled = isAnnouncementsEnabled,
+                isRssFeedContentEnabled = isRssFeedContentEnabled,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
@@ -644,7 +644,7 @@ fun TrmnlDevicesContent(
                     innerPadding = innerPadding,
                     latestContent = state.latestContent,
                     isContentLoading = state.isContentLoading,
-                    isAnnouncementsEnabled = state.isAnnouncementsEnabled,
+                    isRssFeedContentEnabled = state.isRssFeedContentEnabled,
                     onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                     onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                     onPreviewClick = { device, previewInfo ->
@@ -775,7 +775,7 @@ private fun DevicesList(
     innerPadding: PaddingValues,
     latestContent: List<ContentItem>,
     isContentLoading: Boolean,
-    isAnnouncementsEnabled: Boolean,
+    isRssFeedContentEnabled: Boolean,
     onDeviceClick: (Device) -> Unit,
     onSettingsClick: (Device) -> Unit,
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
@@ -792,8 +792,8 @@ private fun DevicesList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // Content carousel at the top (only if enabled)
-        if (isAnnouncementsEnabled) {
+        // Content carousel at the top (only if RSS feed content is enabled)
+        if (isRssFeedContentEnabled) {
             item {
                 ContentCarousel(
                     content = latestContent,
@@ -2029,7 +2029,7 @@ private fun DevicesListPreview() {
             innerPadding = PaddingValues(0.dp),
             latestContent = sampleContentList,
             isContentLoading = false,
-            isAnnouncementsEnabled = true,
+            isRssFeedContentEnabled = true,
             onDeviceClick = {},
             onSettingsClick = {},
             onPreviewClick = { _, _ -> },

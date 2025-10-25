@@ -9,6 +9,8 @@ import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.work.WorkerScheduler
 import kotlin.reflect.KClass
 
 /**
@@ -23,6 +25,8 @@ interface AppGraph {
     val circuit: Circuit
     val workManager: WorkManager
     val workerFactory: AppWorkerFactory
+    val userPreferencesRepository: UserPreferencesRepository
+    val workerScheduler: WorkerScheduler
 
     @Provides
     fun providesWorkManager(
