@@ -6,6 +6,8 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import com.prof18.rssparser.RssParser
 import ink.trmnl.android.buddy.content.db.BlogPostDao
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
@@ -192,6 +194,59 @@ class BlogPostRepositoryTest {
             val modelXPost = blogPosts.first { it.title == "Model X Progress Report" }
             assertThat(modelXPost.summary).contains("introduced X")
             assertThat(modelXPost.summary.length).isGreaterThan(50)
+        }
+
+    @Test
+    fun `test extractAllImages extracts multiple images from HTML content`() =
+        runTest {
+            // HTML with multiple images
+            val htmlContent =
+                """
+                <div>
+                    <p>Some text</p>
+                    <img src="https://example.com/image1.jpg" alt="First image">
+                    <p>More text</p>
+                    <img src="https://example.com/image2.png" alt="Second image">
+                    <p>Final text</p>
+                    <img src="https://example.com/image3.gif" alt="Third image">
+                </div>
+                """.trimIndent()
+
+            // Use reflection to access private extractAllImages method
+            val extractMethod =
+                BlogPostRepository::class.java.getDeclaredMethod(
+                    "extractAllImages",
+                    String::class.java,
+                )
+            extractMethod.isAccessible = true
+
+            val imageUrls = extractMethod.invoke(repository, htmlContent) as List<*>?
+
+            // Verify all images were extracted
+            assertThat(imageUrls).isNotNull()
+            assertThat(imageUrls!!.size).isEqualTo(3)
+            assertThat(imageUrls[0]).isEqualTo("https://example.com/image1.jpg")
+            assertThat(imageUrls[1]).isEqualTo("https://example.com/image2.png")
+            assertThat(imageUrls[2]).isEqualTo("https://example.com/image3.gif")
+        }
+
+    @Test
+    fun `test extractAllImages returns null for content without images`() =
+        runTest {
+            val htmlContent = "<p>Just some text without any images</p>"
+
+            // Use reflection to access private extractAllImages method
+            val extractMethod =
+                BlogPostRepository::class.java.getDeclaredMethod(
+                    "extractAllImages",
+                    String::class.java,
+                )
+            extractMethod.isAccessible = true
+
+            val imageUrls = extractMethod.invoke(repository, htmlContent) as List<*>?
+
+            // Should return null when no images found
+            assertThat(imageUrls).isNull()
         }
 
     /**

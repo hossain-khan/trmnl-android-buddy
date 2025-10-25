@@ -18,4 +18,16 @@ class Converters {
      */
     @TypeConverter
     fun toInstant(epochSecond: Long?): Instant? = epochSecond?.let { Instant.ofEpochSecond(it) }
+
+    /**
+     * Convert List<String> to comma-separated String for database storage.
+     */
+    @TypeConverter
+    fun fromStringList(list: List<String>?): String? = list?.joinToString(",")
+
+    /**
+     * Convert comma-separated String from database to List<String>.
+     */
+    @TypeConverter
+    fun toStringList(value: String?): List<String>? = value?.split(",")?.filter { it.isNotBlank() }?.takeIf { it.isNotEmpty() }
 }
