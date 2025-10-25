@@ -14,7 +14,6 @@ import dev.zacsweers.metro.createGraphFactory
 import ink.trmnl.android.buddy.di.AppGraph
 import ink.trmnl.android.buddy.notification.NotificationHelper
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
-import ink.trmnl.android.buddy.work.SampleWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -49,28 +48,8 @@ class TrmnlBuddyApp :
         }
 
         NotificationHelper.createNotificationChannels(this)
-        scheduleBackgroundWork()
         scheduleBatteryCollection()
         scheduleRssFeedContentWorkers()
-    }
-
-    /**
-     * Schedules a background work request using the [WorkManager].
-     * This is just an example to demonstrate how to use WorkManager with Metro DI.
-     */
-    private fun scheduleBackgroundWork() {
-        val workRequest =
-            OneTimeWorkRequestBuilder<SampleWorker>()
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .setInputData(workDataOf(SampleWorker.KEY_WORK_NAME to "Circuit App ${System.currentTimeMillis()}"))
-                .setConstraints(
-                    Constraints
-                        .Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build(),
-                ).build()
-
-        appGraph.workManager.enqueue(workRequest)
     }
 
     /**
