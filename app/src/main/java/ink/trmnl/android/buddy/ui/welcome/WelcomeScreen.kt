@@ -395,7 +395,7 @@ private fun WhatsNewSection(
             Icon(
                 painter = painterResource(id = R.drawable.arrow_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                 contentDescription = null,
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(16.dp),
             )
         }
     }
