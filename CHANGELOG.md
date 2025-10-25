@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated to AndroidX Biometric library 1.4.0 (latest stable)
   - Now uses `BIOMETRIC_STRONG | DEVICE_CREDENTIAL` authenticators for better UX
   - Removed custom PIN implementation in favor of device's native biometric/credential authentication (fingerprint, face, PIN, pattern, password)
-  - BiometricPrompt now auto-triggers on authentication screen for seamless experience
+  - Authentication requires explicit user interaction (button click) per Android guidelines
+  - Always shows "Unlock" button on authentication screen (no auto-trigger)
   - Simplified security settings to single toggle (no separate PIN/biometric configuration needed)
   - Follows official Android guidelines: https://developer.android.com/identity/sign-in/biometric-auth
 

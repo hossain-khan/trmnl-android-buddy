@@ -148,12 +148,9 @@ fun AuthenticationContent(
     state: AuthenticationScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    // Auto-trigger authentication on first load
-    LaunchedEffect(Unit) {
-        if (state.isAuthenticationAvailable && !state.showRetryPrompt) {
-            state.eventSink(AuthenticationScreen.Event.AuthenticateRequested)
-        }
-    }
+    // Note: BiometricPrompt requires explicit user interaction (button click) per Android guidelines
+    // We cannot auto-trigger authenticate() - user must click the button first
+    // See: https://developer.android.com/identity/sign-in/biometric-auth
 
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         Box(
@@ -187,6 +184,7 @@ fun AuthenticationContent(
 
 /**
  * Card shown when authentication is available.
+ * Following Android guidelines: BiometricPrompt requires explicit user interaction (button click).
  */
 @Composable
 private fun AuthenticationCard(
@@ -212,18 +210,13 @@ private fun AuthenticationCard(
             )
 
             Text(
-                text = if (showRetryPrompt) "Authentication Required" else "Authenticating...",
+                text = "Authentication Required",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
-                text =
-                    if (showRetryPrompt) {
-                        "Use your fingerprint, face, or device PIN to unlock"
-                    } else {
-                        "Please authenticate to continue"
-                    },
+                text = "Use your fingerprint, face, or device PIN to unlock your TRMNL dashboard",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -231,20 +224,25 @@ private fun AuthenticationCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (showRetryPrompt) {
-                Button(
-                    onClick = onAuthenticateClick,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                ) {
-                    Text("Authenticate")
-                }
+            // Always show authenticate button - BiometricPrompt requires user interaction
+            Button(
+                onClick = onAuthenticateClick,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.fingerprint_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+                Text("Unlock")
+            }
 
-                OutlinedButton(
-                    onClick = onCancelClick,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                ) {
-                    Text("Disable Security")
-                }
+            OutlinedButton(
+                onClick = onCancelClick,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            ) {
+                Text("Disable Security")
             }
         }
     }
