@@ -59,12 +59,17 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
+import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
+import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.theme.ebGaramondFontFamily
+import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen.Event.GetStartedClicked
+import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen.Event.ViewUpdatesClicked
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.parcelize.Parcelize
@@ -100,8 +105,8 @@ class WelcomePresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val userPreferencesRepository: UserPreferencesRepository,
-        private val announcementRepository: ink.trmnl.android.buddy.content.repository.AnnouncementRepository,
-        private val blogPostRepository: ink.trmnl.android.buddy.content.repository.BlogPostRepository,
+        private val announcementRepository: AnnouncementRepository,
+        private val blogPostRepository: BlogPostRepository,
     ) : Presenter<WelcomeScreen.State> {
         @Composable
         override fun present(): WelcomeScreen.State {
@@ -150,7 +155,7 @@ class WelcomePresenter
                 unreadContentCount = totalUnreadCount,
             ) { event ->
                 when (event) {
-                    WelcomeScreen.Event.GetStartedClicked -> {
+                    GetStartedClicked -> {
                         // Navigate based on whether API token exists
                         if (userPreferences?.apiToken.isNullOrBlank()) {
                             navigator.goTo(AccessTokenScreen)
@@ -160,9 +165,9 @@ class WelcomePresenter
                         }
                     }
 
-                    WelcomeScreen.Event.ViewUpdatesClicked -> {
+                    ViewUpdatesClicked -> {
                         // Navigate to ContentHubScreen (public content, no token required)
-                        navigator.goTo(ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen)
+                        navigator.goTo(ContentHubScreen)
                     }
                 }
             }
@@ -248,7 +253,7 @@ fun WelcomeContent(
 
                 // Get Started button
                 OutlinedButton(
-                    onClick = { state.eventSink(WelcomeScreen.Event.GetStartedClicked) },
+                    onClick = { state.eventSink(GetStartedClicked) },
                     enabled = !state.isLoading,
                 ) {
                     Text(
@@ -270,7 +275,7 @@ fun WelcomeContent(
                         WhatsNewSection(
                             totalCount = state.recentContentCount,
                             unreadCount = state.unreadContentCount,
-                            onClick = { state.eventSink(WelcomeScreen.Event.ViewUpdatesClicked) },
+                            onClick = { state.eventSink(ViewUpdatesClicked) },
                         )
                     }
                 }
