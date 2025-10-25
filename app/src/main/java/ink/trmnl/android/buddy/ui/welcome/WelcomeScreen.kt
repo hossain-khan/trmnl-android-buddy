@@ -73,6 +73,7 @@ data object WelcomeScreen : Screen {
         val hasExistingToken: Boolean = false,
         val hasRecentContent: Boolean = false,
         val recentContentCount: Int = 0,
+        val unreadContentCount: Int = 0,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -117,7 +118,21 @@ class WelcomePresenter
                 }
             }
 
+            // Fetch unread counts
+            val unreadAnnouncementsCount by produceRetainedState(initialValue = 0) {
+                announcementRepository.getUnreadCount().first().also {
+                    value = it
+                }
+            }
+
+            val unreadBlogPostsCount by produceRetainedState(initialValue = 0) {
+                blogPostRepository.getUnreadCount().first().also {
+                    value = it
+                }
+            }
+
             val totalContentCount = recentAnnouncementsCount + recentBlogPostsCount
+            val totalUnreadCount = unreadAnnouncementsCount + unreadBlogPostsCount
             val hasRecentContent = totalContentCount > 0
 
             return WelcomeScreen.State(
@@ -125,6 +140,7 @@ class WelcomePresenter
                 hasExistingToken = !userPreferences?.apiToken.isNullOrBlank(),
                 hasRecentContent = hasRecentContent,
                 recentContentCount = totalContentCount,
+                unreadContentCount = totalUnreadCount,
             ) { event ->
                 when (event) {
                     WelcomeScreen.Event.GetStartedClicked -> {
@@ -239,7 +255,8 @@ fun WelcomeContent(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     WhatsNewSection(
-                        contentCount = state.recentContentCount,
+                        totalCount = state.recentContentCount,
+                        unreadCount = state.unreadContentCount,
                         onClick = { state.eventSink(WelcomeScreen.Event.ViewUpdatesClicked) },
                     )
                 }
@@ -299,7 +316,8 @@ fun WelcomeContent(
  */
 @Composable
 private fun WhatsNewSection(
-    contentCount: Int,
+    totalCount: Int,
+    unreadCount: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -363,7 +381,12 @@ private fun WhatsNewSection(
             modifier = Modifier.graphicsLayer { this.alpha = alpha },
         ) {
             Text(
-                text = "$contentCount new ${if (contentCount == 1) "update" else "updates"} from TRMNL →",
+                text =
+                    if (unreadCount > 0) {
+                        "$unreadCount new ${if (unreadCount == 1) "update" else "updates"} from TRMNL →"
+                    } else {
+                        "Updates from TRMNL →"
+                    },
                 style = MaterialTheme.typography.bodyLarge,
             )
         }
