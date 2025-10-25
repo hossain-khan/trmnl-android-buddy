@@ -245,28 +245,31 @@ fun WelcomeContent(
                 }
 
                 // Welcome back message area (fixed height to prevent layout shifts)
-                Box(
-                    modifier =
-                        Modifier
-                            .height(32.dp)
-                            .graphicsLayer { this.alpha = alpha },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (showWelcomeBack && state.hasExistingToken) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = "Welcome back!",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.emoji_people_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
+                // Only show if "What's New" is NOT shown (save space)
+                if (!state.hasRecentContent && state.hasExistingToken) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .height(32.dp)
+                                .graphicsLayer { this.alpha = alpha },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        if (showWelcomeBack) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = "Welcome back!",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                                Icon(
+                                    painter = painterResource(id = R.drawable.emoji_people_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }
                         }
                     }
                 }
