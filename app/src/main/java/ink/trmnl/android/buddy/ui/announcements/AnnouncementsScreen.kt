@@ -227,7 +227,9 @@ class AnnouncementsPresenter
 
                     is AnnouncementsScreen.Event.FilterChanged -> {
                         filter = event.filter
-                        isLoading = true
+                        // Don't set isLoading = true here, as it would unmount the list
+                        // and prevent smooth animations. The LaunchedEffect(filter) will
+                        // handle updating the announcements list automatically.
                     }
 
                     is AnnouncementsScreen.Event.AnnouncementClicked -> {
@@ -489,50 +491,50 @@ private fun AnnouncementsList(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 8.dp),
         ) {
-                // Authentication info banner (if not dismissed) with smooth slide-out animation
-                if (shouldShowBanner) {
-                    item(key = "auth_banner") {
-                        AuthenticationBanner(
-                            onDismiss = {
-                                // Start dismissing animation
-                                isBannerDismissing = true
-                                // Wait for animation, then save preference and clean up state
-                                coroutineScope.launch {
-                                    delay(300) // Match LazyColumn's default animation duration
-                                    onDismissBanner()
-                                    isBannerDismissing = false
-                                }
-                            },
-                            modifier =
-                                Modifier
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                                    .animateItem(), // Use LazyColumn's built-in item animation
-                        )
-                    }
+            // Authentication info banner (if not dismissed) with smooth slide-out animation
+            if (shouldShowBanner) {
+                item(key = "auth_banner") {
+                    AuthenticationBanner(
+                        onDismiss = {
+                            // Start dismissing animation
+                            isBannerDismissing = true
+                            // Wait for animation, then save preference and clean up state
+                            coroutineScope.launch {
+                                delay(300) // Match LazyColumn's default animation duration
+                                onDismissBanner()
+                                isBannerDismissing = false
+                            }
+                        },
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .animateItem(), // Use LazyColumn's built-in item animation
+                    )
+                }
+            }
+
+            // Group announcements by date
+            val groupedAnnouncements = announcements.groupByDate()
+
+            groupedAnnouncements.forEach { (dateCategory, items) ->
+                stickyHeader(key = "date_$dateCategory") {
+                    DateHeader(dateCategory)
                 }
 
-                // Group announcements by date
-                val groupedAnnouncements = announcements.groupByDate()
-
-                groupedAnnouncements.forEach { (dateCategory, items) ->
-                    stickyHeader(key = "date_$dateCategory") {
-                        DateHeader(dateCategory)
-                    }
-
-                    items(
-                        items = items,
-                        key = { it.id },
-                    ) { announcement ->
-                        AnnouncementItem(
-                            announcement = announcement,
-                            onClick = { onAnnouncementClick(announcement) },
-                            onToggleReadStatus = { onToggleReadStatus(announcement) },
-                            modifier = Modifier.animateItem(),
-                        )
-                    }
+                items(
+                    items = items,
+                    key = { it.id },
+                ) { announcement ->
+                    AnnouncementItem(
+                        announcement = announcement,
+                        onClick = { onAnnouncementClick(announcement) },
+                        onToggleReadStatus = { onToggleReadStatus(announcement) },
+                        modifier = Modifier.animateItem(),
+                    )
                 }
             }
         }
+    }
 }
 
 /**
