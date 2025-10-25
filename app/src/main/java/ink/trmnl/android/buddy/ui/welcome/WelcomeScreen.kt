@@ -45,6 +45,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.produceRetainedState
@@ -62,6 +63,7 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
+import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.theme.ebGaramondFontFamily
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -415,14 +417,14 @@ private fun WhatsNewSection(
 // Previews
 // ========================================
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Welcome Screen - New User",
     showBackground = true,
     backgroundColor = 0xFFFFFFFF,
 )
 @Composable
 private fun WelcomeScreenNewUserPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         WelcomeContent(
             state =
                 WelcomeScreen.State(
@@ -434,14 +436,14 @@ private fun WelcomeScreenNewUserPreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Welcome Screen - Existing User",
     showBackground = true,
     backgroundColor = 0xFFFFFFFF,
 )
 @Composable
 private fun WelcomeScreenExistingUserPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         WelcomeContent(
             state =
                 WelcomeScreen.State(
@@ -453,14 +455,14 @@ private fun WelcomeScreenExistingUserPreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Welcome Screen - With Updates",
     showBackground = true,
     backgroundColor = 0xFFFFFFFF,
 )
 @Composable
 private fun WelcomeScreenWithUpdatesPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         WelcomeContent(
             state =
                 WelcomeScreen.State(
@@ -474,14 +476,14 @@ private fun WelcomeScreenWithUpdatesPreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Welcome Screen - All Read",
     showBackground = true,
     backgroundColor = 0xFFFFFFFF,
 )
 @Composable
 private fun WelcomeScreenAllReadPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         WelcomeContent(
             state =
                 WelcomeScreen.State(
@@ -495,14 +497,14 @@ private fun WelcomeScreenAllReadPreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Welcome Screen - Loading",
     showBackground = true,
     backgroundColor = 0xFFFFFFFF,
 )
 @Composable
 private fun WelcomeScreenLoadingPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         WelcomeContent(
             state =
                 WelcomeScreen.State(
@@ -514,7 +516,7 @@ private fun WelcomeScreenLoadingPreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Welcome Screen - Dark Theme",
     showBackground = true,
     backgroundColor = 0xFF000000,
@@ -522,7 +524,7 @@ private fun WelcomeScreenLoadingPreview() {
 )
 @Composable
 private fun WelcomeScreenDarkPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme(darkTheme = true) {
+    TrmnlBuddyAppTheme(darkTheme = true) {
         WelcomeContent(
             state =
                 WelcomeScreen.State(
@@ -536,13 +538,13 @@ private fun WelcomeScreenDarkPreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "What's New Section - With Unread",
     showBackground = true,
 )
 @Composable
 private fun WhatsNewSectionWithUnreadPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         WhatsNewSection(
             totalCount = 6,
             unreadCount = 3,
@@ -551,13 +553,13 @@ private fun WhatsNewSectionWithUnreadPreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "What's New Section - All Read",
     showBackground = true,
 )
 @Composable
 private fun WhatsNewSectionAllReadPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         WhatsNewSection(
             totalCount = 6,
             unreadCount = 0,
@@ -566,13 +568,13 @@ private fun WhatsNewSectionAllReadPreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "What's New Section - Single Update",
     showBackground = true,
 )
 @Composable
 private fun WhatsNewSectionSingleUpdatePreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         WhatsNewSection(
             totalCount = 1,
             unreadCount = 1,
@@ -581,7 +583,7 @@ private fun WhatsNewSectionSingleUpdatePreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "What's New Section - Dark Theme",
     showBackground = true,
     backgroundColor = 0xFF000000,
@@ -589,7 +591,7 @@ private fun WhatsNewSectionSingleUpdatePreview() {
 )
 @Composable
 private fun WhatsNewSectionDarkPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme(darkTheme = true) {
+    TrmnlBuddyAppTheme(darkTheme = true) {
         WhatsNewSection(
             totalCount = 6,
             unreadCount = 4,
