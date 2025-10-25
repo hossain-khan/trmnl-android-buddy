@@ -1,6 +1,8 @@
 package ink.trmnl.android.buddy.content.db
 
 import androidx.room.TypeConverter
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.time.Instant
 
 /**
@@ -18,4 +20,25 @@ class Converters {
      */
     @TypeConverter
     fun toInstant(epochSecond: Long?): Instant? = epochSecond?.let { Instant.ofEpochSecond(it) }
+
+    /**
+     * Convert List<String> to JSON string for database storage.
+     * Uses JSON serialization to properly handle URLs with special characters.
+     */
+    @TypeConverter
+    fun fromStringList(list: List<String>?): String? = list?.let { Json.encodeToString(it) }
+
+    /**
+     * Convert JSON string from database to List<String>.
+     * Returns null if the value is null or if deserialization fails.
+     */
+    @TypeConverter
+    fun toStringList(value: String?): List<String>? {
+        if (value.isNullOrBlank()) return null
+        return try {
+            Json.decodeFromString<List<String>>(value).takeIf { it.isNotEmpty() }
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

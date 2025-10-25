@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+- **Image Carousel for Blog Posts**: Enhanced blog post cards with multi-image support and auto-rotation
+  - Extracts all images from RSS feed content (previously only showed first image)
+  - Auto-rotates through images every 3 seconds with smooth crossfade animation
+  - Shows image counter indicator (e.g., "2/5") when multiple images present
+  - Falls back to single image or no image gracefully
+  - Improves visual richness and user experience on BlogPostsScreen
+
 - **"What's New" Section on Welcome Screen**: Showcase recent TRMNL content to new users
   - Shows count of recent announcements and blog posts on welcome screen
   - Only appears when content exists (otherwise hidden)
@@ -41,6 +49,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Material 3 design with info icon and close button
   - Added `isAnnouncementAuthBannerDismissed` preference to UserPreferences
   - Added `setAnnouncementAuthBannerDismissed()` method to UserPreferencesRepository
+
+### Changed
+
+- **Improved Room Type Converters**: Migrated from comma-separated strings to JSON serialization
+  - Changed `Converters.fromStringList()` to use JSON encoding instead of comma delimiter
+  - Changed `Converters.toStringList()` to use JSON decoding with error handling
+  - Fixes potential data corruption when URLs contain commas (e.g., query parameters)
+  - Handles special characters in URLs properly (spaces, ampersands, fragments, etc.)
+  - Added comprehensive unit tests for edge cases (URLs with commas, special chars, roundtrip)
+  - More robust serialization prevents URL parsing errors
 
 - **UI/UX Refinements for Content Feed**: Complete Material Design 3 and accessibility overhaul
   - **Accessibility Improvements** (Phase 1):

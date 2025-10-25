@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinter)
 }
@@ -50,6 +51,9 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
+
+    // Serialization (for Room type converters)
+    implementation(libs.kotlinx.serialization.json)
 
     // Dependency Injection
     implementation(libs.javax.inject)

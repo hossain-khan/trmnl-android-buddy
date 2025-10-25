@@ -18,6 +18,7 @@ import java.time.Instant
  * @property category Post category (e.g., "TRMNL", "DevOps", nullable)
  * @property publishedDate Publication timestamp (used for sorting)
  * @property featuredImageUrl URL to the main/hero image (nullable)
+ * @property imageUrls List of all image URLs found in the post content
  * @property isRead Whether the user has read this post
  * @property readingProgressPercent How much of the post the user has read (0-100)
  * @property lastReadAt Last time the user opened this post
@@ -34,6 +35,7 @@ data class BlogPostEntity(
     val category: String?,
     val publishedDate: Instant,
     val featuredImageUrl: String?,
+    val imageUrls: List<String>? = null,
     val isRead: Boolean = false,
     val readingProgressPercent: Float = 0f,
     val lastReadAt: Instant? = null,

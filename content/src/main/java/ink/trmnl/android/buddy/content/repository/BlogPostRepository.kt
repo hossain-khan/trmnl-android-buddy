@@ -121,13 +121,16 @@ class BlogPostRepository(
                         // Extract featured image from content (first img tag)
                         val featuredImageUrl = extractFeaturedImage(item.content)
 
+                        // Extract all images from content
+                        val imageUrls = extractAllImages(item.content)
+
                         // Sanitize summary to plain text (max 300 chars)
                         // Try content first, fall back to description
                         val rawSummary = item.content?.takeIf { it.isNotBlank() } ?: item.description
                         val sanitizedSummary = sanitizeHtmlToPlainText(rawSummary ?: "")
 
                         Timber.d(
-                            "Parsing '${item.title}': content=${item.content?.length ?: 0}, desc=${item.description?.length ?: 0}, summary=${sanitizedSummary.length}",
+                            "Parsing '${item.title}': content=${item.content?.length ?: 0}, desc=${item.description?.length ?: 0}, summary=${sanitizedSummary.length}, images=${imageUrls?.size ?: 0}",
                         )
 
                         BlogPostEntity(
@@ -139,6 +142,7 @@ class BlogPostRepository(
                             category = category,
                             publishedDate = publishedDate,
                             featuredImageUrl = featuredImageUrl,
+                            imageUrls = imageUrls,
                             fetchedAt = Instant.now(),
                         )
                     } catch (e: Exception) {
@@ -177,6 +181,23 @@ class BlogPostRepository(
         // Simple regex to find first img src
         val imgRegex = """<img[^>]+src\s*=\s*["']([^"']+)["']""".toRegex(RegexOption.IGNORE_CASE)
         return imgRegex.find(content)?.groupValues?.getOrNull(1)
+    }
+
+    /**
+     * Extract all image URLs from HTML content.
+     * Finds all <img> tags and extracts their src attributes.
+     *
+     * @param content HTML content string
+     * @return List of image URLs, or null if none found
+     */
+    private fun extractAllImages(content: String?): List<String>? {
+        if (content.isNullOrBlank()) return null
+
+        // Regex to find all img src attributes
+        val imgRegex = """<img[^>]+src\s*=\s*["']([^"']+)["']""".toRegex(RegexOption.IGNORE_CASE)
+        val imageUrls = imgRegex.findAll(content).mapNotNull { it.groupValues.getOrNull(1) }.toList()
+
+        return imageUrls.takeIf { it.isNotEmpty() }
     }
 
     /**

@@ -48,8 +48,10 @@ interface AppBindings {
                 context,
                 ContentDatabase::class.java,
                 "trmnl_content.db",
-            ).addMigrations(ContentDatabase.MIGRATION_1_2)
-            .build()
+            ).addMigrations(
+                ContentDatabase.MIGRATION_1_2,
+                ContentDatabase.MIGRATION_2_3,
+            ).build()
 
     @Provides
     fun provideAnnouncementDao(database: ContentDatabase): AnnouncementDao = database.announcementDao()

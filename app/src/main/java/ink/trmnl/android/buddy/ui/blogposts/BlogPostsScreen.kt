@@ -2,10 +2,12 @@ package ink.trmnl.android.buddy.ui.blogposts
 
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -53,6 +55,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -86,6 +89,7 @@ import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.util.BrowserUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import java.time.Instant
@@ -455,27 +459,16 @@ private fun BlogPostCard(
         interactionSource = interactionSource,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // Featured image if available
-            blogPost.featuredImageUrl?.let { imageUrl ->
-                SubcomposeAsyncImage(
-                    model = imageUrl,
-                    contentDescription = "Featured image for ${blogPost.title}",
+            // Image carousel if images are available
+            val imageUrls = blogPost.imageUrls ?: blogPost.featuredImageUrl?.let { listOf(it) }
+            if (!imageUrls.isNullOrEmpty()) {
+                ImageCarousel(
+                    imageUrls = imageUrls,
+                    title = blogPost.title,
                     modifier =
                         Modifier
                             .fillMaxWidth()
                             .height(180.dp),
-                    contentScale = ContentScale.Crop,
-                    loading = {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator(modifier = Modifier.size(32.dp))
-                        }
-                    },
-                    error = {
-                        // Silently fail - don't show error for images
-                    },
                 )
             }
 
@@ -566,6 +559,81 @@ private fun BlogPostCard(
                         text = formatRelativeDate(blogPost.publishedDate),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Image carousel that rotates through multiple images with fade animation.
+ * Automatically cycles through images every 3 seconds.
+ *
+ * @param imageUrls List of image URLs to display
+ * @param title Title for accessibility content description
+ * @param modifier Modifier for the carousel container
+ */
+@Composable
+private fun ImageCarousel(
+    imageUrls: List<String>,
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    // Track current image index
+    var currentIndex by remember { mutableIntStateOf(0) }
+
+    // Auto-rotate images every 3 seconds if there are multiple images
+    LaunchedEffect(imageUrls.size) {
+        if (imageUrls.size > 1) {
+            while (true) {
+                delay(3000) // 3 second delay
+                currentIndex = (currentIndex + 1) % imageUrls.size
+            }
+        }
+    }
+
+    // Crossfade animation for smooth image transitions
+    Crossfade(
+        targetState = currentIndex,
+        animationSpec = tween(durationMillis = 800),
+        label = "Image Carousel Crossfade",
+        modifier = modifier,
+    ) { index ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            SubcomposeAsyncImage(
+                model = imageUrls[index],
+                contentDescription = "Image ${index + 1} of ${imageUrls.size} for $title",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                loading = {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                    }
+                },
+                error = {
+                    // Silently fail - don't show error for images
+                },
+            )
+
+            // Image counter indicator (if multiple images)
+            if (imageUrls.size > 1) {
+                Surface(
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(8.dp),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                ) {
+                    Text(
+                        text = "${index + 1}/${imageUrls.size}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     )
                 }
             }
@@ -694,6 +762,12 @@ private val sampleBlogPosts =
             category = "Product Updates",
             publishedDate = Instant.now().minus(2, ChronoUnit.HOURS),
             featuredImageUrl = "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
+            imageUrls =
+                listOf(
+                    "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
+                    "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+                    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97",
+                ),
             isRead = false,
             isFavorite = false,
             fetchedAt = Instant.now(),
@@ -707,6 +781,11 @@ private val sampleBlogPosts =
             category = "Community",
             publishedDate = Instant.now().minus(1, ChronoUnit.DAYS),
             featuredImageUrl = "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b",
+            imageUrls =
+                listOf(
+                    "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b",
+                    "https://images.unsplash.com/photo-1550745165-9bc0b252726f",
+                ),
             isRead = true,
             isFavorite = true,
             fetchedAt = Instant.now(),
@@ -720,6 +799,7 @@ private val sampleBlogPosts =
             category = "Engineering",
             publishedDate = Instant.now().minus(3, ChronoUnit.DAYS),
             featuredImageUrl = null, // No featured image
+            imageUrls = null, // No images
             isRead = false,
             isFavorite = false,
             fetchedAt = Instant.now(),
