@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **"What's New" Section on Welcome Screen**: Showcase recent TRMNL content to new users
+  - Shows count of recent announcements and blog posts on welcome screen
+  - Only appears when content exists (otherwise hidden)
+  - TextButton with delightful shimmer effect that plays once to draw attention
+  - One-tap access to ContentHubScreen (public content, no API token required)
+  - Fetches and caches content on welcome screen load
+  - Non-intrusive design below "Get Started" button
+  - Shimmer animation runs for 2 seconds then stops naturally
+  - Users can explore TRMNL content before setting up API access
+  - Helps showcase value proposition and keep users informed
+
 - **Announcements "Mark All Read" Feature**: Extended FAB to mark all announcements as read
   - Upgraded from icon-only FAB to Extended FloatingActionButton with "Mark All Read" text and icon
   - Consistent with BlogPostsScreen FAB implementation
