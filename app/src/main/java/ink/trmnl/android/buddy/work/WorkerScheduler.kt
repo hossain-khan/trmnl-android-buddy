@@ -132,7 +132,7 @@ class WorkerSchedulerImpl(
      * Schedules or reschedules the announcement sync worker.
      * The worker fetches announcements from TRMNL RSS feed every 2 days.
      * Runs when device is idle, charging, and has network connection to reduce server load.
-     * Uses KEEP policy to avoid duplicates.
+     * Uses REPLACE policy to update existing schedules with new interval and constraints.
      */
     override fun scheduleAnnouncementSync() {
         Timber.d("Scheduling announcement sync worker (every 2 days, network required, idle, charging)")
@@ -152,7 +152,7 @@ class WorkerSchedulerImpl(
 
         workManager.enqueueUniquePeriodicWork(
             ANNOUNCEMENT_SYNC_WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
+            ExistingPeriodicWorkPolicy.REPLACE,
             announcementWorkRequest,
         )
     }
@@ -170,7 +170,7 @@ class WorkerSchedulerImpl(
      * Schedules or reschedules the blog post sync worker.
      * The worker fetches blog posts from TRMNL RSS feed every 2 days.
      * Runs when device is idle, charging, and has network connection to reduce server load.
-     * Uses KEEP policy to avoid duplicates.
+     * Uses REPLACE policy to update existing schedules with new interval and constraints.
      */
     override fun scheduleBlogPostSync() {
         Timber.d("Scheduling blog post sync worker (every 2 days, network required, idle, charging)")
@@ -190,7 +190,7 @@ class WorkerSchedulerImpl(
 
         workManager.enqueueUniquePeriodicWork(
             BLOG_POST_SYNC_WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
+            ExistingPeriodicWorkPolicy.REPLACE,
             blogPostWorkRequest,
         )
     }
