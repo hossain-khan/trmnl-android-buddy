@@ -84,6 +84,8 @@ data object ContentHubScreen : Screen {
     ) : CircuitUiState
 
     sealed class Event : CircuitUiEvent {
+        data object BackClicked : Event()
+
         data class TabSelected(
             val tab: Tab,
         ) : Event()
@@ -120,6 +122,10 @@ class ContentHubPresenter
                 selectedTab = selectedTab,
             ) { event ->
                 when (event) {
+                    ContentHubScreen.Event.BackClicked -> {
+                        navigator.pop()
+                    }
+
                     is ContentHubScreen.Event.TabSelected -> {
                         selectedTab = event.tab
                     }
@@ -189,6 +195,14 @@ fun ContentHubContent(
                                 } ?: "Blog Posts",
                             )
                         }
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { state.eventSink(ContentHubScreen.Event.BackClicked) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Back",
+                        )
                     }
                 },
                 actions = {
@@ -348,6 +362,14 @@ private fun ContentHubContentPreview(
                                 } ?: "Blog Posts",
                             )
                         }
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            painter = painterResource(R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Back",
+                        )
                     }
                 },
                 actions = {
