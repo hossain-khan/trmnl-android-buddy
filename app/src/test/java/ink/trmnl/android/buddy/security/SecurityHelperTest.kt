@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.security
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.isTrue
@@ -18,9 +19,7 @@ class SecurityHelperTest {
 
         assertThat(hash1).isNotEqualTo("")
         assertThat(hash1).isNotEqualTo(pin)
-        assertThat(hash1).isNotEqualTo(hash2.reversed()) // Different but related to ensure not same
-        // Actually they should be equal
-        assertThat(hash1 == hash2).isTrue()
+        assertThat(hash1).isEqualTo(hash2)
     }
 
     @Test
@@ -98,6 +97,6 @@ class SecurityHelperTest {
 
     @Test
     fun `minimum PIN length is 4`() {
-        assertThat(SecurityHelper.MIN_PIN_LENGTH == 4).isTrue()
+        assertThat(SecurityHelper.MIN_PIN_LENGTH).isEqualTo(4)
     }
 }
