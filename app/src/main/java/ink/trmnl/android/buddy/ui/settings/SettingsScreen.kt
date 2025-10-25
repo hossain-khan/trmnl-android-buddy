@@ -154,12 +154,17 @@ class SettingsPresenter(
         )
         val coroutineScope = rememberCoroutineScope()
         val context = LocalContext.current
-        val biometricHelper =
+        val isBiometricAvailable =
             remember {
-                ink.trmnl.android.buddy.security
-                    .BiometricAuthHelper(context)
+                try {
+                    ink.trmnl.android.buddy.security
+                        .BiometricAuthHelper(context)
+                        .isBiometricAvailable()
+                } catch (e: Exception) {
+                    // In tests, LocalContext might not be available, return false
+                    false
+                }
             }
-        val isBiometricAvailable = remember { biometricHelper.isBiometricAvailable() }
 
         return SettingsScreen.State(
             isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
