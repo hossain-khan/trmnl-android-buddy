@@ -64,6 +64,11 @@ interface UserPreferencesRepository {
     suspend fun setRssFeedContentEnabled(enabled: Boolean)
 
     /**
+     * Set RSS feed content notification enabled/disabled.
+     */
+    suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean)
+
+    /**
      * Dismiss the announcement authentication banner.
      */
     suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean)
@@ -87,6 +92,7 @@ class UserPreferencesRepositoryImpl
             val LOW_BATTERY_NOTIFICATION_ENABLED = booleanPreferencesKey("low_battery_notification_enabled")
             val LOW_BATTERY_THRESHOLD = intPreferencesKey("low_battery_threshold")
             val RSS_FEED_CONTENT_ENABLED = booleanPreferencesKey("rss_feed_content_enabled")
+            val RSS_FEED_CONTENT_NOTIFICATION_ENABLED = booleanPreferencesKey("rss_feed_content_notification_enabled")
             val ANNOUNCEMENTS_ENABLED = booleanPreferencesKey("announcements_enabled") // Legacy key for migration
             val ANNOUNCEMENT_AUTH_BANNER_DISMISSED = booleanPreferencesKey("announcement_auth_banner_dismissed")
         }
@@ -107,6 +113,8 @@ class UserPreferencesRepositoryImpl
                         preferences[PreferencesKeys.RSS_FEED_CONTENT_ENABLED]
                             ?: preferences[PreferencesKeys.ANNOUNCEMENTS_ENABLED]
                             ?: true,
+                    isRssFeedContentNotificationEnabled =
+                        preferences[PreferencesKeys.RSS_FEED_CONTENT_NOTIFICATION_ENABLED] ?: false,
                     isAnnouncementAuthBannerDismissed =
                         preferences[PreferencesKeys.ANNOUNCEMENT_AUTH_BANNER_DISMISSED] ?: false,
                 )
@@ -153,6 +161,12 @@ class UserPreferencesRepositoryImpl
                 preferences[PreferencesKeys.RSS_FEED_CONTENT_ENABLED] = enabled
                 // Remove legacy key if it exists
                 preferences.remove(PreferencesKeys.ANNOUNCEMENTS_ENABLED)
+            }
+        }
+
+        override suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean) {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.RSS_FEED_CONTENT_NOTIFICATION_ENABLED] = enabled
             }
         }
 

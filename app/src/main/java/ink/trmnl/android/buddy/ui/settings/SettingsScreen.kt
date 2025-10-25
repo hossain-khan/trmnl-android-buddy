@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -83,7 +84,8 @@ data object SettingsScreen : Screen {
         val isBatteryTrackingEnabled: Boolean = true,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
-        val isRssFeedContentEnabled: Boolean = true,
+        val isRssFeedContentEnabled: Boolean = false,
+        val isRssFeedContentNotificationEnabled: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -105,6 +107,10 @@ data object SettingsScreen : Screen {
         ) : Event()
 
         data class RssFeedContentToggled(
+            val enabled: Boolean,
+        ) : Event()
+
+        data class RssFeedContentNotificationToggled(
             val enabled: Boolean,
         ) : Event()
 
@@ -135,6 +141,7 @@ class SettingsPresenter(
             isLowBatteryNotificationEnabled = preferences.isLowBatteryNotificationEnabled,
             lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent,
             isRssFeedContentEnabled = preferences.isRssFeedContentEnabled,
+            isRssFeedContentNotificationEnabled = preferences.isRssFeedContentNotificationEnabled,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
@@ -177,6 +184,11 @@ class SettingsPresenter(
                             workerScheduler.cancelAnnouncementSync()
                             workerScheduler.cancelBlogPostSync()
                         }
+                    }
+                }
+                is SettingsScreen.Event.RssFeedContentNotificationToggled -> {
+                    coroutineScope.launch {
+                        userPreferencesRepository.setRssFeedContentNotificationEnabled(event.enabled)
                     }
                 }
                 SettingsScreen.Event.TestLowBatteryNotificationClicked -> {
@@ -245,8 +257,12 @@ fun SettingsContent(
             // RSS Feed Content Section (Announcements & Blog Posts)
             RssFeedContentSection(
                 isEnabled = state.isRssFeedContentEnabled,
+                isNotificationEnabled = state.isRssFeedContentNotificationEnabled,
                 onToggle = { enabled ->
                     state.eventSink(SettingsScreen.Event.RssFeedContentToggled(enabled))
+                },
+                onNotificationToggle = { enabled ->
+                    state.eventSink(SettingsScreen.Event.RssFeedContentNotificationToggled(enabled))
                 },
             )
 
@@ -282,7 +298,9 @@ fun SettingsContent(
 @Composable
 private fun RssFeedContentSection(
     isEnabled: Boolean,
+    isNotificationEnabled: Boolean,
     onToggle: (Boolean) -> Unit,
+    onNotificationToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -297,36 +315,83 @@ private fun RssFeedContentSection(
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         ) {
-            ListItem(
-                headlineContent = {
-                    Text(
-                        text = "Enable Blog Posts & Announcements",
-                        style = MaterialTheme.typography.titleSmall,
-                    )
-                },
-                supportingContent = {
-                    Text(
-                        text =
-                            if (isEnabled) {
-                                "Show TRMNL blog posts and announcements. Sync automatically in the background."
-                            } else {
-                                "RSS feed content is disabled. No blog posts or announcements will be shown or synced."
+            Column {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Enable Blog Posts & Announcements",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text =
+                                if (isEnabled) {
+                                    "Show TRMNL blog posts and announcements. Sync automatically in the background."
+                                } else {
+                                    "RSS feed content is disabled. No blog posts or announcements will be shown or synced."
+                                },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = isEnabled,
+                            onCheckedChange = onToggle,
+                        )
+                    },
+                    colors =
+                        ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                )
+
+                AnimatedVisibility(
+                    visible = isEnabled,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut(),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 16.dp, top = 8.dp),
+                    ) {
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = "Notifications for New Content",
+                                    style = MaterialTheme.typography.titleSmall,
+                                )
                             },
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                },
-                trailingContent = {
-                    Switch(
-                        checked = isEnabled,
-                        onCheckedChange = onToggle,
-                    )
-                },
-                colors =
-                    ListItemDefaults.colors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                    ),
-            )
+                            supportingContent = {
+                                Text(
+                                    text =
+                                        if (isNotificationEnabled) {
+                                            "Get notified when new blog posts or announcements are published"
+                                        } else {
+                                            "Enable to receive notifications for new RSS feed content"
+                                        },
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            },
+                            trailingContent = {
+                                Switch(
+                                    checked = isNotificationEnabled,
+                                    onCheckedChange = onNotificationToggle,
+                                )
+                            },
+                            colors =
+                                ListItemDefaults.colors(
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                ),
+                        )
+                    }
+                }
+            }
         }
     }
 }
