@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Development Screen for Testing Notifications and Workers** (Debug builds only)
+  - Comprehensive testing tools accessible via Settings → Development Tools
+  - **Notification Testing with Mock Data**:
+    - Low battery notifications (1-5 devices, 5-50% threshold slider)
+    - Blog post notifications (1-10 posts slider)
+    - Announcement notifications (1-10 announcements slider)
+    - Instant testing without API calls or waiting for scheduled intervals
+  - **Worker Triggers with Real Data**:
+    - Manual one-time execution for LowBatteryNotificationWorker
+    - Manual one-time execution for BlogPostSyncWorker
+    - Manual one-time execution for AnnouncementSyncWorker
+    - Uses real TRMNL API and RSS feed data for integration testing
+  - **Permission Management**:
+    - Visual permission status display (Android 13+)
+    - Color-coded cards: Green (granted) / Red (denied)
+    - Quick permission request button
+    - Direct link to system notification settings
+  - **Architecture**: Circuit UDF with Metro DI, Material 3 UI
+  - **Safety**: Gated by `BuildConfig.DEBUG` - not accessible in release builds
+  - Updated `docs/TESTING_NOTIFICATIONS.md` with comprehensive Development screen guide
+
 - **Development Configuration for Notification Testing**: Added `AppDevConfig` for testing RSS feed notifications
   - Added `ENABLE_ANNOUNCEMENT_NOTIFICATION` flag to force announcement notifications (bypasses user preference)
   - Added `ENABLE_BLOG_NOTIFICATION` flag to force blog post notifications (bypasses user preference)
