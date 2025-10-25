@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+- **Image Carousel for Blog Posts**: Enhanced blog post cards with multi-image support and auto-rotation
+  - Extracts all images from RSS feed content (previously only showed first image)
+  - Auto-rotates through images every 3 seconds with smooth crossfade animation
+  - Shows image counter indicator (e.g., "2/5") when multiple images present
+  - Falls back to single image or no image gracefully
+  - Improves visual richness and user experience on BlogPostsScreen
+
 - **"What's New" Section on Welcome Screen**: Showcase recent TRMNL content to new users
   - Shows count of recent announcements and blog posts on welcome screen
   - Only appears when content exists (otherwise hidden)
