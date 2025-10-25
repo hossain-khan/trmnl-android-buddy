@@ -284,7 +284,7 @@ private fun PinSetupCard(
             )
 
             Text(
-                text = "Create a ${SecurityHelper.MIN_PIN_LENGTH}-digit PIN to secure your TRMNL dashboard",
+                text = "Create a PIN (minimum ${SecurityHelper.MIN_PIN_LENGTH} digits) to secure your TRMNL dashboard",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
