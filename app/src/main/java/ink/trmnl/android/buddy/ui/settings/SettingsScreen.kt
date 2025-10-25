@@ -209,14 +209,8 @@ class SettingsPresenter(
                     }
                 }
                 is SettingsScreen.Event.SecurityToggled -> {
-                    timber.log.Timber
-                        .tag("SettingsScreen")
-                        .d("Security toggled: ${event.enabled}")
                     coroutineScope.launch {
                         userPreferencesRepository.setSecurityEnabled(event.enabled)
-                        timber.log.Timber
-                            .tag("SettingsScreen")
-                            .d("Security preference saved: ${event.enabled}")
                     }
                 }
                 SettingsScreen.Event.DevelopmentClicked -> {
@@ -517,7 +511,7 @@ private fun SecuritySection(
             ListItem(
                 headlineContent = {
                     Text(
-                        text = "Device Authentication",
+                        text = "Dashboard Authentication",
                         style = MaterialTheme.typography.titleSmall,
                     )
                 },
@@ -527,7 +521,7 @@ private fun SecuritySection(
                             if (!isAuthenticationAvailable) {
                                 "No device lock detected. Please set up a screen lock (PIN, pattern, password, or biometric) in your device settings."
                             } else if (isSecurityEnabled) {
-                                "Require device authentication to access the dashboard (fingerprint, face, PIN, pattern, or password)"
+                                "Require device authentication to access the dashboard with TRMNL images (fingerprint, face, PIN, pattern, or password)"
                             } else {
                                 "No authentication required. Enable to secure your dashboard with device authentication."
                             },
@@ -545,18 +539,9 @@ private fun SecuritySection(
                         checked = isSecurityEnabled,
                         enabled = isAuthenticationAvailable,
                         onCheckedChange = { enabled ->
-                            timber.log.Timber
-                                .tag("SettingsScreen")
-                                .d("Security switch toggled: $enabled (current: $isSecurityEnabled)")
                             if (!enabled && isSecurityEnabled) {
-                                timber.log.Timber
-                                    .tag("SettingsScreen")
-                                    .d("Showing disable confirmation dialog")
                                 showDisableDialog = true
                             } else {
-                                timber.log.Timber
-                                    .tag("SettingsScreen")
-                                    .d("Calling onSecurityToggle($enabled)")
                                 onSecurityToggle(enabled)
                             }
                         },

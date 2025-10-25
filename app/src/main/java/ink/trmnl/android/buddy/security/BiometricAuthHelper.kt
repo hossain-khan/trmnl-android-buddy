@@ -5,7 +5,6 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import timber.log.Timber
 
 /**
  * Helper class for biometric authentication operations.
@@ -23,42 +22,15 @@ class BiometricAuthHelper(
      */
     fun isBiometricAvailable(): Boolean {
         val biometricManager = BiometricManager.from(context)
-        val result = biometricManager.canAuthenticate(AUTHENTICATORS)
-        Timber.tag("BiometricAuthHelper").d("canAuthenticate() result: $result")
-
-        return when (result) {
-            BiometricManager.BIOMETRIC_SUCCESS -> {
-                Timber.tag("BiometricAuthHelper").d("Biometric SUCCESS - authentication available")
-                true
-            }
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                Timber.tag("BiometricAuthHelper").w("No biometric enrolled on device")
-                false
-            }
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                Timber.tag("BiometricAuthHelper").w("No biometric hardware available")
-                false
-            }
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                Timber.tag("BiometricAuthHelper").w("Biometric hardware unavailable")
-                false
-            }
-            BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
-                Timber.tag("BiometricAuthHelper").w("Security update required")
-                false
-            }
-            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
-                Timber.tag("BiometricAuthHelper").w("Biometric unsupported")
-                false
-            }
-            BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
-                Timber.tag("BiometricAuthHelper").w("Biometric status unknown")
-                false
-            }
-            else -> {
-                Timber.tag("BiometricAuthHelper").w("Unknown result: $result")
-                false
-            }
+        return when (biometricManager.canAuthenticate(AUTHENTICATORS)) {
+            BiometricManager.BIOMETRIC_SUCCESS -> true
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> false
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> false
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> false
+            BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> false
+            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> false
+            BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> false
+            else -> false
         }
     }
 
@@ -81,9 +53,6 @@ class BiometricAuthHelper(
         onError: (String) -> Unit,
         onUserCancelled: () -> Unit = {},
     ) {
-        Timber.tag("BiometricAuthHelper").d("authenticate() called")
-        Timber.tag("BiometricAuthHelper").d("Activity: ${activity::class.simpleName}, Title: $title")
-
         val executor = ContextCompat.getMainExecutor(context)
 
         val biometricPrompt =
@@ -96,28 +65,23 @@ class BiometricAuthHelper(
                         errString: CharSequence,
                     ) {
                         super.onAuthenticationError(errorCode, errString)
-                        Timber.tag("BiometricAuthHelper").e("onAuthenticationError: code=$errorCode, msg=$errString")
                         // User cancelled authentication
                         if (errorCode == BiometricPrompt.ERROR_USER_CANCELED ||
                             errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON
                         ) {
-                            Timber.tag("BiometricAuthHelper").d("User cancelled authentication")
                             onUserCancelled()
                         } else {
-                            Timber.tag("BiometricAuthHelper").e("Authentication error: $errString")
                             onError(errString.toString())
                         }
                     }
 
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                         super.onAuthenticationSucceeded(result)
-                        Timber.tag("BiometricAuthHelper").d("onAuthenticationSucceeded: authenticationType=${result.authenticationType}")
                         onSuccess()
                     }
 
                     override fun onAuthenticationFailed() {
                         super.onAuthenticationFailed()
-                        Timber.tag("BiometricAuthHelper").w("onAuthenticationFailed: biometric not recognized")
                         // This is called when biometric is recognized but not verified
                         // Don't show error here, let user retry
                     }
@@ -137,7 +101,6 @@ class BiometricAuthHelper(
                 }.setAllowedAuthenticators(AUTHENTICATORS)
                 .build()
 
-        Timber.tag("BiometricAuthHelper").d("Calling biometricPrompt.authenticate()")
         biometricPrompt.authenticate(promptInfo)
     }
 
