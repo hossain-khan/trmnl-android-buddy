@@ -19,14 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Users can explore TRMNL content before setting up API access
   - Helps showcase value proposition and keep users informed
 
-### Fixed
-- **"What's New" Unread Count**: Dynamic text updates based on read/unread status
-  - Fixed bug where count stayed static at total number even after marking all as read
-  - Text now shows "X new update(s) from TRMNL →" when unread content exists
-  - Text shows "Updates from TRMNL →" when all content has been read
-  - Dynamically updates in real-time as user marks items read/unread
-  - Tracks unread counts separately from total content count for accurate display
-
 - **Announcements "Mark All Read" Feature**: Extended FAB to mark all announcements as read
   - Upgraded from icon-only FAB to Extended FloatingActionButton with "Mark All Read" text and icon
   - Consistent with BlogPostsScreen FAB implementation
@@ -209,6 +201,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Enhanced user delight through micro-interactions and polished UI feedback
   - Animations are consistent across both light and dark themes
 
+- **Logging**: Migrated from `android.util.Log` to Timber library for better logging
+  - Added Timber 5.0.1 dependency
+  - Initialized Timber in `TrmnlBuddyApp` with `DebugTree` for debug builds
+  - Migrated all 7 files using `Log` calls to use Timber's fluent API
+  - Removed TAG constants as Timber automatically tags logs with the class name
+  - Updated logging patterns to use Timber's format string syntax for better performance
+
 ### Fixed
 - **Announcement Filter Visibility**: Filter chips now remain visible in all content states
   - Fixed critical UX issue where filter UI disappeared when selected filter had no matching items
@@ -266,6 +265,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved spacing and typography (titleMedium for title, bodyMedium for summary)
   - Loading and empty states display in fixed height box (120dp)
   - All Material You colors preserved with proper theming support
+
+ - **"What's New" Unread Count**: Dynamic text updates based on read/unread status
+  - Fixed bug where count stayed static at total number even after marking all as read
+  - Text now shows "X new update(s) from TRMNL →" when unread content exists
+  - Text shows "Updates from TRMNL →" when all content has been read
+  - Dynamically updates in real-time as user marks items read/unread
+  - Tracks unread counts separately from total content count for accurate display
 
 ### Added
 - **Combined Content Carousel**: Updated devices screen with unified announcements and blog posts carousel (#142, Phase 3)
@@ -406,14 +412,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `isAnnouncementsEnabled` to UserPreferences (defaults to true)
   - WorkerScheduler now includes `scheduleAnnouncementSync()` and `cancelAnnouncementSync()` methods
   - TrmnlDevicesScreen reactively hides/shows carousel based on preference
-
-### Changed
-- **Logging**: Migrated from `android.util.Log` to Timber library for better logging
-  - Added Timber 5.0.1 dependency
-  - Initialized Timber in `TrmnlBuddyApp` with `DebugTree` for debug builds
-  - Migrated all 7 files using `Log` calls to use Timber's fluent API
-  - Removed TAG constants as Timber automatically tags logs with the class name
-  - Updated logging patterns to use Timber's format string syntax for better performance
 
 ## [1.7.0] - 2025-10-23
 

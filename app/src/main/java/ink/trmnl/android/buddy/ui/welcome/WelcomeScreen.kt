@@ -355,7 +355,7 @@ private fun WhatsNewSection(
             infiniteRepeatable(
                 animation =
                     tween(
-                        durationMillis = 1000,
+                        durationMillis = 2000,
                         easing = FastOutSlowInEasing,
                     ),
                 repeatMode = RepeatMode.Reverse,
@@ -363,9 +363,9 @@ private fun WhatsNewSection(
         label = "shimmerAlpha",
     )
 
-    // Stop shimmer after 2 seconds (2 cycles)
+    // Stop shimmer after 4 seconds (2 cycles)
     LaunchedEffect(Unit) {
-        delay(2000)
+        delay(4000)
         shimmerPlayed = true
     }
 
