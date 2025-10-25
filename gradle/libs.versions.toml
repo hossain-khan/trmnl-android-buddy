@@ -1,7 +1,7 @@
 [versions]
 # Android SDK versions (https://apilevels.com/)
 compileSdk = "36" # Android 16 (Baklava)
-minSdk = "26" # Android 8 (Oreo)
+minSdk = "28" # Android 9 (Pie)
 targetSdk = "36" # Android 16 (Baklava)
 
 activityCompose = "1.11.0"
