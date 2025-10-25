@@ -90,6 +90,10 @@ data object SettingsScreen : Screen {
         val lowBatteryThresholdPercent: Int = 20,
         val isRssFeedContentEnabled: Boolean = false,
         val isRssFeedContentNotificationEnabled: Boolean = false,
+        val isSecurityEnabled: Boolean = false,
+        val hasPinConfigured: Boolean = false,
+        val isBiometricAvailable: Boolean = false,
+        val isBiometricEnabled: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -118,6 +122,16 @@ data object SettingsScreen : Screen {
             val enabled: Boolean,
         ) : Event()
 
+        data class SecurityToggled(
+            val enabled: Boolean,
+        ) : Event()
+
+        data object ConfigurePin : Event()
+
+        data class BiometricToggled(
+            val enabled: Boolean,
+        ) : Event()
+
         data object DevelopmentClicked : Event()
     }
 }
@@ -139,6 +153,13 @@ class SettingsPresenter(
                     .UserPreferences(),
         )
         val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
+        val biometricHelper =
+            remember {
+                ink.trmnl.android.buddy.security
+                    .BiometricAuthHelper(context)
+            }
+        val isBiometricAvailable = remember { biometricHelper.isBiometricAvailable() }
 
         return SettingsScreen.State(
             isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
@@ -146,6 +167,10 @@ class SettingsPresenter(
             lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent,
             isRssFeedContentEnabled = preferences.isRssFeedContentEnabled,
             isRssFeedContentNotificationEnabled = preferences.isRssFeedContentNotificationEnabled,
+            isSecurityEnabled = preferences.isSecurityEnabled,
+            hasPinConfigured = preferences.pinHash != null,
+            isBiometricAvailable = isBiometricAvailable,
+            isBiometricEnabled = preferences.isBiometricEnabled,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
@@ -193,6 +218,32 @@ class SettingsPresenter(
                 is SettingsScreen.Event.RssFeedContentNotificationToggled -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setRssFeedContentNotificationEnabled(event.enabled)
+                    }
+                }
+                is SettingsScreen.Event.SecurityToggled -> {
+                    coroutineScope.launch {
+                        if (event.enabled) {
+                            // If enabling security, navigate to authentication screen to set up PIN
+                            navigator.goTo(ink.trmnl.android.buddy.ui.auth.AuthenticationScreen)
+                        } else {
+                            // If disabling security, clear PIN and disable security
+                            userPreferencesRepository.setSecurityEnabled(false)
+                            userPreferencesRepository.setPinHash(null)
+                            userPreferencesRepository.setBiometricEnabled(false)
+                        }
+                    }
+                }
+                SettingsScreen.Event.ConfigurePin -> {
+                    // Navigate to authentication screen in setup mode
+                    coroutineScope.launch {
+                        // Clear existing PIN to force setup mode
+                        userPreferencesRepository.setPinHash(null)
+                        navigator.goTo(ink.trmnl.android.buddy.ui.auth.AuthenticationScreen)
+                    }
+                }
+                is SettingsScreen.Event.BiometricToggled -> {
+                    coroutineScope.launch {
+                        userPreferencesRepository.setBiometricEnabled(event.enabled)
                     }
                 }
                 SettingsScreen.Event.DevelopmentClicked -> {
@@ -266,6 +317,23 @@ fun SettingsContent(
                 },
                 onNotificationToggle = { enabled ->
                     state.eventSink(SettingsScreen.Event.RssFeedContentNotificationToggled(enabled))
+                },
+            )
+
+            // Security Section
+            SecuritySection(
+                isSecurityEnabled = state.isSecurityEnabled,
+                hasPinConfigured = state.hasPinConfigured,
+                isBiometricAvailable = state.isBiometricAvailable,
+                isBiometricEnabled = state.isBiometricEnabled,
+                onSecurityToggle = { enabled ->
+                    state.eventSink(SettingsScreen.Event.SecurityToggled(enabled))
+                },
+                onConfigurePin = {
+                    state.eventSink(SettingsScreen.Event.ConfigurePin)
+                },
+                onBiometricToggle = { enabled ->
+                    state.eventSink(SettingsScreen.Event.BiometricToggled(enabled))
                 },
             )
 
@@ -453,6 +521,192 @@ private fun BatteryTrackingSection(
                     ),
             )
         }
+    }
+}
+
+@Composable
+private fun SecuritySection(
+    isSecurityEnabled: Boolean,
+    hasPinConfigured: Boolean,
+    isBiometricAvailable: Boolean,
+    isBiometricEnabled: Boolean,
+    onSecurityToggle: (Boolean) -> Unit,
+    onConfigurePin: () -> Unit,
+    onBiometricToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var showDisableDialog by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier) {
+        Text(
+            text = "Security",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            Column {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "PIN & Biometric Security",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text =
+                                if (isSecurityEnabled) {
+                                    "Require authentication to access the dashboard"
+                                } else {
+                                    "No authentication required. Enable to secure your dashboard with PIN or biometric."
+                                },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    trailingContent = {
+                        Switch(
+                            checked = isSecurityEnabled,
+                            onCheckedChange = { enabled ->
+                                if (!enabled && hasPinConfigured) {
+                                    showDisableDialog = true
+                                } else {
+                                    onSecurityToggle(enabled)
+                                }
+                            },
+                        )
+                    },
+                    colors =
+                        ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                )
+
+                AnimatedVisibility(
+                    visible = isSecurityEnabled,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut(),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.surface),
+                    ) {
+                        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f), modifier = Modifier.padding(horizontal = 16.dp))
+
+                        // PIN Configuration
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = "Configure PIN",
+                                    style = MaterialTheme.typography.titleSmall,
+                                )
+                            },
+                            supportingContent = {
+                                Text(
+                                    text =
+                                        if (hasPinConfigured) {
+                                            "PIN is set. Click to change your PIN."
+                                        } else {
+                                            "No PIN configured. Click to set up a PIN."
+                                        },
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(R.drawable.password_2_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                    contentDescription = "Configure PIN",
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            },
+                            modifier =
+                                Modifier.clickable {
+                                    onConfigurePin()
+                                },
+                            colors =
+                                ListItemDefaults.colors(
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                ),
+                        )
+
+                        // Biometric Authentication (only show if available)
+                        if (isBiometricAvailable) {
+                            HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f), modifier = Modifier.padding(horizontal = 16.dp))
+                            ListItem(
+                                headlineContent = {
+                                    Text(
+                                        text = "Use Biometric",
+                                        style = MaterialTheme.typography.titleSmall,
+                                    )
+                                },
+                                supportingContent = {
+                                    Text(
+                                        text =
+                                            if (isBiometricEnabled) {
+                                                "Unlock with fingerprint or face recognition"
+                                            } else {
+                                                "Enable to use fingerprint or face recognition"
+                                            },
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                },
+                                leadingContent = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.fingerprint_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                        contentDescription = "Biometric",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                    )
+                                },
+                                trailingContent = {
+                                    Switch(
+                                        checked = isBiometricEnabled,
+                                        onCheckedChange = onBiometricToggle,
+                                        enabled = hasPinConfigured,
+                                    )
+                                },
+                                colors =
+                                    ListItemDefaults.colors(
+                                        containerColor = MaterialTheme.colorScheme.surface,
+                                    ),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Disable security confirmation dialog
+    if (showDisableDialog) {
+        AlertDialog(
+            onDismissRequest = { showDisableDialog = false },
+            title = { Text("Disable Security?") },
+            text = { Text("This will remove your PIN and disable biometric authentication. You can enable it again anytime.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDisableDialog = false
+                        onSecurityToggle(false)
+                    },
+                ) {
+                    Text("Disable")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDisableDialog = false }) {
+                    Text("Cancel")
+                }
+            },
+        )
     }
 }
 

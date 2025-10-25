@@ -187,11 +187,12 @@ class WelcomePresenter
                 when (event) {
                     GetStartedClicked -> {
                         // Navigate based on whether API token exists
-                        if (userPreferences?.apiToken.isNullOrBlank()) {
+                        val prefs = userPreferences
+                        if (prefs?.apiToken.isNullOrBlank()) {
                             navigator.goTo(AccessTokenScreen)
                         } else {
                             // Check if security is enabled
-                            if (userPreferences.isSecurityEnabled && userPreferences.pinHash != null) {
+                            if (prefs != null && prefs.isSecurityEnabled && prefs.pinHash != null) {
                                 // Navigate to authentication screen
                                 navigator.resetRoot(ink.trmnl.android.buddy.ui.auth.AuthenticationScreen)
                             } else {

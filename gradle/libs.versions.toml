@@ -77,7 +77,7 @@ robolectric = "4.15"
 
 # AndroidX Biometric - Biometric authentication
 # https://developer.android.com/jetpack/androidx/releases/biometric
-biometric = "1.4.0"
+biometric = "1.2.0-alpha05"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }

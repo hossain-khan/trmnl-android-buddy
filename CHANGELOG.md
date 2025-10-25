@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **PIN and Biometric Security**: Added optional PIN and biometric authentication to secure dashboard access
+  - Created `AuthenticationScreen` with PIN setup and entry modes
+  - Implemented `SecurityHelper` for PIN hashing using SHA-256
+  - Integrated AndroidX BiometricPrompt for fingerprint/face recognition authentication
+  - Added security settings section in Settings screen
+  - Users can enable/disable security, configure PIN, and toggle biometric authentication
+  - Security check integrated in navigation flow from Welcome screen
+  - Biometric authentication auto-triggers when enabled for faster access
+  - Added confirmation dialog when disabling security
+
 ## [2.0.0] - 2025-10-25
 
 ### Changed
