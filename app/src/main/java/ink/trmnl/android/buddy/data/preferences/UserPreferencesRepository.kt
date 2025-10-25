@@ -125,7 +125,6 @@ class UserPreferencesRepositoryImpl
                         preferences[PreferencesKeys.ANNOUNCEMENT_AUTH_BANNER_DISMISSED] ?: false,
                     isSecurityEnabled = preferences[PreferencesKeys.SECURITY_ENABLED] ?: false,
                 )
-                )
             }
 
         override suspend fun saveApiToken(token: String) {
