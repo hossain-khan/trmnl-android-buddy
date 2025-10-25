@@ -288,7 +288,7 @@ Everyone
 
 *Maximum 170 characters*
 
-Monitor TRMNL displays, track battery health, get news & blog updates! Beautiful Material You design with smart notifications. 🔋�✨
+Monitor TRMNL displays, track battery health, get news & blog updates! Beautiful Material You design with smart notifications. 🔋📊✨
 
 ---
 
