@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Background Sync Optimization**: Updated RSS feed sync workers to reduce server load
+  - Changed announcement sync interval from every 4 hours to every 2 days
+  - Changed blog post sync interval from daily to every 2 days
+  - Added device constraints: runs only when device is idle, charging, and has network connection
+  - Reduces unnecessary API calls while ensuring users get updates during optimal conditions
+
 ### Added
 
 - **Combined Content Carousel**: Updated devices screen with unified announcements and blog posts carousel (#142, Phase 3)

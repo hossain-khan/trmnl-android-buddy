@@ -35,7 +35,8 @@ interface WorkerScheduler {
 
     /**
      * Schedules or reschedules the announcement sync worker.
-     * The worker fetches announcements from TRMNL RSS feed every 4 hours.
+     * The worker fetches announcements from TRMNL RSS feed every 2 days.
+     * Runs when device is idle, charging, and has network connection to reduce server load.
      */
     fun scheduleAnnouncementSync()
 
@@ -46,7 +47,8 @@ interface WorkerScheduler {
 
     /**
      * Schedules or reschedules the blog post sync worker.
-     * The worker fetches blog posts from TRMNL RSS feed daily.
+     * The worker fetches blog posts from TRMNL RSS feed every 2 days.
+     * Runs when device is idle, charging, and has network connection to reduce server load.
      */
     fun scheduleBlogPostSync()
 
@@ -128,20 +130,23 @@ class WorkerSchedulerImpl(
 
     /**
      * Schedules or reschedules the announcement sync worker.
-     * The worker fetches announcements from TRMNL RSS feed every 4 hours.
+     * The worker fetches announcements from TRMNL RSS feed every 2 days.
+     * Runs when device is idle, charging, and has network connection to reduce server load.
      * Uses KEEP policy to avoid duplicates.
      */
     override fun scheduleAnnouncementSync() {
-        Timber.d("Scheduling announcement sync worker (every 4 hours, network required)")
+        Timber.d("Scheduling announcement sync worker (every 2 days, network required, idle, charging)")
 
         val announcementWorkRequest =
             PeriodicWorkRequestBuilder<AnnouncementSyncWorker>(
-                repeatInterval = 4,
-                repeatIntervalTimeUnit = TimeUnit.HOURS,
+                repeatInterval = 2,
+                repeatIntervalTimeUnit = TimeUnit.DAYS,
             ).setConstraints(
                 Constraints
                     .Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .setRequiresDeviceIdle(true) // Only run when device is idle
+                    .setRequiresCharging(true) // Only run when charging
                     .build(),
             ).build()
 
@@ -163,21 +168,23 @@ class WorkerSchedulerImpl(
 
     /**
      * Schedules or reschedules the blog post sync worker.
-     * The worker fetches blog posts from TRMNL RSS feed daily.
+     * The worker fetches blog posts from TRMNL RSS feed every 2 days.
+     * Runs when device is idle, charging, and has network connection to reduce server load.
      * Uses KEEP policy to avoid duplicates.
      */
     override fun scheduleBlogPostSync() {
-        Timber.d("Scheduling blog post sync worker (daily, network required)")
+        Timber.d("Scheduling blog post sync worker (every 2 days, network required, idle, charging)")
 
         val blogPostWorkRequest =
             PeriodicWorkRequestBuilder<ink.trmnl.android.buddy.worker.BlogPostSyncWorker>(
-                repeatInterval = 1,
+                repeatInterval = 2,
                 repeatIntervalTimeUnit = TimeUnit.DAYS,
             ).setConstraints(
                 Constraints
                     .Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .setRequiresBatteryNotLow(true)
+                    .setRequiresDeviceIdle(true) // Only run when device is idle
+                    .setRequiresCharging(true) // Only run when charging
                     .build(),
             ).build()
 
