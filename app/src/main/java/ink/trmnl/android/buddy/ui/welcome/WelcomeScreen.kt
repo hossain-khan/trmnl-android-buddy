@@ -117,35 +117,65 @@ class WelcomePresenter
                 value = userPreferencesRepository.userPreferencesFlow.first()
             }
 
-            // Fetch recent content (announcements + blog posts)
-            val recentAnnouncementsCount by produceRetainedState(initialValue = 0) {
-                announcementRepository.getAllAnnouncements().first().take(3).also {
-                    value = it.size
+            val isRssFeedContentEnabled = userPreferences?.isRssFeedContentEnabled ?: true
+
+            // Fetch recent content (announcements + blog posts) only if RSS feed content is enabled
+            val recentAnnouncementsCount by produceRetainedState(
+                initialValue = 0,
+                key1 = isRssFeedContentEnabled,
+            ) {
+                if (isRssFeedContentEnabled) {
+                    announcementRepository.getAllAnnouncements().first().take(3).also {
+                        value = it.size
+                    }
+                } else {
+                    value = 0
                 }
             }
 
-            val recentBlogPostsCount by produceRetainedState(initialValue = 0) {
-                blogPostRepository.getAllBlogPosts().first().take(3).also {
-                    value = it.size
+            val recentBlogPostsCount by produceRetainedState(
+                initialValue = 0,
+                key1 = isRssFeedContentEnabled,
+            ) {
+                if (isRssFeedContentEnabled) {
+                    blogPostRepository.getAllBlogPosts().first().take(3).also {
+                        value = it.size
+                    }
+                } else {
+                    value = 0
                 }
             }
 
-            // Fetch unread counts
-            val unreadAnnouncementsCount by produceRetainedState(initialValue = 0) {
-                announcementRepository.getUnreadCount().first().also {
-                    value = it
+            // Fetch unread counts only if RSS feed content is enabled
+            val unreadAnnouncementsCount by produceRetainedState(
+                initialValue = 0,
+                key1 = isRssFeedContentEnabled,
+            ) {
+                if (isRssFeedContentEnabled) {
+                    announcementRepository.getUnreadCount().first().also {
+                        value = it
+                    }
+                } else {
+                    value = 0
                 }
             }
 
-            val unreadBlogPostsCount by produceRetainedState(initialValue = 0) {
-                blogPostRepository.getUnreadCount().first().also {
-                    value = it
+            val unreadBlogPostsCount by produceRetainedState(
+                initialValue = 0,
+                key1 = isRssFeedContentEnabled,
+            ) {
+                if (isRssFeedContentEnabled) {
+                    blogPostRepository.getUnreadCount().first().also {
+                        value = it
+                    }
+                } else {
+                    value = 0
                 }
             }
 
             val totalContentCount = recentAnnouncementsCount + recentBlogPostsCount
             val totalUnreadCount = unreadAnnouncementsCount + unreadBlogPostsCount
-            val hasRecentContent = totalContentCount > 0
+            val hasRecentContent = isRssFeedContentEnabled && totalContentCount > 0
 
             return WelcomeScreen.State(
                 isLoading = userPreferences == null,
