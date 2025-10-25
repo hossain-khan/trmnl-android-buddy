@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.welcome
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -7,6 +8,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -252,15 +255,22 @@ fun WelcomeContent(
                     )
                 }
 
-                // "What's New" section - only show if there's recent content
-                if (state.hasRecentContent && !state.isLoading) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                // "What's New" section - animates in when data loads
+                AnimatedVisibility(
+                    visible = state.hasRecentContent && !state.isLoading,
+                    enter =
+                        fadeIn(animationSpec = tween(durationMillis = 500)) +
+                            expandVertically(animationSpec = tween(durationMillis = 300)),
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    WhatsNewSection(
-                        totalCount = state.recentContentCount,
-                        unreadCount = state.unreadContentCount,
-                        onClick = { state.eventSink(WelcomeScreen.Event.ViewUpdatesClicked) },
-                    )
+                        WhatsNewSection(
+                            totalCount = state.recentContentCount,
+                            unreadCount = state.unreadContentCount,
+                            onClick = { state.eventSink(WelcomeScreen.Event.ViewUpdatesClicked) },
+                        )
+                    }
                 }
 
                 // Welcome back message area (fixed height to prevent layout shifts)
