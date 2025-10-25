@@ -18,11 +18,135 @@ The app supports three types of notifications:
 
 Each notification type can be tested using different methods:
 
-| Notification Type | Debug Button | Dev Config Flags | Manual Trigger |
-|------------------|--------------|------------------|----------------|
-| Low Battery | ✅ Yes | ❌ No | ✅ WorkManager |
-| Blog Posts | ❌ No | ✅ Yes | ✅ WorkManager |
-| Announcements | ❌ No | ✅ Yes | ✅ WorkManager |
+| Notification Type | Debug Button | Dev Screen | Dev Config Flags | Manual Trigger |
+|------------------|--------------|------------|------------------|----------------|
+| Low Battery | ✅ Yes | ✅ Yes | ❌ No | ✅ WorkManager |
+| Blog Posts | ❌ No | ✅ Yes | ✅ Yes | ✅ WorkManager |
+| Announcements | ❌ No | ✅ Yes | ✅ Yes | ✅ WorkManager |
+
+---
+
+## 🛠️ Using the Development Screen (Recommended)
+
+**The easiest way to test all notifications is through the Development screen.**
+
+### Accessing the Development Screen
+
+The Development screen is **only available in debug builds** and provides comprehensive testing tools.
+
+**How to access:**
+1. Build and install a debug APK: `./gradlew installDebug`
+2. Open the app and navigate to **Settings**
+3. Scroll to the bottom and tap **"Development Tools"** (only visible in debug builds)
+4. You'll see the Development screen with multiple testing sections
+
+### Features
+
+The Development screen provides:
+
+#### 1. **Permission Status**
+- Shows whether POST_NOTIFICATIONS permission is granted (Android 13+)
+- Color-coded status: Green (granted) / Red (denied)
+- Quick actions:
+  - Request permission button
+  - Open system notification settings
+
+#### 2. **Low Battery Notification Testing**
+- **Device Count Slider**: Test with 1-5 devices
+- **Threshold Slider**: Adjust battery threshold (5-50%)
+- **Mock Data**: Uses predefined device names (no API calls)
+- **Instant Testing**: Tap button to see notification immediately
+
+**Example workflow:**
+```
+1. Set device count: 2
+2. Set threshold: 30%
+3. Tap "Test Low Battery Notification"
+4. See notification: "Low Battery: 2 devices"
+   Content: "Living Room Display, Kitchen Display are below 30%"
+```
+
+#### 3. **RSS Feed Notification Testing**
+
+**Blog Posts:**
+- **Post Count Slider**: Test with 1-10 new posts
+- **Mock Data**: No RSS feed fetching required
+- **Instant Testing**: Tap button to see notification immediately
+
+**Announcements:**
+- **Announcement Count Slider**: Test with 1-10 new announcements
+- **Mock Data**: No RSS feed fetching required
+- **Instant Testing**: Tap button to see notification immediately
+
+**Example workflow:**
+```
+1. Set blog posts: 3
+2. Tap "Test Blog Post Notification"
+3. See notification: "New Blog Posts: 3"
+
+4. Set announcements: 2
+5. Tap "Test Announcement Notification"
+6. See notification: "New Announcements: 2"
+```
+
+#### 4. **Worker Triggers**
+
+Manually trigger one-time worker executions with **real API/RSS data**:
+
+- **Trigger Low Battery Worker**: Fetches real device data from TRMNL API
+- **Trigger Blog Post Worker**: Fetches real blog posts from RSS feed
+- **Trigger Announcement Worker**: Fetches real announcements from RSS feed
+
+**Use cases:**
+- Test actual API integration
+- Verify worker logic with real data
+- Debug network issues
+- Test error handling
+
+#### 5. **Development Info**
+
+Helpful reminders about the Development screen:
+- Only available in debug builds
+- Notification tests use mock data (no API calls)
+- Worker triggers use real API/RSS data
+- Check logcat for detailed execution logs
+
+### Why Use the Development Screen?
+
+**Advantages over other testing methods:**
+
+✅ **No code changes required** - No need to modify dev flags or worker intervals  
+✅ **Instant feedback** - See notifications immediately without waiting  
+✅ **Parameter control** - Adjust device counts, thresholds, and post counts on the fly  
+✅ **Safe testing** - Mock data prevents API rate limits  
+✅ **Permission management** - Built-in permission status and controls  
+✅ **Worker testing** - Manual triggers for real API/RSS data testing  
+
+**When to use mock vs real data:**
+
+- **Mock data (Notification Testing)**: Quick UI testing, different notification variations, no network required
+- **Real data (Worker Triggers)**: Test actual API integration, verify data parsing, test error handling
+
+### Monitoring Logs
+
+Watch Development screen activity in logcat:
+
+```bash
+# Monitor all development screen actions
+adb logcat | grep -E "DevelopmentPresenter|NotificationHelper"
+```
+
+**Expected log output:**
+```
+DevelopmentPresenter: Testing low battery notification: 2 devices, 30% threshold
+NotificationHelper: Showing low battery notification for 2 device(s): [Living Room Display, Kitchen Display]
+
+DevelopmentPresenter: Testing blog post notification: 3 new posts
+NotificationHelper: Showing blog post notification for 3 new post(s)
+
+DevelopmentPresenter: Triggering one-time LowBatteryNotificationWorker
+DevelopmentPresenter: Enqueued one-time work request for LowBatteryNotificationWorker
+```
 
 ---
 
@@ -643,9 +767,17 @@ NotificationHelper.showAnnouncementNotification(
 
 ---
 
-## 🎯 Verifying Production Behavior
+## 🎯 Recommended Testing Workflow
 
-**Complete end-to-end test flow:**
+**For quick notification testing (Recommended):**
+
+1. Use the **Development Screen** (Settings → Development Tools)
+2. Test all notification variations with mock data
+3. Adjust parameters (device count, threshold, post count) as needed
+4. Verify permission status and request if needed
+5. Use worker triggers to test with real API/RSS data
+
+**For production behavior verification:**
 
 1. ✅ **Disable all dev flags** in `AppDevConfig.kt`
 2. ✅ Build release-like version: `./gradlew assembleDebug`
@@ -653,7 +785,7 @@ NotificationHelper.showAnnouncementNotification(
 4. ✅ Login with API token
 5. ✅ Enable all notification toggles in Settings
 6. ✅ Verify workers are scheduled (check WorkManager Inspector)
-7. ✅ Wait for automatic sync OR trigger manually
+7. ✅ Wait for automatic sync OR use Development screen worker triggers
 8. ✅ Verify notifications appear (if new content exists)
 9. ✅ Disable notification toggles
 10. ✅ Verify workers are cancelled
