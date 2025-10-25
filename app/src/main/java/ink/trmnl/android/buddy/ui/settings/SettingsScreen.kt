@@ -577,7 +577,7 @@ private fun LowBatteryNotificationSection(
                         ),
                 )
                 if (isEnabled) {
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = Color.Red.copy(alpha = 0.3f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = Color.Gray.copy(alpha = 0.3f))
                 }
                 AnimatedVisibility(
                     visible = isEnabled,
