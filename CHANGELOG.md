@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Combined Content Carousel**: Updated devices screen with unified announcements and blog posts carousel (#142, Phase 3)
+  - Only displays carousel when there is unread content (filters out items where `isRead = true`)
+  - Hides carousel completely when all content has been read for cleaner UX
   - Replaced announcements-only carousel with combined content feed showing both announcements and blog posts
   - Added `ContentCarousel` composable with "Announcements & Blog Posts" header
   - Implemented `ContentItemCard` with Material 3 AssistChip for visual post type differentiation
