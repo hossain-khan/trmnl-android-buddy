@@ -792,11 +792,15 @@ private fun DevicesList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // Content carousel at the top (only if RSS feed content is enabled)
-        if (isRssFeedContentEnabled) {
+        // Content carousel at the top
+        // Only show if RSS feed content is enabled AND there is unread content
+        // Business Logic: Filter content to only include unread items (isRead = false)
+        // and only display the carousel when there's at least one unread item
+        val unreadContent = latestContent.filter { !it.isRead }
+        if (isRssFeedContentEnabled && unreadContent.isNotEmpty()) {
             item {
                 ContentCarousel(
-                    content = latestContent,
+                    content = unreadContent,
                     isLoading = isContentLoading,
                     onContentClick = onContentItemClick,
                     onViewAllClick = onViewAllContentClick,
@@ -878,7 +882,7 @@ private fun ContentCarousel(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -1117,10 +1121,10 @@ private fun ContentItemCard(
                                         when (item) {
                                             is ContentItem.Announcement ->
                                                 R.drawable
-                                                    .notification_important_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                                    .campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24
                                             is ContentItem.BlogPost ->
                                                 R.drawable
-                                                    .list_alt_24dp_e3e3e3_fill0_wght400_grad0_opsz24
+                                                    .newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24
                                         },
                                     ),
                                 contentDescription = null, // Decorative
@@ -1181,13 +1185,15 @@ private fun ContentItemCard(
             }
 
             // Summary
-            Text(
-                text = item.summary,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 3,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            )
+            if (item.summary.isNotEmpty()) {
+                Text(
+                    text = item.summary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 3,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                )
+            }
 
             // Metadata row
             Row(
