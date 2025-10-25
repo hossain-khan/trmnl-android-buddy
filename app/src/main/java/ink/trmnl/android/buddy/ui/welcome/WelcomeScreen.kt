@@ -410,3 +410,190 @@ private fun WhatsNewSection(
         }
     }
 }
+
+// ========================================
+// Previews
+// ========================================
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Welcome Screen - New User",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
+)
+@Composable
+private fun WelcomeScreenNewUserPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        WelcomeContent(
+            state =
+                WelcomeScreen.State(
+                    isLoading = false,
+                    hasExistingToken = false,
+                    hasRecentContent = false,
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Welcome Screen - Existing User",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
+)
+@Composable
+private fun WelcomeScreenExistingUserPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        WelcomeContent(
+            state =
+                WelcomeScreen.State(
+                    isLoading = false,
+                    hasExistingToken = true,
+                    hasRecentContent = false,
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Welcome Screen - With Updates",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
+)
+@Composable
+private fun WelcomeScreenWithUpdatesPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        WelcomeContent(
+            state =
+                WelcomeScreen.State(
+                    isLoading = false,
+                    hasExistingToken = false,
+                    hasRecentContent = true,
+                    recentContentCount = 6,
+                    unreadContentCount = 3,
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Welcome Screen - All Read",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
+)
+@Composable
+private fun WelcomeScreenAllReadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        WelcomeContent(
+            state =
+                WelcomeScreen.State(
+                    isLoading = false,
+                    hasExistingToken = true,
+                    hasRecentContent = true,
+                    recentContentCount = 6,
+                    unreadContentCount = 0,
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Welcome Screen - Loading",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
+)
+@Composable
+private fun WelcomeScreenLoadingPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        WelcomeContent(
+            state =
+                WelcomeScreen.State(
+                    isLoading = true,
+                    hasExistingToken = false,
+                    hasRecentContent = false,
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Welcome Screen - Dark Theme",
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun WelcomeScreenDarkPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme(darkTheme = true) {
+        WelcomeContent(
+            state =
+                WelcomeScreen.State(
+                    isLoading = false,
+                    hasExistingToken = false,
+                    hasRecentContent = true,
+                    recentContentCount = 5,
+                    unreadContentCount = 5,
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "What's New Section - With Unread",
+    showBackground = true,
+)
+@Composable
+private fun WhatsNewSectionWithUnreadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        WhatsNewSection(
+            totalCount = 6,
+            unreadCount = 3,
+            onClick = {},
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "What's New Section - All Read",
+    showBackground = true,
+)
+@Composable
+private fun WhatsNewSectionAllReadPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        WhatsNewSection(
+            totalCount = 6,
+            unreadCount = 0,
+            onClick = {},
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "What's New Section - Single Update",
+    showBackground = true,
+)
+@Composable
+private fun WhatsNewSectionSingleUpdatePreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+        WhatsNewSection(
+            totalCount = 1,
+            unreadCount = 1,
+            onClick = {},
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "What's New Section - Dark Theme",
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun WhatsNewSectionDarkPreview() {
+    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme(darkTheme = true) {
+        WhatsNewSection(
+            totalCount = 6,
+            unreadCount = 4,
+            onClick = {},
+        )
+    }
+}
