@@ -50,6 +50,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `isAnnouncementAuthBannerDismissed` preference to UserPreferences
   - Added `setAnnouncementAuthBannerDismissed()` method to UserPreferencesRepository
 
+### Changed
+
+- **Improved Room Type Converters**: Migrated from comma-separated strings to JSON serialization
+  - Changed `Converters.fromStringList()` to use JSON encoding instead of comma delimiter
+  - Changed `Converters.toStringList()` to use JSON decoding with error handling
+  - Fixes potential data corruption when URLs contain commas (e.g., query parameters)
+  - Handles special characters in URLs properly (spaces, ampersands, fragments, etc.)
+  - Added comprehensive unit tests for edge cases (URLs with commas, special chars, roundtrip)
+  - More robust serialization prevents URL parsing errors
+
 - **UI/UX Refinements for Content Feed**: Complete Material Design 3 and accessibility overhaul
   - **Accessibility Improvements** (Phase 1):
     - Added comprehensive semantic descriptions to all interactive elements
