@@ -347,6 +347,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Dynamically updates in real-time as user marks items read/unread
   - Tracks unread counts separately from total content count for accurate display
 
+- **Minimum SDK Version Update**: Updated `minSdk` from 26 (Android 8.0 Oreo) to 28 (Android 9.0 Pie)
+  - Resolves lint errors: `AppComponentFactory` requires API level 28
+  - Fixes `NewApi` lint errors in `ComposeAppComponentFactory`
+  - Android Pie (API 28) released in August 2018
+  - Market share of Android 8.0-8.1 (API 26-27) is minimal (<2% as of 2025)
+  - Improves app stability and allows use of modern Android APIs without compatibility workarounds
+
 ### Added
 - **Combined Content Carousel**: Updated devices screen with unified announcements and blog posts carousel (#142, Phase 3)
   - Replaced announcements-only carousel with combined content feed showing both announcements and blog posts
