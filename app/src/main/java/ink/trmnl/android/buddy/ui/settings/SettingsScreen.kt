@@ -9,6 +9,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -46,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -341,7 +344,7 @@ private fun RssFeedContentSection(
                                 if (isEnabled) {
                                     "Show TRMNL blog posts and announcements. Sync automatically in the background."
                                 } else {
-                                    "RSS feed content is disabled. No blog posts or announcements will be shown or synced."
+                                    "Syncing blog posts and announcements content is disabled. No blog posts or announcements will be shown or synced."
                                 },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -368,9 +371,9 @@ private fun RssFeedContentSection(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 16.dp, top = 8.dp),
+                                .background(MaterialTheme.colorScheme.surface),
                     ) {
+                        HorizontalDivider()
                         ListItem(
                             headlineContent = {
                                 Text(
@@ -384,7 +387,7 @@ private fun RssFeedContentSection(
                                         if (isNotificationEnabled) {
                                             "Get notified when new blog posts or announcements are published"
                                         } else {
-                                            "Enable to receive notifications for new RSS feed content"
+                                            "Enable to receive notifications for new blog posts or announcements content"
                                         },
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -846,6 +849,8 @@ private fun SettingsContentWithNotificationEnabledPreview() {
         SettingsContent(
             state =
                 SettingsScreen.State(
+                    isRssFeedContentEnabled = true,
+                    isRssFeedContentNotificationEnabled = true,
                     isBatteryTrackingEnabled = true,
                     isLowBatteryNotificationEnabled = true,
                     lowBatteryThresholdPercent = 30,
