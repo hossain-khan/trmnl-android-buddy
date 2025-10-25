@@ -49,6 +49,7 @@ import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 
 /**
  * Screen for authentication using device credentials (biometric or PIN/pattern/password).
@@ -89,8 +90,10 @@ class AuthenticationPresenter
 
             // Check authentication availability
             LaunchedEffect(Unit) {
+                Timber.tag("AuthScreen").d("Checking biometric availability...")
                 val biometricHelper = BiometricAuthHelper(context)
                 isAuthenticationAvailable = biometricHelper.isBiometricAvailable()
+                Timber.tag("AuthScreen").d("Biometric available: $isAuthenticationAvailable")
             }
 
             return AuthenticationScreen.State(
@@ -99,29 +102,39 @@ class AuthenticationPresenter
             ) { event ->
                 when (event) {
                     is AuthenticationScreen.Event.AuthenticateRequested -> {
+                        Timber.tag("AuthScreen").d("Authenticate button clicked")
                         val activity = context as? FragmentActivity
+                        Timber.tag("AuthScreen").d("Activity: $activity, isAvailable: $isAuthenticationAvailable")
+
                         if (activity != null && isAuthenticationAvailable) {
+                            Timber.tag("AuthScreen").d("Triggering BiometricPrompt.authenticate()")
                             val biometricHelper = BiometricAuthHelper(context)
                             biometricHelper.authenticate(
                                 activity = activity,
                                 title = "Authenticate to continue",
                                 subtitle = "Unlock to access your TRMNL dashboard",
                                 onSuccess = {
+                                    Timber.tag("AuthScreen").d("Authentication SUCCESS - navigating to devices")
                                     navigator.resetRoot(TrmnlDevicesScreen)
                                 },
                                 onError = { error ->
+                                    Timber.tag("AuthScreen").e("Authentication ERROR: $error")
                                     // Show retry prompt on error
                                     showRetryPrompt = true
                                 },
                                 onUserCancelled = {
+                                    Timber.tag("AuthScreen").d("Authentication CANCELLED by user")
                                     // User cancelled, show retry prompt
                                     showRetryPrompt = true
                                 },
                             )
+                        } else {
+                            Timber.tag("AuthScreen").w("Cannot authenticate: activity=$activity, available=$isAuthenticationAvailable")
                         }
                     }
 
                     AuthenticationScreen.Event.CancelAuthentication -> {
+                        Timber.tag("AuthScreen").d("Cancel authentication - disabling security")
                         coroutineScope.launch {
                             // Disable security and navigate to devices screen
                             userPreferencesRepository.setSecurityEnabled(false)
@@ -226,7 +239,10 @@ private fun AuthenticationCard(
 
             // Always show authenticate button - BiometricPrompt requires user interaction
             Button(
-                onClick = onAuthenticateClick,
+                onClick = {
+                    Timber.tag("AuthScreen").d("Unlock button tapped in UI")
+                    onAuthenticateClick()
+                },
                 modifier = Modifier.padding(horizontal = 16.dp),
             ) {
                 Icon(
@@ -236,13 +252,6 @@ private fun AuthenticationCard(
                 )
                 Spacer(modifier = Modifier.padding(horizontal = 4.dp))
                 Text("Unlock")
-            }
-
-            OutlinedButton(
-                onClick = onCancelClick,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            ) {
-                Text("Disable Security")
             }
         }
     }
