@@ -344,14 +344,16 @@ fun AnnouncementsContent(
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn() + scaleIn(),
                 exit = slideOutVertically(targetOffsetY = { it }) + fadeOut() + scaleOut(),
             ) {
-                FloatingActionButton(
+                androidx.compose.material3.ExtendedFloatingActionButton(
                     onClick = { state.eventSink(AnnouncementsScreen.Event.MarkAllAsRead) },
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                        contentDescription = "Mark all as read",
-                    )
-                }
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Mark all as read",
+                        )
+                    },
+                    text = { Text("Mark All Read") },
+                )
             }
         },
     ) { innerPadding ->
