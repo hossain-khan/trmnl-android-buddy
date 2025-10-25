@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Development Configuration for Notification Testing**: Added `AppDevConfig` for testing RSS feed notifications
+  - Added `ENABLE_ANNOUNCEMENT_NOTIFICATION` flag to force announcement notifications (bypasses user preference)
+  - Added `ENABLE_BLOG_NOTIFICATION` flag to force blog post notifications (bypasses user preference)
+  - Added `VERBOSE_NOTIFICATION_LOGGING` flag for detailed notification flow debugging
+  - Useful for testing notification content, styling, and behavior without changing user settings
+  - Both workers (`AnnouncementSyncWorker` and `BlogPostSyncWorker`) check dev flags alongside user preferences
+  - Still respects POST_NOTIFICATIONS permission (Android 13+)
+  - Comprehensive documentation in code with warnings about production usage
+
 - **RSS Feed Content Notification Toggle**: Granular control over notifications for new blog posts and announcements
   - Added expandable notification toggle under main RSS feed content setting
   - Disabled by default to respect user privacy and battery life

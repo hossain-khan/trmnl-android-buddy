@@ -11,6 +11,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.dev.AppDevConfig
 import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
 import ink.trmnl.android.buddy.di.WorkerKey
 import ink.trmnl.android.buddy.notification.NotificationHelper
@@ -55,7 +56,15 @@ class BlogPostSyncWorker(
                 Timber.d("BlogPostSyncWorker: Sync successful. New posts: $newPostsCount")
 
                 // Show notification if new posts were fetched AND user has notifications enabled
-                if (newPostsCount > 0 && preferences.isRssFeedContentNotificationEnabled) {
+                // OR if dev flag is enabled for testing
+                val shouldShowNotification =
+                    newPostsCount > 0 &&
+                        (preferences.isRssFeedContentNotificationEnabled || AppDevConfig.ENABLE_BLOG_NOTIFICATION)
+
+                if (shouldShowNotification) {
+                    if (AppDevConfig.ENABLE_BLOG_NOTIFICATION) {
+                        Timber.d("BlogPostSyncWorker: Dev flag enabled - showing blog post notification for testing")
+                    }
                     NotificationHelper.showBlogPostNotification(applicationContext, newPostsCount)
                 } else if (newPostsCount > 0) {
                     Timber.d("BlogPostSyncWorker: Notifications disabled, skipping notification")

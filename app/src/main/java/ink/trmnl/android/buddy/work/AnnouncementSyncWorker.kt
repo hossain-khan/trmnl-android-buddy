@@ -11,6 +11,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.dev.AppDevConfig
 import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
 import ink.trmnl.android.buddy.di.WorkerKey
 import ink.trmnl.android.buddy.notification.NotificationHelper
@@ -51,7 +52,15 @@ class AnnouncementSyncWorker(
                 Timber.d("Announcement sync completed successfully. New announcements: $newAnnouncementsCount")
 
                 // Show notification if new announcements were fetched AND user has notifications enabled
-                if (newAnnouncementsCount > 0 && preferences.isRssFeedContentNotificationEnabled) {
+                // OR if dev flag is enabled for testing
+                val shouldShowNotification =
+                    newAnnouncementsCount > 0 &&
+                        (preferences.isRssFeedContentNotificationEnabled || AppDevConfig.ENABLE_ANNOUNCEMENT_NOTIFICATION)
+
+                if (shouldShowNotification) {
+                    if (AppDevConfig.ENABLE_ANNOUNCEMENT_NOTIFICATION) {
+                        Timber.d("Dev flag enabled - showing announcement notification for testing")
+                    }
                     NotificationHelper.showAnnouncementNotification(applicationContext, newAnnouncementsCount)
                 } else if (newAnnouncementsCount > 0) {
                     Timber.d("Notifications disabled, skipping notification")
