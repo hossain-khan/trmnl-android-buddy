@@ -9,8 +9,10 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -46,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -113,8 +117,6 @@ data object SettingsScreen : Screen {
         data class RssFeedContentNotificationToggled(
             val enabled: Boolean,
         ) : Event()
-
-        data object TestLowBatteryNotificationClicked : Event()
 
         data object DevelopmentClicked : Event()
     }
@@ -192,10 +194,6 @@ class SettingsPresenter(
                     coroutineScope.launch {
                         userPreferencesRepository.setRssFeedContentNotificationEnabled(event.enabled)
                     }
-                }
-                SettingsScreen.Event.TestLowBatteryNotificationClicked -> {
-                    // Trigger immediate one-time execution for testing (debug builds only)
-                    workerScheduler.triggerLowBatteryNotificationNow()
                 }
                 SettingsScreen.Event.DevelopmentClicked -> {
                     navigator.goTo(ink.trmnl.android.buddy.dev.DevelopmentScreen)
@@ -289,9 +287,6 @@ fun SettingsContent(
                 onThresholdChange = { percent ->
                     state.eventSink(SettingsScreen.Event.LowBatteryThresholdChanged(percent))
                 },
-                onTestNotification = {
-                    state.eventSink(SettingsScreen.Event.TestLowBatteryNotificationClicked)
-                },
             )
 
             // Development Section (Debug builds only)
@@ -317,7 +312,7 @@ private fun RssFeedContentSection(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = "RSS Feed Content",
+            text = "TRMNL News Updates",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -341,7 +336,7 @@ private fun RssFeedContentSection(
                                 if (isEnabled) {
                                     "Show TRMNL blog posts and announcements. Sync automatically in the background."
                                 } else {
-                                    "RSS feed content is disabled. No blog posts or announcements will be shown or synced."
+                                    "Syncing blog posts and announcements content is disabled. No blog posts or announcements will be shown or synced."
                                 },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -368,13 +363,13 @@ private fun RssFeedContentSection(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 16.dp, top = 8.dp),
+                                .background(MaterialTheme.colorScheme.surface),
                     ) {
+                        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f), modifier = Modifier.padding(horizontal = 16.dp))
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "Notifications for New Content",
+                                    text = "Get notified for new content",
                                     style = MaterialTheme.typography.titleSmall,
                                 )
                             },
@@ -384,7 +379,7 @@ private fun RssFeedContentSection(
                                         if (isNotificationEnabled) {
                                             "Get notified when new blog posts or announcements are published"
                                         } else {
-                                            "Enable to receive notifications for new RSS feed content"
+                                            "Enable to receive notifications for new blog posts or announcements content"
                                         },
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -400,6 +395,7 @@ private fun RssFeedContentSection(
                                 ListItemDefaults.colors(
                                     containerColor = MaterialTheme.colorScheme.surface,
                                 ),
+                            modifier = Modifier.padding(start = 16.dp),
                         )
                     }
                 }
@@ -467,7 +463,6 @@ private fun LowBatteryNotificationSection(
     thresholdPercent: Int,
     onToggle: (Boolean) -> Unit,
     onThresholdChange: (Int) -> Unit,
-    onTestNotification: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -581,18 +576,20 @@ private fun LowBatteryNotificationSection(
                             containerColor = MaterialTheme.colorScheme.surface,
                         ),
                 )
-
+                if (isEnabled) {
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = Color.Red.copy(alpha = 0.3f))
+                }
                 AnimatedVisibility(
                     visible = isEnabled,
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut(),
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface),
                 ) {
                     Column(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 16.dp, top = 16.dp),
+                                .padding(bottom = 16.dp, top = 16.dp, start = 32.dp, end = 16.dp),
                     ) {
                         Text(
                             text = "Alert Threshold: $thresholdPercent%",
@@ -634,27 +631,6 @@ private fun LowBatteryNotificationSection(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(top = 4.dp),
                         )
-
-                        // Debug: Test notification button (debug builds only)
-                        if (BuildConfig.DEBUG) {
-                            OutlinedButton(
-                                onClick = onTestNotification,
-                                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
-                                colors =
-                                    ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    ),
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.notification_important_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                                Text("Test Notification Now (Debug)")
-                            }
-                        }
                     }
                 }
             }
@@ -846,6 +822,8 @@ private fun SettingsContentWithNotificationEnabledPreview() {
         SettingsContent(
             state =
                 SettingsScreen.State(
+                    isRssFeedContentEnabled = true,
+                    isRssFeedContentNotificationEnabled = true,
                     isBatteryTrackingEnabled = true,
                     isLowBatteryNotificationEnabled = true,
                     lowBatteryThresholdPercent = 30,
