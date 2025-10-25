@@ -117,8 +117,6 @@ data object SettingsScreen : Screen {
             val enabled: Boolean,
         ) : Event()
 
-        data object TestLowBatteryNotificationClicked : Event()
-
         data object DevelopmentClicked : Event()
     }
 }
@@ -195,10 +193,6 @@ class SettingsPresenter(
                     coroutineScope.launch {
                         userPreferencesRepository.setRssFeedContentNotificationEnabled(event.enabled)
                     }
-                }
-                SettingsScreen.Event.TestLowBatteryNotificationClicked -> {
-                    // Trigger immediate one-time execution for testing (debug builds only)
-                    workerScheduler.triggerLowBatteryNotificationNow()
                 }
                 SettingsScreen.Event.DevelopmentClicked -> {
                     navigator.goTo(ink.trmnl.android.buddy.dev.DevelopmentScreen)
@@ -291,9 +285,6 @@ fun SettingsContent(
                 },
                 onThresholdChange = { percent ->
                     state.eventSink(SettingsScreen.Event.LowBatteryThresholdChanged(percent))
-                },
-                onTestNotification = {
-                    state.eventSink(SettingsScreen.Event.TestLowBatteryNotificationClicked)
                 },
             )
 
@@ -470,7 +461,6 @@ private fun LowBatteryNotificationSection(
     thresholdPercent: Int,
     onToggle: (Boolean) -> Unit,
     onThresholdChange: (Int) -> Unit,
-    onTestNotification: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -637,27 +627,6 @@ private fun LowBatteryNotificationSection(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(top = 4.dp),
                         )
-
-                        // Debug: Test notification button (debug builds only)
-                        if (BuildConfig.DEBUG) {
-                            OutlinedButton(
-                                onClick = onTestNotification,
-                                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
-                                colors =
-                                    ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    ),
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.notification_important_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                                Text("Test Notification Now (Debug)")
-                            }
-                        }
                     }
                 }
             }
