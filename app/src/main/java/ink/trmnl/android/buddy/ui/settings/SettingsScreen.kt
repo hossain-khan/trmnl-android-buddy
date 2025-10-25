@@ -364,11 +364,11 @@ private fun RssFeedContentSection(
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.surface),
                     ) {
-                        HorizontalDivider()
+                        HorizontalDivider(color = Color.Gray.copy(alpha = 0.4f))
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "Notifications for New Content",
+                                    text = "Get notified for new content",
                                     style = MaterialTheme.typography.titleSmall,
                                 )
                             },
