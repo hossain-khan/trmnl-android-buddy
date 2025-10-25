@@ -19,6 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Users can explore TRMNL content before setting up API access
   - Helps showcase value proposition and keep users informed
 
+### Fixed
+- **"What's New" Unread Count**: Dynamic text updates based on read/unread status
+  - Fixed bug where count stayed static at total number even after marking all as read
+  - Text now shows "X new update(s) from TRMNL →" when unread content exists
+  - Text shows "Updates from TRMNL →" when all content has been read
+  - Dynamically updates in real-time as user marks items read/unread
+  - Tracks unread counts separately from total content count for accurate display
+
 - **Announcements "Mark All Read" Feature**: Extended FAB to mark all announcements as read
   - Upgraded from icon-only FAB to Extended FloatingActionButton with "Mark All Read" text and icon
   - Consistent with BlogPostsScreen FAB implementation

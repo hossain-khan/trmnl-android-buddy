@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -376,18 +378,24 @@ private fun WhatsNewSection(
         }
 
         // Text button with shimmer effect
-        androidx.compose.material3.TextButton(
+        TextButton(
             onClick = onClick,
             modifier = Modifier.graphicsLayer { this.alpha = alpha },
         ) {
             Text(
                 text =
                     if (unreadCount > 0) {
-                        "$unreadCount new ${if (unreadCount == 1) "update" else "updates"} from TRMNL →"
+                        "$unreadCount new ${if (unreadCount == 1) "update" else "updates"} from TRMNL"
                     } else {
-                        "Updates from TRMNL →"
+                        "Updates from TRMNL"
                     },
                 style = MaterialTheme.typography.bodyLarge,
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.arrow_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
             )
         }
     }
