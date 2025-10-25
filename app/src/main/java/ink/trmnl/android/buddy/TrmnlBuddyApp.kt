@@ -5,19 +5,11 @@ import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import dev.zacsweers.metro.createGraphFactory
 import ink.trmnl.android.buddy.di.AppGraph
 import ink.trmnl.android.buddy.notification.NotificationHelper
-import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
-import ink.trmnl.android.buddy.work.LowBatteryNotificationWorker
-import ink.trmnl.android.buddy.work.SampleWorker
-import ink.trmnl.android.buddy.worker.BlogPostSyncWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -43,29 +35,8 @@ class TrmnlBuddyApp :
         }
 
         NotificationHelper.createNotificationChannels(this)
-        scheduleBackgroundWork()
         scheduleBatteryCollection()
-        scheduleAnnouncementSync()
-        scheduleBlogPostSync()
-    }
-
-    /**
-     * Schedules a background work request using the [WorkManager].
-     * This is just an example to demonstrate how to use WorkManager with Metro DI.
-     */
-    private fun scheduleBackgroundWork() {
-        val workRequest =
-            OneTimeWorkRequestBuilder<SampleWorker>()
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .setInputData(workDataOf(SampleWorker.KEY_WORK_NAME to "Circuit App ${System.currentTimeMillis()}"))
-                .setConstraints(
-                    Constraints
-                        .Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build(),
-                ).build()
-
-        appGraph.workManager.enqueue(workRequest)
+        scheduleRssFeedContentWorkers()
     }
 
     /**
@@ -93,52 +64,13 @@ class TrmnlBuddyApp :
     }
 
     /**
-     * Schedules periodic announcement sync using WorkManager.
-     * The worker fetches announcements from TRMNL RSS feed every 4 hours.
+     * Schedules RSS feed content workers (announcements and blog posts) on app launch.
+     * Uses KEEP policy to avoid duplicates if workers are already scheduled.
+     * Workers will be cancelled when user disables RSS feed content in settings.
      */
-    private fun scheduleAnnouncementSync() {
-        val announcementWorkRequest =
-            PeriodicWorkRequestBuilder<AnnouncementSyncWorker>(
-                repeatInterval = 4,
-                repeatIntervalTimeUnit = TimeUnit.HOURS,
-            ).setConstraints(
-                Constraints
-                    .Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build(),
-            ).build()
-
-        // Use KEEP policy to avoid duplicates
-        appGraph.workManager.enqueueUniquePeriodicWork(
-            "announcement_sync",
-            ExistingPeriodicWorkPolicy.KEEP,
-            announcementWorkRequest,
-        )
-    }
-
-    /**
-     * Schedules periodic blog post sync using WorkManager.
-     * The worker fetches blog posts from TRMNL RSS feed daily.
-     * Shows notification when new posts are available.
-     */
-    private fun scheduleBlogPostSync() {
-        val blogPostWorkRequest =
-            PeriodicWorkRequestBuilder<BlogPostSyncWorker>(
-                repeatInterval = 1,
-                repeatIntervalTimeUnit = TimeUnit.DAYS,
-            ).setConstraints(
-                Constraints
-                    .Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .setRequiresBatteryNotLow(true)
-                    .build(),
-            ).build()
-
-        // Use KEEP policy to avoid duplicates
-        appGraph.workManager.enqueueUniquePeriodicWork(
-            BlogPostSyncWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
-            blogPostWorkRequest,
-        )
+    private fun scheduleRssFeedContentWorkers() {
+        Timber.d("Scheduling RSS feed content workers (announcement and blog post sync)")
+        appGraph.workerScheduler.scheduleAnnouncementSync()
+        appGraph.workerScheduler.scheduleBlogPostSync()
     }
 }

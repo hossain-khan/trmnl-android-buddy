@@ -83,7 +83,7 @@ data object SettingsScreen : Screen {
         val isBatteryTrackingEnabled: Boolean = true,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
-        val isAnnouncementsEnabled: Boolean = true,
+        val isRssFeedContentEnabled: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -104,7 +104,7 @@ data object SettingsScreen : Screen {
             val percent: Int,
         ) : Event()
 
-        data class AnnouncementsToggled(
+        data class RssFeedContentToggled(
             val enabled: Boolean,
         ) : Event()
 
@@ -134,7 +134,7 @@ class SettingsPresenter(
             isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
             isLowBatteryNotificationEnabled = preferences.isLowBatteryNotificationEnabled,
             lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent,
-            isAnnouncementsEnabled = preferences.isAnnouncementsEnabled,
+            isRssFeedContentEnabled = preferences.isRssFeedContentEnabled,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
@@ -166,14 +166,16 @@ class SettingsPresenter(
                         workerScheduler.scheduleLowBatteryNotification()
                     }
                 }
-                is SettingsScreen.Event.AnnouncementsToggled -> {
+                is SettingsScreen.Event.RssFeedContentToggled -> {
                     coroutineScope.launch {
-                        userPreferencesRepository.setAnnouncementsEnabled(event.enabled)
-                        // Schedule or cancel the announcement sync worker based on toggle state
+                        userPreferencesRepository.setRssFeedContentEnabled(event.enabled)
+                        // Schedule or cancel both announcement and blog post sync workers
                         if (event.enabled) {
                             workerScheduler.scheduleAnnouncementSync()
+                            workerScheduler.scheduleBlogPostSync()
                         } else {
                             workerScheduler.cancelAnnouncementSync()
+                            workerScheduler.cancelBlogPostSync()
                         }
                     }
                 }
@@ -240,11 +242,11 @@ fun SettingsContent(
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Announcements Section
-            AnnouncementsSection(
-                isEnabled = state.isAnnouncementsEnabled,
+            // RSS Feed Content Section (Announcements & Blog Posts)
+            RssFeedContentSection(
+                isEnabled = state.isRssFeedContentEnabled,
                 onToggle = { enabled ->
-                    state.eventSink(SettingsScreen.Event.AnnouncementsToggled(enabled))
+                    state.eventSink(SettingsScreen.Event.RssFeedContentToggled(enabled))
                 },
             )
 
@@ -278,14 +280,14 @@ fun SettingsContent(
 }
 
 @Composable
-private fun AnnouncementsSection(
+private fun RssFeedContentSection(
     isEnabled: Boolean,
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Text(
-            text = "Announcements",
+            text = "RSS Feed Content",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -298,7 +300,7 @@ private fun AnnouncementsSection(
             ListItem(
                 headlineContent = {
                     Text(
-                        text = "Enable Announcements",
+                        text = "Enable Blog Posts & Announcements",
                         style = MaterialTheme.typography.titleSmall,
                     )
                 },
@@ -306,9 +308,9 @@ private fun AnnouncementsSection(
                     Text(
                         text =
                             if (isEnabled) {
-                                "Show TRMNL announcements on home screen and sync automatically every 4 hours"
+                                "Show TRMNL blog posts and announcements. Sync automatically in the background."
                             } else {
-                                "Announcements are disabled. No announcements will be shown or synced."
+                                "RSS feed content is disabled. No blog posts or announcements will be shown or synced."
                             },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

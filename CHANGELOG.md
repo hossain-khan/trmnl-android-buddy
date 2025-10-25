@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unified RSS Feed Content Toggle**: Single setting to control both blog posts and announcements
+  - Renamed `isAnnouncementsEnabled` preference to `isRssFeedContentEnabled` for clarity
+  - Toggle now controls both AnnouncementSyncWorker and BlogPostSyncWorker together
+  - Blog post sync is now preference-controlled (previously hardcoded to always sync)
+  - Added `scheduleBlogPostSync()` and `cancelBlogPostSync()` methods to WorkerScheduler interface
+  - Updated SettingsScreen with "Enable Blog Posts & Announcements" toggle
+  - Automatic migration from legacy `announcements_enabled` preference key
+  - Consistent UX: both content types enabled/disabled together
+  - Battery-friendly: users can disable all RSS feed content syncing with one toggle
+
 - **Image Carousel for Blog Posts**: Enhanced blog post cards with multi-image support and auto-rotation
   - Extracts all images from RSS feed content (previously only showed first image)
   - Auto-rotates through images every 3 seconds with smooth crossfade animation

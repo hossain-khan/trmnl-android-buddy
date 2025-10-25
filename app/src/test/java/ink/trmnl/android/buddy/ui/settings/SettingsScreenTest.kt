@@ -249,6 +249,7 @@ class SettingsScreenTest {
     private class FakeWorkerScheduler : WorkerScheduler {
         var isScheduled = false
         var isAnnouncementSyncScheduled = false
+        var isBlogPostSyncScheduled = false
 
         override fun scheduleLowBatteryNotification() {
             isScheduled = true
@@ -268,6 +269,14 @@ class SettingsScreenTest {
 
         override fun cancelAnnouncementSync() {
             isAnnouncementSyncScheduled = false
+        }
+
+        override fun scheduleBlogPostSync() {
+            isBlogPostSyncScheduled = true
+        }
+
+        override fun cancelBlogPostSync() {
+            isBlogPostSyncScheduled = false
         }
     }
 
@@ -319,8 +328,8 @@ class SettingsScreenTest {
             _userPreferencesFlow.value = _userPreferencesFlow.value.copy(lowBatteryThresholdPercent = percent)
         }
 
-        override suspend fun setAnnouncementsEnabled(enabled: Boolean) {
-            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isAnnouncementsEnabled = enabled)
+        override suspend fun setRssFeedContentEnabled(enabled: Boolean) {
+            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isRssFeedContentEnabled = enabled)
         }
 
         override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {

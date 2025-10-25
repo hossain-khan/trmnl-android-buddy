@@ -257,10 +257,10 @@ private class FakeUserPreferencesRepository : UserPreferencesRepository {
             userPreferencesFlow.value.copy(lowBatteryThresholdPercent = percent)
     }
 
-    override suspend fun setAnnouncementsEnabled(enabled: Boolean) {
-        preferences["announcements_enabled"] = enabled
+    override suspend fun setRssFeedContentEnabled(enabled: Boolean) {
+        preferences["rss_feed_content_enabled"] = enabled
         userPreferencesFlow.value =
-            userPreferencesFlow.value.copy(isAnnouncementsEnabled = enabled)
+            userPreferencesFlow.value.copy(isRssFeedContentEnabled = enabled)
     }
 
     override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
