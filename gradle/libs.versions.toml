@@ -75,6 +75,10 @@ browser = "1.8.0"
 # https://github.com/robolectric/robolectric
 robolectric = "4.15"
 
+# AndroidX Biometric - Biometric authentication
+# https://developer.android.com/jetpack/androidx/releases/biometric
+biometric = "1.4.0-alpha04"
+
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -166,6 +170,10 @@ androidx-browser = { group = "androidx.browser", name = "browser", version.ref =
 # Robolectric - Android unit testing framework
 # https://github.com/robolectric/robolectric
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+
+# AndroidX Biometric - Biometric authentication
+# https://developer.android.com/jetpack/androidx/releases/biometric
+androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

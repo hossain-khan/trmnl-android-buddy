@@ -48,6 +48,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -72,12 +73,17 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.dev.DevelopmentScreen
+import ink.trmnl.android.buddy.security.BiometricAuthHelper
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import ink.trmnl.android.buddy.ui.user.UserAccountScreen
 import ink.trmnl.android.buddy.work.WorkerScheduler
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 
 /**
  * Screen for app settings.
@@ -90,6 +96,8 @@ data object SettingsScreen : Screen {
         val lowBatteryThresholdPercent: Int = 20,
         val isRssFeedContentEnabled: Boolean = false,
         val isRssFeedContentNotificationEnabled: Boolean = false,
+        val isSecurityEnabled: Boolean = false,
+        val isAuthenticationAvailable: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -118,6 +126,10 @@ data object SettingsScreen : Screen {
             val enabled: Boolean,
         ) : Event()
 
+        data class SecurityToggled(
+            val enabled: Boolean,
+        ) : Event()
+
         data object DevelopmentClicked : Event()
     }
 }
@@ -130,15 +142,18 @@ class SettingsPresenter(
     @Assisted private val navigator: Navigator,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val workerScheduler: WorkerScheduler,
+    private val biometricAuthHelper: BiometricAuthHelper,
 ) : Presenter<SettingsScreen.State> {
     @Composable
     override fun present(): SettingsScreen.State {
         val preferences by userPreferencesRepository.userPreferencesFlow.collectAsState(
             initial =
-                ink.trmnl.android.buddy.data.preferences
-                    .UserPreferences(),
+                UserPreferences(),
         )
         val coroutineScope = rememberCoroutineScope()
+
+        // Check biometric availability using the injected helper.
+        val isAuthenticationAvailable = biometricAuthHelper.isBiometricAvailable()
 
         return SettingsScreen.State(
             isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
@@ -146,13 +161,15 @@ class SettingsPresenter(
             lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent,
             isRssFeedContentEnabled = preferences.isRssFeedContentEnabled,
             isRssFeedContentNotificationEnabled = preferences.isRssFeedContentNotificationEnabled,
+            isSecurityEnabled = preferences.isSecurityEnabled,
+            isAuthenticationAvailable = isAuthenticationAvailable,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
                     navigator.pop()
                 }
                 SettingsScreen.Event.AccountClicked -> {
-                    navigator.goTo(ink.trmnl.android.buddy.ui.user.UserAccountScreen)
+                    navigator.goTo(UserAccountScreen)
                 }
                 is SettingsScreen.Event.BatteryTrackingToggled -> {
                     coroutineScope.launch {
@@ -195,8 +212,13 @@ class SettingsPresenter(
                         userPreferencesRepository.setRssFeedContentNotificationEnabled(event.enabled)
                     }
                 }
+                is SettingsScreen.Event.SecurityToggled -> {
+                    coroutineScope.launch {
+                        userPreferencesRepository.setSecurityEnabled(event.enabled)
+                    }
+                }
                 SettingsScreen.Event.DevelopmentClicked -> {
-                    navigator.goTo(ink.trmnl.android.buddy.dev.DevelopmentScreen)
+                    navigator.goTo(DevelopmentScreen)
                 }
             }
         }
@@ -266,6 +288,15 @@ fun SettingsContent(
                 },
                 onNotificationToggle = { enabled ->
                     state.eventSink(SettingsScreen.Event.RssFeedContentNotificationToggled(enabled))
+                },
+            )
+
+            // Security Section
+            SecuritySection(
+                isSecurityEnabled = state.isSecurityEnabled,
+                isAuthenticationAvailable = state.isAuthenticationAvailable,
+                onSecurityToggle = { enabled ->
+                    state.eventSink(SettingsScreen.Event.SecurityToggled(enabled))
                 },
             )
 
@@ -456,6 +487,110 @@ private fun BatteryTrackingSection(
     }
 }
 
+/**
+ * Security section composable.
+ * Uses device's native biometric/credential authentication (no custom PIN).
+ */
+@Composable
+private fun SecuritySection(
+    isSecurityEnabled: Boolean,
+    isAuthenticationAvailable: Boolean,
+    onSecurityToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var showDisableDialog by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier) {
+        Text(
+            text = "Security",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "Dashboard Authentication",
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                },
+                supportingContent = {
+                    Text(
+                        text =
+                            if (!isAuthenticationAvailable) {
+                                "No device lock detected. Please set up a screen lock (PIN, pattern, password, or biometric) in your device settings."
+                            } else if (isSecurityEnabled) {
+                                "Require device authentication to access the dashboard with TRMNL images (fingerprint, face, PIN, pattern, or password)"
+                            } else {
+                                "No authentication required to see TRMNL images in the dashboard. Enable to secure your dashboard with device authentication."
+                            },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                },
+                trailingContent = {
+                    Switch(
+                        checked = isSecurityEnabled,
+                        enabled = isAuthenticationAvailable,
+                        onCheckedChange = { enabled ->
+                            if (!enabled && isSecurityEnabled) {
+                                showDisableDialog = true
+                            } else {
+                                onSecurityToggle(enabled)
+                            }
+                        },
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.fingerprint_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        contentDescription = "Security",
+                        tint =
+                            if (!isAuthenticationAvailable) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.primary
+                            },
+                    )
+                },
+                colors =
+                    ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+            )
+        }
+
+        // Confirmation dialog when disabling security
+        if (showDisableDialog) {
+            AlertDialog(
+                onDismissRequest = { showDisableDialog = false },
+                title = { Text("Disable Security?") },
+                text = { Text("This will disable authentication requirement for accessing your dashboard.") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDisableDialog = false
+                            onSecurityToggle(false)
+                        },
+                    ) {
+                        Text("Disable")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDisableDialog = false }) {
+                        Text("Cancel")
+                    }
+                },
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun LowBatteryNotificationSection(
@@ -600,7 +735,7 @@ private fun LowBatteryNotificationSection(
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
                                 text = "$minThreshold%",

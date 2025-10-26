@@ -74,6 +74,11 @@ interface UserPreferencesRepository {
     suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean)
 
     /**
+     * Enable or disable security (biometric/device credential authentication).
+     */
+    suspend fun setSecurityEnabled(enabled: Boolean)
+
+    /**
      * Clear all preferences.
      */
     suspend fun clearAll()
@@ -95,6 +100,7 @@ class UserPreferencesRepositoryImpl
             val RSS_FEED_CONTENT_NOTIFICATION_ENABLED = booleanPreferencesKey("rss_feed_content_notification_enabled")
             val ANNOUNCEMENTS_ENABLED = booleanPreferencesKey("announcements_enabled") // Legacy key for migration
             val ANNOUNCEMENT_AUTH_BANNER_DISMISSED = booleanPreferencesKey("announcement_auth_banner_dismissed")
+            val SECURITY_ENABLED = booleanPreferencesKey("security_enabled")
         }
 
         override val userPreferencesFlow: Flow<UserPreferences> =
@@ -117,6 +123,7 @@ class UserPreferencesRepositoryImpl
                         preferences[PreferencesKeys.RSS_FEED_CONTENT_NOTIFICATION_ENABLED] ?: false,
                     isAnnouncementAuthBannerDismissed =
                         preferences[PreferencesKeys.ANNOUNCEMENT_AUTH_BANNER_DISMISSED] ?: false,
+                    isSecurityEnabled = preferences[PreferencesKeys.SECURITY_ENABLED] ?: false,
                 )
             }
 
@@ -173,6 +180,12 @@ class UserPreferencesRepositoryImpl
         override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
             context.dataStore.edit { preferences ->
                 preferences[PreferencesKeys.ANNOUNCEMENT_AUTH_BANNER_DISMISSED] = dismissed
+            }
+        }
+
+        override suspend fun setSecurityEnabled(enabled: Boolean) {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.SECURITY_ENABLED] = enabled
             }
         }
 

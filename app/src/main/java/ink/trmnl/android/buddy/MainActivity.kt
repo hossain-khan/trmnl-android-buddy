@@ -2,11 +2,11 @@ package ink.trmnl.android.buddy
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.runtime.remember
+import androidx.fragment.app.FragmentActivity
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
@@ -29,7 +29,7 @@ import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 class MainActivity
     constructor(
         private val circuit: Circuit,
-    ) : ComponentActivity() {
+    ) : FragmentActivity() {
         @OptIn(ExperimentalSharedTransitionApi::class)
         override fun onCreate(savedInstanceState: Bundle?) {
             enableEdgeToEdge()
