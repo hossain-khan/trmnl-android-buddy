@@ -15,7 +15,7 @@ Your companion app to monitor and manage your TRMNL e-ink displays on the go.
 - 🖼️ **Device Preview** - View current screen content for devices with configured device tokens
 - 📰 **Content Feed** - Stay updated with announcements and blog posts from TRMNL
 - 🎨 **Material You Design** - Dynamic theming support (Android 12+) with automatic dark mode
-- 🔐 **Privacy-First** - Obfuscated sensitive information with toggle control, lock dashboard with biometric authentication 
+- 🔐 **Privacy-First** - Obfuscated sensitive information, lock dashboard with biometric authentication 
 - ⚙️ **Customization** - Settings screen with battery tracking toggle and account management
 - 📈 **Battery Insights** - Interactive line charts showing battery drain patterns over time
 
