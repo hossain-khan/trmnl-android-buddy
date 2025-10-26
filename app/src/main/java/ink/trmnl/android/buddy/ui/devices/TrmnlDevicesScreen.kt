@@ -16,6 +16,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -67,6 +68,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -834,7 +836,7 @@ private fun DevicesList(
 /**
  * Content carousel composable.
  * Shows combined feed of announcements and blog posts with post type indicators.
- * Features auto-rotation every 5 seconds (pauses on interaction and when app is backgrounded).
+ * Features auto-rotation every 5 seconds that stops permanently once user manually swipes.
  * Includes accessibility improvements and lifecycle awareness.
  */
 @OptIn(ExperimentalFoundationApi::class)
@@ -850,6 +852,8 @@ private fun ContentCarousel(
     val haptic = LocalHapticFeedback.current
     var isAppInForeground by remember { mutableStateOf(true) }
     var userIsInteracting by remember { mutableStateOf(false) }
+    // Track if user has manually swiped - once true, auto-rotation stops permanently
+    var hasUserManuallyPaged by remember { mutableStateOf(false) }
 
     // Observe lifecycle to pause auto-rotation when app is backgrounded
     DisposableEffect(lifecycleOwner) {
@@ -947,9 +951,24 @@ private fun ContentCarousel(
                     // Display content carousel with auto-rotation
                     val pagerState = rememberPagerState(pageCount = { content.size })
 
-                    // Auto-rotation every 5 seconds (only when app is in foreground and user not interacting)
-                    LaunchedEffect(pagerState, content.size, isAppInForeground, userIsInteracting) {
-                        while (isAppInForeground && !userIsInteracting) {
+                    // Detect when user manually swipes (drags) the pager
+                    // This stops auto-rotation permanently once user demonstrates awareness of paging
+                    // Listens for DragInteraction.Start events which only occur on user-initiated drags
+                    LaunchedEffect(pagerState.interactionSource) {
+                        pagerState.interactionSource.interactions.collect { interaction ->
+                            if (interaction is DragInteraction.Start && !hasUserManuallyPaged) {
+                                // User has started dragging the pager - permanently disable auto-rotation
+                                hasUserManuallyPaged = true
+                            }
+                        }
+                    }
+
+                    // Auto-rotation every 5 seconds
+                    // Stops permanently once user manually swipes (hasUserManuallyPaged = true)
+                    // Also pauses when app is backgrounded or user is pressing on content
+                    LaunchedEffect(pagerState, content.size, isAppInForeground, userIsInteracting, hasUserManuallyPaged) {
+                        // Only auto-rotate if user hasn't manually paged yet
+                        while (isAppInForeground && !userIsInteracting && !hasUserManuallyPaged) {
                             delay(5000) // 5 seconds
                             val nextPage = (pagerState.currentPage + 1) % content.size
                             pagerState.animateScrollToPage(

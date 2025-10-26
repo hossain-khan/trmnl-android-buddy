@@ -27,6 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Low Battery Alerts: Battery alert icon
   - Development: Android icon
   - Moved icons from individual list items to section headers for cleaner, more consistent layout
+- **Content Carousel Auto-Rotation**: Improved user experience by stopping auto-rotation permanently once user manually swipes
+  - Auto-rotation now stops immediately when user demonstrates awareness by swiping left or right
+  - Fixed bug where auto-rotation animation was incorrectly detected as user interaction, causing rotation to stop prematurely
+  - Now uses `DragInteraction.Start` to accurately detect only user-initiated swipes, not programmatic animations
+  - Prevents annoying interruptions after user has started browsing content manually
+  - Still pauses during touch interactions and when app is backgrounded
 
 ### Fixed
 
