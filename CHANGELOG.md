@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ADDED
 
 - **Security Feature**: Added device native authentication following Android best practices
-  - Updated to AndroidX Biometric library 1.4.0 (latest stable)
+  - Updated to AndroidX Biometric library 1.4.0-alpha04
   - Now uses `BIOMETRIC_STRONG | DEVICE_CREDENTIAL` authenticators for better UX
   - Removed custom PIN implementation in favor of device's native biometric/credential authentication (fingerprint, face, PIN, pattern, password)
   - Authentication requires explicit user interaction (button click) per Android guidelines
