@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Refactored `SettingsScreen` UI into separate composable files for better organization and maintainability
+  - Created `RssFeedContentSection.kt` with light/dark previews
+  - Created `SecuritySection.kt` with light/dark previews
+  - Created `BatteryTrackingSection.kt` with light/dark previews
+  - Created `LowBatteryNotificationSection.kt` with light/dark previews
+  - Created `DevelopmentSection.kt` with preview
+  - Created `AppInformationSection.kt` with preview
+  - All composable UI files are in the `ink.trmnl.android.buddy.ui.settings` package
+  - Main `SettingsScreen.kt` reduced from 1080 lines to 350 lines
+
 ## [2.1.0] - 2025-10-26
 
 ### ADDED
