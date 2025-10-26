@@ -32,13 +32,19 @@ An Android app built with:
 
 <table>
   <tr>
-    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173055.png" alt="Welcome Screen" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173120.png" alt="User API Configuration" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173216.png" alt="Device API Key Input" width="250"/></td>
+    <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_223952.png" alt="Welcome Screen" width="250"/></td>
+    <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_224019.png" alt="User API Configuration" width="250"/></td>
+    <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_224125.png" alt="Device API Key Input" width="250"/></td>
   </tr>
   <tr>
-    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173259.png" alt="Device Preview" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173357.png" alt="Device Details" width="250"/></td>
-    <td><img src="project-resources/screenshots/v1.2.0-pixel-6pro/Screenshot_20251021_173320.png" alt="User Account Home" width="250"/></td>
+    <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_224232.png" alt="Device Preview" width="250"/></td>
+    <td><img src="project-resources/screenshots/v1.6.0-pixel-6pro/Screenshot_20251023_193409.png" alt="Device Details" width="250"/></td>
+    <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_224628.png" alt="User Account Home" width="250"/></td>
+  </tr>
+
+  <tr>
+    <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_224519.png" alt="TRMNL RSS Feed - Announcements" width="250"/></td>
+    <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_224524.png" alt="TRMNL RSS Feed - Blog" width="250"/></td>
+    <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_224736.png" alt="App Settings" width="250"/></td>
   </tr>
 </table>
