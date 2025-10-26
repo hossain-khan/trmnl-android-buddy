@@ -40,6 +40,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Changed `Color.Gray.copy(alpha = 0.3f)` to `MaterialTheme.colorScheme.outlineVariant`
   - Dividers now properly adapt to light/dark theme and dynamic color theming
   - Ensures proper contrast ratios and follows Material 3 design guidelines
+- **RSS Feed Content Notifications**: Added missing runtime notification permission check (Android 13+)
+  - "Get notified for new content" toggle now properly requests POST_NOTIFICATIONS permission
+  - Consistent with Low Battery Alerts permission handling
+  - Shows permission denied dialog with settings instructions when permission is not granted
 - Fixed MainActivity to extend FragmentActivity (required by BiometricPrompt API) instead of ComponentActivity
 - Fixed biometric authentication not showing due to incorrect activity type
 

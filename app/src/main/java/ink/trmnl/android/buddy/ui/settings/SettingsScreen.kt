@@ -332,6 +332,7 @@ fun SettingsContent(
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun RssFeedContentSection(
     isEnabled: Boolean,
@@ -340,6 +341,70 @@ private fun RssFeedContentSection(
     onNotificationToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    var showPermissionDialog by remember { mutableStateOf(false) }
+
+    // Permission state for Android 13+ (API 33+)
+    // For older Android versions, this permission is automatically granted
+    val notificationPermissionState =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS) { isGranted ->
+                // Callback when permission result is received
+                if (isGranted) {
+                    // Permission granted, enable notifications
+                    onNotificationToggle(true)
+                } else {
+                    // Permission denied, show explanation dialog
+                    showPermissionDialog = true
+                }
+            }
+        } else {
+            null // No permission needed for Android 12 and below
+        }
+
+    // Handle notification toggle with permission check
+    fun handleNotificationToggle(enabled: Boolean) {
+        if (enabled) {
+            // User wants to enable notifications
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val permissionState = notificationPermissionState
+                if (permissionState != null) {
+                    if (permissionState.status.isGranted) {
+                        // Permission already granted
+                        onNotificationToggle(true)
+                    } else {
+                        // Request permission (result handled in callback)
+                        permissionState.launchPermissionRequest()
+                    }
+                }
+            } else {
+                // No permission needed for older Android versions
+                onNotificationToggle(true)
+            }
+        } else {
+            // User wants to disable notifications, no permission check needed
+            onNotificationToggle(false)
+        }
+    }
+
+    // Permission denied dialog
+    if (showPermissionDialog) {
+        AlertDialog(
+            onDismissRequest = { showPermissionDialog = false },
+            title = { Text("Notification Permission Required") },
+            text = {
+                Text(
+                    "To receive content notifications, please grant notification permission in your device settings.\n\nSettings > Apps > TRMNL Buddy > Notifications",
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { showPermissionDialog = false }) {
+                    Text("OK")
+                }
+            },
+        )
+    }
+
     Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -432,7 +497,7 @@ private fun RssFeedContentSection(
                             trailingContent = {
                                 Switch(
                                     checked = isNotificationEnabled,
-                                    onCheckedChange = onNotificationToggle,
+                                    onCheckedChange = { handleNotificationToggle(it) },
                                 )
                             },
                             colors =
