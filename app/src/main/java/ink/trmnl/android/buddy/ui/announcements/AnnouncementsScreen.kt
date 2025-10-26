@@ -550,7 +550,7 @@ private fun AuthenticationBanner(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f),
+        color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.6f),
         shape = MaterialTheme.shapes.medium,
         tonalElevation = 1.dp,
     ) {

@@ -18,6 +18,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Simplified security settings to single toggle (no separate PIN/biometric configuration needed)
   - Follows official Android guidelines: https://developer.android.com/identity/sign-in/biometric-auth
 
+### Changed
+
+- **Settings UI Improvements**: Added icons to all settings section titles for better visual hierarchy and consistency
+  - TRMNL News Updates: Campaign/announcement icon
+  - Security: Fingerprint icon (shows error color when device lock not available)
+  - Battery History: Battery power icon
+  - Low Battery Alerts: Battery alert icon
+  - Development: Android icon
+  - Moved icons from individual list items to section headers for cleaner, more consistent layout
+
 ### Fixed
 
 - Fixed MainActivity to extend FragmentActivity (required by BiometricPrompt API) instead of ComponentActivity
