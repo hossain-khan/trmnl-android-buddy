@@ -37,3 +37,4 @@ google-services.json
 # Kotlin compiler cache
 .kotlin/
 docs/usetrmnl.com-*.xml
+test-*.txt
