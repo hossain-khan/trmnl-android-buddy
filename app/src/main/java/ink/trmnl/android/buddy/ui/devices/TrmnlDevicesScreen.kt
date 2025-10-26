@@ -16,6 +16,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -952,15 +953,11 @@ private fun ContentCarousel(
 
                     // Detect when user manually swipes (drags) the pager
                     // This stops auto-rotation permanently once user demonstrates awareness of paging
-                    // Uses interactionSource to distinguish user drags from programmatic animateScrollToPage()
+                    // Listens for DragInteraction.Start events which only occur on user-initiated drags
                     LaunchedEffect(pagerState.interactionSource) {
-                        snapshotFlow {
-                            // True only when user is actively dragging the pager (not programmatic scroll)
-                            pagerState.currentPageOffsetFraction != 0f &&
-                                pagerState.isScrollInProgress
-                        }.collect { isUserDragging ->
-                            if (isUserDragging && !hasUserManuallyPaged) {
-                                // User has manually dragged the pager - permanently disable auto-rotation
+                        pagerState.interactionSource.interactions.collect { interaction ->
+                            if (interaction is DragInteraction.Start && !hasUserManuallyPaged) {
+                                // User has started dragging the pager - permanently disable auto-rotation
                                 hasUserManuallyPaged = true
                             }
                         }
