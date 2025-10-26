@@ -48,6 +48,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -72,12 +73,17 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.dev.DevelopmentScreen
+import ink.trmnl.android.buddy.security.BiometricAuthHelper
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import ink.trmnl.android.buddy.ui.user.UserAccountScreen
 import ink.trmnl.android.buddy.work.WorkerScheduler
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 
 /**
  * Screen for app settings.
@@ -136,20 +142,18 @@ class SettingsPresenter(
     @Assisted private val navigator: Navigator,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val workerScheduler: WorkerScheduler,
+    private val biometricAuthHelper: BiometricAuthHelper,
 ) : Presenter<SettingsScreen.State> {
     @Composable
     override fun present(): SettingsScreen.State {
         val preferences by userPreferencesRepository.userPreferencesFlow.collectAsState(
             initial =
-                ink.trmnl.android.buddy.data.preferences
-                    .UserPreferences(),
+                UserPreferences(),
         )
         val coroutineScope = rememberCoroutineScope()
 
-        // Note: We don't check biometric availability here to avoid test failures with LocalContext
-        // The UI will handle the case where biometric is not available when user tries to enable it
-        // This simplifies testing and keeps presenter logic pure
-        val isAuthenticationAvailable = true // Assume available, UI will validate on toggle
+        // Check biometric availability using the injected helper.
+        val isAuthenticationAvailable = biometricAuthHelper.isBiometricAvailable()
 
         return SettingsScreen.State(
             isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
@@ -165,7 +169,7 @@ class SettingsPresenter(
                     navigator.pop()
                 }
                 SettingsScreen.Event.AccountClicked -> {
-                    navigator.goTo(ink.trmnl.android.buddy.ui.user.UserAccountScreen)
+                    navigator.goTo(UserAccountScreen)
                 }
                 is SettingsScreen.Event.BatteryTrackingToggled -> {
                     coroutineScope.launch {
@@ -214,7 +218,7 @@ class SettingsPresenter(
                     }
                 }
                 SettingsScreen.Event.DevelopmentClicked -> {
-                    navigator.goTo(ink.trmnl.android.buddy.dev.DevelopmentScreen)
+                    navigator.goTo(DevelopmentScreen)
                 }
             }
         }
@@ -523,15 +527,10 @@ private fun SecuritySection(
                             } else if (isSecurityEnabled) {
                                 "Require device authentication to access the dashboard with TRMNL images (fingerprint, face, PIN, pattern, or password)"
                             } else {
-                                "No authentication required. Enable to secure your dashboard with device authentication."
+                                "No authentication required to see TRMNL images in the dashboard. Enable to secure your dashboard with device authentication."
                             },
                         style = MaterialTheme.typography.bodySmall,
-                        color =
-                            if (!isAuthenticationAvailable) {
-                                MaterialTheme.colorScheme.error
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },
                 trailingContent = {
@@ -736,7 +735,7 @@ private fun LowBatteryNotificationSection(
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
                                 text = "$minThreshold%",

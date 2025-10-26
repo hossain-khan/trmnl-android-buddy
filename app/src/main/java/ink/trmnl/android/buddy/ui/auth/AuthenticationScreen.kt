@@ -79,6 +79,7 @@ class AuthenticationPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val userPreferencesRepository: UserPreferencesRepository,
+        private val biometricAuthHelper: BiometricAuthHelper,
     ) : Presenter<AuthenticationScreen.State> {
         @Composable
         override fun present(): AuthenticationScreen.State {
@@ -89,8 +90,7 @@ class AuthenticationPresenter
 
             // Check authentication availability
             LaunchedEffect(Unit) {
-                val biometricHelper = BiometricAuthHelper(context)
-                isAuthenticationAvailable = biometricHelper.isBiometricAvailable()
+                isAuthenticationAvailable = biometricAuthHelper.isBiometricAvailable()
             }
 
             return AuthenticationScreen.State(
@@ -100,8 +100,7 @@ class AuthenticationPresenter
                 when (event) {
                     is AuthenticationScreen.Event.AuthenticateRequested -> {
                         val activity = context as FragmentActivity
-                        val biometricHelper = BiometricAuthHelper(context)
-                        biometricHelper.authenticate(
+                        biometricAuthHelper.authenticate(
                             activity = activity,
                             title = "Authenticate to continue",
                             subtitle = "Unlock to access your TRMNL dashboard",

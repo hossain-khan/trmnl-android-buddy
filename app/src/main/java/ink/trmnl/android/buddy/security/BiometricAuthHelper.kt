@@ -5,22 +5,58 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.di.ApplicationContext
 
 /**
- * Helper class for biometric authentication operations.
+ * Interface for biometric authentication operations.
+ * Allows for easy testing with fake implementations.
+ */
+interface BiometricAuthHelper {
+    /**
+     * Check if biometric authentication (strong biometric or device credential) is available.
+     * @return true if any form of authentication is available, false otherwise
+     */
+    fun isBiometricAvailable(): Boolean
+
+    /**
+     * Show biometric authentication prompt.
+     * @param activity The activity to show the prompt in
+     * @param title Title for the biometric prompt
+     * @param subtitle Subtitle for the biometric prompt (optional)
+     * @param onSuccess Callback when authentication succeeds
+     * @param onError Callback when authentication fails or is cancelled
+     * @param onUserCancelled Callback when user explicitly cancels authentication
+     */
+    fun authenticate(
+        activity: FragmentActivity,
+        title: String,
+        subtitle: String = "",
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit,
+        onUserCancelled: () -> Unit = {},
+    )
+}
+
+/**
+ * Real implementation of BiometricAuthHelper for production use.
  * Follows Android best practices from:
  * - https://developer.android.com/identity/sign-in/biometric-auth
  * - https://medium.com/androiddevelopers/migrating-from-fingerprintmanager-to-biometricprompt-4bc5f570dccd
  */
-class BiometricAuthHelper(
-    private val context: Context,
-) {
+@Inject
+@ContributesBinding(AppScope::class)
+class BiometricAuthHelperImpl(
+    @ApplicationContext private val context: Context,
+) : BiometricAuthHelper {
     /**
      * Check if biometric authentication (strong biometric or device credential) is available.
      * This includes fingerprint, face unlock, and device PIN/pattern/password.
      * @return true if any form of authentication is available, false otherwise
      */
-    fun isBiometricAvailable(): Boolean {
+    override fun isBiometricAvailable(): Boolean {
         val biometricManager = BiometricManager.from(context)
         return when (biometricManager.canAuthenticate(AUTHENTICATORS)) {
             BiometricManager.BIOMETRIC_SUCCESS -> true
@@ -45,13 +81,13 @@ class BiometricAuthHelper(
      * @param onError Callback when authentication fails or is cancelled
      * @param onUserCancelled Callback when user explicitly cancels authentication
      */
-    fun authenticate(
+    override fun authenticate(
         activity: FragmentActivity,
         title: String,
-        subtitle: String = "",
+        subtitle: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit,
-        onUserCancelled: () -> Unit = {},
+        onUserCancelled: () -> Unit,
     ) {
         val executor = ContextCompat.getMainExecutor(context)
 
