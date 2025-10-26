@@ -950,20 +950,19 @@ private fun ContentCarousel(
                     // Display content carousel with auto-rotation
                     val pagerState = rememberPagerState(pageCount = { content.size })
 
-                    // Detect when user manually swipes to a different page
+                    // Detect when user manually swipes (drags) the pager
                     // This stops auto-rotation permanently once user demonstrates awareness of paging
-                    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
-                        // If pager is scrolling and user hasn't manually paged yet, check if it's user-initiated
-                        if (pagerState.isScrollInProgress && !hasUserManuallyPaged) {
-                            // Wait for scroll to finish
-                            snapshotFlow { pagerState.isScrollInProgress }
-                                .collect { isScrolling ->
-                                    if (!isScrolling) {
-                                        // Scroll finished - mark that user has manually paged
-                                        // This permanently disables auto-rotation
-                                        hasUserManuallyPaged = true
-                                    }
-                                }
+                    // Uses interactionSource to distinguish user drags from programmatic animateScrollToPage()
+                    LaunchedEffect(pagerState.interactionSource) {
+                        snapshotFlow {
+                            // True only when user is actively dragging the pager (not programmatic scroll)
+                            pagerState.currentPageOffsetFraction != 0f &&
+                                pagerState.isScrollInProgress
+                        }.collect { isUserDragging ->
+                            if (isUserDragging && !hasUserManuallyPaged) {
+                                // User has manually dragged the pager - permanently disable auto-rotation
+                                hasUserManuallyPaged = true
+                            }
                         }
                     }
 
