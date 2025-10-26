@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Code Organization**: Split `TrmnlDevicesScreen` UI components into separate files following Jetpack Compose best practices
+  - Created `DeviceCardComponents.kt` for device card related composables
+  - Created `ContentCarouselComponents.kt` for content carousel related composables  
+  - Created `DevicesListStates.kt` for state composables (LoadingState, ErrorState, EmptyState, DevicesList)
+  - Added `@PreviewLightDark` previews for all extracted composables
+  - Reduced main screen file from 2133 lines to 697 lines for better maintainability
+
 ## [2.1.0] - 2025-10-26
 
 ### ADDED
