@@ -36,6 +36,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Settings Screen Material You Compliance**: Fixed hardcoded divider colors to use Material 3 theme colors
+  - Changed `Color.Gray.copy(alpha = 0.3f)` to `MaterialTheme.colorScheme.outlineVariant`
+  - Dividers now properly adapt to light/dark theme and dynamic color theming
+  - Ensures proper contrast ratios and follows Material 3 design guidelines
 - Fixed MainActivity to extend FragmentActivity (required by BiometricPrompt API) instead of ComponentActivity
 - Fixed biometric authentication not showing due to incorrect activity type
 

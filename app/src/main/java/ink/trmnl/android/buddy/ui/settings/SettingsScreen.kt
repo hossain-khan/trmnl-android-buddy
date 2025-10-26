@@ -50,7 +50,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -407,7 +406,10 @@ private fun RssFeedContentSection(
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.surface),
                     ) {
-                        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f), modifier = Modifier.padding(horizontal = 16.dp))
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.outlineVariant,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                        )
                         ListItem(
                             headlineContent = {
                                 Text(
@@ -749,7 +751,10 @@ private fun LowBatteryNotificationSection(
                         ),
                 )
                 if (isEnabled) {
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = Color.Gray.copy(alpha = 0.3f))
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
                 }
                 AnimatedVisibility(
                     visible = isEnabled,
