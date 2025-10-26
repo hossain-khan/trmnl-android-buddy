@@ -36,7 +36,7 @@ class BlogPostSyncWorker(
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
-        Timber.Forest.d("BlogPostSyncWorker: Starting blog post sync")
+        Timber.d("BlogPostSyncWorker: Starting blog post sync")
 
         return try {
             // Get user preferences to check if notifications are enabled
@@ -53,7 +53,7 @@ class BlogPostSyncWorker(
                 val unreadCountAfter = blogPostRepository.getUnreadCount().first()
                 val newPostsCount = unreadCountAfter - unreadCountBefore
 
-                Timber.Forest.d("BlogPostSyncWorker: Sync successful. New posts: $newPostsCount")
+                Timber.d("BlogPostSyncWorker: Sync successful. New posts: $newPostsCount")
 
                 // Show notification if new posts were fetched AND user has notifications enabled
                 // OR if dev flag is enabled for testing
@@ -63,23 +63,23 @@ class BlogPostSyncWorker(
 
                 if (shouldShowNotification) {
                     if (AppDevConfig.ENABLE_BLOG_NOTIFICATION) {
-                        Timber.Forest.d("BlogPostSyncWorker: Dev flag enabled - showing blog post notification for testing")
+                        Timber.d("BlogPostSyncWorker: Dev flag enabled - showing blog post notification for testing")
                     }
                     NotificationHelper.showBlogPostNotification(applicationContext, newPostsCount)
                 } else if (newPostsCount > 0) {
-                    Timber.Forest.d("BlogPostSyncWorker: Notifications disabled, skipping notification")
+                    Timber.d("BlogPostSyncWorker: Notifications disabled, skipping notification")
                 }
 
                 Result.success()
             } else {
                 val error = result.exceptionOrNull()
-                Timber.Forest.e(error, "BlogPostSyncWorker: Failed to sync blog posts")
+                Timber.e(error, "BlogPostSyncWorker: Failed to sync blog posts")
 
                 // Retry on failure (WorkManager will use exponential backoff)
                 Result.retry()
             }
         } catch (e: Exception) {
-            Timber.Forest.e(e, "BlogPostSyncWorker: Unexpected error during sync")
+            Timber.e(e, "BlogPostSyncWorker: Unexpected error during sync")
             Result.retry()
         }
     }
