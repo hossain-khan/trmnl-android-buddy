@@ -3,7 +3,7 @@ package ink.trmnl.android.buddy.dev
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.notification.NotificationHelper
 import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
-import ink.trmnl.android.buddy.worker.BlogPostSyncWorker
+import ink.trmnl.android.buddy.work.BlogPostSyncWorker
 
 /**
  * Development configuration flags for testing and debugging.

@@ -1,4 +1,4 @@
-package ink.trmnl.android.buddy.worker
+package ink.trmnl.android.buddy.work
 
 import android.content.Context
 import androidx.work.CoroutineWorker
@@ -12,7 +12,7 @@ import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.dev.AppDevConfig
-import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
+import ink.trmnl.android.buddy.di.AppWorkerFactory
 import ink.trmnl.android.buddy.di.WorkerKey
 import ink.trmnl.android.buddy.notification.NotificationHelper
 import kotlinx.coroutines.flow.first
@@ -91,8 +91,8 @@ class BlogPostSyncWorker(
     @WorkerKey(BlogPostSyncWorker::class)
     @ContributesIntoMap(
         AppScope::class,
-        binding = binding<WorkerInstanceFactory<*>>(),
+        binding = binding<AppWorkerFactory.WorkerInstanceFactory<*>>(),
     )
     @AssistedFactory
-    abstract class Factory : WorkerInstanceFactory<BlogPostSyncWorker>
+    abstract class Factory : AppWorkerFactory.WorkerInstanceFactory<BlogPostSyncWorker>
 }
