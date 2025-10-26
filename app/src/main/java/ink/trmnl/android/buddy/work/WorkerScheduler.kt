@@ -176,7 +176,7 @@ class WorkerSchedulerImpl(
         Timber.d("Scheduling blog post sync worker (every 2 days, network required, idle, charging)")
 
         val blogPostWorkRequest =
-            PeriodicWorkRequestBuilder<ink.trmnl.android.buddy.worker.BlogPostSyncWorker>(
+            PeriodicWorkRequestBuilder<BlogPostSyncWorker>(
                 repeatInterval = 2,
                 repeatIntervalTimeUnit = TimeUnit.DAYS,
             ).setConstraints(

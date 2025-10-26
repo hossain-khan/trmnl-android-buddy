@@ -1,4 +1,4 @@
-package ink.trmnl.android.buddy.worker
+package ink.trmnl.android.buddy.work
 
 import android.content.Context
 import androidx.work.CoroutineWorker
@@ -12,7 +12,7 @@ import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.dev.AppDevConfig
-import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
+import ink.trmnl.android.buddy.di.AppWorkerFactory
 import ink.trmnl.android.buddy.di.WorkerKey
 import ink.trmnl.android.buddy.notification.NotificationHelper
 import kotlinx.coroutines.flow.first
@@ -36,7 +36,7 @@ class BlogPostSyncWorker(
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
-        Timber.d("BlogPostSyncWorker: Starting blog post sync")
+        Timber.Forest.d("BlogPostSyncWorker: Starting blog post sync")
 
         return try {
             // Get user preferences to check if notifications are enabled
@@ -53,7 +53,7 @@ class BlogPostSyncWorker(
                 val unreadCountAfter = blogPostRepository.getUnreadCount().first()
                 val newPostsCount = unreadCountAfter - unreadCountBefore
 
-                Timber.d("BlogPostSyncWorker: Sync successful. New posts: $newPostsCount")
+                Timber.Forest.d("BlogPostSyncWorker: Sync successful. New posts: $newPostsCount")
 
                 // Show notification if new posts were fetched AND user has notifications enabled
                 // OR if dev flag is enabled for testing
@@ -63,23 +63,23 @@ class BlogPostSyncWorker(
 
                 if (shouldShowNotification) {
                     if (AppDevConfig.ENABLE_BLOG_NOTIFICATION) {
-                        Timber.d("BlogPostSyncWorker: Dev flag enabled - showing blog post notification for testing")
+                        Timber.Forest.d("BlogPostSyncWorker: Dev flag enabled - showing blog post notification for testing")
                     }
                     NotificationHelper.showBlogPostNotification(applicationContext, newPostsCount)
                 } else if (newPostsCount > 0) {
-                    Timber.d("BlogPostSyncWorker: Notifications disabled, skipping notification")
+                    Timber.Forest.d("BlogPostSyncWorker: Notifications disabled, skipping notification")
                 }
 
                 Result.success()
             } else {
                 val error = result.exceptionOrNull()
-                Timber.e(error, "BlogPostSyncWorker: Failed to sync blog posts")
+                Timber.Forest.e(error, "BlogPostSyncWorker: Failed to sync blog posts")
 
                 // Retry on failure (WorkManager will use exponential backoff)
                 Result.retry()
             }
         } catch (e: Exception) {
-            Timber.e(e, "BlogPostSyncWorker: Unexpected error during sync")
+            Timber.Forest.e(e, "BlogPostSyncWorker: Unexpected error during sync")
             Result.retry()
         }
     }
@@ -91,8 +91,8 @@ class BlogPostSyncWorker(
     @WorkerKey(BlogPostSyncWorker::class)
     @ContributesIntoMap(
         AppScope::class,
-        binding = binding<WorkerInstanceFactory<*>>(),
+        binding = binding<AppWorkerFactory.WorkerInstanceFactory<*>>(),
     )
     @AssistedFactory
-    abstract class Factory : WorkerInstanceFactory<BlogPostSyncWorker>
+    abstract class Factory : AppWorkerFactory.WorkerInstanceFactory<BlogPostSyncWorker>
 }

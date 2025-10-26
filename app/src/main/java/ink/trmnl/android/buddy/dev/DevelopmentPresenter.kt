@@ -29,8 +29,8 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.dev.DevelopmentScreen.Event
 import ink.trmnl.android.buddy.notification.NotificationHelper
 import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
+import ink.trmnl.android.buddy.work.BlogPostSyncWorker
 import ink.trmnl.android.buddy.work.LowBatteryNotificationWorker
-import ink.trmnl.android.buddy.worker.BlogPostSyncWorker
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
