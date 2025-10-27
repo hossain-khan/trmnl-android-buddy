@@ -7,14 +7,14 @@
 
 ## 📊 Executive Summary
 
-TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-ink displays. The project has seen intensive development over a 25-day period with **559 total commits**, **103.48 hours** of estimated development time, and a clean, modern codebase built with Kotlin and Jetpack Compose.
+TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-ink displays. The project has seen intensive development over a 25-day period with **559 total commits**, **63.20 hours** of estimated development time, and a clean, modern codebase built with Kotlin and Jetpack Compose.
 
 ### Key Metrics
 - **Total Commits**: 559
-- **Total Development Time**: ~103.5 hours
+- **Total Development Time**: ~63.2 hours
 - **Active Days**: 16 out of 25 days (64%)
-- **Development Sessions**: 26 sessions
-- **Average Session Duration**: 3.98 hours
+- **Development Sessions**: 39 sessions
+- **Average Session Duration**: 1.62 hours
 - **Contributors**: 2 (1 human developer + 1 AI assistant)
 
 ---
@@ -25,38 +25,40 @@ TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-i
 
 Time estimation is based on git commit timestamp analysis with the following assumptions:
 
-1. **Session Gap Threshold**: 3 hours
-   - If time between commits ≤ 3 hours → same work session (accumulate time)
-   - If time between commits > 3 hours → new work session (previous session ended)
+1. **Session Gap Threshold**: 1 hour
+   - If time between commits ≤ 1 hour → same work session (accumulate time)
+   - If time between commits > 1 hour → new work session (previous session ended)
 2. **Session Duration**: Time from first commit to last commit in a continuous session
-3. **Idle Time**: Not counted (gaps > 3 hours are considered breaks/offline)
+3. **Idle Time**: Not counted (gaps > 1 hour are considered breaks/offline)
 
-This heuristic provides a conservative estimate of active development time, likely underestimating actual time spent on tasks like research, planning, testing, and UI design.
+This heuristic provides a realistic estimate of focused development time. The 1-hour threshold better captures actual coding sessions, as gaps longer than 1 hour typically indicate breaks, context switching, research, or other non-coding activities.
+
+> **Note**: A reusable Python script for calculating development time with configurable thresholds is available at `docs/calculate_dev_time.py`.
 
 ### Development Time Breakdown
 
 | Metric | Value |
 |--------|-------|
-| Total Development Time | **103.48 hours** |
-| Total Sessions | 26 |
-| Average Session Duration | 3.98 hours |
-| Longest Session | 19.38 hours (Oct 24) |
-| Shortest Session | 0.01 hours (Oct 6) |
+| Total Development Time | **63.20 hours** |
+| Total Sessions | 39 |
+| Average Session Duration | 1.62 hours |
+| Longest Session | 6.69 hours (Oct 2) |
+| Shortest Session | 0.01 hours |
 
 ### Top 10 Longest Development Sessions
 
 | Rank | Date | Duration | Time Range | Commits |
 |------|------|----------|------------|---------|
-| 1 | Oct 24, 2025 | 19.38 hrs | 07:00 - 02:22 | 93 |
-| 2 | Oct 2, 2025 | 12.63 hrs | 11:21 - 23:59 | 14 |
-| 3 | Oct 26, 2025 | 9.49 hrs | 08:35 - 18:05 | 19 |
-| 4 | Oct 23, 2025 | 8.87 hrs | 17:35 - 02:27 | 57 |
-| 5 | Oct 22, 2025 | 7.53 hrs | 19:37 - 03:09 | 38 |
-| 6 | Oct 3, 2025 | 5.55 hrs | 07:42 - 13:15 | 34 |
-| 7 | Oct 3, 2025 | 5.20 hrs | 18:33 - 23:45 | 35 |
-| 8 | Oct 25, 2025 | 4.65 hrs | 18:33 - 23:12 | 44 |
-| 9 | Oct 4, 2025 | 4.35 hrs | 06:58 - 11:19 | 24 |
-| 10 | Oct 25, 2025 | 4.27 hrs | 07:50 - 12:06 | 41 |
+| 1 | Oct 2, 2025 | 6.69 hrs | 17:18 - 23:59 | 53 |
+| 2 | Oct 24, 2025 | 5.21 hrs | 17:10 - 22:22 | 57 |
+| 3 | Oct 24, 2025 | 4.75 hrs | 09:38 - 14:24 | 31 |
+| 4 | Oct 25, 2025 | 4.65 hrs | 18:33 - 23:12 | 31 |
+| 5 | Oct 25, 2025 | 4.27 hrs | 07:50 - 12:06 | 36 |
+| 6 | Oct 23, 2025 | 4.27 hrs | 19:29 - 23:45 | 32 |
+| 7 | Oct 3, 2025 | 3.40 hrs | 09:51 - 13:15 | 31 |
+| 8 | Oct 23, 2025 | 3.12 hrs | 22:04 - 01:12 | 37 |
+| 9 | Oct 21, 2025 | 2.35 hrs | 16:10 - 18:31 | 18 |
+| 10 | Oct 3, 2025 | 2.30 hrs | 21:27 - 23:45 | 24 |
 
 ### Daily Activity Distribution
 
