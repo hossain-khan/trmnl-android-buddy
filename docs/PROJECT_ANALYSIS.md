@@ -232,36 +232,58 @@ timeline
                 : Metro DI integration
                 : API client setup
                 : Basic UI screens
+                : 🚀 v1.0.0 - Initial release
+                : 🚀 v1.0.1 - Bug fixes
+                : 🚀 v1.0.2 - Privacy toggle
+                : 🚀 v1.0.3 - UI enhancements
     
-    Oct 4-5, 2025 : Feature Development
-                  : Device monitoring
-                  : Battery tracking
+    Oct 4, 2025 : Feature Development (24 commits)
+                : Device monitoring
+                : Battery tracking
+                : 🚀 v1.0.4 - Code quality
     
     Oct 8, 2025 : API Integration (8 commits)
                 : TRMNL API endpoints
                 : Device repository
+                : 🚀 v1.0.5 - Refresh rate indicator
     
-    Oct 16-21, 2025 : Content Features
-                    : RSS feed parser
-                    : Content carousel
-                    : Announcements
-                    : Blog posts
+    Oct 20, 2025 : Settings & UX (18 commits)
+                 : Settings screen enhancements
+                 : Battery management
+                 : 🚀 v1.0.6 - Settings improvements
     
-    Oct 22-23, 2025 : Feed Optimization (95 commits)
-                    : Combined content feed
-                    : Content repository
-                    : Database entities
+    Oct 21, 2025 : Branding & CI/CD (34 commits)
+                 : TRMNL branding
+                 : Typography enhancements
+                 : AAB support
+                 : 🚀 v1.1.0 - AAB & CI/CD
+                 : 🚀 v1.2.0 - Branding updates
+    
+    Oct 22, 2025 : Feed Architecture (38 commits)
+                 : Content repository
+                 : Button UX improvements
+                 : 🚀 v1.3.0 - Button UX
+                 : 🚀 v1.4.0 - UI improvements
+    
+    Oct 23, 2025 : Content & Notifications (57 commits)
+                 : RSS feed integration
+                 : Low battery alerts
+                 : Dependency updates
+                 : 🚀 v1.5.0 - Battery notifications
+                 : 🚀 v1.6.0 - Dependencies
+                 : 🚀 v1.7.0 - Refresh & User Agent
     
     Oct 24, 2025 : Security Sprint (93 commits)
                  : Biometric authentication
                  : Security settings
                  : Battery history charts
     
-    Oct 25, 2025 : Release Preparation (85 commits)
+    Oct 25, 2025 : Major Releases (85 commits)
                  : Material You fixes
-                 : Notification permissions
-                 : Carousel auto-rotation
-                 : v2.1.0 release
+                 : Content carousel
+                 : Background sync optimization
+                 : 🚀 v2.0.0 - Major feature release
+                 : 🚀 v2.1.0 - Security & UI enhancements
     
     Oct 26, 2025 : Documentation (19 commits)
                  : README updates
