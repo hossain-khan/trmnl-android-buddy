@@ -530,6 +530,12 @@
         <div class="card">
             <h2>🎯 Development Milestones</h2>
             
+            <h3>Development Timeline</h3>
+            <div class="chart-container" style="height: 600px;">
+                <canvas id="timelineChart"></canvas>
+            </div>
+
+            <h3>Version History</h3>
             <table>
                 <thead>
                     <tr>
@@ -541,7 +547,7 @@
                 <tbody>
                     <tr>
                         <td><strong>v2.1.0</strong></td>
-                        <td>Oct 26, 2025</td>
+                        <td>Oct 25, 2025</td>
                         <td>Security (biometric auth), Settings UI improvements, Material You compliance</td>
                     </tr>
                     <tr>
@@ -551,23 +557,73 @@
                     </tr>
                     <tr>
                         <td><strong>v1.7.0</strong></td>
-                        <td>Oct 24, 2025</td>
-                        <td>Battery history tracking with charts</td>
+                        <td>Oct 23, 2025</td>
+                        <td>Refresh & User Agent improvements</td>
                     </tr>
                     <tr>
                         <td><strong>v1.6.0</strong></td>
                         <td>Oct 23, 2025</td>
-                        <td>RSS feed content integration</td>
+                        <td>Dependency updates</td>
                     </tr>
                     <tr>
                         <td><strong>v1.5.0</strong></td>
-                        <td>Oct 22, 2025</td>
-                        <td>Content feed repository architecture</td>
+                        <td>Oct 23, 2025</td>
+                        <td>Low battery notifications + Critical crash fix</td>
                     </tr>
                     <tr>
-                        <td><strong>Earlier</strong></td>
-                        <td>Oct 2-21, 2025</td>
-                        <td>Foundation, API integration, core features</td>
+                        <td><strong>v1.4.0</strong></td>
+                        <td>Oct 22, 2025</td>
+                        <td>UI improvements and bug fixes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.3.0</strong></td>
+                        <td>Oct 22, 2025</td>
+                        <td>Button UX improvements</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.2.0</strong></td>
+                        <td>Oct 21, 2025</td>
+                        <td>TRMNL branding and typography enhancements</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.1.0</strong></td>
+                        <td>Oct 21, 2025</td>
+                        <td>AAB support and CI/CD improvements</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.0.6</strong></td>
+                        <td>Oct 20, 2025</td>
+                        <td>Settings screen enhancements & Battery management</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.0.5</strong></td>
+                        <td>Oct 8, 2025</td>
+                        <td>Refresh rate indicator & Utilities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.0.4</strong></td>
+                        <td>Oct 4, 2025</td>
+                        <td>Code quality improvements</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.0.3</strong></td>
+                        <td>Oct 3, 2025</td>
+                        <td>UI enhancements</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.0.2</strong></td>
+                        <td>Oct 3, 2025</td>
+                        <td>Privacy toggle feature</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.0.1</strong></td>
+                        <td>Oct 3, 2025</td>
+                        <td>Bug fixes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>v1.0.0</strong></td>
+                        <td>Oct 3, 2025</td>
+                        <td>Initial release with device listing and display preview</td>
                     </tr>
                 </tbody>
             </table>
@@ -669,6 +725,166 @@
     </div>
 
     <script>
+        // Timeline Chart (Horizontal Bar Chart showing development phases and releases)
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        new Chart(timelineCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    '🚀 v2.1.0 Release',
+                    '🚀 v2.0.0 Release',
+                    'Oct 25: Major Releases (85 commits)',
+                    'Oct 24: Security Sprint (93 commits)',
+                    '🚀 v1.7.0 Release',
+                    '🚀 v1.6.0 Release',
+                    '🚀 v1.5.0 Release',
+                    'Oct 23: Content & Notifications (57 commits)',
+                    '🚀 v1.4.0 Release',
+                    '🚀 v1.3.0 Release',
+                    'Oct 22: Feed Architecture (38 commits)',
+                    '🚀 v1.2.0 Release',
+                    '🚀 v1.1.0 Release',
+                    'Oct 21: Branding & CI/CD (34 commits)',
+                    '🚀 v1.0.6 Release',
+                    'Oct 20: Settings & UX (18 commits)',
+                    '🚀 v1.0.5 Release',
+                    'Oct 8: API Integration (8 commits)',
+                    '🚀 v1.0.4 Release',
+                    'Oct 4: Feature Development (24 commits)',
+                    '🚀 v1.0.3 Release',
+                    '🚀 v1.0.2 Release',
+                    '🚀 v1.0.1 Release',
+                    '🚀 v1.0.0 Release',
+                    'Oct 3: Core Architecture (69 commits)',
+                    'Oct 2: Project Initialization (14 commits)'
+                ],
+                datasets: [{
+                    label: 'Day in October',
+                    data: [25, 25, 25, 24, 23, 23, 23, 23, 22, 22, 22, 21, 21, 21, 20, 20, 8, 8, 4, 4, 3, 3, 3, 3, 3, 2],
+                    backgroundColor: [
+                        // Releases in gradient purple
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        // Development phases in blue
+                        'rgba(37, 99, 235, 0.7)',
+                        'rgba(37, 99, 235, 0.7)',
+                        // Releases
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        // Development
+                        'rgba(37, 99, 235, 0.7)',
+                        // Releases
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        // Development
+                        'rgba(37, 99, 235, 0.7)',
+                        // Releases
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        // Development
+                        'rgba(37, 99, 235, 0.7)',
+                        // Release
+                        'rgba(168, 85, 247, 0.9)',
+                        // Development
+                        'rgba(37, 99, 235, 0.7)',
+                        // Release
+                        'rgba(168, 85, 247, 0.9)',
+                        // Development
+                        'rgba(37, 99, 235, 0.7)',
+                        // Release
+                        'rgba(168, 85, 247, 0.9)',
+                        // Development
+                        'rgba(37, 99, 235, 0.7)',
+                        // Releases
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        // Development
+                        'rgba(37, 99, 235, 0.7)',
+                        'rgba(37, 99, 235, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(37, 99, 235, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'TRMNL Android Buddy Development Timeline (Oct 2-25, 2025)',
+                        font: { size: 16, weight: 'bold' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label;
+                                if (label.includes('🚀')) {
+                                    return 'Release: ' + label.replace('🚀 ', '');
+                                } else {
+                                    return 'Development Phase: ' + label;
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Day in October 2025'
+                        },
+                        min: 0,
+                        max: 27,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
         // Daily Commits Chart
         const dailyCommitsCtx = document.getElementById('dailyCommitsChart').getContext('2d');
         new Chart(dailyCommitsCtx, {
