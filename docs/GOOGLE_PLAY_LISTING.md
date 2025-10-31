@@ -24,6 +24,8 @@ Monitor TRMNL displays, track battery, get news & blog updates - all in one app
 
 **TRMNL Android Buddy** is the essential companion app for managing your TRMNL e-ink display devices. Monitor device health, track battery life, stay updated with TRMNL announcements and blog posts, and manage your displays—all from your Android phone.
 
+> ⚠️ **Note:** TRMNL Buddy currently *requires* TRMNL API keys. At least one device in your TRMNL account must have a developer edition or BYOD license to enable User API Keys.
+
 **📰 STAY INFORMED**
 • Unified content feed with announcements and blog posts
 • Auto-rotating carousel showing latest updates
@@ -109,7 +111,7 @@ Monitor TRMNL displays, track battery, get news & blog updates - all in one app
 
 **📱 REQUIREMENTS**
 • Android 9.0 (API 28) or higher
-• TRMNL account with API key
+• TRMNL account with API key (developer edition or BYOD license)
 • Internet connection for device data sync
 
 **🔗 USEFUL LINKS**
@@ -124,6 +126,8 @@ Perfect for TRMNL device owners who want to keep their e-ink displays running sm
 
 ```
 TRMNL Android Buddy is the essential companion app for managing your TRMNL e-ink display devices. Monitor device health, track battery life, stay updated with TRMNL announcements and blog posts, and manage your displays—all from your Android phone.
+
+⚠️ Note: TRMNL Buddy currently *requires* TRMNL API keys. At least one device in your TRMNL account must have a developer edition or BYOD license to enable User API Keys.
 
 📰 STAY INFORMED
 • Unified content feed with announcements and blog posts
@@ -173,7 +177,7 @@ TRMNL Android Buddy is the essential companion app for managing your TRMNL e-ink
 
 📱 REQUIREMENTS
 • Android 9.0 (API 28) or higher
-• TRMNL account with API key
+• TRMNL account with API key (developer edition or BYOD license)
 • Internet connection for device data sync
 
 🔗 USEFUL LINKS
