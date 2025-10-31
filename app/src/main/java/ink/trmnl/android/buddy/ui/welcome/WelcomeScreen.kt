@@ -64,6 +64,7 @@ import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
+import ink.trmnl.android.buddy.ui.auth.AuthenticationScreen
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
@@ -192,9 +193,9 @@ class WelcomePresenter
                             navigator.goTo(AccessTokenScreen)
                         } else {
                             // Check if security is enabled
-                            if (prefs != null && prefs.isSecurityEnabled) {
+                            if (prefs.isSecurityEnabled) {
                                 // Navigate to authentication screen
-                                navigator.resetRoot(ink.trmnl.android.buddy.ui.auth.AuthenticationScreen)
+                                navigator.resetRoot(AuthenticationScreen)
                             } else {
                                 // Navigate to devices list screen (resetRoot to prevent back navigation)
                                 navigator.resetRoot(TrmnlDevicesScreen)
