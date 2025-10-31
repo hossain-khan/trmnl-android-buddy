@@ -1,13 +1,22 @@
 package ink.trmnl.android.buddy.ui.accesstoken
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -19,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -34,6 +44,7 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -197,14 +208,15 @@ fun AccessTokenContent(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(24.dp),
+                    .padding(24.dp)
+                    .animateContentSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             InstructionsSection()
 
             HelpLinksSection()
 
-            Spacer(modifier = Modifier.height(8.dp))
+            ApiKeyRequirementsBanner()
 
             TokenInputField(
                 token = state.token,
@@ -250,6 +262,71 @@ private fun InstructionsSection(modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+/**
+ * Closeable banner with API key requirement note.
+ * See: https://discord.com/channels/1281055965508141100/1430384605546025073/1433867320089903264
+ */
+@Composable
+private fun ApiKeyRequirementsBanner(modifier: Modifier = Modifier) {
+    var visible by rememberRetained { mutableStateOf(true) }
+
+    AnimatedVisibility(
+        visible = visible,
+        modifier = modifier,
+        enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
+        exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            tonalElevation = 2.dp,
+            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.primaryContainer,
+        ) {
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.info_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Text(
+                    text =
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Note:")
+                            }
+                            append(" At least one device in your TRMNL account ")
+                            withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
+                                append("must have")
+                            }
+                            append(" a developer edition or BYOD license to enable User API Keys.")
+                        },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.weight(1f),
+                )
+
+                IconButton(onClick = { visible = false }) {
+                    Icon(
+                        painter = painterResource(R.drawable.close_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                        contentDescription = "Close banner",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+            }
+        }
     }
 }
 

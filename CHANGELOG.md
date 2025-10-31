@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Access Token Screen Enhancement**: Added informational banner about API key requirements
+  - Closeable banner with smooth slide-up animation when dismissed
+  - Banner explains that at least one device must have a developer edition or BYOD license to enable User API Keys
+  - Material You design with primaryContainer color scheme
+  - Smooth layout animations when banner is shown/hidden using `animateContentSize()`
+  - Info icon and close button for better UX
 - **Product Requirements Document (PRD)**: Comprehensive PRD created in `docs/PRD.md`
   - Complete documentation of all features and requirements currently available in the app
   - Covers all 13 UI screens, 4 background workers, 2 databases, and API integration
