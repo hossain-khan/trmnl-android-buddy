@@ -74,6 +74,15 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                         ListItemDefaults.colors(
                             containerColor = MaterialTheme.colorScheme.surface,
                         ),
+                    modifier =
+                        Modifier.clickable {
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    "https://github.com/hossain-khan/trmnl-android-buddy/releases/".toUri(),
+                                )
+                            context.startActivity(intent)
+                        },
                 )
 
                 ListItem(

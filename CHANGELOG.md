@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Settings Screen**: Version text now links to GitHub releases page when tapped
+  - Users can tap on the version information to view all releases at https://github.com/hossain-khan/trmnl-android-buddy/releases/
+  - Provides quick access to release notes and changelogs
+
 ## [2.2.1] - 2025-11-01
 
 ### Fixed
