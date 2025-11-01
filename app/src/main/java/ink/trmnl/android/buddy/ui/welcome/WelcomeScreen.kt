@@ -295,7 +295,7 @@ fun WelcomeContent(
                     enabled = !state.isLoading,
                 ) {
                     Text(
-                        text = "Get Started",
+                        text = if (state.hasExistingToken) "Open Dashboard" else "Get Started",
                         style = MaterialTheme.typography.titleMedium,
                     )
                 }
