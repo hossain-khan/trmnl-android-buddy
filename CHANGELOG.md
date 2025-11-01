@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Content Carousel Blog Posts**: Fixed carousel not showing blog posts when only announcements were recent
+  - Added `ContentFeedRepository.getLatestUnreadContent()` to fetch only unread content from both sources
+  - Carousel now displays the 3 most recent unread items regardless of content type (announcements or blog posts)
+  - Previously, carousel would show only announcements if they were more recent, even when unread blog posts existed
+  - More efficient: filtering happens at DAO level (SQL) instead of in-memory
+
 ### Removed
 
 - Deleted unused `AnnouncementCarousel.kt` from `ui/home` package - orphaned code from before v2.0.0 when `ContentCarousel` was introduced to support combined announcements and blog posts

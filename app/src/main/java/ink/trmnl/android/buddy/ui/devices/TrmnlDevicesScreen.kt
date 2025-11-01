@@ -164,9 +164,10 @@ class TrmnlDevicesPresenter
                 }
             }
 
-            // Collect latest content (announcements + blog posts) from combined feed
+            // Collect latest unread content (announcements + blog posts) from combined feed
+            // Using getLatestUnreadContent() ensures we only get unread items, which is what the carousel displays
             LaunchedEffect(Unit) {
-                contentFeedRepository.getLatestContent(limit = 3).collect { content ->
+                contentFeedRepository.getLatestUnreadContent(limit = 3).collect { content ->
                     latestContent = content
                     isContentLoading = false
                 }
