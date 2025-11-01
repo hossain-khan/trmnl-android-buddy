@@ -24,6 +24,7 @@ import androidx.core.net.toUri
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import timber.log.Timber
 
 /**
  * App information section showing version and links to GitHub.
@@ -65,7 +66,7 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                     leadingContent = {
                         Icon(
                             painter = painterResource(R.drawable.deviceinfo_thin_outline),
-                            contentDescription = "GitHub",
+                            contentDescription = "Version information",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(32.dp),
                         )
@@ -74,6 +75,19 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                         ListItemDefaults.colors(
                             containerColor = MaterialTheme.colorScheme.surface,
                         ),
+                    modifier =
+                        Modifier.clickable {
+                            try {
+                                val intent =
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        "https://github.com/hossain-khan/trmnl-android-buddy/releases/".toUri(),
+                                    )
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                Timber.e(e, "Failed to open releases page")
+                            }
+                        },
                 )
 
                 ListItem(
@@ -104,12 +118,16 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                         ),
                     modifier =
                         Modifier.clickable {
-                            val intent =
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    "https://github.com/hossain-khan/trmnl-android-buddy".toUri(),
-                                )
-                            context.startActivity(intent)
+                            try {
+                                val intent =
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        "https://github.com/hossain-khan/trmnl-android-buddy".toUri(),
+                                    )
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                Timber.e(e, "Failed to open GitHub repository")
+                            }
                         },
                 )
             }
