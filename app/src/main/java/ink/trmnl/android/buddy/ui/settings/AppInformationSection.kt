@@ -122,7 +122,7 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                                 val intent =
                                     Intent(
                                         Intent.ACTION_VIEW,
-                                        "https://github.com/hossain-khan/trmnl-android-buddy".toUri(),
+                                        "https://github.com/hossain-khan/trmnl-android-buddy/issues".toUri(),
                                     )
                                 context.startActivity(intent)
                             } catch (e: Exception) {
