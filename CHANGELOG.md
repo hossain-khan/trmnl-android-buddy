@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Device Preview Image Refresh**: Thumbnail in device list now updates when preview image is refreshed
+  - Fixed issue where refreshing image in `DevicePreviewScreen` didn't update the thumbnail in `TrmnlDevicesScreen`
+  - Implemented Circuit's `PopResult` pattern to communicate image URL changes between screens
+  - Parent screen now receives and handles result from child screen to update thumbnail state
+  - Ensures visual consistency between preview and list views
 - **Content Carousel Size Transitions**: Smoothly animate carousel height changes when switching between different-sized content
   - Added `animateContentSize()` modifier with 300ms animation to the carousel container
   - Prevents jarring visual jumps when transitioning between announcements (shorter) and blog posts (longer)

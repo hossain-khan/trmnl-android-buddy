@@ -39,6 +39,7 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.sharedelements.SharedElementTransitionScope
 import com.slack.circuit.sharedelements.SharedElementTransitionScope.AnimatedScope.Navigation
@@ -66,6 +67,16 @@ data class DevicePreviewScreen(
     val deviceName: String,
     val imageUrl: String,
 ) : Screen {
+    /**
+     * Result returned when the preview screen is popped.
+     * Contains the device ID and new image URL if the preview was refreshed.
+     */
+    @Parcelize
+    data class Result(
+        val deviceId: String,
+        val newImageUrl: String?,
+    ) : PopResult
+
     data class State(
         val deviceId: String,
         val deviceName: String,
@@ -154,7 +165,15 @@ class DevicePreviewPresenter
                 refreshState = refreshState,
             ) { event ->
                 when (event) {
-                    DevicePreviewScreen.Event.BackClicked -> navigator.pop()
+                    DevicePreviewScreen.Event.BackClicked -> {
+                        // Return the device ID and new image URL if it changed during this session
+                        val result =
+                            DevicePreviewScreen.Result(
+                                deviceId = screen.deviceId,
+                                newImageUrl = if (currentImageUrl != screen.imageUrl) currentImageUrl else null,
+                            )
+                        navigator.pop(result)
+                    }
                     DevicePreviewScreen.Event.DownloadImageClicked -> {
                         if (downloadState !is DevicePreviewScreen.DownloadState.Downloading) {
                             downloadState = DevicePreviewScreen.DownloadState.Downloading
