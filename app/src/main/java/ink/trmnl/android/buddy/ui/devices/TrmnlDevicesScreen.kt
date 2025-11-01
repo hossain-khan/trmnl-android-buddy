@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.foundation.rememberAnsweringNavigator
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -152,6 +153,21 @@ class TrmnlDevicesPresenter
             var isContentLoading by rememberRetained { mutableStateOf(true) }
             var isRssFeedContentEnabled by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
+
+            // Create answering navigator for device preview to receive updated image URLs
+            val previewNavigator =
+                rememberAnsweringNavigator<DevicePreviewScreen.Result>(navigator) { result ->
+                    result.newImageUrl?.let { newUrl ->
+                        // Update the device preview with the new image URL
+                        devicePreviews =
+                            devicePreviews.toMutableMap().apply {
+                                val existingPreview = get(result.deviceId)
+                                existingPreview?.let { preview ->
+                                    put(result.deviceId, preview.copy(imageUrl = newUrl))
+                                }
+                            }
+                    }
+                }
 
             // Capture theme colors for Custom Tabs
             val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
@@ -346,7 +362,7 @@ class TrmnlDevicesPresenter
                     }
 
                     is TrmnlDevicesScreen.Event.DevicePreviewClicked -> {
-                        navigator.goTo(
+                        previewNavigator.goTo(
                             DevicePreviewScreen(
                                 deviceId = event.device.friendlyId,
                                 deviceName = event.device.name,
