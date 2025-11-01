@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Deleted unused `AnnouncementCarousel.kt` from `ui/home` package - orphaned code from before v2.0.0 when `ContentCarousel` was introduced to support combined announcements and blog posts
+
 ## [2.2.0] - 2025-10-31
 
 ### Added
