@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Users can tap on the version information to view all releases at https://github.com/hossain-khan/trmnl-android-buddy/releases/
   - Provides quick access to release notes and changelogs
 
+### Fixed
+
+- **Content Carousel Size Transitions**: Smoothly animate carousel height changes when switching between different-sized content
+  - Added `animateContentSize()` modifier with 300ms animation to the carousel container
+  - Prevents jarring visual jumps when transitioning between announcements (shorter) and blog posts (longer)
+  - Creates a fluid, polished user experience when content auto-rotates or user manually swipes
+
 ## [2.2.1] - 2025-11-01
 
 ### Fixed
