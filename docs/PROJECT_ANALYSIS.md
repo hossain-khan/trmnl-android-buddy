@@ -1,21 +1,22 @@
 # TRMNL Android Buddy - Project Analysis
 
-**Analysis Date**: October 26, 2025  
-**Analysis Period**: October 2, 2025 - October 26, 2025 (25 days)
+**Analysis Date**: November 1, 2025  
+**Analysis Period**: October 2, 2025 - November 1, 2025 (31 days)
 
 ---
 
 ## 📊 Executive Summary
 
-TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-ink displays. The project has seen intensive development over a 25-day period with **559 total commits**, **63.20 hours** of estimated development time, and a clean, modern codebase built with Kotlin and Jetpack Compose.
+TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-ink displays. The project has seen intensive development over a 31-day period with **593 total commits**, **67.15 hours** of estimated development time, and a clean, modern codebase built with Kotlin and Jetpack Compose.
 
 ### Key Metrics
-- **Total Commits**: 559
-- **Total Development Time**: ~63.2 hours
-- **Active Days**: 16 out of 25 days (64%)
-- **Development Sessions**: 39 sessions
-- **Average Session Duration**: 1.62 hours
+- **Total Commits**: 593
+- **Total Development Time**: ~67.15 hours
+- **Active Days**: 18 out of 31 days (58%)
+- **Development Sessions**: 43 sessions
+- **Average Session Duration**: 1.56 hours
 - **Contributors**: 2 (1 human developer + 1 AI assistant)
+- **Current Version**: 2.2.1 (versionCode 18)
 
 ---
 
@@ -39,9 +40,9 @@ This heuristic provides a realistic estimate of focused development time. The 1-
 
 | Metric | Value |
 |--------|-------|
-| Total Development Time | **63.20 hours** |
-| Total Sessions | 39 |
-| Average Session Duration | 1.62 hours |
+| Total Development Time | **67.15 hours** |
+| Total Sessions | 43 |
+| Average Session Duration | 1.56 hours |
 | Longest Session | 6.69 hours (Oct 2) |
 | Shortest Session | 0.01 hours |
 
@@ -123,42 +124,44 @@ Generated using `cloc` (Count Lines of Code):
 
 | Language | Files | Blank Lines | Comments | Code | Total Lines |
 |----------|-------|-------------|----------|------|-------------|
-| **Kotlin** | 102 | 1,770 | 2,956 | 15,565 | 20,291 |
-| **Markdown** | 15 | 1,163 | 0 | 4,720 | 5,883 |
-| **XML** | 123 | 171 | 53 | 3,295 | 3,519 |
+| **Kotlin** | 101 | 1,752 | 2,926 | 15,352 | 20,030 |
+| **Markdown** | 16 | 1,276 | 0 | 5,115 | 6,391 |
+| **XML** | 104 | 171 | 53 | 1,699 | 1,923 |
 | **YAML** | 5 | 103 | 66 | 1,394 | 1,563 |
+| **HTML** | 1 | 72 | 9 | 1,046 | 1,127 |
 | **JSON** | 6 | 0 | 0 | 792 | 792 |
 | **Gradle** | 5 | 63 | 61 | 267 | 391 |
 | **SVG** | 13 | 0 | 1 | 145 | 146 |
+| **Python** | 1 | 34 | 30 | 107 | 171 |
 | **Other** | 13 | 108 | 257 | 336 | 701 |
-| **TOTAL** | **282** | **3,378** | **3,394** | **26,514** | **33,286** |
+| **TOTAL** | **265** | **3,579** | **3,403** | **26,253** | **33,235** |
 
 ### Code Quality Metrics
 
-- **Comment Density**: 12.8% (3,394 comments / 26,514 code lines)
-- **Kotlin Focus**: 58.7% of total code (15,565 / 26,514)
-- **Documentation**: Extensive with 4,720 lines of Markdown
-- **XML Resources**: 123 files for Android UI/resources
+- **Comment Density**: 13.0% (3,403 comments / 26,253 code lines)
+- **Kotlin Focus**: 58.5% of total code (15,352 / 26,253)
+- **Documentation**: Extensive with 5,115 lines of Markdown
+- **XML Resources**: 104 files for Android UI/resources
 
 ### File Type Distribution
 
 ```mermaid
 pie title Project Files by Type
-    "Kotlin (102)" : 36.2
-    "XML (123)" : 43.6
-    "Markdown (15)" : 5.3
-    "SVG (13)" : 4.6
-    "JSON (6)" : 2.1
-    "YAML (5)" : 1.8
-    "Gradle (5)" : 1.8
-    "Other (13)" : 4.6
+    "Kotlin (101)" : 38.1
+    "XML (104)" : 39.2
+    "Markdown (16)" : 6.0
+    "SVG (13)" : 4.9
+    "JSON (6)" : 2.3
+    "YAML (5)" : 1.9
+    "Gradle (5)" : 1.9
+    "Other (15)" : 5.7
 ```
 
 ### Key Directories
 
 ```
 trmnl-android-buddy/
-├── app/                          # Main Android application (102 .kt files)
+├── app/                          # Main Android application (101 .kt files)
 │   ├── src/main/                 # Production code
 │   │   ├── java/ink/trmnl/android/buddy/
 │   │   │   ├── ui/               # Jetpack Compose UI screens
@@ -167,7 +170,7 @@ trmnl-android-buddy/
 │   │   │   ├── security/         # Biometric authentication
 │   │   │   ├── util/             # Utility functions
 │   │   │   └── work/             # Background workers
-│   │   └── res/                  # Android resources (123 XML files)
+│   │   └── res/                  # Android resources (104 XML files)
 │   └── src/test/                 # Unit tests (14 .kt test files)
 ├── api/                          # TRMNL API integration module
 │   └── src/
@@ -177,7 +180,7 @@ trmnl-android-buddy/
 │   └── src/
 │       ├── main/                 # Content repositories, DAOs
 │       └── test/                 # Content module tests
-├── docs/                         # Project documentation (Markdown)
+├── docs/                         # Project documentation (16 Markdown files)
 ├── gradle/                       # Gradle configuration & dependency versions
 ├── keystore/                     # Debug keystore & signing documentation
 └── project-resources/            # Screenshots, icons, graphics (SVG, PNG)
@@ -191,9 +194,8 @@ trmnl-android-buddy/
 
 | Contributor | Commits | Percentage | Type |
 |-------------|---------|------------|------|
-| Hossain Khan | 493 | 88.2% | Human Developer |
-| copilot-swe-agent[bot] | 65 | 11.6% | AI Assistant |
-| **copilot-swe-agent[bot]** | 1 | 0.2% | Bot (merge) |
+| Hossain Khan | 522 | 88.0% | Human Developer |
+| copilot-swe-agent[bot] | 71 | 12.0% | AI Assistant |
 
 ### Development Pattern
 
@@ -210,6 +212,8 @@ The project demonstrates a **hybrid development approach**:
 
 | Version | Date | Major Features |
 |---------|------|----------------|
+| **2.2.1** | Nov 1, 2025 | Content carousel bug fix, unused code cleanup |
+| **2.2.0** | Oct 31, 2025 | Access token banner, PRD documentation |
 | **2.1.0** | Oct 26, 2025 | Security (biometric auth), Settings UI improvements, Material You compliance |
 | **2.0.0** | Oct 25, 2025 | Combined content carousel, Background sync optimization |
 | **1.7.0** | Oct 24, 2025 | Battery history tracking with charts |
@@ -289,6 +293,17 @@ timeline
                  : README updates
                  : Screenshots
                  : PRD document
+    
+    Oct 31, 2025 : Release & Documentation (22 commits)
+                 : Access token banner
+                 : Refactoring
+                 : 🚀 v2.2.0 - Documentation release
+    
+    Nov 1, 2025 : Bug Fixes (12 commits)
+               : Content carousel fixes
+               : Code cleanup
+               : 🚀 v2.2.1 - Bug fix release
+               : Settings enhancements
 ```
 
 ---
@@ -302,16 +317,17 @@ timeline
   - **Oct 24**: 93 commits (Security & UX sprint)
   - **Oct 25**: 85 commits (Release preparation)
   - **Oct 3**: 69 commits (Core architecture)
+  - **Oct 31**: 22 commits (Documentation release)
 
 **Sustainable Pace**:
-- 16 active development days over 25-day period
-- Average of 35 commits per active day
+- 18 active development days over 31-day period
+- Average of 33 commits per active day
 - Average session duration of ~4 hours
 
 ### 2. Code Quality Indicators
 
 **Positive Signals**:
-- ✅ **High Comment Density**: 12.8% indicates well-documented code
+- ✅ **High Comment Density**: 13.0% indicates well-documented code
 - ✅ **Test Coverage**: 14 dedicated test files
 - ✅ **Modular Architecture**: Separate modules (app, api, content)
 - ✅ **Modern Stack**: Kotlin, Compose, Circuit, Metro DI
@@ -329,6 +345,7 @@ timeline
 2. **Features** (Oct 8-21): Device monitoring, content feeds
 3. **Polish** (Oct 22-25): UI improvements, security, optimization
 4. **Release** (Oct 25-26): v2.1.0 release, documentation
+5. **Maintenance** (Oct 31-Nov 1): v2.2.0 & v2.2.1 releases, bug fixes
 
 **Material You Compliance**:
 - Recent focus on Material 3 design system
@@ -366,8 +383,8 @@ timeline
 ### 6. Release Cadence
 
 **Rapid Iteration**:
-- v1.0.0 to v2.1.0 in 25 days
-- 10+ minor/major versions
+- v1.0.0 to v2.2.1 in 31 days
+- 12+ minor/major versions
 - Semantic versioning followed
 - Detailed CHANGELOG.md maintenance
 
@@ -400,22 +417,22 @@ timeline
 ## 📊 Statistical Summary
 
 ### Code Metrics
-- **Total Lines**: 33,286
-- **Production Code**: 15,565 lines (Kotlin)
-- **Documentation**: 4,720 lines (Markdown)
-- **Resources**: 3,295 lines (XML)
-- **Files**: 282 files
+- **Total Lines**: 33,235
+- **Production Code**: 15,352 lines (Kotlin)
+- **Documentation**: 5,115 lines (Markdown)
+- **Resources**: 1,699 lines (XML)
+- **Files**: 265 files
 
 ### Development Metrics
-- **Duration**: 25 days
-- **Active Days**: 16 days (64%)
-- **Total Commits**: 559
-- **Development Time**: 63.20 hours
-- **Average Daily Commits**: 35 (on active days)
+- **Duration**: 31 days
+- **Active Days**: 18 days (58%)
+- **Total Commits**: 593
+- **Development Time**: 67.15 hours
+- **Average Daily Commits**: 33 (on active days)
 - **Peak Day**: 93 commits (Oct 24)
 
 ### Quality Metrics
-- **Comment Ratio**: 12.8%
+- **Comment Ratio**: 13.0%
 - **Test Files**: 14 files
 - **Modules**: 3 (app, api, content)
 - **CI/CD**: GitHub Actions (passing)
@@ -453,15 +470,15 @@ TRMNL Android Buddy represents a modern, well-architected Android application de
 
 - **Professional Development Practices**: PR-based workflow, CI/CD, semantic versioning
 - **Modern Architecture**: Circuit, Metro DI, Jetpack Compose
-- **Rapid Iteration**: 559 commits over 25 days (~63.2 hours)
-- **Quality Focus**: 12.8% comment density, comprehensive documentation
+- **Rapid Iteration**: 593 commits over 31 days (~67.15 hours)
+- **Quality Focus**: 13.0% comment density, comprehensive documentation
 - **Innovative Approach**: Human + AI collaboration for accelerated development
 
 The project is actively maintained, well-documented, and follows Android best practices. The hybrid development approach with AI assistance has proven effective in maintaining high velocity while preserving code quality.
 
 ---
 
-**Generated**: October 26, 2025  
+**Generated**: November 1, 2025  
 **Analysis Tool**: Git log analysis + cloc  
 **Methodology**: 1-hour gap heuristic for time estimation  
-**Data Source**: Git repository history (Oct 2 - Oct 26, 2025)
+**Data Source**: Git repository history (Oct 2 - Nov 1, 2025)
