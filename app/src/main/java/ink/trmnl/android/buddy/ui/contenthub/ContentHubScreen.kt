@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.foundation.CircuitContent
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.rememberCircuitNavigator
+import com.slack.circuit.retained.produceRetainedState
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -50,10 +52,13 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
+import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
 import ink.trmnl.android.buddy.ui.announcements.AnnouncementsScreen
 import ink.trmnl.android.buddy.ui.blogposts.BlogPostsScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
+import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -78,6 +83,8 @@ data object ContentHubScreen : Screen {
 
     data class State(
         val selectedTab: Tab = Tab.ANNOUNCEMENTS,
+        val announcementsUnreadCount: Int = 0,
+        val blogPostsUnreadCount: Int = 0,
         val announcementsState: AnnouncementsScreenState? = null,
         val blogPostsState: BlogPostsScreenState? = null,
         val eventSink: (Event) -> Unit = {},
@@ -107,19 +114,36 @@ data object ContentHubScreen : Screen {
 
 /**
  * Presenter for ContentHubScreen.
- * Manages tab selection state.
+ * Manages tab selection state and fetches unread counts for each tab.
  */
 @Inject
 class ContentHubPresenter
     constructor(
         @Assisted private val navigator: Navigator,
+        private val announcementRepository: AnnouncementRepository,
+        private val blogPostRepository: BlogPostRepository,
     ) : Presenter<ContentHubScreen.State> {
         @Composable
         override fun present(): ContentHubScreen.State {
             var selectedTab by rememberRetained { mutableStateOf(ContentHubScreen.Tab.ANNOUNCEMENTS) }
 
+            // Fetch unread counts from repositories
+            val announcementsUnreadCount by produceRetainedState(initialValue = 0) {
+                announcementRepository.getUnreadCount().collect { count ->
+                    value = count
+                }
+            }
+
+            val blogPostsUnreadCount by produceRetainedState(initialValue = 0) {
+                blogPostRepository.getUnreadCount().collect { count ->
+                    value = count
+                }
+            }
+
             return ContentHubScreen.State(
                 selectedTab = selectedTab,
+                announcementsUnreadCount = announcementsUnreadCount,
+                blogPostsUnreadCount = blogPostsUnreadCount,
             ) { event ->
                 when (event) {
                     ContentHubScreen.Event.BackClicked -> {
@@ -167,7 +191,7 @@ fun ContentHubContent(
                                 TrmnlTitle("Announcements")
                                 state.announcementsState?.let { announcementsState ->
                                     if (announcementsState.unreadCount > 0) {
-                                        androidx.compose.material3.Surface(
+                                        Surface(
                                             shape = androidx.compose.foundation.shape.CircleShape,
                                             color = MaterialTheme.colorScheme.primary,
                                         ) {
@@ -250,10 +274,20 @@ fun ContentHubContent(
                     selected = state.selectedTab == ContentHubScreen.Tab.ANNOUNCEMENTS,
                     onClick = { state.eventSink(ContentHubScreen.Event.TabSelected(ContentHubScreen.Tab.ANNOUNCEMENTS)) },
                     icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                            contentDescription = "Announcements",
-                        )
+                        BadgedBox(
+                            badge = {
+                                if (state.announcementsUnreadCount > 0) {
+                                    androidx.compose.material3.Badge {
+                                        Text(text = state.announcementsUnreadCount.toString())
+                                    }
+                                }
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Announcements",
+                            )
+                        }
                     },
                     label = { Text("Announcements") },
                 )
@@ -262,10 +296,20 @@ fun ContentHubContent(
                     selected = state.selectedTab == ContentHubScreen.Tab.BLOG_POSTS,
                     onClick = { state.eventSink(ContentHubScreen.Event.TabSelected(ContentHubScreen.Tab.BLOG_POSTS)) },
                     icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                            contentDescription = "Blog Posts",
-                        )
+                        BadgedBox(
+                            badge = {
+                                if (state.blogPostsUnreadCount > 0) {
+                                    androidx.compose.material3.Badge {
+                                        Text(text = state.blogPostsUnreadCount.toString())
+                                    }
+                                }
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Blog Posts",
+                            )
+                        }
                     },
                     label = { Text("Blog Posts") },
                 )
@@ -396,10 +440,20 @@ private fun ContentHubContentPreview(
                     selected = state.selectedTab == ContentHubScreen.Tab.ANNOUNCEMENTS,
                     onClick = { },
                     icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                            contentDescription = "Announcements",
-                        )
+                        BadgedBox(
+                            badge = {
+                                if (state.announcementsUnreadCount > 0) {
+                                    androidx.compose.material3.Badge {
+                                        Text(text = state.announcementsUnreadCount.toString())
+                                    }
+                                }
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Announcements",
+                            )
+                        }
                     },
                     label = { Text("Announcements") },
                 )
@@ -408,10 +462,20 @@ private fun ContentHubContentPreview(
                     selected = state.selectedTab == ContentHubScreen.Tab.BLOG_POSTS,
                     onClick = { },
                     icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                            contentDescription = "Blog Posts",
-                        )
+                        BadgedBox(
+                            badge = {
+                                if (state.blogPostsUnreadCount > 0) {
+                                    androidx.compose.material3.Badge {
+                                        Text(text = state.blogPostsUnreadCount.toString())
+                                    }
+                                }
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Blog Posts",
+                            )
+                        }
                     },
                     label = { Text("Blog Posts") },
                 )
@@ -464,7 +528,7 @@ private fun ContentHubContentPreview(
 @Preview(name = "Content Hub - Announcements Tab")
 @Composable
 private fun ContentHubAnnouncementsTabPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         ContentHubContentPreview(
             state =
                 ContentHubScreen.State(
@@ -479,11 +543,13 @@ private fun ContentHubAnnouncementsTabPreview() {
 @Preview(name = "Content Hub - Announcements with Unread Badge")
 @Composable
 private fun ContentHubAnnouncementsUnreadPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         ContentHubContentPreview(
             state =
                 ContentHubScreen.State(
                     selectedTab = ContentHubScreen.Tab.ANNOUNCEMENTS,
+                    announcementsUnreadCount = 5,
+                    blogPostsUnreadCount = 3,
                     announcementsState = ContentHubScreen.AnnouncementsScreenState(unreadCount = 5),
                 ),
         )
@@ -494,7 +560,7 @@ private fun ContentHubAnnouncementsUnreadPreview() {
 @Preview(name = "Content Hub - Blog Posts Tab")
 @Composable
 private fun ContentHubBlogPostsTabPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         ContentHubContentPreview(
             state =
                 ContentHubScreen.State(
@@ -509,7 +575,7 @@ private fun ContentHubBlogPostsTabPreview() {
 @Preview(name = "Content Hub - Blog Posts with Category")
 @Composable
 private fun ContentHubBlogPostsCategoryPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         ContentHubContentPreview(
             state =
                 ContentHubScreen.State(
@@ -528,17 +594,25 @@ private fun ContentHubBlogPostsCategoryPreview() {
 @Preview(name = "Navigation Bar Only")
 @Composable
 private fun ContentHubNavigationBarPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         Surface {
             NavigationBar {
                 NavigationBarItem(
                     selected = true,
                     onClick = { },
                     icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                            contentDescription = "Announcements",
-                        )
+                        BadgedBox(
+                            badge = {
+                                androidx.compose.material3.Badge {
+                                    Text(text = "3")
+                                }
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Announcements",
+                            )
+                        }
                     },
                     label = { Text("Announcements") },
                 )
@@ -547,10 +621,18 @@ private fun ContentHubNavigationBarPreview() {
                     selected = false,
                     onClick = { },
                     icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                            contentDescription = "Blog Posts",
-                        )
+                        BadgedBox(
+                            badge = {
+                                androidx.compose.material3.Badge {
+                                    Text(text = "5")
+                                }
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Blog Posts",
+                            )
+                        }
                     },
                     label = { Text("Blog Posts") },
                 )

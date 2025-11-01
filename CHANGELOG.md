@@ -9,9 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Content Hub Navigation**: Unread count badges now appear on navigation bar items
+  - Announcements and Blog Posts tabs display badge indicators showing number of unread items
+  - Badges automatically update in real-time as content is read or new items arrive
+  - Uses Material 3's `BadgedBox` component for proper theming and accessibility
+  - Helps users quickly identify where new content is available
 - **Settings Screen**: Version text now links to GitHub releases page when tapped
   - Users can tap on the version information to view all releases at https://github.com/hossain-khan/trmnl-android-buddy/releases/
   - Provides quick access to release notes and changelogs
+
+### Changed
+
+- **Welcome Screen**: Button text now adapts based on user state
+  - New users see "Get Started" button (leads to API token setup)
+  - Returning users see "Dashboard" button (leads to devices/authentication)
+  - Provides clearer context about what action the button performs
 
 ### Fixed
 
