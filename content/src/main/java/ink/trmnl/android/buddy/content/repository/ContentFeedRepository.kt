@@ -77,6 +77,59 @@ class ContentFeedRepository(
         }
 
     /**
+     * Get latest unread content from both announcements and blog posts,
+     * sorted by published date (descending).
+     *
+     * This is optimized for carousel displays that only show unread items.
+     * Filters out all read content before sorting and limiting.
+     *
+     * @param limit Maximum number of unread items to return (default: 3 for carousel)
+     * @return Flow of unread content items sorted by date
+     */
+    fun getLatestUnreadContent(limit: Int = DEFAULT_LIMIT): Flow<List<ContentItem>> =
+        combine(
+            announcementDao.getUnread(),
+            blogPostDao.getUnread(),
+        ) { announcements, blogPosts ->
+            val items = mutableListOf<ContentItem>()
+
+            // Convert announcements to ContentItem
+            announcements.forEach { announcement ->
+                items.add(
+                    ContentItem.Announcement(
+                        id = announcement.id,
+                        title = announcement.title,
+                        summary = announcement.summary,
+                        link = announcement.link,
+                        publishedDate = announcement.publishedDate,
+                        isRead = announcement.isRead,
+                    ),
+                )
+            }
+
+            // Convert blog posts to ContentItem
+            blogPosts.forEach { post ->
+                items.add(
+                    ContentItem.BlogPost(
+                        id = post.id,
+                        title = post.title,
+                        summary = post.summary,
+                        link = post.link,
+                        publishedDate = post.publishedDate,
+                        authorName = post.authorName,
+                        category = post.category,
+                        featuredImageUrl = post.featuredImageUrl,
+                        isRead = post.isRead,
+                        isFavorite = post.isFavorite,
+                    ),
+                )
+            }
+
+            // Sort by published date (newest first) and take top N
+            items.sortedByDescending { it.publishedDate }.take(limit)
+        }
+
+    /**
      * Get unread content count across both announcements and blog posts.
      *
      * Useful for badge indicators showing total unread items.

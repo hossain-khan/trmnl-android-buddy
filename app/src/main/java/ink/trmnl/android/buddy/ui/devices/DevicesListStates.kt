@@ -155,13 +155,11 @@ internal fun DevicesList(
     ) {
         // Content carousel at the top
         // Only show if RSS feed content is enabled AND there is unread content
-        // Business Logic: Filter content to only include unread items (isRead = false)
-        // and only display the carousel when there's at least one unread item
-        val unreadContent = latestContent.filter { !it.isRead }
-        if (isRssFeedContentEnabled && unreadContent.isNotEmpty()) {
+        // latestContent already contains only unread items from getLatestUnreadContent()
+        if (isRssFeedContentEnabled && latestContent.isNotEmpty()) {
             item {
                 ContentCarousel(
-                    content = unreadContent,
+                    content = latestContent,
                     isLoading = isContentLoading,
                     onContentClick = onContentItemClick,
                     onViewAllClick = onViewAllContentClick,
