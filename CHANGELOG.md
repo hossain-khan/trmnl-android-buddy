@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.1] - 2025-11-01
+
 ### Fixed
 
 - **Content Carousel Blog Posts**: Fixed carousel not showing blog posts when only announcements were recent
@@ -957,7 +959,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.2.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.2.1...HEAD
+[2.2.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/1.7.0...2.0.0
