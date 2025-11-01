@@ -24,6 +24,7 @@ import androidx.core.net.toUri
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import timber.log.Timber
 
 /**
  * App information section showing version and links to GitHub.
@@ -84,8 +85,7 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                                     )
                                 context.startActivity(intent)
                             } catch (e: Exception) {
-                                // Gracefully handle if no app can handle the intent
-                                e.printStackTrace()
+                                Timber.e(e, "Failed to open releases page")
                             }
                         },
                 )
@@ -126,8 +126,7 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                                     )
                                 context.startActivity(intent)
                             } catch (e: Exception) {
-                                // Gracefully handle if no app can handle the intent
-                                e.printStackTrace()
+                                Timber.e(e, "Failed to open GitHub repository")
                             }
                         },
                 )
