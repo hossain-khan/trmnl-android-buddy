@@ -65,7 +65,7 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                     leadingContent = {
                         Icon(
                             painter = painterResource(R.drawable.deviceinfo_thin_outline),
-                            contentDescription = "GitHub",
+                            contentDescription = "Version information",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(32.dp),
                         )
@@ -76,12 +76,17 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                         ),
                     modifier =
                         Modifier.clickable {
-                            val intent =
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    "https://github.com/hossain-khan/trmnl-android-buddy/releases/".toUri(),
-                                )
-                            context.startActivity(intent)
+                            try {
+                                val intent =
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        "https://github.com/hossain-khan/trmnl-android-buddy/releases/".toUri(),
+                                    )
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                // Gracefully handle if no app can handle the intent
+                                e.printStackTrace()
+                            }
                         },
                 )
 
@@ -113,12 +118,17 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
                         ),
                     modifier =
                         Modifier.clickable {
-                            val intent =
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    "https://github.com/hossain-khan/trmnl-android-buddy".toUri(),
-                                )
-                            context.startActivity(intent)
+                            try {
+                                val intent =
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        "https://github.com/hossain-khan/trmnl-android-buddy".toUri(),
+                                    )
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                // Gracefully handle if no app can handle the intent
+                                e.printStackTrace()
+                            }
                         },
                 )
             }
