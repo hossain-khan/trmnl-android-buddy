@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.ui.devices
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -214,7 +215,9 @@ internal fun ContentCarousel(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 12.dp)
-                                .pointerInput(Unit) {
+                                .animateContentSize(
+                                    animationSpec = tween(durationMillis = 300),
+                                ).pointerInput(Unit) {
                                     detectTapGestures(
                                         onPress = {
                                             userIsInteracting = true
