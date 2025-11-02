@@ -9,7 +9,7 @@
       "height": 480,
       "colors": 2,
       "bit_depth": 1,
-      "scale_factor": 1,
+      "scale_factor": 1.0,
       "rotation": 0,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -28,7 +28,7 @@
       "height": 840,
       "colors": 256,
       "bit_depth": 8,
-      "scale_factor": 2.414,
+      "scale_factor": 1.75,
       "rotation": 90,
       "mime_type": "image/png",
       "offset_x": 75,
@@ -36,9 +36,7 @@
       "published_at": "2024-01-01T00:00:00.000Z",
       "kind": "kindle",
       "palette_ids": [
-        "gray-16",
-        "gray-4",
-        "bw"
+        "gray-256"
       ]
     },
     {
@@ -49,7 +47,7 @@
       "height": 768,
       "colors": 256,
       "bit_depth": 8,
-      "scale_factor": 1,
+      "scale_factor": 1.28,
       "rotation": 90,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -57,9 +55,7 @@
       "published_at": "2024-01-01T00:00:00.000Z",
       "kind": "kindle",
       "palette_ids": [
-        "gray-16",
-        "gray-4",
-        "bw"
+        "gray-256"
       ]
     },
     {
@@ -70,7 +66,7 @@
       "height": 1072,
       "colors": 256,
       "bit_depth": 8,
-      "scale_factor": 1,
+      "scale_factor": 1.6,
       "rotation": 90,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -78,9 +74,7 @@
       "published_at": "2024-01-01T00:00:00.000Z",
       "kind": "kindle",
       "palette_ids": [
-        "gray-16",
-        "gray-4",
-        "bw"
+        "gray-256"
       ]
     },
     {
@@ -91,7 +85,7 @@
       "height": 820,
       "colors": 8,
       "bit_depth": 3,
-      "scale_factor": 1,
+      "scale_factor": 1.0,
       "rotation": 0,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -111,7 +105,7 @@
       "height": 600,
       "colors": 256,
       "bit_depth": 8,
-      "scale_factor": 1,
+      "scale_factor": 1.0,
       "rotation": 90,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -119,9 +113,7 @@
       "published_at": "2024-01-01T00:00:00.000Z",
       "kind": "kindle",
       "palette_ids": [
-        "gray-16",
-        "gray-4",
-        "bw"
+        "gray-256"
       ]
     },
     {
@@ -132,7 +124,7 @@
       "height": 480,
       "colors": 2,
       "bit_depth": 1,
-      "scale_factor": 1,
+      "scale_factor": 1.0,
       "rotation": 0,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -152,7 +144,7 @@
       "height": 1264,
       "colors": 256,
       "bit_depth": 8,
-      "scale_factor": 1,
+      "scale_factor": 1.0,
       "rotation": 90,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -173,17 +165,15 @@
       "height": 1264,
       "colors": 256,
       "bit_depth": 8,
-      "scale_factor": 1,
+      "scale_factor": 2.1,
       "rotation": 90,
       "mime_type": "image/png",
       "offset_x": 0,
       "offset_y": 0,
       "published_at": "2024-01-01T00:00:00.000Z",
-      "kind": "byod",
+      "kind": "kindle",
       "palette_ids": [
-        "gray-16",
-        "gray-4",
-        "bw"
+        "gray-256"
       ]
     },
     {
@@ -194,7 +184,7 @@
       "height": 480,
       "colors": 4,
       "bit_depth": 2,
-      "scale_factor": 1,
+      "scale_factor": 1.0,
       "rotation": 0,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -214,7 +204,7 @@
       "height": 1404,
       "colors": 256,
       "bit_depth": 8,
-      "scale_factor": 1,
+      "scale_factor": 1.0,
       "rotation": 90,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -235,7 +225,7 @@
       "height": 1080,
       "colors": 16,
       "bit_depth": 4,
-      "scale_factor": 1,
+      "scale_factor": 1.0,
       "rotation": 90,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -256,7 +246,7 @@
       "height": 1200,
       "colors": 2,
       "bit_depth": 1,
-      "scale_factor": 1,
+      "scale_factor": 1.0,
       "rotation": 0,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -265,6 +255,86 @@
       "kind": "byod",
       "palette_ids": [
         "color-6a",
+        "bw"
+      ]
+    },
+    {
+      "name": "m5_paper_s3",
+      "label": "M5PaperS3",
+      "description": "M5PaperS3",
+      "width": 960,
+      "height": 540,
+      "colors": 16,
+      "bit_depth": 4,
+      "scale_factor": 1.0,
+      "rotation": 0,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "published_at": "2024-01-01T00:00:00.000Z",
+      "kind": "byod",
+      "palette_ids": [
+        "gray-16",
+        "gray-4",
+        "bw"
+      ]
+    },
+    {
+      "name": "amazon_kindle_scribe",
+      "label": "Amazon Kindle Scribe",
+      "description": "Amazon Kindle Scribe",
+      "width": 2480,
+      "height": 1860,
+      "colors": 256,
+      "bit_depth": 8,
+      "scale_factor": 2.5,
+      "rotation": 90,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "published_at": "2024-01-01T00:00:00.000Z",
+      "kind": "kindle",
+      "palette_ids": [
+        "gray-256"
+      ]
+    },
+    {
+      "name": "seeed_e1001",
+      "label": "Seeed E1001 Monochrome",
+      "description": "Seeed E1001 Monochrome",
+      "width": 800,
+      "height": 480,
+      "colors": 4,
+      "bit_depth": 2,
+      "scale_factor": 1.0,
+      "rotation": 0,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "published_at": "2024-01-01T00:00:00.000Z",
+      "kind": "byod",
+      "palette_ids": [
+        "gray-4",
+        "bw"
+      ]
+    },
+    {
+      "name": "seeed_e1002",
+      "label": "Seeed E1002 (2-bit)",
+      "description": "Seeed E1002 (2-bit)",
+      "width": 800,
+      "height": 480,
+      "colors": 4,
+      "bit_depth": 2,
+      "scale_factor": 1.0,
+      "rotation": 0,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "published_at": "2024-01-01T00:00:00.000Z",
+      "kind": "byod",
+      "palette_ids": [
+        "gray-4",
         "bw"
       ]
     }
