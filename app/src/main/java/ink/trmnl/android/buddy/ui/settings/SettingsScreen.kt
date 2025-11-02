@@ -93,6 +93,10 @@ data object SettingsScreen : Screen {
         ) : Event()
 
         data object DevelopmentClicked : Event()
+
+        data object DeviceCatalogClicked : Event()
+
+        data object RecipesCatalogClicked : Event()
     }
 }
 
@@ -181,6 +185,12 @@ class SettingsPresenter(
                 }
                 SettingsScreen.Event.DevelopmentClicked -> {
                     navigator.goTo(DevelopmentScreen)
+                }
+                SettingsScreen.Event.DeviceCatalogClicked -> {
+                    timber.log.Timber.d("Device Catalog clicked - navigation not implemented yet")
+                }
+                SettingsScreen.Event.RecipesCatalogClicked -> {
+                    timber.log.Timber.d("Recipes Catalog clicked - navigation not implemented yet")
                 }
             }
         }
@@ -279,6 +289,16 @@ fun SettingsContent(
                 },
                 onThresholdChange = { percent ->
                     state.eventSink(SettingsScreen.Event.LowBatteryThresholdChanged(percent))
+                },
+            )
+
+            // Extras Section
+            ExtrasSection(
+                onDeviceCatalogClick = {
+                    state.eventSink(SettingsScreen.Event.DeviceCatalogClicked)
+                },
+                onRecipesCatalogClick = {
+                    state.eventSink(SettingsScreen.Event.RecipesCatalogClicked)
                 },
             )
 
