@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Recipe Bookmarking Feature**: Save and manage favorite recipes for quick access
+  - Bookmark any recipe from the Recipes Catalog with animated bookmark icon toggle
+  - Persistent storage using Room database with automatic migration from v1 to v2
+  - View all bookmarked recipes in dedicated Bookmarked Recipes screen
+  - Remove bookmarks with single tap on bookmark icon
+  - Bookmarks sync in real-time across all screens
+  - Smooth Material 3 animations for bookmark state transitions (fade + scale)
 - **Recipes Catalog Screen**: Browse and discover TRMNL community plugin recipes
     - Search functionality with real-time filtering and debouncing (500ms delay)
     - Sort recipes by Newest, Oldest, Popular, Most Installed, or Most Forked
@@ -36,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Recipes Catalog UI**: Reduced vertical spacing between TopAppBar, SearchBar, and filter chips for more compact layout
 - **Code Quality**: Refactored device type identification logic to extension property
     - Created `DeviceModel.deviceKind` extension property for centralized device type detection
     - Replaced duplicated `when` expressions across 3 locations with single source of truth

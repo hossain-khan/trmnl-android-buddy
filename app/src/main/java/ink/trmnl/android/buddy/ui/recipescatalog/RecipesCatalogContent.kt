@@ -133,10 +133,14 @@ fun RecipesCatalogContent(
                 else -> {
                     RecipesList(
                         recipes = state.recipes,
+                        bookmarkedRecipeIds = state.bookmarkedRecipeIds,
                         hasMorePages = state.hasMorePages,
                         isLoadingMore = state.isLoadingMore,
                         onRecipeClick = { recipe ->
                             state.eventSink(RecipesCatalogScreen.Event.RecipeClicked(recipe))
+                        },
+                        onBookmarkClick = { recipe ->
+                            state.eventSink(RecipesCatalogScreen.Event.BookmarkClicked(recipe))
                         },
                         onLoadMoreClick = {
                             state.eventSink(RecipesCatalogScreen.Event.LoadMoreClicked)
@@ -191,7 +195,7 @@ private fun RecipesSearchBar(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 4.dp),
     ) {
         // Search suggestions can be added here in future
     }
@@ -211,7 +215,7 @@ private fun SortFilterRow(
             modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         SortOption.entries.forEach { sortOption ->
@@ -230,9 +234,11 @@ private fun SortFilterRow(
 @Composable
 private fun RecipesList(
     recipes: List<Recipe>,
+    bookmarkedRecipeIds: Set<Int>,
     hasMorePages: Boolean,
     isLoadingMore: Boolean,
     onRecipeClick: (Recipe) -> Unit,
+    onBookmarkClick: (Recipe) -> Unit,
     onLoadMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -241,10 +247,17 @@ private fun RecipesList(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        // Alpha testing banner
+        item {
+            AlphaTestingBanner()
+        }
+
         items(recipes, key = { it.id }) { recipe ->
             RecipeListItem(
                 recipe = recipe,
+                isBookmarked = bookmarkedRecipeIds.contains(recipe.id),
                 onClick = { onRecipeClick(recipe) },
+                onBookmarkClick = { onBookmarkClick(recipe) },
             )
         }
 
@@ -255,6 +268,37 @@ private fun RecipesList(
                     onClick = onLoadMoreClick,
                 )
             }
+        }
+    }
+}
+
+/**
+ * Alpha testing banner to inform users about the feature status.
+ */
+@Composable
+private fun AlphaTestingBanner(modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.data_info_alert_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
+            Text(
+                text = "The recipe feature is in alpha testing state now and may be unstable.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
         }
     }
 }
@@ -377,6 +421,7 @@ private fun RecipesCatalogContentPreview() {
             state =
                 RecipesCatalogScreen.State(
                     recipes = SAMPLE_RECIPES,
+                    bookmarkedRecipeIds = setOf(1), // First recipe is bookmarked
                     searchQuery = "",
                     selectedSort = SortOption.NEWEST,
                     hasMorePages = true,

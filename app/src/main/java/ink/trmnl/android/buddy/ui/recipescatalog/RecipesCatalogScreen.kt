@@ -20,6 +20,7 @@ data object RecipesCatalogScreen : Screen {
      * UI state for the Recipes Catalog Screen.
      *
      * @property recipes List of recipes to display
+     * @property bookmarkedRecipeIds Set of IDs of bookmarked recipes
      * @property searchQuery Current search query text
      * @property selectedSort Currently selected sort option
      * @property isLoading True when loading initial recipes
@@ -32,6 +33,7 @@ data object RecipesCatalogScreen : Screen {
      */
     data class State(
         val recipes: List<Recipe> = emptyList(),
+        val bookmarkedRecipeIds: Set<Int> = emptySet(),
         val searchQuery: String = "",
         val selectedSort: SortOption = SortOption.NEWEST,
         val isLoading: Boolean = false,
@@ -86,6 +88,15 @@ data object RecipesCatalogScreen : Screen {
          * @property recipe The clicked recipe
          */
         data class RecipeClicked(
+            val recipe: Recipe,
+        ) : Event()
+
+        /**
+         * User clicked the bookmark button on a recipe.
+         *
+         * @property recipe The recipe to bookmark/unbookmark
+         */
+        data class BookmarkClicked(
             val recipe: Recipe,
         ) : Event()
 
