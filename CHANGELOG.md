@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Device Catalog Screen**: Filterable catalog of supported TRMNL device models
+  - Displays all 17 supported device models (TRMNL, Kindle, BYOD devices)
+  - Filter devices by category: All, TRMNL, Kindle, or BYOD
+  - Shows device specifications (dimensions, color depth, bit depth)
+  - Material 3 design with dynamic color support
+  - Accessible via Settings → Extras section
+- **Extras Section**: New section in Settings screen for additional resources
+  - Device Catalog: Browse supported device models
+  - Recipes Catalog: Discover available plugins (coming soon)
+
 ## [2.3.0] - 2025-11-01
 
 ### Added

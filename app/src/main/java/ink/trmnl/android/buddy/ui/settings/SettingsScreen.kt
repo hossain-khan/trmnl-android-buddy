@@ -187,7 +187,7 @@ class SettingsPresenter(
                     navigator.goTo(DevelopmentScreen)
                 }
                 SettingsScreen.Event.DeviceCatalogClicked -> {
-                    timber.log.Timber.d("Device Catalog clicked - navigation not implemented yet")
+                    navigator.goTo(ink.trmnl.android.buddy.ui.devicecatalog.DeviceCatalogScreen)
                 }
                 SettingsScreen.Event.RecipesCatalogClicked -> {
                     timber.log.Timber.d("Recipes Catalog clicked - navigation not implemented yet")

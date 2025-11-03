@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.api
 
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.models.Device
+import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.api.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -98,6 +99,47 @@ class TrmnlDeviceRepository(
      */
     suspend fun getDevice(deviceId: Int): ApiResult<Device, *> = withContext(Dispatchers.IO) {
         when (val result = apiService.getDevice(deviceId, authHeader)) {
+            is ApiResult.Success -> ApiResult.success(result.value.data)
+            is ApiResult.Failure -> result
+        }
+    }
+    
+    /**
+     * Fetch all supported TRMNL device models.
+     *
+     * Makes an API call to `/models` and returns the list of device models.
+     * Includes official TRMNL devices, Amazon Kindle e-readers, and BYOD compatible displays.
+     *
+     * @return ApiResult containing list of device models or error
+     *
+     * Example usage:
+     * ```kotlin
+     * val repository = TrmnlDeviceRepository(apiService, "user_abc123")
+     * when (val result = repository.getDeviceModels()) {
+     *     is ApiResult.Success -> {
+     *         println("Found ${result.value.size} device models")
+     *         val trmnlModels = result.value.filter { it.kind == "trmnl" }
+     *         val kindleModels = result.value.filter { it.kind == "kindle" }
+     *         val byodModels = result.value.filter { it.kind == "byod" }
+     *         println("TRMNL: ${trmnlModels.size}, Kindle: ${kindleModels.size}, BYOD: ${byodModels.size}")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> {
+     *         println("HTTP Error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> {
+     *         println("Network Error: ${result.error}")
+     *     }
+     *     is ApiResult.Failure.ApiFailure -> {
+     *         println("API Error: ${result.error}")
+     *     }
+     *     is ApiResult.Failure.UnknownFailure -> {
+     *         println("Unknown Error: ${result.error}")
+     *     }
+     * }
+     * ```
+     */
+    suspend fun getDeviceModels(): ApiResult<List<DeviceModel>, *> = withContext(Dispatchers.IO) {
+        when (val result = apiService.getDeviceModels(authHeader)) {
             is ApiResult.Success -> ApiResult.success(result.value.data)
             is ApiResult.Failure -> result
         }
