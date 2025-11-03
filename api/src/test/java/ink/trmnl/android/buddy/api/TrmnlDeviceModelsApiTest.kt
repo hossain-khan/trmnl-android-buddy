@@ -178,7 +178,7 @@ class TrmnlDeviceModelsApiTest {
 
         // Verify request
         val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/models")
+        assertThat(request.path).isEqualTo("/api/models")
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.getHeader("Authorization")).isEqualTo("Bearer test_token")
     }

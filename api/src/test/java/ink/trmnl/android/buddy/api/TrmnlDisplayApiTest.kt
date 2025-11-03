@@ -110,7 +110,7 @@ class TrmnlDisplayApiTest {
         
         // Verify request
         val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/display/current")
+        assertThat(request.path).isEqualTo("/api/display/current")
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.getHeader("Access-Token")).isEqualTo(deviceApiKey)
     }

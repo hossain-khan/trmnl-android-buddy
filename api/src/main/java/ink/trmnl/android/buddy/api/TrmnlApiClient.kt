@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
  * JSON serialization, logging, and error handling.
  */
 object TrmnlApiClient {
-    private const val BASE_URL = "https://usetrmnl.com/api/"
+    private const val BASE_URL = "https://usetrmnl.com/"
     private const val CONNECT_TIMEOUT_SECONDS = 30L
     private const val READ_TIMEOUT_SECONDS = 30L
     private const val WRITE_TIMEOUT_SECONDS = 30L

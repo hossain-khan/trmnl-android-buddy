@@ -116,7 +116,7 @@ class TrmnlUserApiTest {
 
         // Verify request was made correctly
         val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/me")
+        assertThat(request.path).isEqualTo("/api/me")
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.getHeader("Authorization")).isEqualTo("Bearer user_abc123")
     }

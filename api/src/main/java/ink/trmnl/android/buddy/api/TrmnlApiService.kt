@@ -87,7 +87,7 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @GET("devices")
+    @GET("api/devices")
     suspend fun getDevices(
         @Header("Authorization") authorization: String
     ): ApiResult<DevicesResponse, ApiError>
@@ -116,7 +116,7 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @GET("devices/{id}")
+    @GET("api/devices/{id}")
     suspend fun getDevice(
         @Path("id") id: Int,
         @Header("Authorization") authorization: String
@@ -168,7 +168,7 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @GET("display/current")
+    @GET("api/display/current")
     suspend fun getDisplayCurrent(
         @Header("Access-Token") deviceApiKey: String
     ): ApiResult<Display, ApiError>
@@ -222,7 +222,7 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @GET("me")
+    @GET("api/me")
     suspend fun userInfo(
         @Header("Authorization") authorization: String
     ): ApiResult<UserResponse, ApiError>
@@ -285,7 +285,7 @@ interface TrmnlApiService {
      * val page2Result = api.getRecipes(page = 2, perPage = 50)
      * ```
      */
-    @GET("https://usetrmnl.com/recipes.json")
+    @GET("recipes.json")
     suspend fun getRecipes(
         @Query("search") search: String? = null,
         @Query("sort-by") sortBy: String? = null,
@@ -321,7 +321,7 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @GET("https://usetrmnl.com/recipes/{id}.json")
+    @GET("recipes/{id}.json")
     suspend fun getRecipe(
         @Path("id") id: Int,
     ): ApiResult<RecipeDetailResponse, ApiError>
@@ -378,7 +378,7 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @GET("models")
+    @GET("api/models")
     suspend fun getDeviceModels(
         @Header("Authorization") authorization: String
     ): ApiResult<DeviceModelsResponse, ApiError>

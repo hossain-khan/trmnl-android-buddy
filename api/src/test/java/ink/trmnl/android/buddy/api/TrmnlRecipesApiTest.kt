@@ -405,6 +405,7 @@ class TrmnlRecipesApiTest {
             MockResponse()
                 .setResponseCode(404)
                 .setBody("""{"error": "Recipe not found"}""")
+                .addHeader("Content-Type", "application/json")
         )
 
         // When: Call getRecipe
