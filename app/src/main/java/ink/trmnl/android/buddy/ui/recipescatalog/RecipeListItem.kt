@@ -1,11 +1,19 @@
 package ink.trmnl.android.buddy.ui.recipescatalog
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -26,17 +34,21 @@ import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 /**
  * List item component for displaying a single recipe.
  *
- * Shows recipe icon, name, and statistics (installs and forks).
+ * Shows recipe icon, name, statistics (installs and forks), and bookmark button.
  * Uses Material 3 Card and ListItem for consistent styling.
  *
  * @param recipe The recipe to display
+ * @param isBookmarked Whether this recipe is currently bookmarked
  * @param onClick Callback when the item is clicked
+ * @param onBookmarkClick Callback when the bookmark button is clicked
  * @param modifier Optional modifier for the component
  */
 @Composable
 fun RecipeListItem(
     recipe: Recipe,
+    isBookmarked: Boolean,
     onClick: () -> Unit,
+    onBookmarkClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -83,11 +95,41 @@ fun RecipeListItem(
                 )
             },
             trailingContent = {
-                Icon(
-                    painter = painterResource(R.drawable.arrow_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                    contentDescription = "View recipe",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                // Animated bookmark button
+                IconButton(onClick = onBookmarkClick) {
+                    AnimatedContent(
+                        targetState = isBookmarked,
+                        transitionSpec = {
+                            (
+                                fadeIn(animationSpec = tween(220, delayMillis = 90)) +
+                                    scaleIn(
+                                        initialScale = 0.8f,
+                                        animationSpec = tween(220, delayMillis = 90),
+                                    )
+                            ).togetherWith(
+                                fadeOut(animationSpec = tween(90)) +
+                                    scaleOut(
+                                        targetScale = 0.8f,
+                                        animationSpec = tween(90),
+                                    ),
+                            )
+                        },
+                        label = "bookmark_animation",
+                    ) { bookmarked ->
+                        Icon(
+                            painter =
+                                painterResource(
+                                    if (bookmarked) {
+                                        R.drawable.bookmark_added_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    } else {
+                                        R.drawable.bookmark_add_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    },
+                                ),
+                            contentDescription = if (bookmarked) "Remove bookmark" else "Add bookmark",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             },
             colors =
                 ListItemDefaults.colors(
@@ -115,7 +157,9 @@ private fun RecipeListItemPreview() {
                     screenshotUrl = null,
                     stats = RecipeStats(installs = 1230, forks = 1),
                 ),
+            isBookmarked = false,
             onClick = {},
+            onBookmarkClick = {},
         )
     }
 }
@@ -133,7 +177,29 @@ private fun RecipeListItemWithHighStatsPreview() {
                     screenshotUrl = null,
                     stats = RecipeStats(installs = 25, forks = 176),
                 ),
+            isBookmarked = false,
             onClick = {},
+            onBookmarkClick = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun RecipeListItemBookmarkedPreview() {
+    TrmnlBuddyAppTheme {
+        RecipeListItem(
+            recipe =
+                Recipe(
+                    id = 3,
+                    name = "Bookmarked Recipe",
+                    iconUrl = null,
+                    screenshotUrl = null,
+                    stats = RecipeStats(installs = 500, forks = 50),
+                ),
+            isBookmarked = true,
+            onClick = {},
+            onBookmarkClick = {},
         )
     }
 }

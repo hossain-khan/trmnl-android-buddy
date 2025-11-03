@@ -133,10 +133,14 @@ fun RecipesCatalogContent(
                 else -> {
                     RecipesList(
                         recipes = state.recipes,
+                        bookmarkedRecipeIds = state.bookmarkedRecipeIds,
                         hasMorePages = state.hasMorePages,
                         isLoadingMore = state.isLoadingMore,
                         onRecipeClick = { recipe ->
                             state.eventSink(RecipesCatalogScreen.Event.RecipeClicked(recipe))
+                        },
+                        onBookmarkClick = { recipe ->
+                            state.eventSink(RecipesCatalogScreen.Event.BookmarkClicked(recipe))
                         },
                         onLoadMoreClick = {
                             state.eventSink(RecipesCatalogScreen.Event.LoadMoreClicked)
@@ -191,7 +195,7 @@ private fun RecipesSearchBar(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 4.dp),
     ) {
         // Search suggestions can be added here in future
     }
@@ -211,7 +215,7 @@ private fun SortFilterRow(
             modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         SortOption.entries.forEach { sortOption ->
@@ -230,9 +234,11 @@ private fun SortFilterRow(
 @Composable
 private fun RecipesList(
     recipes: List<Recipe>,
+    bookmarkedRecipeIds: Set<Int>,
     hasMorePages: Boolean,
     isLoadingMore: Boolean,
     onRecipeClick: (Recipe) -> Unit,
+    onBookmarkClick: (Recipe) -> Unit,
     onLoadMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -244,7 +250,9 @@ private fun RecipesList(
         items(recipes, key = { it.id }) { recipe ->
             RecipeListItem(
                 recipe = recipe,
+                isBookmarked = bookmarkedRecipeIds.contains(recipe.id),
                 onClick = { onRecipeClick(recipe) },
+                onBookmarkClick = { onBookmarkClick(recipe) },
             )
         }
 
@@ -377,6 +385,7 @@ private fun RecipesCatalogContentPreview() {
             state =
                 RecipesCatalogScreen.State(
                     recipes = SAMPLE_RECIPES,
+                    bookmarkedRecipeIds = setOf(1), // First recipe is bookmarked
                     searchQuery = "",
                     selectedSort = SortOption.NEWEST,
                     hasMorePages = true,
