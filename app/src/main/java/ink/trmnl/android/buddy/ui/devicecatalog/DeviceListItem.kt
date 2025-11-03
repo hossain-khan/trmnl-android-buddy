@@ -48,14 +48,14 @@ fun DeviceListItem(
                 Text(
                     text = device.getSpecsSummary(),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.secondary,
                 )
             },
             trailingContent = {
                 Icon(
                     painter = painterResource(R.drawable.arrow_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                     contentDescription = "View details",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = MaterialTheme.colorScheme.tertiary,
                 )
             },
             colors =
