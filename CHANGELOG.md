@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Recipes Catalog Screen**: Browse and discover TRMNL community plugin recipes
+  - Search functionality with real-time filtering and debouncing (500ms delay)
+  - Sort recipes by Newest, Oldest, Popular, Most Installed, or Most Forked
+  - Pagination support with "Load More" button for browsing large catalog
+  - Material 3 SearchBar with clear button for intuitive search experience
+  - Display recipe icons, names, install counts, and fork counts
+  - Accessible from Settings > Extras > Recipes Catalog
+  - Note: API endpoint is in alpha testing and may be moved before end of 2025
+
 ## [2.3.0] - 2025-11-01
 
 ### Added
