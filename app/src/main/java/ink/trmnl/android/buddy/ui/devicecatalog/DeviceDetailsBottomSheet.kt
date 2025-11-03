@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.devicecatalog
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -17,12 +19,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 
@@ -60,20 +66,49 @@ fun DeviceDetailsBottomSheet(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp),
         ) {
-            // Header
-            Text(
-                text = device.label,
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+            // Header with logo
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(
+                        text = device.label,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = device.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+                    Text(
+                        text = device.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                // Device logo
+                val logoResource =
+                    when (device.deviceKind) {
+                        DeviceKind.TRMNL -> R.drawable.trmnl_logo_brand_orange
+                        DeviceKind.KINDLE -> R.drawable.amazon_kindle_logo
+                        DeviceKind.SEEED_STUDIO -> R.drawable.seed_studio_color_logo
+                        DeviceKind.KOBO -> R.drawable.kobo_logo
+                        DeviceKind.BYOD -> null
+                    }
+
+                logoResource?.let {
+                    Image(
+                        painter = painterResource(id = it),
+                        contentDescription = "${device.deviceKind.name} logo",
+                        modifier = Modifier.widthIn(max = 90.dp),
+                        contentScale = ContentScale.Fit,
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
