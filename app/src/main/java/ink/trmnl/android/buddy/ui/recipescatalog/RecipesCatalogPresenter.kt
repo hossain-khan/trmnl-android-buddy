@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.ui.recipescatalog
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,6 +16,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.api.models.Recipe
+import ink.trmnl.android.buddy.data.BookmarkRepository
 import ink.trmnl.android.buddy.data.RecipesRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -45,6 +47,7 @@ private const val DEFAULT_PER_PAGE = 25
 class RecipesCatalogPresenter(
     @Assisted private val navigator: Navigator,
     private val recipesRepository: RecipesRepository,
+    private val bookmarkRepository: BookmarkRepository,
 ) : Presenter<RecipesCatalogScreen.State> {
     @Composable
     override fun present(): RecipesCatalogScreen.State {
@@ -57,6 +60,9 @@ class RecipesCatalogPresenter(
         var currentPage by remember { mutableStateOf(1) }
         var hasMorePages by remember { mutableStateOf(false) }
         var totalRecipes by remember { mutableStateOf(0) }
+
+        // Collect bookmarked recipe IDs as state
+        val bookmarkedRecipeIds by bookmarkRepository.getAllBookmarkedIds().collectAsState(initial = emptySet())
 
         val coroutineScope = rememberCoroutineScope()
         var searchJob by remember { mutableStateOf<Job?>(null) }
@@ -85,6 +91,7 @@ class RecipesCatalogPresenter(
 
         return RecipesCatalogScreen.State(
             recipes = recipes,
+            bookmarkedRecipeIds = bookmarkedRecipeIds,
             searchQuery = searchQuery,
             selectedSort = selectedSort,
             isLoading = isLoading,
@@ -190,6 +197,17 @@ class RecipesCatalogPresenter(
                 is RecipesCatalogScreen.Event.RecipeClicked -> {
                     // For now, just log. Navigation to detail screen can be added later.
                     Timber.d("Recipe clicked: ${event.recipe.name} (ID: ${event.recipe.id})")
+                }
+
+                is RecipesCatalogScreen.Event.BookmarkClicked -> {
+                    coroutineScope.launch {
+                        try {
+                            bookmarkRepository.toggleBookmark(event.recipe)
+                            Timber.d("Bookmark toggled for recipe: ${event.recipe.name} (ID: ${event.recipe.id})")
+                        } catch (e: Exception) {
+                            Timber.e(e, "Failed to toggle bookmark for recipe: ${event.recipe.name}")
+                        }
+                    }
                 }
 
                 RecipesCatalogScreen.Event.LoadMoreClicked -> {

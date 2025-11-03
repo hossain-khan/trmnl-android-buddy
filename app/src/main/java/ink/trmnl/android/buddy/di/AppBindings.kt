@@ -12,7 +12,10 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.content.db.AnnouncementDao
 import ink.trmnl.android.buddy.content.db.BlogPostDao
 import ink.trmnl.android.buddy.content.db.ContentDatabase
+import ink.trmnl.android.buddy.data.BookmarkRepository
+import ink.trmnl.android.buddy.data.DefaultBookmarkRepository
 import ink.trmnl.android.buddy.data.database.BatteryHistoryDao
+import ink.trmnl.android.buddy.data.database.BookmarkedRecipeDao
 import ink.trmnl.android.buddy.data.database.TrmnlDatabase
 
 @ContributesTo(AppScope::class)
@@ -36,6 +39,14 @@ interface AppBindings {
 
     @Provides
     fun provideBatteryHistoryDao(database: TrmnlDatabase): BatteryHistoryDao = database.batteryHistoryDao()
+
+    @Provides
+    fun provideBookmarkedRecipeDao(database: TrmnlDatabase): BookmarkedRecipeDao = database.bookmarkedRecipeDao()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideBookmarkRepository(bookmarkedRecipeDao: BookmarkedRecipeDao): BookmarkRepository =
+        DefaultBookmarkRepository(bookmarkedRecipeDao)
 
     // Content module bindings
     @Provides
