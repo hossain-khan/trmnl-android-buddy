@@ -243,6 +243,77 @@ class TrmnlDeviceModelsApiTest {
     }
 
     @Test
+    fun `getDeviceModels returns 404 not found for invalid endpoint`() = runTest {
+        // Given: Mock server returns 404 not found
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(404)
+                .setBody("""{"error": "Not Found"}""")
+                .setHeader("Content-Type", "application/json")
+        )
+
+        // When: Calling getDeviceModels
+        val result = apiService.getDeviceModels("Bearer test_token")
+
+        // Then: Response should be HTTP failure with 404
+        assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
+        val failure = result as ApiResult.Failure.HttpFailure
+        assertThat(failure.code).isEqualTo(404)
+    }
+
+    @Test
+    fun `getDeviceModels handles malformed JSON response`() = runTest {
+        // Given: Mock server returns malformed JSON
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody("""{"data": [this is not valid json]}""")
+                .setHeader("Content-Type", "application/json")
+        )
+
+        // When: Calling getDeviceModels
+        val result = apiService.getDeviceModels("Bearer test_token")
+
+        // Then: Response should be unknown failure (parsing error)
+        assertThat(result).isInstanceOf(ApiResult.Failure.UnknownFailure::class)
+    }
+
+    @Test
+    fun `getDeviceModels handles network timeout`() = runTest {
+        // Given: Mock server with slow response (simulates timeout)
+        mockWebServer.enqueue(
+            MockResponse()
+                .setBody("""{"data": []}""")
+                .setBodyDelay(10, java.util.concurrent.TimeUnit.SECONDS)
+        )
+
+        // When: Calling getDeviceModels with short timeout client
+        val shortTimeoutClient = OkHttpClient.Builder()
+            .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+            .build()
+
+        val shortTimeoutRetrofit = Retrofit.Builder()
+            .baseUrl(mockWebServer.url("/"))
+            .client(shortTimeoutClient)
+            .addConverterFactory(
+                com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
+            )
+            .addConverterFactory(
+                json.asConverterFactory("application/json".toMediaType())
+            )
+            .addCallAdapterFactory(
+                com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
+            )
+            .build()
+
+        val timeoutApiService = shortTimeoutRetrofit.create(TrmnlApiService::class.java)
+        val result = timeoutApiService.getDeviceModels("Bearer test_token")
+
+        // Then: Response should be network failure
+        assertThat(result).isInstanceOf(ApiResult.Failure.NetworkFailure::class)
+    }
+
+    @Test
     fun `DeviceModel getSpecsSummary formats correctly`() {
         // Given: Device models with different specs
         val models = listOf(
