@@ -41,6 +41,7 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.dev.DevelopmentScreen
 import ink.trmnl.android.buddy.security.BiometricAuthHelper
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
+import ink.trmnl.android.buddy.ui.devicecatalog.DeviceCatalogScreen
 import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.user.UserAccountScreen
@@ -188,7 +189,7 @@ class SettingsPresenter(
                     navigator.goTo(DevelopmentScreen)
                 }
                 SettingsScreen.Event.DeviceCatalogClicked -> {
-                    timber.log.Timber.d("Device Catalog clicked - navigation not implemented yet")
+                    navigator.goTo(DeviceCatalogScreen)
                 }
                 SettingsScreen.Event.RecipesCatalogClicked -> {
                     navigator.goTo(RecipesCatalogScreen)

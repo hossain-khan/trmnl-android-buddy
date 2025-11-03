@@ -10,13 +10,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Recipes Catalog Screen**: Browse and discover TRMNL community plugin recipes
-  - Search functionality with real-time filtering and debouncing (500ms delay)
-  - Sort recipes by Newest, Oldest, Popular, Most Installed, or Most Forked
-  - Pagination support with "Load More" button for browsing large catalog
-  - Material 3 SearchBar with clear button for intuitive search experience
-  - Display recipe icons, names, install counts, and fork counts
-  - Accessible from Settings > Extras > Recipes Catalog
-  - Note: API endpoint is in alpha testing and may be moved before end of 2025
+    - Search functionality with real-time filtering and debouncing (500ms delay)
+    - Sort recipes by Newest, Oldest, Popular, Most Installed, or Most Forked
+    - Pagination support with "Load More" button for browsing large catalog
+    - Material 3 SearchBar with clear button for intuitive search experience
+    - Display recipe icons, names, install counts, and fork counts
+    - Accessible from Settings > Extras > Recipes Catalog
+    - Note: API endpoint is in alpha testing and may be moved before end of 2025
+- **Device Catalog Screen**: View all supported TRMNL e-ink device models with specifications
+  - Browse 17 device models including official TRMNL devices, Amazon Kindle e-readers, and BYOD options
+  - Filter devices by category: All (17), TRMNL (2), Kindle (6), or BYOD (9)
+  - View detailed specifications: resolution, color depth, bit depth for each model
+  - Access from Settings > Extras > Supported Device Catalog
+  - Fully Material 3 compliant with theme-aware colors and dynamic theming support
+- **API Tests**: Additional unit tests for DeviceModels API endpoint
+  - Added test for HTTP 404 Not Found error handling
+  - Added test for malformed JSON response handling
+  - Added test for network timeout scenarios
+  - Completes test coverage for `getDeviceModels()` endpoint with 8 comprehensive tests
+- **Device Details Bottom Sheet**: Tap any device to view full specifications in a scrollable bottom sheet
+  - Shows all device properties: resolution, colors, bit depth, scale factor, rotation, MIME type, offsets, color palettes, and publish date
+  - Copy all device details to clipboard with formatted text
+  - Scrollable content for landscape orientation and smaller screens
+  - Material 3 modal bottom sheet with proper theming
+
+### Changed
+
+- **Code Quality**: Refactored device type identification logic to extension property
+    - Created `DeviceModel.deviceKind` extension property for centralized device type detection
+    - Replaced duplicated `when` expressions across 3 locations with single source of truth
+    - Improved maintainability and type safety for device filtering and UI logic
 
 ## [2.3.0] - 2025-11-01
 

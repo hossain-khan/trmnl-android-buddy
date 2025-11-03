@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.api
 
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
@@ -225,16 +226,16 @@ interface TrmnlApiService {
     suspend fun userInfo(
         @Header("Authorization") authorization: String
     ): ApiResult<UserResponse, ApiError>
-    
+
     // ========================================
     // Recipes API (Public Endpoints)
     // ========================================
-    
+
     /**
      * Get a list of community plugin recipes from the TRMNL catalog.
      *
      * This is a **public endpoint** that does NOT require authentication.
-     * 
+     *
      * **Note**: This endpoint is in alpha testing and may be moved to `/api/recipes`
      * or `/api/plugins` before end of 2025.
      *
@@ -273,13 +274,13 @@ interface TrmnlApiService {
      * ```kotlin
      * // Get first page with default sort (newest)
      * val result = api.getRecipes()
-     * 
+     *
      * // Search for weather-related recipes
      * val searchResult = api.getRecipes(search = "weather")
-     * 
+     *
      * // Get most popular recipes
      * val popularResult = api.getRecipes(sortBy = "popularity")
-     * 
+     *
      * // Get page 2 with custom page size
      * val page2Result = api.getRecipes(page = 2, perPage = 50)
      * ```
@@ -291,12 +292,12 @@ interface TrmnlApiService {
         @Query("page") page: Int? = null,
         @Query("per_page") perPage: Int? = null,
     ): ApiResult<RecipesResponse, ApiError>
-    
+
     /**
      * Get detailed information about a specific recipe.
      *
      * This is a **public endpoint** that does NOT require authentication.
-     * 
+     *
      * **Note**: This endpoint is in alpha testing and may be moved to `/api/recipes/{id}`
      * or `/api/plugins/{id}` before end of 2025.
      *
@@ -324,4 +325,61 @@ interface TrmnlApiService {
     suspend fun getRecipe(
         @Path("id") id: Int,
     ): ApiResult<RecipeDetailResponse, ApiError>
+
+
+    // ========================================
+    // Models API
+    // ========================================
+
+    /**
+     * Get a list of all supported device models.
+     *
+     * Returns all supported e-ink display device models including official TRMNL devices,
+     * Amazon Kindle e-readers, and third-party BYOD devices.
+     *
+     * Requires authentication via Bearer token.
+     *
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @return ApiResult containing a list of device models or error
+     *
+     * Example response:
+     * ```json
+     * {
+     *   "data": [
+     *     {
+     *       "name": "og_png",
+     *       "label": "TRMNL OG (1-bit)",
+     *       "description": "TRMNL OG (1-bit)",
+     *       "width": 800,
+     *       "height": 480,
+     *       "colors": 2,
+     *       "bit_depth": 1,
+     *       "scale_factor": 1.0,
+     *       "rotation": 0,
+     *       "mime_type": "image/png",
+     *       "offset_x": 0,
+     *       "offset_y": 0,
+     *       "published_at": "2024-01-01T00:00:00.000Z",
+     *       "kind": "trmnl",
+     *       "palette_ids": ["bw"]
+     *     }
+     *   ]
+     * }
+     * ```
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.getDeviceModels("Bearer user_abc123")) {
+     *     is ApiResult.Success -> println("Found ${result.value.data.size} models")
+     *     is ApiResult.Failure.HttpFailure -> println("HTTP error: ${result.code}")
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("models")
+    suspend fun getDeviceModels(
+        @Header("Authorization") authorization: String
+    ): ApiResult<DeviceModelsResponse, ApiError>
 }
