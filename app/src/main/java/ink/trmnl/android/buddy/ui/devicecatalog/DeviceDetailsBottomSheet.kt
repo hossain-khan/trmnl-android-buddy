@@ -104,7 +104,7 @@ fun DeviceDetailsBottomSheet(
                     Image(
                         painter = painterResource(id = it),
                         contentDescription = "${device.deviceKind.name} logo",
-                        modifier = Modifier.widthIn(max = 90.dp),
+                        modifier = Modifier.widthIn(max = 100.dp).align(Alignment.CenterVertically),
                         contentScale = ContentScale.Fit,
                     )
                 }
