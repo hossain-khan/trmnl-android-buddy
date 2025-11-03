@@ -21,6 +21,7 @@ data object DeviceCatalogScreen : Screen {
      * @property selectedFilter Currently selected device kind filter (null = "All")
      * @property isLoading Whether data is being loaded from API
      * @property error Error message if API call failed
+     * @property selectedDevice Device currently shown in bottom sheet (null = bottom sheet hidden)
      * @property eventSink Event handler for user interactions
      */
     data class State(
@@ -28,6 +29,7 @@ data object DeviceCatalogScreen : Screen {
         val selectedFilter: DeviceKind? = null,
         val isLoading: Boolean = false,
         val error: String? = null,
+        val selectedDevice: DeviceModel? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -62,6 +64,11 @@ data object DeviceCatalogScreen : Screen {
          * User clicked retry after an error.
          */
         data object RetryClicked : Event()
+
+        /**
+         * User dismissed the device details bottom sheet.
+         */
+        data object DismissBottomSheet : Event()
     }
 }
 
@@ -78,6 +85,18 @@ enum class DeviceKind {
      * Amazon Kindle e-readers (kind = "kindle").
      */
     KINDLE,
+
+    /**
+     * SEEED Studio devices only using device name id `seeed_` (kind = "byod").
+     * - https://www.seeedstudio.com/
+     * - https://www.seeedstudio.com/blog/2025/07/21/it-is-here-introducing-the-trmnl-7-5-og-diy-kit/
+     */
+    SEEED_STUDIO,
+
+    /**
+     * Kobo e-readers using name id `kobo_` (kind = "byod").
+     */
+    KOBO,
 
     /**
      * Bring Your Own Device / Third-party (kind = "byod").

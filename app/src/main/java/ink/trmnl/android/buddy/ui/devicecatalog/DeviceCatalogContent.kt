@@ -22,10 +22,13 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -37,6 +40,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import kotlinx.coroutines.launch
 
 /**
  * Main UI content for the device catalog screen.
@@ -54,6 +58,9 @@ fun DeviceCatalogContent(
     state: DeviceCatalogScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -101,6 +108,26 @@ fun DeviceCatalogContent(
                 )
             }
         }
+
+        // Bottom sheet for device details
+        if (state.selectedDevice != null) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    state.eventSink(DeviceCatalogScreen.Event.DismissBottomSheet)
+                },
+                sheetState = sheetState,
+            ) {
+                DeviceDetailsBottomSheet(
+                    device = state.selectedDevice,
+                    onDismiss = {
+                        scope.launch {
+                            sheetState.hide()
+                            state.eventSink(DeviceCatalogScreen.Event.DismissBottomSheet)
+                        }
+                    },
+                )
+            }
+        }
     }
 }
 
@@ -119,16 +146,16 @@ private fun DeviceListContent(
     val filteredDevices =
         when (selectedFilter) {
             null -> devices // All
-            DeviceKind.TRMNL -> devices.filter { it.kind == "trmnl" }
-            DeviceKind.KINDLE -> devices.filter { it.kind == "kindle" }
-            DeviceKind.BYOD -> devices.filter { it.kind == "byod" }
+            else -> devices.filter { it.deviceKind == selectedFilter }
         }
 
     // Calculate counts for each filter
     val totalCount = devices.size
-    val trmnlCount = devices.count { it.kind == "trmnl" }
-    val kindleCount = devices.count { it.kind == "kindle" }
-    val byodCount = devices.count { it.kind == "byod" }
+    val trmnlCount = devices.count { it.deviceKind == DeviceKind.TRMNL }
+    val kindleCount = devices.count { it.deviceKind == DeviceKind.KINDLE }
+    val byodCount = devices.count { it.deviceKind == DeviceKind.BYOD }
+    val seeedStudioCount = devices.count { it.deviceKind == DeviceKind.SEEED_STUDIO }
+    val koboCount = devices.count { it.deviceKind == DeviceKind.KOBO }
 
     Column(modifier = modifier.fillMaxSize()) {
         // Filter chips row
@@ -159,6 +186,16 @@ private fun DeviceListContent(
                 selected = selectedFilter == DeviceKind.BYOD,
                 onClick = { onFilterSelected(DeviceKind.BYOD) },
                 label = { Text("BYOD ($byodCount)") },
+            )
+            FilterChip(
+                selected = selectedFilter == DeviceKind.SEEED_STUDIO,
+                onClick = { onFilterSelected(DeviceKind.SEEED_STUDIO) },
+                label = { Text("Seeed Studio ($seeedStudioCount)") },
+            )
+            FilterChip(
+                selected = selectedFilter == DeviceKind.KOBO,
+                onClick = { onFilterSelected(DeviceKind.KOBO) },
+                label = { Text("Kobo ($koboCount)") },
             )
         }
 

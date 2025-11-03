@@ -44,6 +44,7 @@ class DeviceCatalogPresenter
             var selectedFilter by rememberRetained { mutableStateOf<DeviceKind?>(null) }
             var isLoading by rememberRetained { mutableStateOf(false) }
             var error by rememberRetained { mutableStateOf<String?>(null) }
+            var selectedDevice by rememberRetained { mutableStateOf<DeviceModel?>(null) }
             val coroutineScope = rememberCoroutineScope()
 
             // Fetch device models on initial load
@@ -65,6 +66,7 @@ class DeviceCatalogPresenter
                 selectedFilter = selectedFilter,
                 isLoading = isLoading,
                 error = error,
+                selectedDevice = selectedDevice,
             ) { event ->
                 when (event) {
                     DeviceCatalogScreen.Event.BackClicked -> {
@@ -76,9 +78,11 @@ class DeviceCatalogPresenter
                     }
 
                     is DeviceCatalogScreen.Event.DeviceClicked -> {
-                        // For now, just log the action
-                        // Future: navigator.goTo(DeviceDetailScreen(deviceName = event.device.name))
-                        Timber.d("Device clicked: ${event.device.label}")
+                        selectedDevice = event.device
+                    }
+
+                    DeviceCatalogScreen.Event.DismissBottomSheet -> {
+                        selectedDevice = null
                     }
 
                     DeviceCatalogScreen.Event.RetryClicked -> {

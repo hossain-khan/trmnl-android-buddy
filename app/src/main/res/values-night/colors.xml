@@ -3,4 +3,8 @@
     <!-- TRMNL Brand Color variations for dark mode -->
     <color name="trmnl_orange_container">#4A1F15</color> <!-- Dark tint for dark mode -->
     <color name="trmnl_orange_on_container">#FFB4A8</color> <!-- Light text on dark container -->
+    
+    <!-- Amazon Kindle brand colors for dark mode -->
+    <color name="amazon_kindle_text">#FFFFFF</color> <!-- White text for dark mode -->
+    <color name="amazon_kindle_orange">#FF9900</color> <!-- Amazon orange accent -->
 </resources>
