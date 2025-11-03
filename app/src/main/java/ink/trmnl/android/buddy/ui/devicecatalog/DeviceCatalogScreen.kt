@@ -21,6 +21,7 @@ data object DeviceCatalogScreen : Screen {
      * @property selectedFilter Currently selected device kind filter (null = "All")
      * @property isLoading Whether data is being loaded from API
      * @property error Error message if API call failed
+     * @property selectedDevice Device currently shown in bottom sheet (null = bottom sheet hidden)
      * @property eventSink Event handler for user interactions
      */
     data class State(
@@ -28,6 +29,7 @@ data object DeviceCatalogScreen : Screen {
         val selectedFilter: DeviceKind? = null,
         val isLoading: Boolean = false,
         val error: String? = null,
+        val selectedDevice: DeviceModel? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -62,6 +64,11 @@ data object DeviceCatalogScreen : Screen {
          * User clicked retry after an error.
          */
         data object RetryClicked : Event()
+
+        /**
+         * User dismissed the device details bottom sheet.
+         */
+        data object DismissBottomSheet : Event()
     }
 }
 

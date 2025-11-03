@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added test for malformed JSON response handling
   - Added test for network timeout scenarios
   - Completes test coverage for `getDeviceModels()` endpoint with 8 comprehensive tests
+- **Device Details Bottom Sheet**: Tap any device to view full specifications in a scrollable bottom sheet
+  - Shows all device properties: resolution, colors, bit depth, scale factor, rotation, MIME type, offsets, color palettes, and publish date
+  - Copy all device details to clipboard with formatted text
+  - Scrollable content for landscape orientation and smaller screens
+  - Material 3 modal bottom sheet with proper theming
 
 ## [2.3.0] - 2025-11-01
 

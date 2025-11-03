@@ -15,20 +15,31 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -37,6 +48,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import kotlinx.coroutines.launch
 
 /**
  * Main UI content for the device catalog screen.
@@ -54,6 +66,9 @@ fun DeviceCatalogContent(
     state: DeviceCatalogScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -98,6 +113,26 @@ fun DeviceCatalogContent(
                         state.eventSink(DeviceCatalogScreen.Event.DeviceClicked(device))
                     },
                     modifier = Modifier.padding(innerPadding),
+                )
+            }
+        }
+
+        // Bottom sheet for device details
+        if (state.selectedDevice != null) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    state.eventSink(DeviceCatalogScreen.Event.DismissBottomSheet)
+                },
+                sheetState = sheetState,
+            ) {
+                DeviceDetailsBottomSheet(
+                    device = state.selectedDevice,
+                    onDismiss = {
+                        scope.launch {
+                            sheetState.hide()
+                            state.eventSink(DeviceCatalogScreen.Event.DismissBottomSheet)
+                        }
+                    },
                 )
             }
         }
@@ -262,6 +297,169 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         )
     }
 }
+
+/**
+ * Bottom sheet showing device details with copy functionality.
+ */
+@Composable
+private fun DeviceDetailsBottomSheet(
+    device: DeviceModel,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val clipboardManager = LocalClipboardManager.current
+
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+    ) {
+        // Scrollable content area
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = false)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp),
+        ) {
+            // Header
+            Text(
+                text = device.label,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = device.description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Specifications Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(
+                        text = "Specifications",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    HorizontalDivider()
+
+                    DetailRow(label = "Model Name", value = device.name)
+                    DetailRow(label = "Resolution", value = "${device.width} × ${device.height} px")
+                    DetailRow(label = "Colors", value = device.colors.toString())
+                    DetailRow(label = "Bit Depth", value = "${device.bitDepth}-bit")
+                    DetailRow(label = "Scale Factor", value = device.scaleFactor.toString())
+                    DetailRow(label = "Rotation", value = "${device.rotation}°")
+                    DetailRow(label = "MIME Type", value = device.mimeType)
+                    DetailRow(label = "Offset", value = "(${device.offsetX}, ${device.offsetY})")
+                    DetailRow(label = "Device Kind", value = device.kind.uppercase())
+                    DetailRow(
+                        label = "Color Palettes",
+                        value = device.paletteIds.joinToString(", "),
+                    )
+                    DetailRow(label = "Published", value = device.publishedAt.take(10))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        // Action buttons
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            OutlinedButton(
+                onClick = {
+                    val details = buildDeviceDetailsText(device)
+                    clipboardManager.setText(AnnotatedString(details))
+                },
+                modifier = Modifier.weight(1f),
+            ) {
+                Text("Copy Details")
+            }
+
+            Button(
+                onClick = onDismiss,
+                modifier = Modifier.weight(1f),
+            ) {
+                Text("Close")
+            }
+        }
+    }
+}
+
+/**
+ * Detail row showing label and value.
+ */
+@Composable
+private fun DetailRow(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1.5f),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+/**
+ * Build formatted text of device details for clipboard.
+ */
+private fun buildDeviceDetailsText(device: DeviceModel): String =
+    buildString {
+        appendLine("${device.label}")
+        appendLine("=".repeat(device.label.length))
+        appendLine()
+        appendLine("Model Name: ${device.name}")
+        appendLine("Description: ${device.description}")
+        appendLine("Resolution: ${device.width} × ${device.height} px")
+        appendLine("Colors: ${device.colors}")
+        appendLine("Bit Depth: ${device.bitDepth}-bit")
+        appendLine("Scale Factor: ${device.scaleFactor}")
+        appendLine("Rotation: ${device.rotation}°")
+        appendLine("MIME Type: ${device.mimeType}")
+        appendLine("Offset: (${device.offsetX}, ${device.offsetY})")
+        appendLine("Device Kind: ${device.kind.uppercase()}")
+        appendLine("Color Palettes: ${device.paletteIds.joinToString(", ")}")
+        appendLine("Published: ${device.publishedAt}")
+    }
 
 // ============================================
 // Composable Previews
