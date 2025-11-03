@@ -79,6 +79,10 @@ robolectric = "4.15"
 # https://developer.android.com/jetpack/androidx/releases/biometric
 biometric = "1.4.0-alpha04"
 
+# Turbine - Testing library for Kotlin Flow
+# https://github.com/cashapp/turbine
+turbine = "1.2.0"
+
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -174,6 +178,10 @@ robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "
 # AndroidX Biometric - Biometric authentication
 # https://developer.android.com/jetpack/androidx/releases/biometric
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
+
+# Turbine - Testing library for Kotlin Flow
+# https://github.com/cashapp/turbine
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

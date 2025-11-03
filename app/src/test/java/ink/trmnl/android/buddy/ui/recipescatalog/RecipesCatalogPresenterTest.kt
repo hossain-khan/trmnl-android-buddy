@@ -13,6 +13,7 @@ import com.slack.circuit.test.test
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.api.models.RecipesResponse
+import ink.trmnl.android.buddy.data.FakeBookmarkRepository
 import ink.trmnl.android.buddy.data.RecipesRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
@@ -40,7 +41,8 @@ class RecipesCatalogPresenterTest {
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(2),
                 )
-            val presenter = RecipesCatalogPresenter(navigator, repository)
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
 
             // When/Then
             presenter.test {
@@ -67,7 +69,8 @@ class RecipesCatalogPresenterTest {
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
                 )
-            val presenter = RecipesCatalogPresenter(navigator, repository)
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
 
             // When/Then
             presenter.test {
@@ -106,7 +109,8 @@ class RecipesCatalogPresenterTest {
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(2),
                 )
-            val presenter = RecipesCatalogPresenter(navigator, repository)
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
 
             // When/Then
             presenter.test {
@@ -145,7 +149,8 @@ class RecipesCatalogPresenterTest {
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(2),
                 )
-            val presenter = RecipesCatalogPresenter(navigator, repository)
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
 
             // When/Then
             presenter.test {
@@ -185,7 +190,8 @@ class RecipesCatalogPresenterTest {
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(2, currentPage = 1),
                 )
-            val presenter = RecipesCatalogPresenter(navigator, repository)
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
 
             // When/Then
             presenter.test {
@@ -231,7 +237,8 @@ class RecipesCatalogPresenterTest {
                     shouldFail = true,
                     errorMessage = "Network error",
                 )
-            val presenter = RecipesCatalogPresenter(navigator, repository)
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
 
             // When/Then
             presenter.test {
@@ -271,7 +278,8 @@ class RecipesCatalogPresenterTest {
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
                 )
-            val presenter = RecipesCatalogPresenter(navigator, repository)
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
 
             // When/Then
             presenter.test {
@@ -300,7 +308,8 @@ class RecipesCatalogPresenterTest {
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
                 )
-            val presenter = RecipesCatalogPresenter(navigator, repository)
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
 
             // When/Then
             presenter.test {
