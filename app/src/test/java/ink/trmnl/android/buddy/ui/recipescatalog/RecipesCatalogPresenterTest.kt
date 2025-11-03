@@ -43,10 +43,12 @@ class RecipesCatalogPresenterTest {
 
             // When/Then
             presenter.test {
-                // Initial state should be loading
-                val initialState = awaitItem()
-                assertThat(initialState.isLoading).isTrue()
-                assertThat(initialState.recipes).isEmpty()
+                // Skip initial state (before LaunchedEffect)
+                skipItems(1)
+
+                // Loading state
+                val loadingState = awaitItem()
+                assertThat(loadingState.isLoading).isTrue()
 
                 // After loading, should have recipes
                 val loadedState = awaitItem()
@@ -71,19 +73,19 @@ class RecipesCatalogPresenterTest {
 
             // When/Then
             presenter.test {
-                // Skip initial loading states
-                skipItems(2)
+                // Skip initial states (initial + loading + loaded)
+                skipItems(3)
 
                 // Send search query
                 val state = awaitItem()
                 state.eventSink(RecipesCatalogScreen.Event.SearchQueryChanged("weather"))
 
-                // Wait for debounce (500ms)
-                delay(600)
-
                 // Should update search query immediately
                 val searchingState = awaitItem()
                 assertThat(searchingState.searchQuery).isEqualTo("weather")
+
+                // Wait for debounce (500ms)
+                delay(600)
 
                 // Should start loading after debounce
                 val loadingState = awaitItem()
@@ -109,8 +111,8 @@ class RecipesCatalogPresenterTest {
 
             // When/Then
             presenter.test {
-                // Skip initial loading states
-                skipItems(2)
+                // Skip initial states (initial + loading + loaded)
+                skipItems(3)
 
                 // Set search query first
                 val state = awaitItem()
@@ -145,8 +147,8 @@ class RecipesCatalogPresenterTest {
 
             // When/Then
             presenter.test {
-                // Skip initial loading states
-                skipItems(2)
+                // Skip initial states (initial + loading + loaded)
+                skipItems(3)
 
                 val state = awaitItem()
                 assertThat(state.selectedSort).isEqualTo(SortOption.NEWEST)
@@ -176,8 +178,8 @@ class RecipesCatalogPresenterTest {
 
             // When/Then
             presenter.test {
-                // Skip initial loading states
-                skipItems(2)
+                // Skip initial states (initial + loading + loaded)
+                skipItems(3)
 
                 val state = awaitItem()
                 assertThat(state.recipes).hasSize(2)
@@ -214,7 +216,10 @@ class RecipesCatalogPresenterTest {
 
             // When/Then
             presenter.test {
-                // Skip initial loading state
+                // Skip initial state
+                skipItems(1)
+
+                // Skip loading state
                 skipItems(1)
 
                 // Should have error
@@ -250,8 +255,8 @@ class RecipesCatalogPresenterTest {
 
             // When/Then
             presenter.test {
-                // Skip initial loading states
-                skipItems(2)
+                // Skip initial states (initial + loading + loaded)
+                skipItems(3)
 
                 val state = awaitItem()
                 state.eventSink(RecipesCatalogScreen.Event.BackClicked)
@@ -274,8 +279,8 @@ class RecipesCatalogPresenterTest {
 
             // When/Then
             presenter.test {
-                // Skip initial loading states
-                skipItems(2)
+                // Skip initial states (initial + loading + loaded)
+                skipItems(3)
 
                 val state = awaitItem()
 
