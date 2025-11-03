@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - View detailed specifications: resolution, color depth, bit depth for each model
   - Access from Settings > Extras > Supported Device Catalog
   - Fully Material 3 compliant with theme-aware colors and dynamic theming support
+- **API Tests**: Additional unit tests for DeviceModels API endpoint
+  - Added test for HTTP 404 Not Found error handling
+  - Added test for malformed JSON response handling
+  - Added test for network timeout scenarios
+  - Completes test coverage for `getDeviceModels()` endpoint with 8 comprehensive tests
 
 ## [2.3.0] - 2025-11-01
 
