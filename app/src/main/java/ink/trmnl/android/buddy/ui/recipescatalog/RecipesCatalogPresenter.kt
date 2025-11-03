@@ -68,7 +68,6 @@ class RecipesCatalogPresenter(
                 search = null,
                 sortBy = selectedSort.apiValue,
                 page = 1,
-                append = false,
                 onLoadingStart = { isLoading = true },
                 onLoadingEnd = { isLoading = false },
                 onSuccess = { response ->
@@ -116,7 +115,6 @@ class RecipesCatalogPresenter(
                                 search = if (event.query.isBlank()) null else event.query,
                                 sortBy = selectedSort.apiValue,
                                 page = 1,
-                                append = false,
                                 onLoadingStart = { isLoading = true },
                                 onLoadingEnd = { isLoading = false },
                                 onSuccess = { response ->
@@ -148,7 +146,6 @@ class RecipesCatalogPresenter(
                             search = null,
                             sortBy = selectedSort.apiValue,
                             page = 1,
-                            append = false,
                             onLoadingStart = { isLoading = true },
                             onLoadingEnd = { isLoading = false },
                             onSuccess = { response ->
@@ -174,7 +171,6 @@ class RecipesCatalogPresenter(
                             search = if (searchQuery.isBlank()) null else searchQuery,
                             sortBy = event.sort.apiValue,
                             page = 1,
-                            append = false,
                             onLoadingStart = { isLoading = true },
                             onLoadingEnd = { isLoading = false },
                             onSuccess = { response ->
@@ -204,7 +200,6 @@ class RecipesCatalogPresenter(
                                 search = if (searchQuery.isBlank()) null else searchQuery,
                                 sortBy = selectedSort.apiValue,
                                 page = currentPage + 1,
-                                append = true,
                                 onLoadingStart = { isLoadingMore = true },
                                 onLoadingEnd = { isLoadingMore = false },
                                 onSuccess = { response ->
@@ -229,7 +224,6 @@ class RecipesCatalogPresenter(
                             search = if (searchQuery.isBlank()) null else searchQuery,
                             sortBy = selectedSort.apiValue,
                             page = 1,
-                            append = false,
                             onLoadingStart = { isLoading = true },
                             onLoadingEnd = { isLoading = false },
                             onSuccess = { response ->
@@ -266,7 +260,6 @@ private suspend fun fetchRecipes(
     search: String?,
     sortBy: String,
     page: Int,
-    append: Boolean,
     onLoadingStart: () -> Unit,
     onLoadingEnd: () -> Unit,
     onSuccess: (ink.trmnl.android.buddy.api.models.RecipesResponse) -> Unit,

@@ -350,32 +350,33 @@ private fun ErrorState(
 // Composable Previews
 // ============================================
 
+// Shared sample recipe data for previews
+private val SAMPLE_RECIPES =
+    listOf(
+        Recipe(
+            id = 1,
+            name = "Weather Chum",
+            iconUrl = null,
+            screenshotUrl = null,
+            stats = RecipeStats(installs = 1230, forks = 1),
+        ),
+        Recipe(
+            id = 2,
+            name = "Matrix",
+            iconUrl = null,
+            screenshotUrl = null,
+            stats = RecipeStats(installs = 25, forks = 176),
+        ),
+    )
+
 @PreviewLightDark
 @Composable
 private fun RecipesCatalogContentPreview() {
-    val sampleRecipes =
-        listOf(
-            Recipe(
-                id = 1,
-                name = "Weather Chum",
-                iconUrl = null,
-                screenshotUrl = null,
-                stats = RecipeStats(installs = 1230, forks = 1),
-            ),
-            Recipe(
-                id = 2,
-                name = "Matrix",
-                iconUrl = null,
-                screenshotUrl = null,
-                stats = RecipeStats(installs = 25, forks = 176),
-            ),
-        )
-
     TrmnlBuddyAppTheme {
         RecipesCatalogContent(
             state =
                 RecipesCatalogScreen.State(
-                    recipes = sampleRecipes,
+                    recipes = SAMPLE_RECIPES,
                     searchQuery = "",
                     selectedSort = SortOption.NEWEST,
                     hasMorePages = true,
