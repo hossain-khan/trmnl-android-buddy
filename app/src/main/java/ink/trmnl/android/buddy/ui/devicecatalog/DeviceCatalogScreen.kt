@@ -87,6 +87,18 @@ enum class DeviceKind {
     KINDLE,
 
     /**
+     * SEEED Studio devices only using device name id `seeed_` (kind = "byod").
+     * - https://www.seeedstudio.com/
+     * - https://www.seeedstudio.com/blog/2025/07/21/it-is-here-introducing-the-trmnl-7-5-og-diy-kit/
+     */
+    SEEED_STUDIO,
+
+    /**
+     * Kobo e-readers using name id `kobo_` (kind = "byod").
+     */
+    KOBO,
+
+    /**
      * Bring Your Own Device / Third-party (kind = "byod").
      */
     BYOD,

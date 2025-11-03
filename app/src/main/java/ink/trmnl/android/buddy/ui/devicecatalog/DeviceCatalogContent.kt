@@ -149,6 +149,8 @@ private fun DeviceListContent(
             DeviceKind.TRMNL -> devices.filter { it.kind == "trmnl" }
             DeviceKind.KINDLE -> devices.filter { it.kind == "kindle" }
             DeviceKind.BYOD -> devices.filter { it.kind == "byod" }
+            DeviceKind.SEEED_STUDIO -> devices.filter { it.name.startsWith("seeed_") }
+            DeviceKind.KOBO -> devices.filter { it.name.startsWith("kobo_") }
         }
 
     // Calculate counts for each filter
@@ -156,6 +158,8 @@ private fun DeviceListContent(
     val trmnlCount = devices.count { it.kind == "trmnl" }
     val kindleCount = devices.count { it.kind == "kindle" }
     val byodCount = devices.count { it.kind == "byod" }
+    val seeedStudioCount = devices.count { it.name.startsWith("seeed_") }
+    val koboCount = devices.count { it.name.startsWith("kobo_") }
 
     Column(modifier = modifier.fillMaxSize()) {
         // Filter chips row
@@ -186,6 +190,16 @@ private fun DeviceListContent(
                 selected = selectedFilter == DeviceKind.BYOD,
                 onClick = { onFilterSelected(DeviceKind.BYOD) },
                 label = { Text("BYOD ($byodCount)") },
+            )
+            FilterChip(
+                selected = selectedFilter == DeviceKind.SEEED_STUDIO,
+                onClick = { onFilterSelected(DeviceKind.SEEED_STUDIO) },
+                label = { Text("Seeed Studio ($seeedStudioCount)") },
+            )
+            FilterChip(
+                selected = selectedFilter == DeviceKind.KOBO,
+                onClick = { onFilterSelected(DeviceKind.KOBO) },
+                label = { Text("Kobo ($koboCount)") },
             )
         }
 
