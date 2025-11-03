@@ -5,6 +5,7 @@ import ink.trmnl.android.buddy.data.database.BookmarkedRecipeDao
 import ink.trmnl.android.buddy.data.database.BookmarkedRecipeEntity
 import ink.trmnl.android.buddy.di.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -80,7 +81,11 @@ class DefaultBookmarkRepository(
             entities.map { it.toRecipe() }
         }
 
-    override fun getAllBookmarkedIds(): Flow<Set<Int>> = bookmarkedRecipeDao.getAllBookmarkedIds().map { it.toSet() }
+    override fun getAllBookmarkedIds(): Flow<Set<Int>> =
+        bookmarkedRecipeDao
+            .getAllBookmarkedIds()
+            .map { it.toSet() }
+            .distinctUntilChanged()
 }
 
 /**

@@ -50,7 +50,7 @@ interface BookmarkedRecipeDao {
     /**
      * Get all bookmarked recipe IDs.
      *
-     * @return Flow of bookmarked recipe ID set
+     * @return Flow of bookmarked recipe ID list
      */
     @Query("SELECT recipe_id FROM bookmarked_recipes")
     fun getAllBookmarkedIds(): Flow<List<Int>>
