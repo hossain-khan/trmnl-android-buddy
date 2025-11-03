@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Device Catalog Screen**: View all supported TRMNL e-ink device models with specifications
+  - Browse 17 device models including official TRMNL devices, Amazon Kindle e-readers, and BYOD options
+  - Filter devices by category: All (17), TRMNL (2), Kindle (6), or BYOD (9)
+  - View detailed specifications: resolution, color depth, bit depth for each model
+  - Access from Settings > Extras > Supported Device Catalog
+  - Fully Material 3 compliant with theme-aware colors and dynamic theming support
+
 ## [2.3.0] - 2025-11-01
 
 ### Added
