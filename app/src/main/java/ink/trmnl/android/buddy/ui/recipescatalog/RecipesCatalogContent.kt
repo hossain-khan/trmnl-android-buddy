@@ -214,7 +214,7 @@ private fun SortFilterRow(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        SortOption.values().forEach { sortOption ->
+        SortOption.entries.forEach { sortOption ->
             FilterChip(
                 selected = selectedSort == sortOption,
                 onClick = { onSortSelected(sortOption) },
