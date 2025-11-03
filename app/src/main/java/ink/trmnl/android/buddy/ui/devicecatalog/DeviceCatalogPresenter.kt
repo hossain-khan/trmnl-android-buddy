@@ -7,13 +7,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.eithernet.ApiResult
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
-import ink.trmnl.android.buddy.api.TrmnlDeviceRepository
+import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.DeviceKind
+import ink.trmnl.android.buddy.api.models.DeviceModel
+import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -25,11 +31,12 @@ import timber.log.Timber
 @Inject
 class DeviceCatalogPresenter(
     @Assisted private val navigator: Navigator,
-    private val repository: TrmnlDeviceRepository,
+    private val apiService: TrmnlApiService,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) : Presenter<DeviceCatalogScreen.State> {
     @Composable
     override fun present(): DeviceCatalogScreen.State {
-        var devices by remember { mutableStateOf(emptyList<ink.trmnl.android.buddy.api.models.DeviceModel>()) }
+        var devices by remember { mutableStateOf(emptyList<DeviceModel>()) }
         var selectedFilter by remember { mutableStateOf<DeviceKind?>(null) }
         var isLoading by remember { mutableStateOf(true) }
         var error by remember { mutableStateOf<String?>(null) }
@@ -88,13 +95,20 @@ class DeviceCatalogPresenter(
     }
 
     private suspend fun loadDevices(
-        onSuccess: (List<ink.trmnl.android.buddy.api.models.DeviceModel>) -> Unit,
+        onSuccess: (List<DeviceModel>) -> Unit,
         onError: (String) -> Unit,
     ) {
-        when (val result = repository.getDeviceModels()) {
+        // Get API token from preferences
+        val apiToken = userPreferencesRepository.userPreferencesFlow.first().apiToken
+        if (apiToken.isNullOrBlank()) {
+            onError("API token not found")
+            return
+        }
+
+        when (val result = apiService.getDeviceModels("Bearer $apiToken")) {
             is ApiResult.Success -> {
-                Timber.d("Loaded ${result.value.size} device models")
-                onSuccess(result.value)
+                Timber.d("Loaded ${result.value.data.size} device models")
+                onSuccess(result.value.data)
             }
             is ApiResult.Failure.HttpFailure -> {
                 val message = "Failed to load devices: HTTP ${result.code}"
@@ -117,5 +131,11 @@ class DeviceCatalogPresenter(
                 onError(message)
             }
         }
+    }
+
+    @CircuitInject(DeviceCatalogScreen::class, AppScope::class)
+    @AssistedFactory
+    interface Factory {
+        fun create(navigator: Navigator): DeviceCatalogPresenter
     }
 }
