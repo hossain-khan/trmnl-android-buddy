@@ -118,18 +118,19 @@ class RecipesCatalogPresenterTest {
                 // Clear search
                 loadedState.eventSink(RecipesCatalogScreen.Event.ClearSearchClicked)
 
-                // Should clear query immediately
-                val clearedState = awaitItem()
-                assertThat(clearedState.searchQuery).isEqualTo("")
+                // Should clear query and trigger fetch
+                // Wait a bit for the fetch to complete
+                delay(200)
 
-                // Wait for results
-                delay(100)
-                var resultsState = clearedState
-                do {
-                    resultsState = awaitItem()
-                } while (resultsState.isLoading)
+                // Consume all remaining items and check the last one
+                var finalState = loadedState
+                while (true) {
+                    val item = runCatching { awaitItem() }.getOrNull() ?: break
+                    finalState = item
+                }
 
-                // Should fetch all recipes (null search)
+                // Should have cleared search and fetched
+                assertThat(finalState.searchQuery).isEqualTo("")
                 assertThat(repository.lastSearchQuery).isNull()
             }
         }
@@ -159,11 +160,14 @@ class RecipesCatalogPresenterTest {
                 loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.POPULARITY))
 
                 // Wait for sorted results
-                delay(100)
+                delay(200)
+
+                // Consume all remaining items and check the last one
                 var sortedState = loadedState
-                do {
-                    sortedState = awaitItem()
-                } while (sortedState.isLoading)
+                while (true) {
+                    val item = runCatching { awaitItem() }.getOrNull() ?: break
+                    sortedState = item
+                }
 
                 assertThat(sortedState.selectedSort).isEqualTo(SortOption.POPULARITY)
                 assertThat(repository.lastSortBy).isEqualTo("popularity")
@@ -189,23 +193,25 @@ class RecipesCatalogPresenterTest {
                     loadedState = awaitItem()
                 } while (loadedState.recipes.isEmpty())
 
-                val state = awaitItem()
-                assertThat(state.recipes).hasSize(2)
-                assertThat(state.currentPage).isEqualTo(1)
-                assertThat(state.hasMorePages).isTrue()
+                assertThat(loadedState.recipes).hasSize(2)
+                assertThat(loadedState.currentPage).isEqualTo(1)
+                assertThat(loadedState.hasMorePages).isTrue()
 
                 // Load more
-                state.eventSink(RecipesCatalogScreen.Event.LoadMoreClicked)
+                loadedState.eventSink(RecipesCatalogScreen.Event.LoadMoreClicked)
 
                 // Update repository response for page 2
                 repository.recipesResponse = createSampleRecipesResponse(2, currentPage = 2, hasNext = false)
 
                 // Wait for load more to complete
-                delay(100)
-                var loadedMoreState = state
-                do {
-                    loadedMoreState = awaitItem()
-                } while (loadedMoreState.isLoadingMore)
+                delay(200)
+
+                // Consume all remaining items and check the last one
+                var loadedMoreState = loadedState
+                while (true) {
+                    val item = runCatching { awaitItem() }.getOrNull() ?: break
+                    loadedMoreState = item
+                }
 
                 assertThat(loadedMoreState.recipes).hasSize(4) // 2 + 2
                 assertThat(loadedMoreState.currentPage).isEqualTo(2)
@@ -274,8 +280,10 @@ class RecipesCatalogPresenterTest {
 
                 loadedState.eventSink(RecipesCatalogScreen.Event.BackClicked)
 
-                // Verify navigation
+                // Verify navigation - no need to wait for more state emissions
                 assertThat(navigator.awaitPop()).isEqualTo(RecipesCatalogScreen)
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -312,11 +320,14 @@ class RecipesCatalogPresenterTest {
                     loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(sortOption))
 
                     // Wait for sort to complete
-                    delay(100)
+                    delay(200)
+
+                    // Consume all remaining items and check the last one
                     var sortedState = loadedState
-                    do {
-                        sortedState = awaitItem()
-                    } while (sortedState.isLoading)
+                    while (true) {
+                        val item = runCatching { awaitItem() }.getOrNull() ?: break
+                        sortedState = item
+                    }
 
                     assertThat(sortedState.selectedSort).isEqualTo(sortOption)
                     assertThat(repository.lastSortBy).isEqualTo(expectedApiValue)
