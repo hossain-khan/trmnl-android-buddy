@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Code Quality**: Refactored device type identification logic to extension property
+  - Created `DeviceModel.deviceKind` extension property for centralized device type detection
+  - Replaced duplicated `when` expressions across 3 locations with single source of truth
+  - Improved maintainability and type safety for device filtering and UI logic
+
 ### Added
 
 - **Device Catalog Screen**: View all supported TRMNL e-ink device models with specifications
