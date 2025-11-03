@@ -17,6 +17,8 @@ import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
+import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
+import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
@@ -237,6 +239,19 @@ class DeviceCatalogPresenterTest {
                 object : FakeApiService(
                     deviceModelsResponse = ApiResult.success(DeviceModelsResponse(data = deviceModels)),
                 ) {
+                    override suspend fun getRecipes(
+                        search: String?,
+                        sortBy: String?,
+                        page: Int?,
+                        perPage: Int?,
+                    ): ApiResult<RecipesResponse, ApiError> {
+                        TODO("Not yet implemented")
+                    }
+
+                    override suspend fun getRecipe(id: Int): ApiResult<RecipeDetailResponse, ApiError> {
+                        TODO("Not yet implemented")
+                    }
+
                     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> =
                         if (failureCount++ == 0) {
                             ApiResult.networkFailure(IOException("Network error"))
@@ -390,6 +405,19 @@ private open class FakeApiService(
     override suspend fun getDisplayCurrent(deviceApiKey: String) = throw NotImplementedError("Not needed for this test")
 
     override suspend fun userInfo(authorization: String) = throw NotImplementedError("Not needed for this test")
+
+    override suspend fun getRecipes(
+        search: String?,
+        sortBy: String?,
+        page: Int?,
+        perPage: Int?,
+    ): ApiResult<RecipesResponse, ApiError> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRecipe(id: Int): ApiResult<RecipeDetailResponse, ApiError> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = deviceModelsResponse
 }
