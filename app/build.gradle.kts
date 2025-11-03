@@ -1,3 +1,4 @@
+import java.time.Duration
 import java.util.Properties
 
 plugins {
@@ -75,6 +76,15 @@ android {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+        unitTests.all {
+            it.testLogging {
+                events("passed", "skipped", "failed")
+            }
+            // Set timeout for individual tests
+            it.maxParallelForks = 1
+            // Set timeout for the entire test task (2 minutes to match requirement)
+            it.timeout.set(Duration.ofMinutes(2))
+        }
     }
 
     compileOptions {

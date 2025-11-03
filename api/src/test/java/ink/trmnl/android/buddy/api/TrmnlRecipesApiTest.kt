@@ -19,7 +19,6 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -42,7 +41,6 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
  *
  * **Note**: These are public endpoints that do NOT require authentication.
  */
-@Ignore("Tests are hanging in CI environment, need investigation")
 class TrmnlRecipesApiTest {
 
     private lateinit var mockWebServer: MockWebServer
@@ -424,12 +422,12 @@ class TrmnlRecipesApiTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setBody("""{"data": []}""")
-                .setBodyDelay(2, java.util.concurrent.TimeUnit.SECONDS)
+                .setBodyDelay(500, java.util.concurrent.TimeUnit.MILLISECONDS)
         )
 
         // When: Call getRecipes with short timeout client
         val shortTimeoutClient = OkHttpClient.Builder()
-            .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(100, java.util.concurrent.TimeUnit.MILLISECONDS)
             .build()
 
         val shortTimeoutRetrofit = Retrofit.Builder()

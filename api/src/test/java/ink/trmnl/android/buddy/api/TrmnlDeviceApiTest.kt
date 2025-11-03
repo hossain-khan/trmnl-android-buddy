@@ -256,12 +256,12 @@ class TrmnlDeviceApiTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setBody("""{"data": []}""")
-                .setBodyDelay(10, java.util.concurrent.TimeUnit.SECONDS)
+                .setBodyDelay(500, java.util.concurrent.TimeUnit.MILLISECONDS)
         )
 
         // When: Call getDevices with short timeout client
         val shortTimeoutClient = OkHttpClient.Builder()
-            .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(100, java.util.concurrent.TimeUnit.MILLISECONDS)
             .build()
 
         val shortTimeoutRetrofit = Retrofit.Builder()

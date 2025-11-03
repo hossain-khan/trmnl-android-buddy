@@ -1,3 +1,5 @@
+import java.time.Duration
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -27,6 +29,18 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    
+    testOptions {
+        unitTests.all {
+            it.testLogging {
+                events("passed", "skipped", "failed")
+            }
+            // Set timeout for individual tests
+            it.maxParallelForks = 1
+            // Set timeout for the entire test task (2 minutes to match requirement)
+            it.timeout.set(Duration.ofMinutes(2))
+        }
     }
 }
 
