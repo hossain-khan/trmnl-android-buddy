@@ -287,6 +287,8 @@ private class FakeApiService(
 
     override suspend fun userInfo(authorization: String) = throw NotImplementedError("Not needed for this test")
 
+    override suspend fun getDeviceModels(authorization: String) = throw NotImplementedError("Not needed for this test")
+
     override suspend fun getRecipes(
         search: String?,
         sortBy: String?,
