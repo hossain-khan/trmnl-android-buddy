@@ -286,6 +286,8 @@ private class FakeApiService(
     override suspend fun getDisplayCurrent(deviceApiKey: String): ApiResult<Display, ApiError> = displayResponse
 
     override suspend fun userInfo(authorization: String) = throw NotImplementedError("Not needed for this test")
+
+    override suspend fun getDeviceModels(authorization: String) = throw NotImplementedError("Not needed for this test")
 }
 
 /**
