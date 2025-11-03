@@ -6,10 +6,13 @@ import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
+import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
+import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * TRMNL API Service interface.
@@ -223,11 +226,111 @@ interface TrmnlApiService {
     suspend fun userInfo(
         @Header("Authorization") authorization: String
     ): ApiResult<UserResponse, ApiError>
-    
+
+    // ========================================
+    // Recipes API (Public Endpoints)
+    // ========================================
+
+    /**
+     * Get a list of community plugin recipes from the TRMNL catalog.
+     *
+     * This is a **public endpoint** that does NOT require authentication.
+     *
+     * **Note**: This endpoint is in alpha testing and may be moved to `/api/recipes`
+     * or `/api/plugins` before end of 2025.
+     *
+     * @param search Optional search term to filter recipes by keyword
+     * @param sortBy Optional sort order: "oldest", "newest", "popularity", "fork", "install"
+     * @param page Optional page number for pagination (default: 1)
+     * @param perPage Optional items per page (default: 25)
+     * @return ApiResult containing paginated recipes list or error
+     *
+     * Example response:
+     * ```json
+     * {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Weather Chum",
+     *       "icon_url": "https://...",
+     *       "screenshot_url": "https://...",
+     *       "stats": {
+     *         "installs": 1230,
+     *         "forks": 1
+     *       }
+     *     }
+     *   ],
+     *   "total": 100,
+     *   "from": 1,
+     *   "to": 25,
+     *   "per_page": 25,
+     *   "current_page": 1,
+     *   "prev_page_url": null,
+     *   "next_page_url": "https://usetrmnl.com/recipes.json?page=2"
+     * }
+     * ```
+     *
+     * Example usage:
+     * ```kotlin
+     * // Get first page with default sort (newest)
+     * val result = api.getRecipes()
+     *
+     * // Search for weather-related recipes
+     * val searchResult = api.getRecipes(search = "weather")
+     *
+     * // Get most popular recipes
+     * val popularResult = api.getRecipes(sortBy = "popularity")
+     *
+     * // Get page 2 with custom page size
+     * val page2Result = api.getRecipes(page = 2, perPage = 50)
+     * ```
+     */
+    @GET("https://usetrmnl.com/recipes.json")
+    suspend fun getRecipes(
+        @Query("search") search: String? = null,
+        @Query("sort-by") sortBy: String? = null,
+        @Query("page") page: Int? = null,
+        @Query("per_page") perPage: Int? = null,
+    ): ApiResult<RecipesResponse, ApiError>
+
+    /**
+     * Get detailed information about a specific recipe.
+     *
+     * This is a **public endpoint** that does NOT require authentication.
+     *
+     * **Note**: This endpoint is in alpha testing and may be moved to `/api/recipes/{id}`
+     * or `/api/plugins/{id}` before end of 2025.
+     *
+     * @param id Recipe ID to fetch
+     * @return ApiResult containing recipe details or error
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.getRecipe(123)) {
+     *     is ApiResult.Success -> {
+     *         val recipe = result.value.data
+     *         println("Recipe: ${recipe.name}")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         404 -> println("Recipe not found")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("https://usetrmnl.com/recipes/{id}.json")
+    suspend fun getRecipe(
+        @Path("id") id: Int,
+    ): ApiResult<RecipeDetailResponse, ApiError>
+
+
     // ========================================
     // Models API
     // ========================================
-    
+
     /**
      * Get a list of all supported device models.
      *

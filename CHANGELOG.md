@@ -7,15 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- **Code Quality**: Refactored device type identification logic to extension property
-  - Created `DeviceModel.deviceKind` extension property for centralized device type detection
-  - Replaced duplicated `when` expressions across 3 locations with single source of truth
-  - Improved maintainability and type safety for device filtering and UI logic
-
 ### Added
 
+- **Recipes Catalog Screen**: Browse and discover TRMNL community plugin recipes
+    - Search functionality with real-time filtering and debouncing (500ms delay)
+    - Sort recipes by Newest, Oldest, Popular, Most Installed, or Most Forked
+    - Pagination support with "Load More" button for browsing large catalog
+    - Material 3 SearchBar with clear button for intuitive search experience
+    - Display recipe icons, names, install counts, and fork counts
+    - Accessible from Settings > Extras > Recipes Catalog
+    - Note: API endpoint is in alpha testing and may be moved before end of 2025
 - **Device Catalog Screen**: View all supported TRMNL e-ink device models with specifications
   - Browse 17 device models including official TRMNL devices, Amazon Kindle e-readers, and BYOD options
   - Filter devices by category: All (17), TRMNL (2), Kindle (6), or BYOD (9)
@@ -32,6 +33,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Copy all device details to clipboard with formatted text
   - Scrollable content for landscape orientation and smaller screens
   - Material 3 modal bottom sheet with proper theming
+
+### Changed
+
+- **Code Quality**: Refactored device type identification logic to extension property
+    - Created `DeviceModel.deviceKind` extension property for centralized device type detection
+    - Replaced duplicated `when` expressions across 3 locations with single source of truth
+    - Improved maintainability and type safety for device filtering and UI logic
 
 ## [2.3.0] - 2025-11-01
 
