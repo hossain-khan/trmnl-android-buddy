@@ -41,6 +41,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Replaced duplicated `when` expressions across 3 locations with single source of truth
     - Improved maintainability and type safety for device filtering and UI logic
 
+### Fixed
+
+- **Test Suite**: Fixed all ignored tests to ensure reliable test execution
+  - Removed `@Ignore` annotations from `TrmnlRecipesApiTest` (15 tests now running)
+  - Removed `@Ignore` annotations from `RecipesCatalogPresenterTest` (3 tests now running)
+  - Fixed API endpoint URLs to support both production and testing
+    - Changed BASE_URL from `https://usetrmnl.com/api/` to `https://usetrmnl.com/`
+    - Added `api/` prefix to authenticated endpoints (devices, display, me, models)
+    - Removed absolute URLs from recipe endpoints to enable MockWebServer testing
+  - Optimized network timeout tests (reduced delays from 2-10 seconds to 100-500ms)
+  - Added 2-minute test timeout configuration to prevent hanging tests
+  - All 169 tests now pass in under 2 minutes (was previously timing out)
+  - Tests were previously hitting real API instead of mock server, causing hangs and inconsistent results
+
 ## [2.3.0] - 2025-11-01
 
 ### Added

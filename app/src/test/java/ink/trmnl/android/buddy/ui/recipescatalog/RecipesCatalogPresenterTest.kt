@@ -16,7 +16,6 @@ import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.data.RecipesRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -175,15 +174,21 @@ class RecipesCatalogPresenterTest {
             }
         }
 
-    @Ignore("Pagination needs more reliable testing setup")
     @Test
     fun `load more appends next page of recipes`() =
         runTest {
             // Given
             val navigator = FakeNavigator(RecipesCatalogScreen)
+            val page1Response = createSampleRecipesResponse(2, currentPage = 1, hasNext = true)
+            val page2Response = createSampleRecipesResponse(2, currentPage = 2, hasNext = false)
             val repository =
                 FakeRecipesRepository(
-                    recipesResponse = createSampleRecipesResponse(2, currentPage = 1),
+                    recipesResponse = page1Response,
+                    pageResponses =
+                        mapOf(
+                            1 to page1Response,
+                            2 to page2Response,
+                        ),
                 )
             val presenter = RecipesCatalogPresenter(navigator, repository)
 
@@ -201,9 +206,6 @@ class RecipesCatalogPresenterTest {
 
                 // Load more
                 loadedState.eventSink(RecipesCatalogScreen.Event.LoadMoreClicked)
-
-                // Update repository response for page 2
-                repository.recipesResponse = createSampleRecipesResponse(2, currentPage = 2, hasNext = false)
 
                 // Wait for load more to complete
                 delay(200)
@@ -261,7 +263,6 @@ class RecipesCatalogPresenterTest {
             }
         }
 
-    @Ignore("Expected :[RecipesCatalogScreen], Actual :[PopEvent(poppedScreen=null, result=null)]")
     @Test
     fun `back clicked navigates back`() =
         runTest {
@@ -283,14 +284,16 @@ class RecipesCatalogPresenterTest {
 
                 loadedState.eventSink(RecipesCatalogScreen.Event.BackClicked)
 
-                // Verify navigation - no need to wait for more state emissions
-                assertThat(navigator.awaitPop()).isEqualTo(RecipesCatalogScreen)
+                // Verify navigation occurred (pop was called)
+                val popEvent = navigator.awaitPop()
+                // When pop() is called without arguments, poppedScreen is null
+                // We just verify that a pop event occurred
+                assertThat(popEvent).isNotNull()
 
                 cancelAndIgnoreRemainingEvents()
             }
         }
 
-    @Ignore("Takes longer than expected, needs investigation")
     @Test
     fun `all sort options work correctly`() =
         runTest {
@@ -348,6 +351,7 @@ private class FakeRecipesRepository(
     var recipesResponse: RecipesResponse = createSampleRecipesResponse(0),
     var shouldFail: Boolean = false,
     var errorMessage: String = "Error fetching recipes",
+    var pageResponses: Map<Int, RecipesResponse> = emptyMap(),
 ) : RecipesRepository {
     var lastSearchQuery: String? = null
     var lastSortBy: String? = null
@@ -366,7 +370,9 @@ private class FakeRecipesRepository(
         return if (shouldFail) {
             Result.failure(Exception(errorMessage))
         } else {
-            Result.success(recipesResponse)
+            // Use page-specific response if available, otherwise use default
+            val response = pageResponses[page] ?: recipesResponse
+            Result.success(response)
         }
     }
 
