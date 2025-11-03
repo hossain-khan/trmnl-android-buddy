@@ -247,6 +247,11 @@ private fun RecipesList(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        // Alpha testing banner
+        item {
+            AlphaTestingBanner()
+        }
+
         items(recipes, key = { it.id }) { recipe ->
             RecipeListItem(
                 recipe = recipe,
@@ -263,6 +268,37 @@ private fun RecipesList(
                     onClick = onLoadMoreClick,
                 )
             }
+        }
+    }
+}
+
+/**
+ * Alpha testing banner to inform users about the feature status.
+ */
+@Composable
+private fun AlphaTestingBanner(modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.data_info_alert_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
+            Text(
+                text = "The recipe feature is in alpha testing state now and may be unstable.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
         }
     }
 }
