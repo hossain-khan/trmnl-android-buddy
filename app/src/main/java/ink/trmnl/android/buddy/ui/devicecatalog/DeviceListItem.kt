@@ -35,14 +35,14 @@ fun DeviceListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Determine which logo to show based on device kind/name
+    // Determine which logo to show based on device kind
     val logoResource =
-        when {
-            device.kind == "trmnl" -> R.drawable.trmnl_logo_brand_orange
-            device.kind == "kindle" -> R.drawable.amazon_kindle_logo
-            device.name.startsWith("seeed_") -> R.drawable.seed_studio_color_logo
-            device.name.startsWith("kobo_") -> R.drawable.kobo_logo
-            else -> null
+        when (device.deviceKind) {
+            DeviceKind.TRMNL -> R.drawable.trmnl_logo_brand_orange
+            DeviceKind.KINDLE -> R.drawable.amazon_kindle_logo
+            DeviceKind.SEEED_STUDIO -> R.drawable.seed_studio_color_logo
+            DeviceKind.KOBO -> R.drawable.kobo_logo
+            DeviceKind.BYOD -> null
         }
 
     Card(

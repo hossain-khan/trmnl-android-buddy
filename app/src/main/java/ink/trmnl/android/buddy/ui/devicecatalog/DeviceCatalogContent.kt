@@ -146,20 +146,16 @@ private fun DeviceListContent(
     val filteredDevices =
         when (selectedFilter) {
             null -> devices // All
-            DeviceKind.TRMNL -> devices.filter { it.kind == "trmnl" }
-            DeviceKind.KINDLE -> devices.filter { it.kind == "kindle" }
-            DeviceKind.BYOD -> devices.filter { it.kind == "byod" }
-            DeviceKind.SEEED_STUDIO -> devices.filter { it.name.startsWith("seeed_") }
-            DeviceKind.KOBO -> devices.filter { it.name.startsWith("kobo_") }
+            else -> devices.filter { it.deviceKind == selectedFilter }
         }
 
     // Calculate counts for each filter
     val totalCount = devices.size
-    val trmnlCount = devices.count { it.kind == "trmnl" }
-    val kindleCount = devices.count { it.kind == "kindle" }
-    val byodCount = devices.count { it.kind == "byod" }
-    val seeedStudioCount = devices.count { it.name.startsWith("seeed_") }
-    val koboCount = devices.count { it.name.startsWith("kobo_") }
+    val trmnlCount = devices.count { it.deviceKind == DeviceKind.TRMNL }
+    val kindleCount = devices.count { it.deviceKind == DeviceKind.KINDLE }
+    val byodCount = devices.count { it.deviceKind == DeviceKind.BYOD }
+    val seeedStudioCount = devices.count { it.deviceKind == DeviceKind.SEEED_STUDIO }
+    val koboCount = devices.count { it.deviceKind == DeviceKind.KOBO }
 
     Column(modifier = modifier.fillMaxSize()) {
         // Filter chips row
