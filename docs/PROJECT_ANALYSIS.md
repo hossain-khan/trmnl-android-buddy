@@ -7,14 +7,14 @@
 
 ## 📊 Executive Summary
 
-TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-ink displays. The project has seen intensive development over a 34-day period with **625+ total commits**, **70+ hours** of estimated development time, and a clean, modern codebase built with Kotlin and Jetpack Compose.
+TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-ink displays. The project has seen intensive development over a 34-day period with **693 total commits**, **79.57 hours** of estimated development time, and a clean, modern codebase built with Kotlin and Jetpack Compose.
 
 ### Key Metrics
-- **Total Commits**: 625+
-- **Total Development Time**: ~70+ hours
+- **Total Commits**: 693
+- **Total Development Time**: ~79.57 hours
 - **Active Days**: 20+ out of 34 days (59%)
-- **Development Sessions**: 45+ sessions
-- **Average Session Duration**: 1.56 hours
+- **Development Sessions**: 46 sessions
+- **Average Session Duration**: 1.73 hours
 - **Contributors**: 2 (1 human developer + 1 AI assistant)
 - **Current Version**: 2.4.0 (versionCode 20)
 
@@ -40,9 +40,9 @@ This heuristic provides a realistic estimate of focused development time. The 1-
 
 | Metric | Value |
 |--------|-------|
-| Total Development Time | **70+ hours** |
-| Total Sessions | 45+ |
-| Average Session Duration | 1.56 hours |
+| Total Development Time | **79.57 hours** |
+| Total Sessions | 46 |
+| Average Session Duration | 1.73 hours |
 | Longest Session | 6.69 hours (Oct 2) |
 | Shortest Session | 0.01 hours |
 
@@ -51,15 +51,15 @@ This heuristic provides a realistic estimate of focused development time. The 1-
 | Rank | Date | Duration | Time Range | Commits |
 |------|------|----------|------------|---------|
 | 1 | Oct 2, 2025 | 6.69 hrs | 17:18 - 23:59 | 53 |
-| 2 | Oct 24, 2025 | 5.21 hrs | 17:10 - 22:22 | 57 |
+| 2 | Oct 24, 2025 | 5.21 hrs | 17:10 - 02:22 | 57 |
 | 3 | Oct 24, 2025 | 4.75 hrs | 09:38 - 14:24 | 31 |
 | 4 | Oct 25, 2025 | 4.65 hrs | 18:33 - 23:12 | 31 |
 | 5 | Oct 25, 2025 | 4.27 hrs | 07:50 - 12:06 | 36 |
 | 6 | Oct 23, 2025 | 4.27 hrs | 19:29 - 23:45 | 32 |
 | 7 | Oct 3, 2025 | 3.40 hrs | 09:51 - 13:15 | 31 |
-| 8 | Oct 23, 2025 | 3.12 hrs | 22:04 - 01:12 | 37 |
-| 9 | Oct 21, 2025 | 2.35 hrs | 16:10 - 18:31 | 18 |
-| 10 | Oct 3, 2025 | 2.30 hrs | 21:27 - 23:45 | 24 |
+| 8 | Nov 4, 2025 | 3.35 hrs | 19:11 - 22:32 | 42 |
+| 9 | Nov 2, 2025 | 3.32 hrs | 18:28 - 21:48 | 29 |
+| 10 | Oct 23, 2025 | 3.12 hrs | 02:04 - 01:12 | 35 |
 
 ### Daily Activity Distribution
 
@@ -100,19 +100,20 @@ gantt
 
 | Date | Commits | % of Total |
 |------|---------|-----------|
-| Oct 24, 2025 | 93 | 14.9% |
-| Oct 25, 2025 | 85 | 13.6% |
-| Oct 3, 2025 | 69 | 11.0% |
-| Oct 23, 2025 | 57 | 9.1% |
-| Oct 22, 2025 | 38 | 6.1% |
-| Oct 21, 2025 | 34 | 5.4% |
-| Nov 4, 2025 | 32+ | 5.1% |
-| Oct 4, 2025 | 24 | 3.8% |
-| Oct 26, 2025 | 19 | 3.0% |
-| Oct 20, 2025 | 18 | 2.9% |
-| Oct 19, 2025 | 15 | 2.4% |
-| Nov 1, 2025 | 12+ | 1.9% |
-| Others | 129+ | 20.6% |
+| Oct 24, 2025 | 93 | 13.4% |
+| Oct 25, 2025 | 85 | 12.3% |
+| Oct 3, 2025 | 69 | 10.0% |
+| Oct 23, 2025 | 57 | 8.2% |
+| Nov 4, 2025 | 42 | 6.1% |
+| Oct 22, 2025 | 38 | 5.5% |
+| Oct 21, 2025 | 34 | 4.9% |
+| Nov 2, 2025 | 29 | 4.2% |
+| Oct 4, 2025 | 24 | 3.5% |
+| Oct 26, 2025 | 19 | 2.7% |
+| Oct 20, 2025 | 18 | 2.6% |
+| Oct 19, 2025 | 15 | 2.2% |
+| Nov 1, 2025 | 12 | 1.7% |
+| Others | 158 | 22.8% |
 
 **Insight**: The project shows a classic sprint pattern with intensive development bursts (Oct 24-26, Nov 4), likely corresponding to major feature implementations and release preparation.
 
@@ -443,9 +444,9 @@ timeline
 ### Development Metrics
 - **Duration**: 34 days
 - **Active Days**: 20+ days (59%)
-- **Total Commits**: 625+
-- **Development Time**: 70+ hours
-- **Average Daily Commits**: 31+ (on active days)
+- **Total Commits**: 693
+- **Development Time**: 79.57 hours
+- **Average Daily Commits**: 34.7 (on active days)
 - **Peak Day**: 93 commits (Oct 24)
 
 ### Quality Metrics
@@ -487,7 +488,7 @@ TRMNL Android Buddy represents a modern, well-architected Android application de
 
 - **Professional Development Practices**: PR-based workflow, CI/CD, semantic versioning
 - **Modern Architecture**: Circuit, Metro DI, Jetpack Compose
-- **Rapid Iteration**: 625+ commits over 34 days (~70+ hours)
+- **Rapid Iteration**: 693 commits over 34 days (~79.57 hours)
 - **Quality Focus**: 13.0% comment density, comprehensive documentation
 - **Innovative Approach**: Human + AI collaboration for accelerated development
 - **Rich Feature Set**: Device monitoring, battery tracking, content feeds, recipe catalog, zoom capabilities
