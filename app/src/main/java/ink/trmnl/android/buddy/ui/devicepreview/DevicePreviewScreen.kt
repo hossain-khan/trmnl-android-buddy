@@ -57,9 +57,8 @@ import ink.trmnl.android.buddy.util.ImageDownloadUtils
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import me.saket.telephoto.zoomable.ZoomSpec
-import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
-import me.saket.telephoto.zoomable.rememberZoomableImageState
 import me.saket.telephoto.zoomable.rememberZoomableState
+import me.saket.telephoto.zoomable.zoomable
 
 /**
  * Screen for displaying device preview image in full-screen.
@@ -405,7 +404,9 @@ fun DevicePreviewContent(
             contentAlignment = Alignment.Center,
         ) {
             SharedElementTransitionScope {
-                ZoomableAsyncImage(
+                val zoomableState = rememberZoomableState(zoomSpec = ZoomSpec(maxZoomFactor = 4f))
+
+                SubcomposeAsyncImage(
                     model = state.imageUrl,
                     contentDescription = "Full screen preview for ${state.deviceName}",
                     modifier =
@@ -416,8 +417,29 @@ fun DevicePreviewContent(
                                         key = DevicePreviewImageKey(deviceId = state.deviceId),
                                     ),
                                 animatedVisibilityScope = requireAnimatedScope(Navigation),
-                            ).fillMaxSize(),
-                    state = rememberZoomableImageState(rememberZoomableState(zoomSpec = ZoomSpec(maxZoomFactor = 4f))),
+                            ).fillMaxSize()
+                            .zoomable(zoomableState),
+                    contentScale = ContentScale.Fit,
+                    loading = {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.onSurface)
+                        }
+                    },
+                    error = {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "Failed to load image",
+                                color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        }
+                    },
                 )
             }
         }
