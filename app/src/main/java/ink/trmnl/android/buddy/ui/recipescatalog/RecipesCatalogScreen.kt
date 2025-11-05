@@ -55,6 +55,11 @@ data object RecipesCatalogScreen : Screen {
         data object BackClicked : Event()
 
         /**
+         * User clicked the bookmarks button to view bookmarked recipes.
+         */
+        data object BookmarksClicked : Event()
+
+        /**
          * User changed the search query text.
          *
          * @property query New search query text

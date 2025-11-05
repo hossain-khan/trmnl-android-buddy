@@ -83,6 +83,14 @@ fun RecipesCatalogContent(
                         )
                     }
                 },
+                actions = {
+                    IconButton(onClick = { state.eventSink(RecipesCatalogScreen.Event.BookmarksClicked) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.bookmark_star_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "View bookmarked recipes",
+                        )
+                    }
+                },
             )
         },
     ) { innerPadding ->
