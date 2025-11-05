@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Maximum zoom factor of 4x for detailed viewing
   - Integrated with existing shared element transitions
   - Uses Telephoto 1.0.0-alpha02 library for robust zoom handling
+- **Smart Image Color Inverter in Dark Mode**: Automatically inverts dark recipe icons for better visibility
+  - Analyzes recipe icon images to detect if they are predominantly dark (80%+ dark pixels)
+  - Intelligently inverts dark icons only in dark mode using Coil image transformation
+  - Improves readability of dark icons (e.g., Sentry, GitHub) against dark backgrounds
+  - Modular implementation with reusable `SmartInvertTransformation` and brightness analysis utilities
+  - Comprehensive unit tests for image brightness detection with Robolectric
 - **Recipe Bookmarking Feature**: Save and manage favorite recipes for quick access
   - Bookmark any recipe from the Recipes Catalog with animated bookmark icon toggle
   - Persistent storage using Room database with automatic migration from v1 to v2
@@ -80,6 +86,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **RecipesCatalogPresenterTest**: Fixed 3 ignored tests that were previously failing
+  - Fixed "back clicked navigates back" test by checking for PopEvent instead of screen equality
+  - Fixed "load more appends next page of recipes" test by implementing page-specific responses in FakeRecipesRepository
+  - Fixed "all sort options work correctly" test by creating fresh presenter instances for each sort option to avoid state pollution
 - **Device Preview Image Refresh**: Thumbnail in device list now updates when preview image is refreshed
   - Fixed issue where refreshing image in `DevicePreviewScreen` didn't update the thumbnail in `TrmnlDevicesScreen`
   - Implemented Circuit's `PopResult` pattern to communicate image URL changes between screens
