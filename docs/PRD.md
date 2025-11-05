@@ -1,8 +1,8 @@
 # Product Requirements Document (PRD)
 ## TRMNL Android Buddy
 
-**Version:** 2.1.0  
-**Last Updated:** October 26, 2025  
+**Version:** 2.4.0  
+**Last Updated:** November 4, 2025  
 **Document Owner:** Product Team  
 **Status:** Active
 
@@ -41,7 +41,8 @@ To be the essential mobile companion for TRMNL device owners, providing seamless
 - **Networking**: Retrofit 3.0.0, OkHttp 5.1.0, EitherNet 2.0.0
 - **Database**: Room (TrmnlDatabase, ContentDatabase)
 - **Background Processing**: WorkManager
-- **Image Loading**: Coil
+- **Image Loading**: Coil 3.3.0
+- **Image Zoom**: Telephoto 0.18.0
 - **Authentication**: AndroidX Biometric library
 - **Build**: Gradle 9.1.0 with Kotlin DSL
 
@@ -66,6 +67,11 @@ trmnl-android-buddy/
   - BlogPostRepository
   - ContentFeedRepository
 
+- **BookmarkDatabase**: Recipe bookmarks (Room)
+  - BookmarkEntity
+  - BookmarkDao
+  - BookmarkRepository
+
 - **DataStore Preferences**:
   - UserPreferencesRepository (app settings)
   - DeviceTokenRepository (device-level API keys)
@@ -89,7 +95,9 @@ trmnl-android-buddy/
 - FR-1.1.1: Display welcome message with TRMNL branding
 - FR-1.1.2: Show "Welcome back!" message for returning users with 800ms delay and fade-in animation
 - FR-1.1.3: Display "What's New" section showing count of recent announcements and blog posts (when content exists)
-- FR-1.1.4: Provide "Get Started" button (outlined style) to begin setup
+- FR-1.1.4: Adaptive button text based on user state:
+  - New users see "Get Started" (leads to API token setup)
+  - Returning users see "Dashboard" (leads to devices/authentication)
 - FR-1.1.5: One-tap access to ContentHubScreen for content exploration (no API token required)
 - FR-1.1.6: Display TRMNL "Works With" badge (theme-aware) in bottom right corner (80dp size)
 - FR-1.1.7: Support landscape mode with scrollable content
@@ -114,6 +122,12 @@ trmnl-android-buddy/
 - FR-1.2.7: Display inline help text with API key location instructions
 - FR-1.2.8: Support landscape mode with scrollable content
 - FR-1.2.9: Navigate to TRMNL Devices screen upon successful save
+- FR-1.2.10: Informational banner about API key requirements:
+  - Explains requirement for developer edition or BYOD license
+  - Closeable banner with smooth slide-up animation
+  - Material You design with primaryContainer color scheme
+  - Info icon and close button
+  - Smooth layout animations using animateContentSize()
 
 **Security**:
 - API keys stored in encrypted DataStore Preferences
@@ -174,15 +188,19 @@ trmnl-android-buddy/
 **Content Carousel** (when RSS feed content enabled):
 - FR-2.1.15: Display combined announcements and blog posts carousel (latest 3 items)
 - FR-2.1.16: Show only unread content (filters out items where isRead = true)
-- FR-2.1.17: Hide carousel completely when all content has been read
-- FR-2.1.18: Auto-rotation every 5 seconds with smooth fade animation
-- FR-2.1.19: Stop auto-rotation permanently when user manually swipes
-- FR-2.1.20: Pause rotation on touch interactions
-- FR-2.1.21: Page indicators showing current position
-- FR-2.1.22: Click to open content in Chrome Custom Tabs and mark as read
-- FR-2.1.23: "View All" button to navigate to ContentHubScreen
-- FR-2.1.24: Post type indicators: notification icon for announcements, list icon for blog posts
-- FR-2.1.25: Display unread indicator, title (max 2 lines), summary (max 2 lines), metadata
+- FR-2.1.17: ContentFeedRepository.getLatestUnreadContent() fetches unread from both sources
+- FR-2.1.18: Filtering happens at DAO level (SQL) for efficiency
+- FR-2.1.19: Hide carousel completely when all content has been read
+- FR-2.1.20: Auto-rotation every 5 seconds with smooth fade animation
+- FR-2.1.21: Stop auto-rotation permanently when user manually swipes
+- FR-2.1.22: Pause rotation on touch interactions
+- FR-2.1.23: Page indicators showing current position
+- FR-2.1.24: Click to open content in Chrome Custom Tabs and mark as read
+- FR-2.1.25: "View All" button to navigate to ContentHubScreen
+- FR-2.1.26: Post type indicators: notification icon for announcements, list icon for blog posts
+- FR-2.1.27: Display unread indicator, title (max 2 lines), summary (max 2 lines), metadata
+- FR-2.1.28: Smooth height animation (300ms) when switching between different-sized content
+- FR-2.1.29: Uses animateContentSize() modifier to prevent jarring visual jumps
 
 **User Actions**:
 - Tap device card → Navigate to Device Detail Screen
@@ -465,20 +483,25 @@ trmnl-android-buddy/
 **Requirements**:
 - FR-5.3.1: Bottom navigation with two tabs: "Announcements" and "Blog Posts"
 - FR-5.3.2: Material 3 NavigationBar with icons and labels
-- FR-5.3.3: Tab selection state management with rememberRetained
-- FR-5.3.4: Announcements tab embeds AnnouncementsScreen
-- FR-5.3.5: Blog Posts tab embeds BlogPostsScreen
-- FR-5.3.6: TopAppBar title dynamically updates based on selected tab
-- FR-5.3.7: TopAppBar shows tab-specific content:
+- FR-5.3.3: Unread count badges on navigation bar items:
+  - Announcements tab shows unread announcement count
+  - Blog Posts tab shows unread blog post count
+  - Badges update in real-time as content is read
+  - Uses Material 3's BadgedBox component
+- FR-5.3.4: Tab selection state management with rememberRetained
+- FR-5.3.5: Announcements tab embeds AnnouncementsScreen
+- FR-5.3.6: Blog Posts tab embeds BlogPostsScreen
+- FR-5.3.7: TopAppBar title dynamically updates based on selected tab
+- FR-5.3.8: TopAppBar shows tab-specific content:
   - Announcements: unread count badge
   - Blog Posts: selected category and filter dropdown
-- FR-5.3.8: Embedded screens hide their own TopAppBars (isEmbedded parameter)
-- FR-5.3.9: Smooth crossfade animation (300ms) when switching tabs
-- FR-5.3.10: Bottom navigation icons:
+- FR-5.3.9: Embedded screens hide their own TopAppBars (isEmbedded parameter)
+- FR-5.3.10: Smooth crossfade animation (300ms) when switching tabs
+- FR-5.3.11: Bottom navigation icons:
   - Announcements: campaign icon (megaphone)
   - Blog Posts: newspaper icon
-- FR-5.3.11: NavigableCircuitContent for embedded screens
-- FR-5.3.12: Full content area utilizes Scaffold innerPadding
+- FR-5.3.12: NavigableCircuitContent for embedded screens
+- FR-5.3.13: Full content area utilizes Scaffold innerPadding
 
 #### 3.5.4 RSS Feed Content Settings
 **Purpose**: Granular control over RSS feed syncing and notifications
@@ -544,17 +567,22 @@ trmnl-android-buddy/
   - Icon: Battery alert icon
   - Master toggle to enable/disable notifications
   - Threshold slider (5% to 50%, expandable when enabled)
-- FR-6.1.5: Development section (debug builds only):
+- FR-6.1.5: Extras section:
+  - Icon: Extension/puzzle icon
+  - Link to Recipes Catalog screen
+  - Link to Supported Device Catalog screen
+  - Provides quick access to community resources
+- FR-6.1.6: Development section (debug builds only):
   - Icon: Android icon
   - Link to Development Tools screen
-- FR-6.1.6: App Information section:
-  - Current app version (from BuildConfig)
+- FR-6.1.7: App Information section:
+  - Current app version (from BuildConfig) with clickable link to GitHub releases
   - Build type (Debug/Release)
   - "Report Issues" link to GitHub repository
-- FR-6.1.7: Material 3 design with dividers using outlineVariant color
-- FR-6.1.8: Icons on section headers (not individual items)
-- FR-6.1.9: All preferences persisted in DataStore
-- FR-6.1.10: Modular UI: separate files for each section
+- FR-6.1.8: Material 3 design with dividers using outlineVariant color
+- FR-6.1.9: Icons on section headers (not individual items)
+- FR-6.1.10: All preferences persisted in DataStore
+- FR-6.1.11: Modular UI: separate files for each section
 
 **UI Organization**:
 - Main SettingsScreen.kt (350 lines)
@@ -611,45 +639,209 @@ trmnl-android-buddy/
 
 ---
 
-### 3.8 Development Tools (Debug Only)
+### 3.8 Recipes Catalog
 
-#### 3.8.1 Development Screen
+#### 3.8.1 Recipes Catalog Screen
+**Purpose**: Browse and discover TRMNL community plugin recipes
+
+**Requirements**:
+- FR-8.1.1: Display searchable catalog of TRMNL plugin recipes
+- FR-8.1.2: Real-time search with debouncing (500ms delay)
+- FR-8.1.3: Material 3 SearchBar with proper spacing and modern API
+- FR-8.1.4: Uses SearchBarDefaults.InputField pattern (not deprecated API)
+- FR-8.1.5: Only horizontal padding (16.dp), no vertical padding
+- FR-8.1.6: Clear button in search bar for quick reset
+- FR-8.1.7: Sort options with dedicated sort button in top bar:
+  - Newest (default)
+  - Oldest
+  - Popular
+  - Most Installed
+  - Most Forked
+- FR-8.1.8: Pagination support with "Load More" button
+- FR-8.1.9: Recipe cards display:
+  - Recipe icon (smart color inversion in dark mode)
+  - Recipe name
+  - Install count with icon
+  - Fork count with icon
+  - Bookmark toggle button (animated)
+- FR-8.1.10: Bookmark functionality:
+  - Save recipes to bookmarks with animated toggle
+  - Persistent storage using Room database
+  - Real-time sync across screens
+  - Smooth Material 3 animations (fade + scale)
+- FR-8.1.11: Smart icon color inversion in dark mode:
+  - Analyzes icon brightness (80%+ dark pixels threshold)
+  - Automatically inverts dark icons for better visibility
+  - Uses Coil transformation for efficient processing
+  - Comprehensive unit tests with Robolectric
+- FR-8.1.12: Navigate to Bookmarked Recipes via bookmarks button in top bar
+- FR-8.1.13: Loading states with progress indicators
+- FR-8.1.14: Error states with retry capability
+- FR-8.1.15: Empty states for no results
+- FR-8.1.16: Accessible from Settings → Extras → Recipes Catalog
+- FR-8.1.17: Material You theming with dynamic colors
+- FR-8.1.18: Full Material 3 compliance
+
+**API Details**:
+- Endpoint: GET /recipes (alpha testing)
+- Note: API endpoint may be moved before end of 2025
+- Response: RecipesResponse { data: List<Recipe>, meta: Pagination }
+- Recipe fields: id, name, slug, iconUrl, installs, forks
+- Supports query parameters: search, sort, page
+
+#### 3.8.2 Bookmarked Recipes Screen
+**Purpose**: Manage and share saved favorite recipes
+
+**Requirements**:
+- FR-8.2.1: Display all bookmarked recipes in scrollable list
+- FR-8.2.2: Recipe cards show same information as catalog
+- FR-8.2.3: Remove bookmark with single tap on bookmark icon
+- FR-8.2.4: Share button in top app bar
+- FR-8.2.5: Share functionality:
+  - Opens Android share sheet
+  - Formats recipe names as bulleted list
+  - Automatically copies to clipboard
+  - Shows confirmation message
+  - Shares via any installed app (messaging, email, etc.)
+- FR-8.2.6: Clear all bookmarks button in top app bar
+- FR-8.2.7: Confirmation dialog before clearing all:
+  - Prevents accidental deletion
+  - Shows count of bookmarks to be cleared
+  - Material 3 AlertDialog
+- FR-8.2.8: Empty state when no bookmarks exist
+- FR-8.2.9: Loading state during initial fetch
+- FR-8.2.10: Real-time updates when bookmarks added/removed
+- FR-8.2.11: Material 3 design throughout
+- FR-8.2.12: Accessible from Recipes Catalog top bar
+
+**Database Schema** (BookmarkEntity):
+- recipeId: String (primary key)
+- recipeName: String
+- recipeSlug: String
+- recipeIconUrl: String?
+- installCount: Int
+- forkCount: Int
+- bookmarkedAt: Instant
+
+**Repository Operations**:
+- Add bookmark
+- Remove bookmark
+- Clear all bookmarks
+- Get all bookmarks (Flow)
+- Check if recipe is bookmarked
+
+---
+
+### 3.9 Device Catalog
+
+#### 3.9.1 Device Catalog Screen
+**Purpose**: View all supported TRMNL e-ink device models with specifications
+
+**Requirements**:
+- FR-9.1.1: Display catalog of 17 supported TRMNL device models
+- FR-9.1.2: Filter devices by category with chips:
+  - All (17 devices) - default
+  - TRMNL (2 devices) - Official TRMNL hardware
+  - Kindle (6 devices) - Amazon Kindle e-readers
+  - BYOD (9 devices) - Bring Your Own Device options
+- FR-9.1.3: Device cards show key specifications:
+  - Device name
+  - Resolution (width × height)
+  - Color support (Black/White or 7-Color)
+  - Bit depth
+- FR-9.1.4: Tap device card to open detailed bottom sheet
+- FR-9.1.5: Device details bottom sheet:
+  - Shows all device properties
+  - Resolution, colors, bit depth, scale factor
+  - Rotation, MIME type, offsets
+  - Color palettes, publish date
+  - Scrollable content for smaller screens
+  - Copy all details to clipboard button
+  - Material 3 modal bottom sheet
+- FR-9.1.6: Automatic device type detection via deviceKind extension property
+- FR-9.1.7: Material 3 filter chips with selection state
+- FR-9.1.8: Loading and error states
+- FR-9.1.9: Accessible from Settings → Extras → Supported Device Catalog
+- FR-9.1.10: Full Material You theming with dynamic colors
+- FR-9.1.11: Theme-aware colors throughout
+
+**API Details**:
+- Endpoint: GET /device_models
+- Response: DeviceModelsResponse { data: List<DeviceModel> }
+- DeviceModel fields: name, slug, resolution, colors, bitDepth, scaleFactor, rotation, mimeType, offsetX, offsetY, palette, publishedAt
+
+**Device Types**:
+- TRMNL: Official TRMNL devices (e.g., TRMNL Mark II)
+- Kindle: Amazon Kindle e-readers (e.g., Kindle Paperwhite)
+- BYOD: Third-party e-ink displays (e.g., Waveshare, Pimoroni)
+
+---
+
+### 3.10 Device Preview Enhancements
+
+#### 3.10.1 Pinch to Zoom
+**Purpose**: Enable detailed inspection of device preview images
+
+**Requirements**:
+- FR-10.1.1: Pinch-to-zoom gesture support using Telephoto library
+- FR-10.1.2: Maximum zoom factor of 4x
+- FR-10.1.3: Double-tap to zoom in/out with smooth animations
+- FR-10.1.4: Pan around zoomed image with touch gestures
+- FR-10.1.5: Smooth spring-based zoom animations
+- FR-10.1.6: Maintains aspect ratio during zoom
+- FR-10.1.7: Integration with existing shared element transitions
+- FR-10.1.8: Uses Telephoto 0.18.0 ZoomableAsyncImage component
+- FR-10.1.9: Coil 3 integration for image loading
+- FR-10.1.10: Preview image updates reflected in device list thumbnail
+- FR-10.1.11: Circuit's PopResult pattern for state communication
+
+**Technical Implementation**:
+- ZoomableAsyncImage replaces standard AsyncImage
+- Coil 3 for image loading and caching
+- Telephoto for zoom gesture handling
+- PopResult to communicate refresh to parent screen
+
+---
+
+### 3.11 Development Tools (Debug Only)
+
+#### 3.11.1 Development Screen
 **Purpose**: Comprehensive testing tools for notifications and workers
 
 **Requirements**:
-- FR-8.1.1: Gated by BuildConfig.DEBUG (not accessible in release builds)
-- FR-8.1.2: Accessible via Settings → Development Tools
-- FR-8.1.3: Notification testing with mock data:
+- FR-11.1.1: Gated by BuildConfig.DEBUG (not accessible in release builds)
+- FR-11.1.2: Accessible via Settings → Development Tools
+- FR-11.1.3: Notification testing with mock data:
   - Low battery notifications (1-5 devices slider, 5-50% threshold slider)
   - Blog post notifications (1-10 posts slider)
   - Announcement notifications (1-10 announcements slider)
   - Instant testing without API calls or scheduled intervals
-- FR-8.1.4: Worker triggers with real data:
+- FR-11.1.4: Worker triggers with real data:
   - Manual one-time LowBatteryNotificationWorker execution
   - Manual one-time BlogPostSyncWorker execution
   - Manual one-time AnnouncementSyncWorker execution
   - Uses real TRMNL API and RSS feed data
-- FR-8.1.5: Permission management:
+- FR-11.1.5: Permission management:
   - Visual permission status display (Android 13+)
   - Color-coded cards: Green (granted) / Red (denied)
   - Quick permission request button
   - Direct link to system notification settings
-- FR-8.1.6: Circuit UDF architecture with Metro DI
-- FR-8.1.7: Material 3 UI with sliders and buttons
-- FR-8.1.8: Documented in docs/TESTING_NOTIFICATIONS.md
+- FR-11.1.6: Circuit UDF architecture with Metro DI
+- FR-11.1.7: Material 3 UI with sliders and buttons
+- FR-11.1.8: Documented in docs/TESTING_NOTIFICATIONS.md
 
-#### 3.8.2 Development Configuration
+#### 3.11.2 Development Configuration
 **Purpose**: Feature flags for testing RSS feed notifications
 
 **Requirements**:
-- FR-8.2.1: AppDevConfig object with boolean flags:
+- FR-11.2.1: AppDevConfig object with boolean flags:
   - ENABLE_ANNOUNCEMENT_NOTIFICATION (force announcement notifications)
   - ENABLE_BLOG_NOTIFICATION (force blog post notifications)
   - VERBOSE_NOTIFICATION_LOGGING (detailed notification flow debugging)
-- FR-8.2.2: Bypasses user preference for notification toggles
-- FR-8.2.3: Still respects POST_NOTIFICATIONS permission
-- FR-8.2.4: Workers check dev flags alongside user preferences
-- FR-8.2.5: Comprehensive documentation with production warnings
+- FR-11.2.2: Bypasses user preference for notification toggles
+- FR-11.2.3: Still respects POST_NOTIFICATIONS permission
+- FR-11.2.4: Workers check dev flags alongside user preferences
+- FR-11.2.5: Comprehensive documentation with production warnings
 
 ---
 
@@ -764,6 +956,9 @@ trmnl-android-buddy/
 - BlogPostsScreen (9 previews)
 - ContentHubScreen (5 previews)
 - SettingsScreen (component previews)
+- RecipesCatalogScreen (multiple component previews)
+- BookmarkedRecipesScreen
+- DeviceCatalogScreen
 
 ---
 
@@ -812,6 +1007,18 @@ trmnl-android-buddy/
 - Returns: Display { imageUrl, refreshRate }
 - Auth: Required (Device token)
 - Used for preview image and refresh rate
+
+**GET /recipes** (Alpha)
+- Returns: RecipesResponse { data: List<Recipe>, meta: Pagination }
+- Auth: Not required
+- Recipe fields: id, name, slug, iconUrl, installs, forks
+- Query params: search, sort, page
+- Note: API endpoint in alpha testing, may be moved before end of 2025
+
+**GET /device_models**
+- Returns: DeviceModelsResponse { data: List<DeviceModel> }
+- Auth: Not required
+- DeviceModel fields: name, slug, resolution, colors, bitDepth, scaleFactor, rotation, mimeType, offsetX, offsetY, palette, publishedAt
 
 ### 5.2 Database Architecture
 
@@ -878,6 +1085,34 @@ data class BlogPostEntity(
 
 **Migration**:
 - MIGRATION_1_2: Added blog_posts table
+
+#### 5.2.3 BookmarkDatabase (Room)
+**Purpose**: Recipe bookmark storage
+
+**Schema**:
+```kotlin
+@Entity(tableName = "bookmarks")
+data class BookmarkEntity(
+    @PrimaryKey val recipeId: String,
+    val recipeName: String,
+    val recipeSlug: String,
+    val recipeIconUrl: String?,
+    val installCount: Int,
+    val forkCount: Int,
+    val bookmarkedAt: Instant
+)
+```
+
+**DAO Operations**:
+- Insert bookmark
+- Delete bookmark
+- Clear all bookmarks
+- Get all bookmarks (Flow)
+- Check if recipe is bookmarked
+- Get bookmark count
+
+**Migration**:
+- MIGRATION_1_2: Initial creation of bookmarks table
 
 ### 5.3 DataStore Preferences
 
@@ -1070,7 +1305,7 @@ data class BlogPostEntity(
 - REL-1.4: PATCH: Bug fixes, backward compatible (only for hotfixes)
 - REL-1.5: Version in app/build.gradle.kts (versionCode + versionName)
 
-**Current Version**: 2.1.0 (versionCode: 16)
+**Current Version**: 2.4.0 (versionCode: 20)
 
 ### 9.2 Release Process
 
@@ -1158,9 +1393,12 @@ data class BlogPostEntity(
 - **AssertK**: https://github.com/assertk-org/assertk
 - **Material 3**: https://m3.material.io/
 - **Jetpack Compose**: https://developer.android.com/jetpack/compose
+- **Telephoto**: https://github.com/saket/telephoto
+- **Coil**: https://coil-kt.github.io/coil/
 
 ---
 
-**Document Version**: 1.0  
-**Generated**: October 26, 2025  
+**Document Version**: 2.0  
+**Generated**: November 4, 2025  
+**Last Major Update**: Version 2.4.0 release  
 **Next Review**: With each major release (X.0.0)
