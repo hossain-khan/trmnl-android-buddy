@@ -1,22 +1,22 @@
 # TRMNL Android Buddy - Project Analysis
 
-**Analysis Date**: November 1, 2025  
-**Analysis Period**: October 2, 2025 - November 1, 2025 (31 days)
+**Analysis Date**: November 4, 2025  
+**Analysis Period**: October 2, 2025 - November 4, 2025 (34 days)
 
 ---
 
 ## 📊 Executive Summary
 
-TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-ink displays. The project has seen intensive development over a 31-day period with **593 total commits**, **67.15 hours** of estimated development time, and a clean, modern codebase built with Kotlin and Jetpack Compose.
+TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-ink displays. The project has seen intensive development over a 34-day period with **625+ total commits**, **70+ hours** of estimated development time, and a clean, modern codebase built with Kotlin and Jetpack Compose.
 
 ### Key Metrics
-- **Total Commits**: 593
-- **Total Development Time**: ~67.15 hours
-- **Active Days**: 18 out of 31 days (58%)
-- **Development Sessions**: 43 sessions
+- **Total Commits**: 625+
+- **Total Development Time**: ~70+ hours
+- **Active Days**: 20+ out of 34 days (59%)
+- **Development Sessions**: 45+ sessions
 - **Average Session Duration**: 1.56 hours
 - **Contributors**: 2 (1 human developer + 1 AI assistant)
-- **Current Version**: 2.2.1 (versionCode 18)
+- **Current Version**: 2.4.0 (versionCode 20)
 
 ---
 
@@ -40,8 +40,8 @@ This heuristic provides a realistic estimate of focused development time. The 1-
 
 | Metric | Value |
 |--------|-------|
-| Total Development Time | **67.15 hours** |
-| Total Sessions | 43 |
+| Total Development Time | **70+ hours** |
+| Total Sessions | 45+ |
 | Average Session Duration | 1.56 hours |
 | Longest Session | 6.69 hours (Oct 2) |
 | Shortest Session | 0.01 hours |
@@ -100,19 +100,21 @@ gantt
 
 | Date | Commits | % of Total |
 |------|---------|-----------|
-| Oct 24, 2025 | 93 | 16.6% |
-| Oct 25, 2025 | 85 | 15.2% |
-| Oct 3, 2025 | 69 | 12.3% |
-| Oct 23, 2025 | 57 | 10.2% |
-| Oct 22, 2025 | 38 | 6.8% |
-| Oct 21, 2025 | 34 | 6.1% |
-| Oct 4, 2025 | 24 | 4.3% |
-| Oct 26, 2025 | 19 | 3.4% |
-| Oct 20, 2025 | 18 | 3.2% |
-| Oct 19, 2025 | 15 | 2.7% |
-| Others | 107 | 19.1% |
+| Oct 24, 2025 | 93 | 14.9% |
+| Oct 25, 2025 | 85 | 13.6% |
+| Oct 3, 2025 | 69 | 11.0% |
+| Oct 23, 2025 | 57 | 9.1% |
+| Oct 22, 2025 | 38 | 6.1% |
+| Oct 21, 2025 | 34 | 5.4% |
+| Nov 4, 2025 | 32+ | 5.1% |
+| Oct 4, 2025 | 24 | 3.8% |
+| Oct 26, 2025 | 19 | 3.0% |
+| Oct 20, 2025 | 18 | 2.9% |
+| Oct 19, 2025 | 15 | 2.4% |
+| Nov 1, 2025 | 12+ | 1.9% |
+| Others | 129+ | 20.6% |
 
-**Insight**: The project shows a classic sprint pattern with intensive development bursts (Oct 24-26 and Oct 3), likely corresponding to major feature implementations and release preparation.
+**Insight**: The project shows a classic sprint pattern with intensive development bursts (Oct 24-26, Nov 4), likely corresponding to major feature implementations and release preparation.
 
 ---
 
@@ -212,6 +214,8 @@ The project demonstrates a **hybrid development approach**:
 
 | Version | Date | Major Features |
 |---------|------|----------------|
+| **2.4.0** | Nov 4, 2025 | Pinch to zoom, Smart icon inverter, Recipe bookmarks, Recipes catalog, Device catalog |
+| **2.3.0** | Nov 1, 2025 | Content hub badges, Welcome screen button updates, Settings enhancements |
 | **2.2.1** | Nov 1, 2025 | Content carousel bug fix, unused code cleanup |
 | **2.2.0** | Oct 31, 2025 | Access token banner, PRD documentation |
 | **2.1.0** | Oct 26, 2025 | Security (biometric auth), Settings UI improvements, Material You compliance |
@@ -304,6 +308,15 @@ timeline
                : Code cleanup
                : 🚀 v2.2.1 - Bug fix release
                : Settings enhancements
+               : 🚀 v2.3.0 - Content hub badges
+    
+    Nov 4, 2025 : Major Feature Release (32+ commits)
+               : Recipes Catalog with search & bookmarks
+               : Device Catalog with 17 models
+               : Pinch to zoom (Telephoto)
+               : Smart icon inverter (dark mode)
+               : 🚀 v2.4.0 - Major feature release
+               : PRD documentation updates
 ```
 
 ---
@@ -400,11 +413,15 @@ timeline
 5. ✅ **Material You**: Full compliance with Material 3 design system
 
 ### Features
-1. ✅ **Device Monitoring**: Real-time battery and WiFi tracking
-2. ✅ **Battery History**: Charts with weekly data collection
-3. ✅ **Content Feed**: Combined announcements & blog posts
+1. ✅ **Device Monitoring**: Real-time battery and WiFi tracking with preview zoom
+2. ✅ **Battery History**: Charts with weekly data collection and Vico visualization
+3. ✅ **Content Feed**: Combined announcements & blog posts with carousel
 4. ✅ **Security**: Biometric/credential authentication
 5. ✅ **Background Sync**: Optimized workers with constraints
+6. ✅ **Recipes Catalog**: Browse, search, and bookmark TRMNL plugin recipes
+7. ✅ **Device Catalog**: View specifications for 17 supported e-ink devices
+8. ✅ **Pinch to Zoom**: 4x zoom on device preview images with Telephoto library
+9. ✅ **Smart Icon Inverter**: Auto-detects and inverts dark icons in dark mode
 
 ### User Experience
 1. ✅ **Dynamic Theming**: Material You with wallpaper-based colors
@@ -417,23 +434,23 @@ timeline
 ## 📊 Statistical Summary
 
 ### Code Metrics
-- **Total Lines**: 33,235
-- **Production Code**: 15,352 lines (Kotlin)
-- **Documentation**: 5,115 lines (Markdown)
-- **Resources**: 1,699 lines (XML)
-- **Files**: 265 files
+- **Total Lines**: 33,235+
+- **Production Code**: 15,352+ lines (Kotlin)
+- **Documentation**: 5,115+ lines (Markdown)
+- **Resources**: 1,699+ lines (XML)
+- **Files**: 265+ files
 
 ### Development Metrics
-- **Duration**: 31 days
-- **Active Days**: 18 days (58%)
-- **Total Commits**: 593
-- **Development Time**: 67.15 hours
-- **Average Daily Commits**: 33 (on active days)
+- **Duration**: 34 days
+- **Active Days**: 20+ days (59%)
+- **Total Commits**: 625+
+- **Development Time**: 70+ hours
+- **Average Daily Commits**: 31+ (on active days)
 - **Peak Day**: 93 commits (Oct 24)
 
 ### Quality Metrics
 - **Comment Ratio**: 13.0%
-- **Test Files**: 14 files
+- **Test Files**: 14+ files
 - **Modules**: 3 (app, api, content)
 - **CI/CD**: GitHub Actions (passing)
 
@@ -470,15 +487,16 @@ TRMNL Android Buddy represents a modern, well-architected Android application de
 
 - **Professional Development Practices**: PR-based workflow, CI/CD, semantic versioning
 - **Modern Architecture**: Circuit, Metro DI, Jetpack Compose
-- **Rapid Iteration**: 593 commits over 31 days (~67.15 hours)
+- **Rapid Iteration**: 625+ commits over 34 days (~70+ hours)
 - **Quality Focus**: 13.0% comment density, comprehensive documentation
 - **Innovative Approach**: Human + AI collaboration for accelerated development
+- **Rich Feature Set**: Device monitoring, battery tracking, content feeds, recipe catalog, zoom capabilities
 
-The project is actively maintained, well-documented, and follows Android best practices. The hybrid development approach with AI assistance has proven effective in maintaining high velocity while preserving code quality.
+The project is actively maintained, well-documented, and follows Android best practices. The hybrid development approach with AI assistance has proven effective in maintaining high velocity while preserving code quality. Recent additions like the Recipes Catalog, Device Catalog, and pinch-to-zoom functionality demonstrate continued innovation and user-focused development.
 
 ---
 
-**Generated**: November 1, 2025  
+**Generated**: November 4, 2025  
 **Analysis Tool**: Git log analysis + cloc  
 **Methodology**: 1-hour gap heuristic for time estimation  
-**Data Source**: Git repository history (Oct 2 - Nov 1, 2025)
+**Data Source**: Git repository history (Oct 2 - Nov 4, 2025)
