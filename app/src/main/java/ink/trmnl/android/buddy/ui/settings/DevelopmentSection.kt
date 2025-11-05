@@ -38,7 +38,7 @@ fun DevelopmentSection(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
-                painter = painterResource(R.drawable.android_circle_thin_outline),
+                painter = painterResource(R.drawable.adb_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp),

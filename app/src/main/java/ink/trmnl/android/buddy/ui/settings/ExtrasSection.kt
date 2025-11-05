@@ -4,12 +4,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -73,6 +74,14 @@ fun ExtrasSection(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.devices_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(26.dp),
+                        )
+                    },
                     trailingContent = {
                         Icon(
                             painter = painterResource(R.drawable.arrow_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
@@ -97,9 +106,17 @@ fun ExtrasSection(
                     },
                     supportingContent = {
                         Text(
-                            text = "Browse and discover plugin recipes and configurations",
+                            text = "Browse and discover popular plugin recipes and configurations",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.chef_hat_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(26.dp),
                         )
                     },
                     trailingContent = {
