@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Smart Image Color Inverter in Dark Mode**: Automatically inverts dark recipe icons for better visibility
+  - Analyzes recipe icon images to detect if they are predominantly dark (80%+ dark pixels)
+  - Intelligently inverts dark icons only in dark mode using Coil image transformation
+  - Improves readability of dark icons (e.g., Sentry, GitHub) against dark backgrounds
+  - Modular implementation with reusable `SmartInvertTransformation` and brightness analysis utilities
+  - Comprehensive unit tests for image brightness detection with Robolectric
 - **Recipe Bookmarking Feature**: Save and manage favorite recipes for quick access
   - Bookmark any recipe from the Recipes Catalog with animated bookmark icon toggle
   - Persistent storage using Room database with automatic migration from v1 to v2
