@@ -1,5 +1,9 @@
 package ink.trmnl.android.buddy.ui.bookmarkedrecipes
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -7,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -33,6 +38,9 @@ class BookmarkedRecipesPresenter(
 ) : Presenter<BookmarkedRecipesScreen.State> {
     @Composable
     override fun present(): BookmarkedRecipesScreen.State {
+        // Get context for clipboard and sharing
+        val context = LocalContext.current
+
         // Collect bookmarked recipes as state
         val bookmarkedRecipes by bookmarkRepository.getAllBookmarks().collectAsState(initial = emptyList())
         var showClearAllDialog by remember { mutableStateOf(false) }
@@ -48,6 +56,32 @@ class BookmarkedRecipesPresenter(
             when (event) {
                 BookmarkedRecipesScreen.Event.BackClicked -> {
                     navigator.pop()
+                }
+
+                BookmarkedRecipesScreen.Event.ShareClicked -> {
+                    if (bookmarkedRecipes.isNotEmpty()) {
+                        val recipeList = bookmarkedRecipes.joinToString(separator = "\n") { "• ${it.name}" }
+                        val shareText = "My Bookmarked TRMNL Recipes:\n\n$recipeList"
+
+                        // Copy to clipboard
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Bookmarked Recipes", shareText)
+                        clipboard.setPrimaryClip(clip)
+                        Timber.d("Bookmarked recipes copied to clipboard")
+
+                        // Open share sheet
+                        val shareIntent =
+                            Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, shareText)
+                                putExtra(Intent.EXTRA_SUBJECT, "My Bookmarked TRMNL Recipes")
+                            }
+                        val chooser = Intent.createChooser(shareIntent, "Share Bookmarked Recipes")
+                        context.startActivity(chooser)
+                        Timber.d("Share sheet opened with ${bookmarkedRecipes.size} recipes")
+                    } else {
+                        Timber.d("No bookmarked recipes to share")
+                    }
                 }
 
                 BookmarkedRecipesScreen.Event.ClearAllClicked -> {

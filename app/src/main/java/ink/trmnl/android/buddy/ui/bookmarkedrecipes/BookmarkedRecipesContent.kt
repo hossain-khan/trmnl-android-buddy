@@ -67,8 +67,14 @@ fun BookmarkedRecipesContent(
                     }
                 },
                 actions = {
-                    // Only show clear all button when there are bookmarks
+                    // Only show actions when there are bookmarks
                     if (state.bookmarkedRecipes.isNotEmpty()) {
+                        IconButton(onClick = { state.eventSink(BookmarkedRecipesScreen.Event.ShareClicked) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.share_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Share bookmarked recipes",
+                            )
+                        }
                         IconButton(onClick = { state.eventSink(BookmarkedRecipesScreen.Event.ClearAllClicked) }) {
                             Icon(
                                 painter = painterResource(R.drawable.delete_24dp_e8eaed_fill0_wght300_grad0_opsz24),

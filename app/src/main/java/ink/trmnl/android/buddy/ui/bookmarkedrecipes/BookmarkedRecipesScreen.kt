@@ -41,6 +41,11 @@ data object BookmarkedRecipesScreen : Screen {
         data object BackClicked : Event()
 
         /**
+         * User clicked the share button to share bookmarked recipes.
+         */
+        data object ShareClicked : Event()
+
+        /**
          * User clicked the clear all bookmarks button.
          */
         data object ClearAllClicked : Event()
