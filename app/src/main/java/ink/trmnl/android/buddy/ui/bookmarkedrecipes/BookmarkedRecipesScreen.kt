@@ -20,12 +20,14 @@ data object BookmarkedRecipesScreen : Screen {
      * @property bookmarkedRecipes List of bookmarked recipes
      * @property isLoading True when loading bookmarks
      * @property error Error message to display, or null if no error
+     * @property showClearAllDialog True when showing the clear all confirmation dialog
      * @property eventSink Handler for UI events
      */
     data class State(
         val bookmarkedRecipes: List<Recipe> = emptyList(),
         val isLoading: Boolean = false,
         val error: String? = null,
+        val showClearAllDialog: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -37,6 +39,26 @@ data object BookmarkedRecipesScreen : Screen {
          * User clicked the back button.
          */
         data object BackClicked : Event()
+
+        /**
+         * User clicked the share button to share bookmarked recipes.
+         */
+        data object ShareClicked : Event()
+
+        /**
+         * User clicked the clear all bookmarks button.
+         */
+        data object ClearAllClicked : Event()
+
+        /**
+         * User confirmed clearing all bookmarks in the dialog.
+         */
+        data object ConfirmClearAll : Event()
+
+        /**
+         * User dismissed the clear all confirmation dialog.
+         */
+        data object DismissClearAllDialog : Event()
 
         /**
          * User clicked on a recipe to view details.
