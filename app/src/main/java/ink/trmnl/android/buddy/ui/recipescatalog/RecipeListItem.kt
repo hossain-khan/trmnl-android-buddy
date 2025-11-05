@@ -59,28 +59,38 @@ fun RecipeListItem(
         ListItem(
             leadingContent = {
                 // Recipe icon using Coil for async image loading
-                SubcomposeAsyncImage(
-                    model = recipe.iconUrl,
-                    contentDescription = null,
-                    modifier =
-                        Modifier
-                            .size(40.dp)
-                            .clip(MaterialTheme.shapes.small),
-                    contentScale = ContentScale.Crop,
-                    loading = {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                    },
-                    error = {
-                        Icon(
-                            painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght200_grad0_opsz24),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    },
-                )
+                if (recipe.iconUrl != null) {
+                    SubcomposeAsyncImage(
+                        model = recipe.iconUrl,
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .size(40.dp)
+                                .clip(MaterialTheme.shapes.small),
+                        contentScale = ContentScale.Crop,
+                        loading = {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        },
+                        error = {
+                            Icon(
+                                painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght200_grad0_opsz24),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                    )
+                } else {
+                    // Placeholder icon when iconUrl is null
+                    Icon(
+                        painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght200_grad0_opsz24),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(40.dp),
+                    )
+                }
             },
             headlineContent = {
                 Text(
