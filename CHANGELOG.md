@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Pinch to Zoom Support**: Added pinch-to-zoom functionality to Device Preview Screen using Telephoto library
+  - Users can now pinch to zoom in/out on device preview images for better detail inspection
+  - Double-tap to zoom in and out with smooth animations
+  - Maximum zoom factor of 4x for detailed viewing
+  - Integrated with existing shared element transitions
+  - Uses Telephoto 0.18.0 library for robust zoom handling
 - **Smart Image Color Inverter in Dark Mode**: Automatically inverts dark recipe icons for better visibility
   - Analyzes recipe icon images to detect if they are predominantly dark (80%+ dark pixels)
   - Intelligently inverts dark icons only in dark mode using Coil image transformation

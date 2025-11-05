@@ -56,6 +56,9 @@ import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import ink.trmnl.android.buddy.util.ImageDownloadUtils
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import me.saket.telephoto.zoomable.ZoomSpec
+import me.saket.telephoto.zoomable.rememberZoomableState
+import me.saket.telephoto.zoomable.zoomable
 
 /**
  * Screen for displaying device preview image in full-screen.
@@ -401,6 +404,8 @@ fun DevicePreviewContent(
             contentAlignment = Alignment.Center,
         ) {
             SharedElementTransitionScope {
+                val zoomableState = rememberZoomableState(zoomSpec = ZoomSpec(maxZoomFactor = 4f))
+
                 SubcomposeAsyncImage(
                     model = state.imageUrl,
                     contentDescription = "Full screen preview for ${state.deviceName}",
@@ -412,7 +417,8 @@ fun DevicePreviewContent(
                                         key = DevicePreviewImageKey(deviceId = state.deviceId),
                                     ),
                                 animatedVisibilityScope = requireAnimatedScope(Navigation),
-                            ).fillMaxSize(),
+                            ).fillMaxSize()
+                            .zoomable(zoomableState),
                     contentScale = ContentScale.Fit,
                     loading = {
                         Box(
