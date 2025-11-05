@@ -106,6 +106,10 @@ class RecipesCatalogPresenter(
                     navigator.pop()
                 }
 
+                RecipesCatalogScreen.Event.BookmarksClicked -> {
+                    navigator.goTo(ink.trmnl.android.buddy.ui.bookmarkedrecipes.BookmarkedRecipesScreen)
+                }
+
                 is RecipesCatalogScreen.Event.SearchQueryChanged -> {
                     searchQuery = event.query
 
