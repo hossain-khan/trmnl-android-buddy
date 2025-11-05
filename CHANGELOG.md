@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Persistent storage using Room database with automatic migration from v1 to v2
   - View all bookmarked recipes in dedicated Bookmarked Recipes screen
   - Remove bookmarks with single tap on bookmark icon
+  - Clear all bookmarks with confirmation dialog to prevent accidental deletion
+  - Share bookmarked recipes via Android share sheet with formatted recipe list
+  - Copy bookmarked recipe names to clipboard automatically when sharing
   - Bookmarks sync in real-time across all screens
   - Smooth Material 3 animations for bookmark state transitions (fade + scale)
 - **Recipes Catalog Screen**: Browse and discover TRMNL community plugin recipes
@@ -77,6 +80,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **RecipesCatalogPresenterTest**: Fixed 3 ignored tests that were previously failing
+  - Fixed "back clicked navigates back" test by checking for PopEvent instead of screen equality
+  - Fixed "load more appends next page of recipes" test by implementing page-specific responses in FakeRecipesRepository
+  - Fixed "all sort options work correctly" test by creating fresh presenter instances for each sort option to avoid state pollution
 - **Device Preview Image Refresh**: Thumbnail in device list now updates when preview image is refreshed
   - Fixed issue where refreshing image in `DevicePreviewScreen` didn't update the thumbnail in `TrmnlDevicesScreen`
   - Implemented Circuit's `PopResult` pattern to communicate image URL changes between screens

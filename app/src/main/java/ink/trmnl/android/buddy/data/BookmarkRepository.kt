@@ -45,6 +45,11 @@ interface BookmarkRepository {
      * @return Flow of bookmarked recipe ID set
      */
     fun getAllBookmarkedIds(): Flow<Set<Int>>
+
+    /**
+     * Clear all bookmarked recipes.
+     */
+    suspend fun clearAllBookmarks()
 }
 
 /**
@@ -86,6 +91,10 @@ class DefaultBookmarkRepository(
             .getAllBookmarkedIds()
             .map { it.toSet() }
             .distinctUntilChanged()
+
+    override suspend fun clearAllBookmarks() {
+        bookmarkedRecipeDao.deleteAll()
+    }
 }
 
 /**
