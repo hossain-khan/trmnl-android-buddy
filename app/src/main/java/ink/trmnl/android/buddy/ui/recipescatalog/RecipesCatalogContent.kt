@@ -29,6 +29,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -175,35 +176,41 @@ private fun RecipesSearchBar(
     var isActive by remember { mutableStateOf(false) }
 
     SearchBar(
-        query = searchQuery,
-        onQueryChange = onQueryChange,
-        onSearch = {
-            isActive = false
-            onSearchClicked()
-        },
-        active = isActive,
-        onActiveChange = { isActive = it },
-        placeholder = { Text("Search recipes...") },
-        leadingIcon = {
-            Icon(
-                painter = painterResource(R.drawable.search_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                contentDescription = "Search",
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = searchQuery,
+                onQueryChange = onQueryChange,
+                onSearch = {
+                    isActive = false
+                    onSearchClicked()
+                },
+                expanded = isActive,
+                onExpandedChange = { isActive = it },
+                placeholder = { Text("Search recipes...") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.search_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        contentDescription = "Search",
+                    )
+                },
+                trailingIcon = {
+                    if (searchQuery.isNotEmpty()) {
+                        IconButton(onClick = onClearClicked) {
+                            Icon(
+                                painter = painterResource(R.drawable.close_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Clear search",
+                            )
+                        }
+                    }
+                },
             )
         },
-        trailingIcon = {
-            if (searchQuery.isNotEmpty()) {
-                IconButton(onClick = onClearClicked) {
-                    Icon(
-                        painter = painterResource(R.drawable.close_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                        contentDescription = "Clear search",
-                    )
-                }
-            }
-        },
+        expanded = isActive,
+        onExpandedChange = { isActive = it },
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
+                .padding(horizontal = 16.dp),
     ) {
         // Search suggestions can be added here in future
     }
