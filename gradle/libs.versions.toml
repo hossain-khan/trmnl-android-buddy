@@ -6,7 +6,7 @@ targetSdk = "36" # Android 16 (Baklava)
 
 activityCompose = "1.11.0"
 # https://developer.android.com/build/releases/gradle-plugin
-agp = "8.12.1"
+agp = "8.13.0"
 assertk = "0.28.1"
 circuit = "0.30.0"
 composeBom = "2025.09.01"
