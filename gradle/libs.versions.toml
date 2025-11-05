@@ -83,6 +83,10 @@ biometric = "1.4.0-alpha04"
 # https://github.com/cashapp/turbine
 turbine = "1.2.0"
 
+# Telephoto - Zoomable images for Compose
+# https://github.com/saket/telephoto
+telephoto = "1.0.0-alpha02"
+
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -182,6 +186,10 @@ androidx-biometric = { group = "androidx.biometric", name = "biometric", version
 # Turbine - Testing library for Kotlin Flow
 # https://github.com/cashapp/turbine
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+
+# Telephoto - Zoomable images for Compose
+# https://github.com/saket/telephoto
+telephoto-zoomable-image-coil = { group = "me.saket.telephoto", name = "zoomable-image-coil", version.ref = "telephoto" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

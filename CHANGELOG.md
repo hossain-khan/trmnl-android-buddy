@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Pinch to Zoom Support**: Added pinch-to-zoom functionality to Device Preview Screen using Telephoto library
+  - Users can now pinch to zoom in/out on device preview images for better detail inspection
+  - Double-tap to zoom in and out with smooth animations
+  - Maximum zoom factor of 4x for detailed viewing
+  - Integrated with existing shared element transitions
+  - Uses Telephoto 1.0.0-alpha02 library for robust zoom handling
 - **Recipe Bookmarking Feature**: Save and manage favorite recipes for quick access
   - Bookmark any recipe from the Recipes Catalog with animated bookmark icon toggle
   - Persistent storage using Room database with automatic migration from v1 to v2

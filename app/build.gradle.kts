@@ -149,6 +149,9 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    // Telephoto - Zoomable images for Compose
+    implementation(libs.telephoto.zoomable.image.coil)
+
     // Accompanist - Compose utilities for permissions
     implementation(libs.accompanist.permissions)
 
