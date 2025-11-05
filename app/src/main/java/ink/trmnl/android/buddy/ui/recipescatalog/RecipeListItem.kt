@@ -75,7 +75,7 @@ fun RecipeListItem(
                     },
                     error = {
                         Icon(
-                            painter = painterResource(R.drawable.recipe_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght200_grad0_opsz24),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
