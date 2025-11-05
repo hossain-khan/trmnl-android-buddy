@@ -387,27 +387,27 @@
                 <tbody>
                     <tr>
                         <td><strong>Kotlin</strong></td>
-                        <td>101</td>
-                        <td>15,352</td>
-                        <td>2,926</td>
-                        <td>1,752</td>
-                        <td>20,030</td>
+                        <td>133</td>
+                        <td>20,473</td>
+                        <td>4,027</td>
+                        <td>2,372</td>
+                        <td>26,872</td>
                     </tr>
                     <tr>
                         <td><strong>Markdown</strong></td>
-                        <td>16</td>
-                        <td>5,115</td>
+                        <td>15</td>
+                        <td>5,408</td>
                         <td>0</td>
-                        <td>1,276</td>
-                        <td>6,391</td>
+                        <td>1,260</td>
+                        <td>6,668</td>
                     </tr>
                     <tr>
                         <td><strong>XML</strong></td>
-                        <td>104</td>
-                        <td>1,699</td>
-                        <td>53</td>
-                        <td>171</td>
-                        <td>1,923</td>
+                        <td>147</td>
+                        <td>3,796</td>
+                        <td>55</td>
+                        <td>173</td>
+                        <td>4,024</td>
                     </tr>
                     <tr>
                         <td><strong>YAML</strong></td>
@@ -420,53 +420,53 @@
                     <tr>
                         <td><strong>HTML</strong></td>
                         <td>1</td>
-                        <td>1,046</td>
+                        <td>1,028</td>
                         <td>9</td>
-                        <td>72</td>
-                        <td>1,127</td>
+                        <td>73</td>
+                        <td>1,110</td>
                     </tr>
                     <tr>
                         <td><strong>JSON</strong></td>
                         <td>6</td>
-                        <td>792</td>
+                        <td>862</td>
                         <td>0</td>
                         <td>0</td>
-                        <td>792</td>
+                        <td>862</td>
                     </tr>
                     <tr>
                         <td><strong>Other</strong></td>
-                        <td>32</td>
-                        <td>855</td>
-                        <td>349</td>
-                        <td>205</td>
-                        <td>1,409</td>
+                        <td>31</td>
+                        <td>923</td>
+                        <td>281</td>
+                        <td>172</td>
+                        <td>1,376</td>
                     </tr>
                     <tr style="font-weight: bold; background-color: var(--bg-color);">
                         <td>TOTAL</td>
-                        <td>265</td>
-                        <td>26,253</td>
-                        <td>3,403</td>
-                        <td>3,579</td>
-                        <td>33,235</td>
+                        <td>338</td>
+                        <td>33,884</td>
+                        <td>4,438</td>
+                        <td>4,153</td>
+                        <td>42,475</td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="stats-grid">
                 <div class="stat-card" style="background: linear-gradient(135deg, #059669, #10b981);">
-                    <div class="stat-value">13.0%</div>
+                    <div class="stat-value">13.1%</div>
                     <div class="stat-label">Comment Density</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">
-                    <div class="stat-value">58.5%</div>
+                    <div class="stat-value">60.4%</div>
                     <div class="stat-label">Kotlin Code</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, #d97706, #f59e0b);">
-                    <div class="stat-value">19.5%</div>
+                    <div class="stat-value">16.0%</div>
                     <div class="stat-label">Documentation</div>
                 </div>
                 <div class="stat-card" style="background: linear-gradient(135deg, #dc2626, #ef4444);">
-                    <div class="stat-value">14</div>
+                    <div class="stat-value">14+</div>
                     <div class="stat-label">Test Files</div>
                 </div>
             </div>
@@ -682,7 +682,7 @@
 
             <h3>Code Quality Indicators</h3>
             <ul>
-                <li>✅ <strong>High Comment Density:</strong> 13.0% indicates well-documented code</li>
+                <li>✅ <strong>High Comment Density:</strong> 13.1% indicates well-documented code</li>
                 <li>✅ <strong>Test Coverage:</strong> 14+ dedicated test files with MockWebServer, fakes, Circuit test utilities</li>
                 <li>✅ <strong>Modular Architecture:</strong> Separate modules (app, api, content)</li>
                 <li>✅ <strong>Modern Stack:</strong> Kotlin, Compose, Circuit, Metro DI</li>
@@ -912,9 +912,9 @@
         new Chart(fileTypesCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Kotlin (102)', 'XML (123)', 'Markdown (15)', 'SVG (13)', 'JSON (6)', 'YAML (5)', 'Gradle (5)', 'Other (13)'],
+                labels: ['Kotlin (133)', 'XML (147)', 'Markdown (15)', 'SVG (13)', 'JSON (6)', 'YAML (5)', 'Gradle (5)', 'Other (14)'],
                 datasets: [{
-                    data: [102, 123, 15, 13, 6, 5, 5, 13],
+                    data: [133, 147, 15, 13, 6, 5, 5, 14],
                     backgroundColor: [
                         'rgba(37, 99, 235, 0.8)',
                         'rgba(124, 58, 237, 0.8)',
@@ -954,17 +954,17 @@
                 datasets: [
                     {
                         label: 'Code',
-                        data: [15565, 4720, 3295, 1394, 792, 748],
+                        data: [20473, 5408, 3796, 1394, 862, 951],
                         backgroundColor: 'rgba(37, 99, 235, 0.8)'
                     },
                     {
                         label: 'Comments',
-                        data: [2956, 0, 53, 66, 0, 319],
+                        data: [4027, 0, 55, 66, 0, 290],
                         backgroundColor: 'rgba(124, 58, 237, 0.8)'
                     },
                     {
                         label: 'Blank',
-                        data: [1770, 1163, 171, 103, 0, 171],
+                        data: [2372, 1260, 173, 103, 0, 245],
                         backgroundColor: 'rgba(100, 116, 139, 0.5)'
                     }
                 ]
