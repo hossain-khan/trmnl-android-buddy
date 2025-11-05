@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.announcements
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -284,6 +285,7 @@ class AnnouncementsPresenter
 /**
  * UI content for AnnouncementsScreen.
  */
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @CircuitInject(AnnouncementsScreen::class, AppScope::class)
 @Composable

@@ -17,4 +17,6 @@ class FakeBookmarkRepository : BookmarkRepository {
     override fun getAllBookmarks() = repository.getAllBookmarks()
 
     override fun getAllBookmarkedIds() = repository.getAllBookmarkedIds()
+
+    override suspend fun clearAllBookmarks() = repository.clearAllBookmarks()
 }
