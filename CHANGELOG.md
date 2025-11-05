@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Persistent storage using Room database with automatic migration from v1 to v2
   - View all bookmarked recipes in dedicated Bookmarked Recipes screen
   - Remove bookmarks with single tap on bookmark icon
+  - Clear all bookmarks with confirmation dialog to prevent accidental deletion
+  - Share bookmarked recipes via Android share sheet with formatted recipe list
+  - Copy bookmarked recipe names to clipboard automatically when sharing
   - Bookmarks sync in real-time across all screens
   - Smooth Material 3 animations for bookmark state transitions (fade + scale)
 - **Recipes Catalog Screen**: Browse and discover TRMNL community plugin recipes

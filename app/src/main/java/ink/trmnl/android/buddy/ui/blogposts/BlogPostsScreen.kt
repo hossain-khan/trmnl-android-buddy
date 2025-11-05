@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.blogposts
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -279,6 +280,7 @@ class BlogPostsPresenter
 /**
  * UI content for BlogPostsScreen.
  */
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @CircuitInject(BlogPostsScreen::class, AppScope::class)
 @Composable
