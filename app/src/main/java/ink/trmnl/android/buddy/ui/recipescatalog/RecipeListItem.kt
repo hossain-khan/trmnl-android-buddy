@@ -8,6 +8,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,10 +28,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
+import coil3.request.ImageRequest
+import coil3.request.transformations
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import ink.trmnl.android.buddy.ui.utils.SmartInvertTransformation
 
 /**
  * List item component for displaying a single recipe.
@@ -60,8 +64,14 @@ fun RecipeListItem(
             leadingContent = {
                 // Recipe icon using Coil for async image loading
                 if (recipe.iconUrl != null) {
+                    val isDarkMode = isSystemInDarkTheme()
                     SubcomposeAsyncImage(
-                        model = recipe.iconUrl,
+                        model =
+                            ImageRequest
+                                .Builder(androidx.compose.ui.platform.LocalContext.current)
+                                .data(recipe.iconUrl)
+                                .transformations(SmartInvertTransformation(isDarkMode))
+                                .build(),
                         contentDescription = null,
                         modifier =
                             Modifier
