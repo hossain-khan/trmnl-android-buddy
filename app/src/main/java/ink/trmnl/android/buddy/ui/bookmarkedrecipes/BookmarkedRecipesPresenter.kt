@@ -3,7 +3,10 @@ package ink.trmnl.android.buddy.ui.bookmarkedrecipes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -32,7 +35,7 @@ class BookmarkedRecipesPresenter(
     override fun present(): BookmarkedRecipesScreen.State {
         // Collect bookmarked recipes as state
         val bookmarkedRecipes by bookmarkRepository.getAllBookmarks().collectAsState(initial = emptyList())
-        var showClearAllDialog by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+        var showClearAllDialog by remember { mutableStateOf(false) }
 
         val coroutineScope = rememberCoroutineScope()
 

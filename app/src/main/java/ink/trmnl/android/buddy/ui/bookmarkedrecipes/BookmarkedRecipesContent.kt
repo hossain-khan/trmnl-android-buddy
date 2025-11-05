@@ -71,7 +71,7 @@ fun BookmarkedRecipesContent(
                     if (state.bookmarkedRecipes.isNotEmpty()) {
                         IconButton(onClick = { state.eventSink(BookmarkedRecipesScreen.Event.ClearAllClicked) }) {
                             Icon(
-                                painter = painterResource(R.drawable.delete_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                painter = painterResource(R.drawable.delete_24dp_e8eaed_fill0_wght300_grad0_opsz24),
                                 contentDescription = "Clear all bookmarks",
                             )
                         }
@@ -196,7 +196,7 @@ private fun ClearAllConfirmationDialog(
         onDismissRequest = onDismiss,
         icon = {
             Icon(
-                painter = painterResource(R.drawable.delete_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                painter = painterResource(R.drawable.delete_24dp_e8eaed_fill0_wght300_grad0_opsz24),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
             )
