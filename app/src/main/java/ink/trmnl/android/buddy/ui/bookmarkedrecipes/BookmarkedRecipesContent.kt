@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -64,6 +66,17 @@ fun BookmarkedRecipesContent(
                         )
                     }
                 },
+                actions = {
+                    // Only show clear all button when there are bookmarks
+                    if (state.bookmarkedRecipes.isNotEmpty()) {
+                        IconButton(onClick = { state.eventSink(BookmarkedRecipesScreen.Event.ClearAllClicked) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.delete_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Clear all bookmarks",
+                            )
+                        }
+                    }
+                },
             )
         },
     ) { innerPadding ->
@@ -87,6 +100,14 @@ fun BookmarkedRecipesContent(
                 )
             }
         }
+    }
+
+    // Clear all confirmation dialog
+    if (state.showClearAllDialog) {
+        ClearAllConfirmationDialog(
+            onConfirm = { state.eventSink(BookmarkedRecipesScreen.Event.ConfirmClearAll) },
+            onDismiss = { state.eventSink(BookmarkedRecipesScreen.Event.DismissClearAllDialog) },
+        )
     }
 }
 
@@ -160,6 +181,47 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             textAlign = TextAlign.Center,
         )
     }
+}
+
+/**
+ * Confirmation dialog for clearing all bookmarks.
+ */
+@Composable
+private fun ClearAllConfirmationDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.delete_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+            )
+        },
+        title = {
+            Text(text = "Clear all bookmarks?")
+        },
+        text = {
+            Text(text = "This will remove all bookmarked recipes. This action cannot be undone.")
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(
+                    text = "Clear All",
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+        },
+        modifier = modifier,
+    )
 }
 
 // ============================================

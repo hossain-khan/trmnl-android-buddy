@@ -32,6 +32,7 @@ class BookmarkedRecipesPresenter(
     override fun present(): BookmarkedRecipesScreen.State {
         // Collect bookmarked recipes as state
         val bookmarkedRecipes by bookmarkRepository.getAllBookmarks().collectAsState(initial = emptyList())
+        var showClearAllDialog by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -39,10 +40,31 @@ class BookmarkedRecipesPresenter(
             bookmarkedRecipes = bookmarkedRecipes,
             isLoading = false,
             error = null,
+            showClearAllDialog = showClearAllDialog,
         ) { event ->
             when (event) {
                 BookmarkedRecipesScreen.Event.BackClicked -> {
                     navigator.pop()
+                }
+
+                BookmarkedRecipesScreen.Event.ClearAllClicked -> {
+                    showClearAllDialog = true
+                }
+
+                BookmarkedRecipesScreen.Event.ConfirmClearAll -> {
+                    showClearAllDialog = false
+                    coroutineScope.launch {
+                        try {
+                            bookmarkRepository.clearAllBookmarks()
+                            Timber.d("All bookmarks cleared")
+                        } catch (e: Exception) {
+                            Timber.e(e, "Failed to clear all bookmarks")
+                        }
+                    }
+                }
+
+                BookmarkedRecipesScreen.Event.DismissClearAllDialog -> {
+                    showClearAllDialog = false
                 }
 
                 is BookmarkedRecipesScreen.Event.RecipeClicked -> {
