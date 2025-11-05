@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2025-11-04
+
 ### Added
 
 - **Pinch to Zoom Support**: Added pinch-to-zoom functionality to Device Preview Screen using Telephoto library
@@ -58,11 +60,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Recipes Catalog UI**: Reduced vertical spacing between TopAppBar, SearchBar, and filter chips for more compact layout
+- **Recipes Catalog UI**: Improved Material 3 SearchBar implementation and spacing
+  - Migrated from deprecated SearchBar API to new `inputField` parameter pattern
+  - Uses `SearchBarDefaults.InputField` for proper Material 3 compliance
+  - Removed excess vertical padding (4.dp) for proper spacing between TopAppBar and SearchBar
+  - SearchBar now uses only horizontal padding (16.dp) following Material Design guidelines
 - **Code Quality**: Refactored device type identification logic to extension property
     - Created `DeviceModel.deviceKind` extension property for centralized device type detection
     - Replaced duplicated `when` expressions across 3 locations with single source of truth
     - Improved maintainability and type safety for device filtering and UI logic
+
+### Fixed
+
+- **SearchBar Deprecation Warning**: Fixed deprecated SearchBar API usage in RecipesCatalogScreen
+  - Updated to use new Material 3 SearchBar pattern with `inputField` parameter
+  - Eliminates deprecation warnings and ensures future compatibility
 
 ## [2.3.0] - 2025-11-01
 
@@ -1052,7 +1064,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.3.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.4.0...HEAD
+[2.4.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.3.0...2.4.0
 [2.3.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.2.1...2.3.0
 [2.2.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.1.0...2.2.0
