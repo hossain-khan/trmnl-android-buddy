@@ -49,6 +49,7 @@ import coil3.compose.SubcomposeAsyncImage
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.api.models.AuthorBio
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
@@ -417,6 +418,10 @@ private val SAMPLE_RECIPES =
             name = "Weather Chum",
             iconUrl = null,
             screenshotUrl = null,
+            authorBio =
+                AuthorBio(
+                    description = "Weather Chum was created by John Smith.",
+                ),
             stats = RecipeStats(installs = 1230, forks = 1),
         ),
         Recipe(
@@ -424,6 +429,10 @@ private val SAMPLE_RECIPES =
             name = "Matrix",
             iconUrl = null,
             screenshotUrl = null,
+            authorBio =
+                AuthorBio(
+                    description = "Display Matrix-style falling characters on your TRMNL device.",
+                ),
             stats = RecipeStats(installs = 25, forks = 176),
         ),
     )
