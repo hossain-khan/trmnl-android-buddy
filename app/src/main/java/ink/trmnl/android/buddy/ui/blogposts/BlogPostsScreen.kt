@@ -65,7 +65,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -432,6 +434,7 @@ private fun BlogPostCard(
     // Track press state for animation
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    val haptic = LocalHapticFeedback.current
 
     // Animate scale when pressed - Material 3 emphasis pattern
     val scale by animateFloatAsState(
@@ -507,7 +510,10 @@ private fun BlogPostCard(
                         }
 
                         IconButton(
-                            onClick = onToggleFavorite,
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onToggleFavorite()
+                            },
                             modifier = Modifier.size(40.dp),
                         ) {
                             Icon(
