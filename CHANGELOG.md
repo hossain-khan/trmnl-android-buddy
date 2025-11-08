@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2025-11-08
+
 ### Added
 
+- Recipe descriptions in Recipes Catalog list items from `author_bio.description` field
 - Haptic feedback for blog post and recipe bookmarks providing subtle tactile confirmation when adding or removing bookmarks
 - **Content Hub in Settings Extras**: Added Content Hub to the Settings screen Extras section for quick access to announcements and blog posts
 - Unit test to validate parsing of actual recipe_list.json API response
@@ -1077,7 +1080,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.4.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.5.0...HEAD
+[2.5.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.3.0...2.4.0
 [2.3.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.2.1...2.3.0
 [2.2.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.2.0...2.2.1
