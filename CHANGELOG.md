@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Haptic feedback for blog post and recipe bookmarks providing subtle tactile confirmation when adding or removing bookmarks
 - **Content Hub in Settings Extras**: Added Content Hub to the Settings screen Extras section for quick access to announcements and blog posts
+- Unit test to validate parsing of actual recipe_list.json API response
+
+### Fixed
+
+- Recipe parsing error caused by unused polymorphic fields in `custom_fields` 
+  - Removed `options` field (not used in app, was causing parsing errors with mixed types)
+  - Removed `default` field (not used in app, was polymorphic string/number/array/object)
+  - Keeps DTO clean without exposing `JsonElement` types
 
 ## [2.4.0] - 2025-11-04
 

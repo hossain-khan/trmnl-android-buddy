@@ -64,8 +64,6 @@ data class AuthorBio(
  * @property placeholder Placeholder text for input fields
  * @property helpText Additional help text
  * @property required Whether the field is required
- * @property options List of options for select fields
- * @property default Default value for the field
  */
 @Serializable
 data class CustomField(
@@ -78,8 +76,6 @@ data class CustomField(
     @SerialName("help_text")
     val helpText: String? = null,
     val required: Boolean? = null,
-    val options: List<String>? = null,
-    val default: String? = null,
 )
 
 /**
