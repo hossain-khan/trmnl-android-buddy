@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.api.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 /**
  * Represents a TRMNL plugin recipe from the community catalog.
@@ -64,8 +65,7 @@ data class AuthorBio(
  * @property placeholder Placeholder text for input fields
  * @property helpText Additional help text
  * @property required Whether the field is required
- * @property options List of options for select fields
- * @property default Default value for the field
+ * @property default Default value for the field (can be string, number, array, or object)
  */
 @Serializable
 data class CustomField(
@@ -78,8 +78,7 @@ data class CustomField(
     @SerialName("help_text")
     val helpText: String? = null,
     val required: Boolean? = null,
-    val options: List<String>? = null,
-    val default: String? = null,
+    val default: JsonElement? = null,
 )
 
 /**

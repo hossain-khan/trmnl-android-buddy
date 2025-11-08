@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Unit test to validate parsing of actual recipe_list.json API response
+
+### Fixed
+
+- Recipe parsing error caused by unused polymorphic fields (`options` and `default`) in `custom_fields` 
+  - Removed `options` field (not used in app)
+  - Changed `default` field to JsonElement to handle strings, numbers, arrays, and objects
+
 ## [2.4.0] - 2025-11-04
 
 ### Added

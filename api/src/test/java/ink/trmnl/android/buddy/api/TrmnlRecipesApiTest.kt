@@ -299,7 +299,6 @@ class TrmnlRecipesApiTest {
                     "field_type": "select",
                     "description": "Select temperature units",
                     "required": false,
-                    "options": ["Celsius", "Fahrenheit"],
                     "default": "Celsius"
                   }
                 ],
@@ -350,9 +349,7 @@ class TrmnlRecipesApiTest {
         assertThat(unitsField.keyname).isEqualTo("units")
         assertThat(unitsField.fieldType).isEqualTo("select")
         assertThat(unitsField.required).isEqualTo(false)
-        assertThat(unitsField.options).isNotNull()
-        assertThat(unitsField.options!!).hasSize(2)
-        assertThat(unitsField.default).isEqualTo("Celsius")
+        assertThat(unitsField.default).isNotNull()
 
         // Verify stats
         assertThat(recipe.stats.installs).isEqualTo(500)
@@ -568,5 +565,76 @@ class TrmnlRecipesApiTest {
         // Then: Verify no authorization header is sent
         val request = mockWebServer.takeRequest()
         assertThat(request.getHeader("Authorization")).isNull()
+    }
+
+    @Test
+    fun `parse actual recipe_list json file successfully`() = runTest {
+        // Given: Load actual recipe_list.json from test resources
+        val jsonContent = javaClass.classLoader
+            ?.getResourceAsStream("recipe_list.json")
+            ?.bufferedReader()
+            ?.use { it.readText() }
+            ?: throw IllegalStateException("Could not load recipe_list.json")
+
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(jsonContent)
+                .addHeader("Content-Type", "application/json")
+        )
+
+        // When: Call getRecipes
+        val result = apiService.getRecipes()
+
+        // Then: Response should parse successfully
+        assertThat(result).isInstanceOf<ApiResult.Success<*>>()
+        val response = (result as ApiResult.Success).value
+
+        // Verify pagination metadata
+        assertThat(response.total).isEqualTo(490)
+        assertThat(response.from).isEqualTo(1)
+        assertThat(response.to).isEqualTo(25)
+        assertThat(response.perPage).isEqualTo(25)
+        assertThat(response.currentPage).isEqualTo(1)
+        assertThat(response.prevPageUrl).isNull()
+        assertThat(response.nextPageUrl).isEqualTo("/recipes?page=2&sort_by=newest")
+
+        // Verify data array
+        assertThat(response.data).hasSize(25)
+
+        // Verify first recipe (DN Latest News)
+        val firstRecipe = response.data[0]
+        assertThat(firstRecipe.id).isEqualTo(176747)
+        assertThat(firstRecipe.name).isEqualTo("DN Latest News")
+        assertThat(firstRecipe.iconUrl).isNotNull()
+        assertThat(firstRecipe.screenshotUrl).isNotNull()
+        assertThat(firstRecipe.stats.installs).isEqualTo(1)
+        assertThat(firstRecipe.stats.forks).isEqualTo(0)
+
+        // Verify author bio exists
+        assertThat(firstRecipe.authorBio).isNotNull()
+        assertThat(firstRecipe.authorBio?.keyname).isEqualTo("author_bio")
+        assertThat(firstRecipe.authorBio?.name).isEqualTo("About This Plugin")
+        assertThat(firstRecipe.authorBio?.fieldType).isEqualTo("author_bio")
+
+        // Verify custom fields are parsed (even with complex options)
+        assertThat(firstRecipe.customFields).hasSize(1)
+
+        // Verify third recipe (Top Android Apps) with complex custom_fields
+        val androidAppsRecipe = response.data[2]
+        assertThat(androidAppsRecipe.id).isEqualTo(176578)
+        assertThat(androidAppsRecipe.name).isEqualTo("Top Android Apps")
+        assertThat(androidAppsRecipe.customFields.size).isEqualTo(4)
+
+        // Verify custom fields are accessible even though options field was removed
+        val showField = androidAppsRecipe.customFields[1]
+        assertThat(showField.keyname).isEqualTo("show")
+        assertThat(showField.fieldType).isEqualTo("select")
+        assertThat(showField.default).isEqualTo("free")
+
+        // Verify request
+        val request = mockWebServer.takeRequest()
+        assertThat(request.path).isEqualTo("/recipes.json")
+        assertThat(request.method).isEqualTo("GET")
     }
 }
