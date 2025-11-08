@@ -1,0 +1,2673 @@
+{
+  "data": [
+    {
+      "id": 176747,
+      "name": "DN Latest News",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/nrzkz7m8g51i76r1twpn6khh0cyl",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/hdkhl4h0xtzcomfef2hqxyrusj0j?response-content-disposition=inline%3B%20filename%3D%22plugin-5e08ae%22%3B%20filename%2A%3DUTF-8%27%27plugin-5e08ae\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=b05ead01dfc6d94067f7eedf7ad24aaa0e2d3966717251773b162f38ed477921",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "DN Latest News was created by Tim.",
+        "github_url": "https://github.com/tkilaker/trmnl-recipes",
+        "email_address": "tkilaker@icloud.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "DN Latest News was created by Tim.",
+          "github_url": "https://github.com/tkilaker/trmnl-recipes",
+          "email_address": "tkilaker@icloud.com"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 0
+      }
+    },
+    {
+      "id": 176724,
+      "name": "Sydsvenskan Latest News",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/lknxxg7zoy7pzjyzygi8rjf7864u",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/4upt9xnrcm6067hb9l1ymx5f41ze?response-content-disposition=inline%3B%20filename%3D%22plugin-49204c%22%3B%20filename%2A%3DUTF-8%27%27plugin-49204c\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=99d0f7dc41a7eab16b36eb847168f5fe46b5df3e198ade1b21ed26ffe97afe13",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Sydsvenskan Latest News was created by Tim.",
+        "github_url": "https://github.com/tkilaker/trmnl-recipes",
+        "email_address": "tkilaker@icloud.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Sydsvenskan Latest News was created by Tim.",
+          "github_url": "https://github.com/tkilaker/trmnl-recipes",
+          "email_address": "tkilaker@icloud.com"
+        }
+      ],
+      "stats": {
+        "installs": 3,
+        "forks": 0
+      }
+    },
+    {
+      "id": 176578,
+      "name": "Top Android Apps",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/nzdjsh1j8st7ec0iyk5uzb1901l4",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/vfh0104g8sbdyxrdqm4ibfou1e70?response-content-disposition=inline%3B%20filename%3D%22plugin-68c5f8%22%3B%20filename%2A%3DUTF-8%27%27plugin-68c5f8\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=a172c1e78f3e74b98c2ffe441d94f76e2b7d4da507206f78d1c75a31a869ea25",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "This plugin shows the top free or paid Android apps available on the Play Store, using data from \u003ca href=\"https://appfollow.io/rankings/iphone/us/all-categories?date=2025-11-04\" target=\"_blank\"\u003eappfollow.io\u003c/a\u003e. You can select a specific country and also a specific app category (e.g.: games).\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my \u003ca href=\"https://ko-fi.com/danielsitnik/shop\" target=\"_blank\"\u003eko-fi page\u003c/a\u003e or e-mail me! 😀",
+        "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+        "github_url": "http://github.com/danielsitnik/",
+        "email_address": "danielsitnik@outlook.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "This plugin shows the top free or paid Android apps available on the Play Store, using data from \u003ca href=\"https://appfollow.io/rankings/iphone/us/all-categories?date=2025-11-04\" target=\"_blank\"\u003eappfollow.io\u003c/a\u003e. You can select a specific country and also a specific app category (e.g.: games).\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my \u003ca href=\"https://ko-fi.com/danielsitnik/shop\" target=\"_blank\"\u003eko-fi page\u003c/a\u003e or e-mail me! 😀",
+          "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+          "github_url": "http://github.com/danielsitnik/",
+          "email_address": "danielsitnik@outlook.com"
+        },
+        {
+          "keyname": "show",
+          "field_type": "select",
+          "name": "Display",
+          "description": "Select the type of apps to display",
+          "default": "free",
+          "options": [
+            {
+              "Top Free": "free"
+            },
+            {
+              "Top Paid": "paid"
+            }
+          ]
+        },
+        {
+          "keyname": "country",
+          "name": "Country",
+          "description": "Select the App Store country",
+          "help_text": "App prices will be shown in the country's currency",
+          "field_type": "select",
+          "default": "us",
+          "options": [
+            {
+              "Afghanistan": "af"
+            },
+            {
+              "Albania": "al"
+            },
+            {
+              "Algeria": "dz"
+            },
+            {
+              "Angola": "ao"
+            },
+            {
+              "Anguilla": "ai"
+            },
+            {
+              "Antigua and Barbuda": "ag"
+            },
+            {
+              "Argentina": "ar"
+            },
+            {
+              "Armenia": "am"
+            },
+            {
+              "Australia": "au"
+            },
+            {
+              "Austria": "at"
+            },
+            {
+              "Azerbaijan": "az"
+            },
+            {
+              "Bahamas": "bs"
+            },
+            {
+              "Bahrain": "bh"
+            },
+            {
+              "Barbados": "bb"
+            },
+            {
+              "Belarus": "by"
+            },
+            {
+              "Belgium": "be"
+            },
+            {
+              "Belize": "bz"
+            },
+            {
+              "Benin": "bj"
+            },
+            {
+              "Bermuda": "bm"
+            },
+            {
+              "Bhutan": "bt"
+            },
+            {
+              "Bolivia": "bo"
+            },
+            {
+              "Bosnia and Herzegovina": "ba"
+            },
+            {
+              "Botswana": "bw"
+            },
+            {
+              "Brazil": "br"
+            },
+            {
+              "British Virgin Islands": "vg"
+            },
+            {
+              "Brunei Darussalam": "bn"
+            },
+            {
+              "Bulgaria": "bg"
+            },
+            {
+              "Burkina Faso": "bf"
+            },
+            {
+              "Cambodia": "kh"
+            },
+            {
+              "Cameroon": "cm"
+            },
+            {
+              "Canada": "ca"
+            },
+            {
+              "Cape Verde": "cv"
+            },
+            {
+              "Cayman Islands": "ky"
+            },
+            {
+              "Chad": "td"
+            },
+            {
+              "Chile": "cl"
+            },
+            {
+              "China mainland": "cn"
+            },
+            {
+              "Colombia": "co"
+            },
+            {
+              "Costa Rica": "cr"
+            },
+            {
+              "Croatia": "hr"
+            },
+            {
+              "Cyprus": "cy"
+            },
+            {
+              "Czech Republic": "cz"
+            },
+            {
+              "Côte d'Ivoire": "ci"
+            },
+            {
+              "Democratic Republic of the Congo": "cd"
+            },
+            {
+              "Denmark": "dk"
+            },
+            {
+              "Dominica": "dm"
+            },
+            {
+              "Dominican Republic": "do"
+            },
+            {
+              "Ecuador": "ec"
+            },
+            {
+              "Egypt": "eg"
+            },
+            {
+              "El Salvador": "sv"
+            },
+            {
+              "Estonia": "ee"
+            },
+            {
+              "Eswatini": "sz"
+            },
+            {
+              "Fiji": "fj"
+            },
+            {
+              "Finland": "fi"
+            },
+            {
+              "France": "fr"
+            },
+            {
+              "Gabon": "ga"
+            },
+            {
+              "Gambia": "gm"
+            },
+            {
+              "Georgia": "ge"
+            },
+            {
+              "Germany": "de"
+            },
+            {
+              "Ghana": "gh"
+            },
+            {
+              "Greece": "gr"
+            },
+            {
+              "Grenada": "gd"
+            },
+            {
+              "Guatemala": "gt"
+            },
+            {
+              "Guinea-Bissau": "gw"
+            },
+            {
+              "Guyana": "gy"
+            },
+            {
+              "Honduras": "hn"
+            },
+            {
+              "Hong Kong": "hk"
+            },
+            {
+              "Hungary": "hu"
+            },
+            {
+              "Iceland": "is"
+            },
+            {
+              "India": "in"
+            },
+            {
+              "Indonesia": "id"
+            },
+            {
+              "Iraq": "iq"
+            },
+            {
+              "Ireland": "ie"
+            },
+            {
+              "Israel": "il"
+            },
+            {
+              "Italy": "it"
+            },
+            {
+              "Jamaica": "jm"
+            },
+            {
+              "Japan": "jp"
+            },
+            {
+              "Jordan": "jo"
+            },
+            {
+              "Kazakhstan": "kz"
+            },
+            {
+              "Kenya": "ke"
+            },
+            {
+              "Korea, Republic of": "kr"
+            },
+            {
+              "Kosovo": "xk"
+            },
+            {
+              "Kuwait": "kw"
+            },
+            {
+              "Kyrgyzstan": "kg"
+            },
+            {
+              "Lao People's Democratic Republic": "la"
+            },
+            {
+              "Latvia": "lv"
+            },
+            {
+              "Lebanon": "lb"
+            },
+            {
+              "Liberia": "lr"
+            },
+            {
+              "Libya": "ly"
+            },
+            {
+              "Lithuania": "lt"
+            },
+            {
+              "Luxembourg": "lu"
+            },
+            {
+              "Macao": "mo"
+            },
+            {
+              "Madagascar": "mg"
+            },
+            {
+              "Malawi": "mw"
+            },
+            {
+              "Malaysia": "my"
+            },
+            {
+              "Maldives": "mv"
+            },
+            {
+              "Mali": "ml"
+            },
+            {
+              "Malta": "mt"
+            },
+            {
+              "Mauritania": "mr"
+            },
+            {
+              "Mauritius": "mu"
+            },
+            {
+              "Mexico": "mx"
+            },
+            {
+              "Micronesia, Federated States of": "fm"
+            },
+            {
+              "Moldova": "md"
+            },
+            {
+              "Mongolia": "mn"
+            },
+            {
+              "Montenegro": "me"
+            },
+            {
+              "Montserrat": "ms"
+            },
+            {
+              "Morocco": "ma"
+            },
+            {
+              "Mozambique": "mz"
+            },
+            {
+              "Myanmar": "mm"
+            },
+            {
+              "Namibia": "na"
+            },
+            {
+              "Nauru": "nr"
+            },
+            {
+              "Nepal": "np"
+            },
+            {
+              "Netherlands": "nl"
+            },
+            {
+              "New Zealand": "nz"
+            },
+            {
+              "Nicaragua": "ni"
+            },
+            {
+              "Niger": "ne"
+            },
+            {
+              "Nigeria": "ng"
+            },
+            {
+              "North Macedonia": "mk"
+            },
+            {
+              "Norway": false
+            },
+            {
+              "Oman": "om"
+            },
+            {
+              "Pakistan": "pk"
+            },
+            {
+              "Palau": "pw"
+            },
+            {
+              "Panama": "pa"
+            },
+            {
+              "Papua New Guinea": "pg"
+            },
+            {
+              "Paraguay": "py"
+            },
+            {
+              "Peru": "pe"
+            },
+            {
+              "Philippines": "ph"
+            },
+            {
+              "Poland": "pl"
+            },
+            {
+              "Portugal": "pt"
+            },
+            {
+              "Qatar": "qa"
+            },
+            {
+              "Republic of the Congo": "cg"
+            },
+            {
+              "Romania": "ro"
+            },
+            {
+              "Russia": "ru"
+            },
+            {
+              "Rwanda": "rw"
+            },
+            {
+              "Saudi Arabia": "sa"
+            },
+            {
+              "Senegal": "sn"
+            },
+            {
+              "Serbia": "rs"
+            },
+            {
+              "Seychelles": "sc"
+            },
+            {
+              "Sierra Leone": "sl"
+            },
+            {
+              "Singapore": "sg"
+            },
+            {
+              "Slovakia": "sk"
+            },
+            {
+              "Slovenia": "si"
+            },
+            {
+              "Solomon Islands": "sb"
+            },
+            {
+              "South Africa": "za"
+            },
+            {
+              "Spain": "es"
+            },
+            {
+              "Sri Lanka": "lk"
+            },
+            {
+              "St. Kitts and Nevis": "kn"
+            },
+            {
+              "St. Lucia": "lc"
+            },
+            {
+              "St. Vincent and The Grenadines": "vc"
+            },
+            {
+              "Suriname": "sr"
+            },
+            {
+              "Sweden": "se"
+            },
+            {
+              "Switzerland": "ch"
+            },
+            {
+              "São Tomé and Príncipe": "st"
+            },
+            {
+              "Taiwan": "tw"
+            },
+            {
+              "Tajikistan": "tj"
+            },
+            {
+              "Tanzania": "tz"
+            },
+            {
+              "Thailand": "th"
+            },
+            {
+              "Tonga": "to"
+            },
+            {
+              "Trinidad and Tobago": "tt"
+            },
+            {
+              "Tunisia": "tn"
+            },
+            {
+              "Turkmenistan": "tm"
+            },
+            {
+              "Turks and Caicos": "tc"
+            },
+            {
+              "Türkiye": "tr"
+            },
+            {
+              "UAE": "ae"
+            },
+            {
+              "Uganda": "ug"
+            },
+            {
+              "Ukraine": "ua"
+            },
+            {
+              "United Kingdom": "gb"
+            },
+            {
+              "United States": "us"
+            },
+            {
+              "Uruguay": "uy"
+            },
+            {
+              "Uzbekistan": "uz"
+            },
+            {
+              "Vanuatu": "vu"
+            },
+            {
+              "Venezuela": "ve"
+            },
+            {
+              "Vietnam": "vn"
+            },
+            {
+              "Yemen": "ye"
+            },
+            {
+              "Zambia": "zm"
+            },
+            {
+              "Zimbabwe": "zw"
+            }
+          ]
+        },
+        {
+          "keyname": "category",
+          "field_type": "select",
+          "name": "Category",
+          "description": "Select the app category",
+          "default": "All Categories|ALL",
+          "options": [
+            {
+              "All Categories": "All Categories|ALL"
+            },
+            {
+              "Android Wear": "Android Wear|ANDROID_WEAR"
+            },
+            {
+              "Art and Design": "Art and Design|ART_AND_DESIGN"
+            },
+            {
+              "Auto and Vehicles": "Auto and Vehicles|AUTO_AND_VEHICLES"
+            },
+            {
+              "Beauty": "Beauty|BEAUTY"
+            },
+            {
+              "Books and Reference": "Books and Reference|BOOKS_AND_REFERENCE"
+            },
+            {
+              "Business": "Business|BUSINESS"
+            },
+            {
+              "Comics": "Comics|COMICS"
+            },
+            {
+              "Communication": "Communication|COMMUNICATION"
+            },
+            {
+              "Dating": "Dating|DATING"
+            },
+            {
+              "Education": "Education|EDUCATION"
+            },
+            {
+              "Entertainment": "Entertainment|ENTERTAINMENT"
+            },
+            {
+              "Events": "Events|EVENTS"
+            },
+            {
+              "Family: All": "Family: All|FAMILY"
+            },
+            {
+              "Family: Action": "Family: Action|FAMILY_ACTION"
+            },
+            {
+              "Family: Braingames": "Family: Braingames|FAMILY_BRAINGAMES"
+            },
+            {
+              "Family: Create": "Family: Create|FAMILY_CREATE"
+            },
+            {
+              "Family: Education": "Family: Education|FAMILY_EDUCATION"
+            },
+            {
+              "Family: Musicvideo": "Family: Musicvideo|FAMILY_MUSICVIDEO"
+            },
+            {
+              "Family: Pretend": "Family: Pretend|FAMILY_PRETEND"
+            },
+            {
+              "Finance": "Finance|FINANCE"
+            },
+            {
+              "Food and Drink": "Food and Drink|FOOD_AND_DRINK"
+            },
+            {
+              "Games: All": "Games: All|GAME"
+            },
+            {
+              "Games: Action": "Games: Action|GAME_ACTION"
+            },
+            {
+              "Games: Adventure": "Games: Adventure|GAME_ADVENTURE"
+            },
+            {
+              "Games: Arcade": "Games: Arcade|GAME_ARCADE"
+            },
+            {
+              "Games: Board": "Games: Board|GAME_BOARD"
+            },
+            {
+              "Games: Card": "Games: Card|GAME_CARD"
+            },
+            {
+              "Games: Casino": "Games: Casino|GAME_CASINO"
+            },
+            {
+              "Games: Casual": "Games: Casual|GAME_CASUAL"
+            },
+            {
+              "Games: Educational": "Games: Educational|GAME_EDUCATIONAL"
+            },
+            {
+              "Games: Music": "Games: Music|GAME_MUSIC"
+            },
+            {
+              "Games: Puzzle": "Games: Puzzle|GAME_PUZZLE"
+            },
+            {
+              "Games: Racing": "Games: Racing|GAME_RACING"
+            },
+            {
+              "Games: Role Playing": "Games: Role Playing|GAME_ROLE_PLAYING"
+            },
+            {
+              "Games: Simulation": "Games: Simulation|GAME_SIMULATION"
+            },
+            {
+              "Games: Sports": "Games: Sports|GAME_SPORTS"
+            },
+            {
+              "Games: Strategy": "Games: Strategy|GAME_STRATEGY"
+            },
+            {
+              "Games: Trivia": "Games: Trivia|GAME_TRIVIA"
+            },
+            {
+              "Games: Word": "Games: Word|GAME_WORD"
+            },
+            {
+              "Health and Fitness": "Health and Fitness|HEALTH_AND_FITNESS"
+            },
+            {
+              "House and Home": "House and Home|HOUSE_AND_HOME"
+            },
+            {
+              "Libraries and Demo": "Libraries and Demo|LIBRARIES_AND_DEMO"
+            },
+            {
+              "Lifestyle": "Lifestyle|LIFESTYLE"
+            },
+            {
+              "Maps and Navigation": "Maps and Navigation|MAPS_AND_NAVIGATION"
+            },
+            {
+              "Medical": "Medical|MEDICAL"
+            },
+            {
+              "Music and Audio": "Music and Audio|MUSIC_AND_AUDIO"
+            },
+            {
+              "News and Magazines": "News and Magazines|NEWS_AND_MAGAZINES"
+            },
+            {
+              "Parenting": "Parenting|PARENTING"
+            },
+            {
+              "Personalization": "Personalization|PERSONALIZATION"
+            },
+            {
+              "Photography": "Photography|PHOTOGRAPHY"
+            },
+            {
+              "Productivity": "Productivity|PRODUCTIVITY"
+            },
+            {
+              "Shopping": "Shopping|SHOPPING"
+            },
+            {
+              "Social": "Social|SOCIAL"
+            },
+            {
+              "Sports": "Sports|SPORTS"
+            },
+            {
+              "Tools": "Tools|TOOLS"
+            },
+            {
+              "Travel and Local": "Travel and Local|TRAVEL_AND_LOCAL"
+            },
+            {
+              "Video Players": "Video Players|VIDEO_PLAYERS"
+            },
+            {
+              "Weather": "Weather|WEATHER"
+            }
+          ]
+        }
+      ],
+      "stats": {
+        "installs": 0,
+        "forks": 6
+      }
+    },
+    {
+      "id": 176517,
+      "name": "10 PRINT",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/w75rsn7mws9k3ngx5t2xbsbtv709",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/s1r8b2ug9l3f1rp0vi34pmixzru1?response-content-disposition=inline%3B%20filename%3D%22plugin-aa6add%22%3B%20filename%2A%3DUTF-8%27%27plugin-aa6add\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=8c3a48d18b9bd4db2eb6fa7b2046d3d180a4740ddd798195ec241ab4dde25f25",
+      "author_bio": {
+        "keyname": "author",
+        "field_type": "author_bio",
+        "name": "10 PRINT by Sunny",
+        "description": "Recreates the pattern of the classic Commodore 64 one-liner program.",
+        "github_url": "https://forgejo.sny.sh/sun/TRMNL",
+        "learn_more_url": "https://sny.sh/",
+        "email_address": "sunny@sny.sh"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author",
+          "field_type": "author_bio",
+          "name": "10 PRINT by Sunny",
+          "description": "Recreates the pattern of the classic Commodore 64 one-liner program.",
+          "github_url": "https://forgejo.sny.sh/sun/TRMNL",
+          "learn_more_url": "https://sny.sh/",
+          "email_address": "sunny@sny.sh"
+        },
+        {
+          "keyname": "size",
+          "field_type": "number",
+          "name": "Size",
+          "description": "The scale of the pattern.",
+          "default": 25,
+          "min": 5,
+          "max": 250,
+          "placeholder": 25
+        },
+        {
+          "keyname": "width",
+          "field_type": "number",
+          "name": "Width",
+          "description": "The width of each line.",
+          "default": 5,
+          "min": 1,
+          "max": 50,
+          "placeholder": 5
+        },
+        {
+          "keyname": "mode",
+          "field_type": "select",
+          "name": "Mode",
+          "description": "The mode to draw the lines with.",
+          "help_text": "The default option replicates the look of the original program while the other options make the lines look cleaner.",
+          "default": "butt",
+          "options": [
+            {
+              "Default": "butt"
+            },
+            {
+              "Square": "square"
+            },
+            {
+              "Round": "round"
+            }
+          ]
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 5
+      }
+    },
+    {
+      "id": 176378,
+      "name": "RetroAchievements: Recent Games",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/l44wsfighvr7ddkzkshrxotmrzb5",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/hd4n7bf84vbbvydvsrshix6s9dl1?response-content-disposition=inline%3B%20filename%3D%22plugin-3fff28%22%3B%20filename%2A%3DUTF-8%27%27plugin-3fff28\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=b1ac414039618ed97a86de4ebe827cc4632a1dbeac5903787eec67b99e389eb9",
+      "author_bio": {
+        "keyname": "about",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Unofficial \u003cb\u003eRetroAchievements\u003c/b\u003e plugin displaying a users \u003cb\u003erecent games\u003c/b\u003e.",
+        "github_url": "https://github.com/ExcuseMi/trmnl-retroachievements-plugins",
+        "learn_more_url": "https://retroachievements.org/"
+      },
+      "custom_fields": [
+        {
+          "keyname": "about",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Unofficial \u003cb\u003eRetroAchievements\u003c/b\u003e plugin displaying a users \u003cb\u003erecent games\u003c/b\u003e.",
+          "github_url": "https://github.com/ExcuseMi/trmnl-retroachievements-plugins",
+          "learn_more_url": "https://retroachievements.org/"
+        },
+        {
+          "keyname": "api_key",
+          "field_type": "string",
+          "name": "Retro Achievements Web API Key",
+          "description": "You can find your \u003cb\u003eWeb API Key\u003c/b\u003e under \u003cb\u003eAuthentication\u003c/b\u003e in your \u003cb\u003e\u003ca href=\"https://retroachievements.org/RetroAchievement settings\"\u003eRetroAchievement settings\u003c/a\u003e\u003c/b\u003e",
+          "placeholder": "RetroAchievements API Key"
+        },
+        {
+          "keyname": "username",
+          "field_type": "string",
+          "name": "Target username or ULID",
+          "description": "Target username or ULID",
+          "placeholder": "username or ULID"
+        },
+        {
+          "keyname": "artstyle",
+          "field_type": "select",
+          "options": [
+            "Icon",
+            "Title",
+            "Ingame",
+            "BoxArt"
+          ],
+          "default": "icon",
+          "name": "Artstyle",
+          "description": "Select the artstyle"
+        },
+        {
+          "keyname": "hardcore_only",
+          "field_type": "select",
+          "options": [
+            "No",
+            "Yes"
+          ],
+          "default": "No",
+          "name": "Hardcore only",
+          "description": "Only show achievements and points achieved without additional emulator features."
+        },
+        {
+          "keyname": "include_points",
+          "field_type": "select",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "default": "Yes",
+          "name": "Include points",
+          "description": "Include the points progress bar"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 1
+      }
+    },
+    {
+      "id": 176366,
+      "name": "Canadian Holidays",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/z4l9kysxygt3xulf1lxnq9wycg8c",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/67xj78dxvmv7qkirs74ap3w2k71r?response-content-disposition=inline%3B%20filename%3D%22plugin-264be7%22%3B%20filename%2A%3DUTF-8%27%27plugin-264be7\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=ca2715231c0aa270bd9cba0b4b5b319f078792e0e65b8c279282bdb31caa0bff",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Upcoming holidays in Canada, whether nation wide or only for your province. Created by Mario Lurig @ TRMNL.",
+        "learn_more_url": "https://canada-holidays.ca/api/",
+        "email_address": "mario@usetrmnl.com?subject=Canadian Holidays Plugin"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Upcoming holidays in Canada, whether nation wide or only for your province. Created by Mario Lurig @ TRMNL.",
+          "learn_more_url": "https://canada-holidays.ca/api/",
+          "email_address": "mario@usetrmnl.com?subject=Canadian Holidays Plugin"
+        },
+        {
+          "keyname": "province",
+          "field_type": "select",
+          "name": "Province",
+          "description": "See only a specific province (including optional holidays)?\u003cbr\u003e\u003cb\u003eDefault is \"Please select...\" (all provinces, no optional holidays).",
+          "help_text": "For instance, Remembrance Day is not a public holiday in Ontario per the \u003ca href=\"https://www.ontario.ca/document/your-guide-employment-standards-act-0/public-holidays\"\u003eESA\u003c/a\u003e, so the holiday is shown without the \"ON\" label when viewing all provinces, but shows if you select \"Ontario\" because it is optional/common.",
+          "default": "",
+          "optional": true,
+          "options": [
+            {
+              "Alberta": "AB"
+            },
+            {
+              "British Columbia": "BC"
+            },
+            {
+              "Manitoba": "MB"
+            },
+            {
+              "New Brunswick": "NB"
+            },
+            {
+              "Newfoundland and Labrador": "NL"
+            },
+            {
+              "Nova Scotia": "NS"
+            },
+            {
+              "Northwest Territories": "NT"
+            },
+            {
+              "Nunavut": "NU"
+            },
+            {
+              "Ontario": "ON"
+            },
+            {
+              "Prince Edward Island": "PE"
+            },
+            {
+              "Quebec": "QC"
+            },
+            {
+              "Saskatchewan": "SK"
+            },
+            {
+              "Yukon": "YT"
+            }
+          ]
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 4
+      }
+    },
+    {
+      "id": 176265,
+      "name": "Top iOS Apps",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/sdq0ig2dxrpbl56c544iw32melna",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/rldf0jqt8uxavdcti8xzmo4rh4ra?response-content-disposition=inline%3B%20filename%3D%22plugin-729ac4%22%3B%20filename%2A%3DUTF-8%27%27plugin-729ac4\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=aca21229c9ac6807a0ca3b9113aad49dd61e548bf4ed12c50b6ce186154b2f79",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "This plugin shows the top free or paid iOS apps available on the App Store using data from \u003ca href=\"https://appfollow.io/rankings/iphone/us/all-categories?date=2025-11-04\" target=\"_blank\"\u003eappfollow.io\u003c/a\u003e. You can choose to view iPhone or iPad apps, select a specific country and also a specific app category (e.g.: games).\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my \u003ca href=\"https://ko-fi.com/danielsitnik/shop\" target=\"_blank\"\u003eko-fi page\u003c/a\u003e or e-mail me! 😀",
+        "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+        "github_url": "http://github.com/danielsitnik/",
+        "email_address": "danielsitnik@outlook.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "This plugin shows the top free or paid iOS apps available on the App Store using data from \u003ca href=\"https://appfollow.io/rankings/iphone/us/all-categories?date=2025-11-04\" target=\"_blank\"\u003eappfollow.io\u003c/a\u003e. You can choose to view iPhone or iPad apps, select a specific country and also a specific app category (e.g.: games).\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my \u003ca href=\"https://ko-fi.com/danielsitnik/shop\" target=\"_blank\"\u003eko-fi page\u003c/a\u003e or e-mail me! 😀",
+          "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+          "github_url": "http://github.com/danielsitnik/",
+          "email_address": "danielsitnik@outlook.com"
+        },
+        {
+          "keyname": "device",
+          "field_type": "select",
+          "name": "Device",
+          "description": "Select the device",
+          "default": "iPhone",
+          "options": [
+            {
+              "iPhone": "iPhone"
+            },
+            {
+              "iPad": "iPad"
+            }
+          ]
+        },
+        {
+          "keyname": "show",
+          "field_type": "select",
+          "name": "Display",
+          "description": "Select the type of apps to display",
+          "default": "free",
+          "options": [
+            {
+              "Top Free": "free"
+            },
+            {
+              "Top Paid": "paid"
+            }
+          ]
+        },
+        {
+          "keyname": "country",
+          "name": "Country",
+          "description": "Select the App Store country",
+          "help_text": "App prices will be shown in the country's currency",
+          "field_type": "select",
+          "default": "us",
+          "options": [
+            {
+              "Afghanistan": "af"
+            },
+            {
+              "Albania": "al"
+            },
+            {
+              "Algeria": "dz"
+            },
+            {
+              "Angola": "ao"
+            },
+            {
+              "Anguilla": "ai"
+            },
+            {
+              "Antigua and Barbuda": "ag"
+            },
+            {
+              "Argentina": "ar"
+            },
+            {
+              "Armenia": "am"
+            },
+            {
+              "Australia": "au"
+            },
+            {
+              "Austria": "at"
+            },
+            {
+              "Azerbaijan": "az"
+            },
+            {
+              "Bahamas": "bs"
+            },
+            {
+              "Bahrain": "bh"
+            },
+            {
+              "Barbados": "bb"
+            },
+            {
+              "Belarus": "by"
+            },
+            {
+              "Belgium": "be"
+            },
+            {
+              "Belize": "bz"
+            },
+            {
+              "Benin": "bj"
+            },
+            {
+              "Bermuda": "bm"
+            },
+            {
+              "Bhutan": "bt"
+            },
+            {
+              "Bolivia": "bo"
+            },
+            {
+              "Bosnia and Herzegovina": "ba"
+            },
+            {
+              "Botswana": "bw"
+            },
+            {
+              "Brazil": "br"
+            },
+            {
+              "British Virgin Islands": "vg"
+            },
+            {
+              "Brunei Darussalam": "bn"
+            },
+            {
+              "Bulgaria": "bg"
+            },
+            {
+              "Burkina Faso": "bf"
+            },
+            {
+              "Cambodia": "kh"
+            },
+            {
+              "Cameroon": "cm"
+            },
+            {
+              "Canada": "ca"
+            },
+            {
+              "Cape Verde": "cv"
+            },
+            {
+              "Cayman Islands": "ky"
+            },
+            {
+              "Chad": "td"
+            },
+            {
+              "Chile": "cl"
+            },
+            {
+              "China mainland": "cn"
+            },
+            {
+              "Colombia": "co"
+            },
+            {
+              "Costa Rica": "cr"
+            },
+            {
+              "Croatia": "hr"
+            },
+            {
+              "Cyprus": "cy"
+            },
+            {
+              "Czech Republic": "cz"
+            },
+            {
+              "Côte d'Ivoire": "ci"
+            },
+            {
+              "Democratic Republic of the Congo": "cd"
+            },
+            {
+              "Denmark": "dk"
+            },
+            {
+              "Dominica": "dm"
+            },
+            {
+              "Dominican Republic": "do"
+            },
+            {
+              "Ecuador": "ec"
+            },
+            {
+              "Egypt": "eg"
+            },
+            {
+              "El Salvador": "sv"
+            },
+            {
+              "Estonia": "ee"
+            },
+            {
+              "Eswatini": "sz"
+            },
+            {
+              "Fiji": "fj"
+            },
+            {
+              "Finland": "fi"
+            },
+            {
+              "France": "fr"
+            },
+            {
+              "Gabon": "ga"
+            },
+            {
+              "Gambia": "gm"
+            },
+            {
+              "Georgia": "ge"
+            },
+            {
+              "Germany": "de"
+            },
+            {
+              "Ghana": "gh"
+            },
+            {
+              "Greece": "gr"
+            },
+            {
+              "Grenada": "gd"
+            },
+            {
+              "Guatemala": "gt"
+            },
+            {
+              "Guinea-Bissau": "gw"
+            },
+            {
+              "Guyana": "gy"
+            },
+            {
+              "Honduras": "hn"
+            },
+            {
+              "Hong Kong": "hk"
+            },
+            {
+              "Hungary": "hu"
+            },
+            {
+              "Iceland": "is"
+            },
+            {
+              "India": "in"
+            },
+            {
+              "Indonesia": "id"
+            },
+            {
+              "Iraq": "iq"
+            },
+            {
+              "Ireland": "ie"
+            },
+            {
+              "Israel": "il"
+            },
+            {
+              "Italy": "it"
+            },
+            {
+              "Jamaica": "jm"
+            },
+            {
+              "Japan": "jp"
+            },
+            {
+              "Jordan": "jo"
+            },
+            {
+              "Kazakhstan": "kz"
+            },
+            {
+              "Kenya": "ke"
+            },
+            {
+              "Korea, Republic of": "kr"
+            },
+            {
+              "Kosovo": "xk"
+            },
+            {
+              "Kuwait": "kw"
+            },
+            {
+              "Kyrgyzstan": "kg"
+            },
+            {
+              "Lao People's Democratic Republic": "la"
+            },
+            {
+              "Latvia": "lv"
+            },
+            {
+              "Lebanon": "lb"
+            },
+            {
+              "Liberia": "lr"
+            },
+            {
+              "Libya": "ly"
+            },
+            {
+              "Lithuania": "lt"
+            },
+            {
+              "Luxembourg": "lu"
+            },
+            {
+              "Macao": "mo"
+            },
+            {
+              "Madagascar": "mg"
+            },
+            {
+              "Malawi": "mw"
+            },
+            {
+              "Malaysia": "my"
+            },
+            {
+              "Maldives": "mv"
+            },
+            {
+              "Mali": "ml"
+            },
+            {
+              "Malta": "mt"
+            },
+            {
+              "Mauritania": "mr"
+            },
+            {
+              "Mauritius": "mu"
+            },
+            {
+              "Mexico": "mx"
+            },
+            {
+              "Micronesia, Federated States of": "fm"
+            },
+            {
+              "Moldova": "md"
+            },
+            {
+              "Mongolia": "mn"
+            },
+            {
+              "Montenegro": "me"
+            },
+            {
+              "Montserrat": "ms"
+            },
+            {
+              "Morocco": "ma"
+            },
+            {
+              "Mozambique": "mz"
+            },
+            {
+              "Myanmar": "mm"
+            },
+            {
+              "Namibia": "na"
+            },
+            {
+              "Nauru": "nr"
+            },
+            {
+              "Nepal": "np"
+            },
+            {
+              "Netherlands": "nl"
+            },
+            {
+              "New Zealand": "nz"
+            },
+            {
+              "Nicaragua": "ni"
+            },
+            {
+              "Niger": "ne"
+            },
+            {
+              "Nigeria": "ng"
+            },
+            {
+              "North Macedonia": "mk"
+            },
+            {
+              "Norway": false
+            },
+            {
+              "Oman": "om"
+            },
+            {
+              "Pakistan": "pk"
+            },
+            {
+              "Palau": "pw"
+            },
+            {
+              "Panama": "pa"
+            },
+            {
+              "Papua New Guinea": "pg"
+            },
+            {
+              "Paraguay": "py"
+            },
+            {
+              "Peru": "pe"
+            },
+            {
+              "Philippines": "ph"
+            },
+            {
+              "Poland": "pl"
+            },
+            {
+              "Portugal": "pt"
+            },
+            {
+              "Qatar": "qa"
+            },
+            {
+              "Republic of the Congo": "cg"
+            },
+            {
+              "Romania": "ro"
+            },
+            {
+              "Russia": "ru"
+            },
+            {
+              "Rwanda": "rw"
+            },
+            {
+              "Saudi Arabia": "sa"
+            },
+            {
+              "Senegal": "sn"
+            },
+            {
+              "Serbia": "rs"
+            },
+            {
+              "Seychelles": "sc"
+            },
+            {
+              "Sierra Leone": "sl"
+            },
+            {
+              "Singapore": "sg"
+            },
+            {
+              "Slovakia": "sk"
+            },
+            {
+              "Slovenia": "si"
+            },
+            {
+              "Solomon Islands": "sb"
+            },
+            {
+              "South Africa": "za"
+            },
+            {
+              "Spain": "es"
+            },
+            {
+              "Sri Lanka": "lk"
+            },
+            {
+              "St. Kitts and Nevis": "kn"
+            },
+            {
+              "St. Lucia": "lc"
+            },
+            {
+              "St. Vincent and The Grenadines": "vc"
+            },
+            {
+              "Suriname": "sr"
+            },
+            {
+              "Sweden": "se"
+            },
+            {
+              "Switzerland": "ch"
+            },
+            {
+              "São Tomé and Príncipe": "st"
+            },
+            {
+              "Taiwan": "tw"
+            },
+            {
+              "Tajikistan": "tj"
+            },
+            {
+              "Tanzania": "tz"
+            },
+            {
+              "Thailand": "th"
+            },
+            {
+              "Tonga": "to"
+            },
+            {
+              "Trinidad and Tobago": "tt"
+            },
+            {
+              "Tunisia": "tn"
+            },
+            {
+              "Turkmenistan": "tm"
+            },
+            {
+              "Turks and Caicos": "tc"
+            },
+            {
+              "Türkiye": "tr"
+            },
+            {
+              "UAE": "ae"
+            },
+            {
+              "Uganda": "ug"
+            },
+            {
+              "Ukraine": "ua"
+            },
+            {
+              "United Kingdom": "gb"
+            },
+            {
+              "United States": "us"
+            },
+            {
+              "Uruguay": "uy"
+            },
+            {
+              "Uzbekistan": "uz"
+            },
+            {
+              "Vanuatu": "vu"
+            },
+            {
+              "Venezuela": "ve"
+            },
+            {
+              "Vietnam": "vn"
+            },
+            {
+              "Yemen": "ye"
+            },
+            {
+              "Zambia": "zm"
+            },
+            {
+              "Zimbabwe": "zw"
+            }
+          ]
+        },
+        {
+          "keyname": "category",
+          "field_type": "select",
+          "name": "Category",
+          "description": "Select the app category",
+          "default": "All Categories|0",
+          "options": [
+            {
+              "All Categories": "All Categories|0"
+            },
+            {
+              "Books": "Books|6018"
+            },
+            {
+              "Business": "Business|6000"
+            },
+            {
+              "Catalogs": "Catalogs|6022"
+            },
+            {
+              "Developer Tools": "Developer Tools|6026"
+            },
+            {
+              "Education": "Education|6017"
+            },
+            {
+              "Entertainment": "Entertainment|6016"
+            },
+            {
+              "Finance": "Finance|6015"
+            },
+            {
+              "Food and Drink": "Food and Drink|6023"
+            },
+            {
+              "Games: All": "Games: All|6014"
+            },
+            {
+              "Games: Action": "Games: Action|7001"
+            },
+            {
+              "Games: Adventure": "Games: Adventure|7002"
+            },
+            {
+              "Games: Board": "Games: Board|7004"
+            },
+            {
+              "Games: Card": "Games: Card|7005"
+            },
+            {
+              "Games: Casino": "Games: Casino|7006"
+            },
+            {
+              "Games: Casual": "Games: Casual|7003"
+            },
+            {
+              "Games: Dice": "Games: Dice|7007"
+            },
+            {
+              "Games: Educational": "Games: Educational|7008"
+            },
+            {
+              "Games: Family": "Games: Family|7009"
+            },
+            {
+              "Games: Music": "Games: Music|7011"
+            },
+            {
+              "Games: Puzzle": "Games: Puzzle|7012"
+            },
+            {
+              "Games: Racing": "Games: Racing|7013"
+            },
+            {
+              "Games: Role Playing": "Games: Role Playing|7014"
+            },
+            {
+              "Games: Simulation": "Games: Simulation|7015"
+            },
+            {
+              "Games: Sports": "Games: Sports|7016"
+            },
+            {
+              "Games: Strategy": "Games: Strategy|7017"
+            },
+            {
+              "Games: Trivia": "Games: Trivia|7018"
+            },
+            {
+              "Games: Word": "Games: Word|7019"
+            },
+            {
+              "Graphics": "Graphics|6027"
+            },
+            {
+              "Health and Fitness": "Health and Fitness|6013"
+            },
+            {
+              "Kids": "Kids|36"
+            },
+            {
+              "Lifestyle": "Lifestyle|6012"
+            },
+            {
+              "Magazines and Newspapers": "Magazines and Newspapers|6021"
+            },
+            {
+              "Medical": "Medical|6020"
+            },
+            {
+              "Music": "Music|6011"
+            },
+            {
+              "Navigation": "Navigation|6010"
+            },
+            {
+              "News": "News|6009"
+            },
+            {
+              "Photo and Video": "Photo and Video|6008"
+            },
+            {
+              "Productivity": "Productivity|6007"
+            },
+            {
+              "Reference": "Reference|6006"
+            },
+            {
+              "Shopping": "Shopping|6024"
+            },
+            {
+              "Social Networking": "Social Networking|6005"
+            },
+            {
+              "Sports": "Sports|6004"
+            },
+            {
+              "Travel": "Travel|6003"
+            },
+            {
+              "Utilities": "Utilities|6002"
+            },
+            {
+              "Weather": "Weather|6001"
+            }
+          ]
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 8
+      }
+    },
+    {
+      "id": 174854,
+      "name": "Flip Clock",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/wvesq6zih1lq043mpo1lgeru4e62",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/2w8n7xw0cyvk60z069btgrn6rllp?response-content-disposition=inline%3B%20filename%3D%22plugin-f43008%22%3B%20filename%2A%3DUTF-8%27%27plugin-f43008\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=d535787f8ea3a98d72cdf9ad819d3daed439ea8d32aa3cf855804e5ecf1b87d2",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Flip Clock in either 12 (am/pm) or 24 hour format. Buy me a coffee with the link below.",
+        "email_address": "dev@photic.zone",
+        "learn_more_url": "https://ko-fi.com/solarmax"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Flip Clock in either 12 (am/pm) or 24 hour format. Buy me a coffee with the link below.",
+          "email_address": "dev@photic.zone",
+          "learn_more_url": "https://ko-fi.com/solarmax"
+        },
+        {
+          "keyname": "12or24",
+          "field_type": "select",
+          "options": [
+            12,
+            24
+          ],
+          "default": 12,
+          "name": "12 or 24 hour clock"
+        }
+      ],
+      "stats": {
+        "installs": 2,
+        "forks": 57
+      }
+    },
+    {
+      "id": 173288,
+      "name": "ORF.at Newsfeed",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/wq03be1mgsk3qz23s9zpwxr39ijd",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/t18biqtns6q2jl4qo7bfs7h58wds?response-content-disposition=inline%3B%20filename%3D%22plugin-5e1b54%22%3B%20filename%2A%3DUTF-8%27%27plugin-5e1b54\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=fa921c9bba040d8e1d9d35792186a4234985e25d328701cee314e7bc33b3f250",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Displays the ORF (Austrian public service broadcaster) newsfeed from the official RSS feed.",
+        "email_address": "trmnl@benjaminnussbaum.at",
+        "github_url": "https://github.com/bnussbau/trmnl-orf-news",
+        "learn_more_url": "https://github.com/bnussbau/trmnl-orf-news?tab=readme-ov-file#orfat-newsfeed-for-trmnl"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Displays the ORF (Austrian public service broadcaster) newsfeed from the official RSS feed.",
+          "email_address": "trmnl@benjaminnussbaum.at",
+          "github_url": "https://github.com/bnussbau/trmnl-orf-news",
+          "learn_more_url": "https://github.com/bnussbau/trmnl-orf-news?tab=readme-ov-file#orfat-newsfeed-for-trmnl"
+        }
+      ],
+      "stats": {
+        "installs": 9,
+        "forks": 0
+      }
+    },
+    {
+      "id": 172970,
+      "name": "Business Cat Comic",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/blbsloy0ufco2r6mh9004tbshe95",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/23ibqjbvtw14zy5v7wzfdvwgvt73?response-content-disposition=inline%3B%20filename%3D%22plugin-44cfb9%22%3B%20filename%2A%3DUTF-8%27%27plugin-44cfb9\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=108d49a2981a294e83a184a814073ca274ff36f05b58ccb6a4240c353688ea32",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Business Cat comic recipe by @makersfunduck.",
+        "email_address": "makersfunduck@gmail.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Business Cat comic recipe by @makersfunduck.",
+          "email_address": "makersfunduck@gmail.com"
+        }
+      ],
+      "stats": {
+        "installs": 25,
+        "forks": 0
+      }
+    },
+    {
+      "id": 172700,
+      "name": "TRMNL Recipe Tracker",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/o2t8e1ecj0n2hxi49cvtyh6jrl0c",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/4emnvlvx0e45oanfxeo45xq203oi?response-content-disposition=inline%3B%20filename%3D%22plugin-386152%22%3B%20filename%2A%3DUTF-8%27%27plugin-386152\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=3cb00adce011a1df3e37bd19c710f57605c74e01ad1512ee2406241dbe1bb632",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "TRMNL Recipe Tracker. It lists the top plugin engagement, sorted by installs and forks. Add your recipe master plugin IDs for the recipes to track. Buy me a coffee with the link below.",
+        "email_address": "dev@photic.zone",
+        "learn_more_url": "https://ko-fi.com/solarmax"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "TRMNL Recipe Tracker. It lists the top plugin engagement, sorted by installs and forks. Add your recipe master plugin IDs for the recipes to track. Buy me a coffee with the link below.",
+          "email_address": "dev@photic.zone",
+          "learn_more_url": "https://ko-fi.com/solarmax"
+        },
+        {
+          "keyname": "recipe_ids",
+          "field_type": "multi_string",
+          "name": "Recipe Id(s)",
+          "description": "List of recipe ids to fetch data from",
+          "placeholder": 123456
+        }
+      ],
+      "stats": {
+        "installs": 2,
+        "forks": 2
+      }
+    },
+    {
+      "id": 172622,
+      "name": "Discord Messages",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/gt7eu2jg5dk0lxlexxegsl4tsg2y",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/f50klghaba10kz7v6p1shjf0wdfh?response-content-disposition=inline%3B%20filename%3D%22plugin-7320e8%22%3B%20filename%2A%3DUTF-8%27%27plugin-7320e8\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=c5b7ac97f7a3775eccf468a7b773294cf745d89d5d629ee8f0d2c94c6aafc81c",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin (v1.0.2)",
+        "field_type": "author_bio",
+        "description": "Plugin created by \u003ca href=\"https://fredericorodrigues.com\" target=\"_blank\"\u003eFrederico Rodrigues\u003c/a\u003e (\u003ca href=\"https://discord.com/users/133284559545565185\" target=\"_blank\"\u003eDiscord @fredericotr\u003c/a\u003e). External API hosted and maintained by \u003ca href=\"https://webplug.pt\" target=\"_blank\"\u003eWebPlug\u003c/a\u003e. Need a custom TRMNL Plugin or an External API? Please get in touch.\u003cbr\u003e\u003cbr\u003e\u003cb\u003e[HOW TO SETUP THIS PLUGIN]\u003c/b\u003e\u003cbr\u003e1) Add my Discord APP (WebPlug COMMS) to your server using \u003ca href=\"https://app.comms.webplug.cloud/discord/auth/app\" target=\"_blank\"\u003ethis link\u003c/a\u003e and select the \"Text Permissions\" button.\u003cbr\u003e2) After authentication, you will be redirected to a page that will display a \"User Private Key\". Copy this key and paste it here in the TRMNL field.\u003cbr\u003e3) Add the APP to each channel that you want the messages to be displayed on the device.\u003cbr\u003e4) Configure all the mandatory fields.",
+        "learn_more_url": "https://fredericorodrigues.com",
+        "email_address": "work@fredericorodrigues.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin (v1.0.2)",
+          "field_type": "author_bio",
+          "description": "Plugin created by \u003ca href=\"https://fredericorodrigues.com\" target=\"_blank\"\u003eFrederico Rodrigues\u003c/a\u003e (\u003ca href=\"https://discord.com/users/133284559545565185\" target=\"_blank\"\u003eDiscord @fredericotr\u003c/a\u003e). External API hosted and maintained by \u003ca href=\"https://webplug.pt\" target=\"_blank\"\u003eWebPlug\u003c/a\u003e. Need a custom TRMNL Plugin or an External API? Please get in touch.\u003cbr\u003e\u003cbr\u003e\u003cb\u003e[HOW TO SETUP THIS PLUGIN]\u003c/b\u003e\u003cbr\u003e1) Add my Discord APP (WebPlug COMMS) to your server using \u003ca href=\"https://app.comms.webplug.cloud/discord/auth/app\" target=\"_blank\"\u003ethis link\u003c/a\u003e and select the \"Text Permissions\" button.\u003cbr\u003e2) After authentication, you will be redirected to a page that will display a \"User Private Key\". Copy this key and paste it here in the TRMNL field.\u003cbr\u003e3) Add the APP to each channel that you want the messages to be displayed on the device.\u003cbr\u003e4) Configure all the mandatory fields.",
+          "learn_more_url": "https://fredericorodrigues.com",
+          "email_address": "work@fredericorodrigues.com"
+        },
+        {
+          "keyname": "threshold",
+          "field_type": "number",
+          "default": 60,
+          "name": "New Message Threshold (mins)",
+          "description": "Number of minutes an old message can be, and still be considered \"NEW\".",
+          "optional": false
+        },
+        {
+          "keyname": "key",
+          "field_type": "password",
+          "default": null,
+          "name": "User Private Key",
+          "description": "This key is displayed on the page after authentication, see instruction 2).\u003cbr\u003eIf you did not copy this key, repeat instructions 1) and 2).",
+          "optional": false
+        },
+        {
+          "keyname": "channels",
+          "field_type": "code",
+          "default": [
+            {
+              "name": "Test Channel",
+              "id": "1433458380223021193"
+            }
+          ],
+          "name": "Channels Names and IDs",
+          "description": "Explanation:\u003cbr\u003e• Name is optional, if present, it will be used to display on the device, if not, the channel name will be get from the Discord API.\u003cbr\u003e• Id is mandatory, it's the Discord Channel ID. Check how to get the Channel ID on \u003ca href=\"https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID#h_01HRSTXPS5FMK2A5SMVSX4JW4E\" target=\"_blank\"\u003ethis link\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003eThis field uses JSON format as follows:\u003cbr\u003e• For one channel, use the format [{\"name\":\"Test Channel\",\"id\":\"1433458380223021193\"}]\u003cbr\u003e• For more than one channel, use the format [{\"name\":\"Test Channel\",\"id\":\"1433458380223021193\"},{\"name\":\"Test Channel 2\",\"id\":\"1258009045759955004\"}]",
+          "optional": false
+        },
+        {
+          "keyname": "hour",
+          "field_type": "select",
+          "options": [
+            "12h",
+            "24h"
+          ],
+          "name": "Hour Format",
+          "optional": false
+        },
+        {
+          "keyname": "timezone",
+          "field_type": "time_zone",
+          "name": "Timezone",
+          "optional": false
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 2
+      }
+    },
+    {
+      "id": 171219,
+      "name": "Chinese Proverbs (Translated)",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/e5ligp9przjz9rxoig0dhksouk1y",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/oc6mbyroo7v1u5a3wesf0uslzb42?response-content-disposition=inline%3B%20filename%3D%22plugin-ac87b2%22%3B%20filename%2A%3DUTF-8%27%27plugin-ac87b2\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=9a2c18fe661cf1310f4ca018670e191f5e1c0f510ca34af22f8e692d8c36921b",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Shows a random chinese proverb. English and french translations are available. \u003cb\u003eSome hurtful proverbs are already excluded but I can't ensure all proverbs that may hurt you won't be shown. Please contact me if you find one.\u003c/b\u003e",
+        "github_url": "https://github.com/SteveBloX/trmnl-recipes",
+        "email_address": "contact@bloax.xyz"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Shows a random chinese proverb. English and french translations are available. \u003cb\u003eSome hurtful proverbs are already excluded but I can't ensure all proverbs that may hurt you won't be shown. Please contact me if you find one.\u003c/b\u003e",
+          "github_url": "https://github.com/SteveBloX/trmnl-recipes",
+          "email_address": "contact@bloax.xyz"
+        },
+        {
+          "keyname": "lang",
+          "field_type": "select",
+          "options": [
+            "English",
+            "French"
+          ],
+          "default": "english",
+          "name": "Language",
+          "description": "Select your language for the translation",
+          "description-fr": "Sélectionnez votre langue pour la traduction"
+        },
+        {
+          "keyname": "favorite_words",
+          "name": "Favorite words",
+          "field_type": "multi_string",
+          "description": "Only proverbs containing one of these words will be shown",
+          "description-fr": "Seuls les proverbes contenant un de ces mots apparaitront",
+          "optional": true
+        },
+        {
+          "keyname": "excluded_words",
+          "name": "Excluded Words",
+          "field_type": "multi_string",
+          "description": "Proverbs containing these words won't be shown",
+          "description-fr": "Les proverbes contenant ces mots n'apparaitront pas",
+          "optional": true
+        },
+        {
+          "keyname": "explanation",
+          "name": "Include an explanation ? (when available)",
+          "description-fr": "Sélectionnez yes si vous voulez avoir une explication du proverbe (quand elle est disponible)",
+          "field_type": "select",
+          "options": [
+            {
+              "Yes": 1
+            },
+            {
+              "No": 0
+            }
+          ],
+          "default": 0
+        }
+      ],
+      "stats": {
+        "installs": 0,
+        "forks": 14
+      }
+    },
+    {
+      "id": 170970,
+      "name": "Public Recipe Stats",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/ci7ehiqoejogz3zly8ddll1s11md",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/cwqaa7sat8qfolzzr8xjh8cto42t?response-content-disposition=inline%3B%20filename%3D%22plugin-8d02d7%22%3B%20filename%2A%3DUTF-8%27%27plugin-8d02d7\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=d90a0d1338c4747333e34ecdc4ea6d52166d588ee2a2fa07335d5e3ad884c38c",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Shows connection statistics of public recipes. You can choose to show the latest, search for keywords, show your own recipes, or show selected recipe IDs. Data powered by \u003ca href=\"https://docs.usetrmnl.com/go/public-api/recipes-api\"\u003eTRMNL Recipes API\u003c/a\u003e. Built with help from Jasper, Mario Lurig, Ryan, and Sitnik on TRMNL Discord.",
+        "github_url": "https://github.com/blueset/trmnl-recipes"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Shows connection statistics of public recipes. You can choose to show the latest, search for keywords, show your own recipes, or show selected recipe IDs. Data powered by \u003ca href=\"https://docs.usetrmnl.com/go/public-api/recipes-api\"\u003eTRMNL Recipes API\u003c/a\u003e. Built with help from Jasper, Mario Lurig, Ryan, and Sitnik on TRMNL Discord.",
+          "github_url": "https://github.com/blueset/trmnl-recipes"
+        },
+        {
+          "keyname": "selection",
+          "name": "Selection mode",
+          "description": "Choose what recipes to show",
+          "field_type": "select",
+          "options": [
+            {
+              "My recipes / Specify author": "author_id"
+            },
+            {
+              "All recipes / Search by keyword": "keyword"
+            },
+            {
+              "Specify recipe IDs": "recipe_ids"
+            }
+          ],
+          "default": "author_id",
+          "conditional_validation": [
+            {
+              "when": "recipe_ids",
+              "hidden": [
+                "author_id",
+                "keyword"
+              ]
+            },
+            {
+              "when": "author_id",
+              "hidden": [
+                "recipe_ids",
+                "keyword"
+              ]
+            },
+            {
+              "when": "keyword",
+              "hidden": [
+                "recipe_ids",
+                "author_id"
+              ]
+            }
+          ]
+        },
+        {
+          "keyname": "full_layout",
+          "name": "Layout in Full view",
+          "field_type": "select",
+          "options": [
+            "Large",
+            "Small",
+            "Gallery"
+          ],
+          "default": "large",
+          "description": "Choose layout for Full view mode, visit \u003ca href=\"https://github.com/blueset/trmnl-recipes/blob/master/public-recipe-stats/README.md\"\u003ehere\u003c/a\u003e for previews."
+        },
+        {
+          "keyname": "recipe_ids",
+          "field_type": "multi_string",
+          "name": "Recipe IDs",
+          "description": "List of Recipe IDs to get statistics from",
+          "optional": true,
+          "placeholder": "000000"
+        },
+        {
+          "keyname": "author_id",
+          "field_type": "string",
+          "name": "Author ID",
+          "description": "ID of the author to get statistics from, default to your own user ID",
+          "optional": true,
+          "placeholder": "000000"
+        },
+        {
+          "keyname": "keyword",
+          "field_type": "string",
+          "name": "Keyword",
+          "description": "Keyword to get statistics from, leave empty to show all",
+          "optional": true,
+          "placeholder": ""
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 6
+      }
+    },
+    {
+      "id": 168898,
+      "name": "NPM Packages",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/zzihrabs7f3p28h5rsi2c2qnkegu",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/ca9560pr8891jize2t77s1z0gaxv?response-content-disposition=inline%3B%20filename%3D%22plugin-d4666f%22%3B%20filename%2A%3DUTF-8%27%27plugin-d4666f\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=9ffcbf05e7aa40cebf991e7085a9bfa731820f1e2be38f91297220004f6a774c",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "This plugin shows the download stats of any npm package over a chosen time period. npm is the main platform where developers share and install open-source JavaScript libraries.\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my \u003ca href=\"https://ko-fi.com/danielsitnik/shop\" target=\"_blank\"\u003eko-fi page\u003c/a\u003e or e-mail me! 😀",
+        "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+        "github_url": "http://github.com/danielsitnik/",
+        "email_address": "danielsitnik@outlook.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "This plugin shows the download stats of any npm package over a chosen time period. npm is the main platform where developers share and install open-source JavaScript libraries.\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my \u003ca href=\"https://ko-fi.com/danielsitnik/shop\" target=\"_blank\"\u003eko-fi page\u003c/a\u003e or e-mail me! 😀",
+          "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+          "github_url": "http://github.com/danielsitnik/",
+          "email_address": "danielsitnik@outlook.com"
+        },
+        {
+          "keyname": "package",
+          "field_type": "string",
+          "name": "Package",
+          "description": "Full name of the NPM Package, search at \u003ca href=\"https://www.npmjs.com/\" target=\"_blank\"\u003ehttps://www.npmjs.com/\u003c/a\u003e",
+          "placeholder": "package name, eg.: axios",
+          "help_text": "If the package belongs to an organization (eg.: @angular/material), include the full name."
+        },
+        {
+          "keyname": "download_period",
+          "field_type": "select",
+          "name": "Download Period",
+          "description": "Number of package downloads in the selected period below",
+          "options": [
+            {
+              "Week": "week"
+            },
+            {
+              "Month": "month"
+            },
+            {
+              "Year": "year"
+            }
+          ],
+          "default": "month"
+        },
+        {
+          "keyname": "thousands_sep",
+          "field_type": "select",
+          "name": "Thousands Separator",
+          "description": "Select your preferred thousands separator",
+          "options": [
+            {
+              "Comma (1,000)": ","
+            },
+            {
+              "Dot (1.000)": "."
+            }
+          ],
+          "default": ","
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 2
+      }
+    },
+    {
+      "id": 168807,
+      "name": "Dad Jokes via icanhazdadjoke",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/06k1xha22ly0bs9bv1osrfpo8lmg",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/ylq9g2hktx8p59phh4bxri2t7zgl?response-content-disposition=inline%3B%20filename%3D%22plugin-e6f7ab%22%3B%20filename%2A%3DUTF-8%27%27plugin-e6f7ab\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=6c43a85d07279d0f70c18eafb82b9e60e07c226fa9f802b48e2c371b93aae3ed",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Dad jokes provided by icanhazdadjoke.com",
+        "github_url": "https://github.com/jterrace",
+        "learn_more_url": "https://icanhazdadjoke.com/",
+        "email_address": "jterrace@gmail.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Dad jokes provided by icanhazdadjoke.com",
+          "github_url": "https://github.com/jterrace",
+          "learn_more_url": "https://icanhazdadjoke.com/",
+          "email_address": "jterrace@gmail.com"
+        }
+      ],
+      "stats": {
+        "installs": 58,
+        "forks": 0
+      }
+    },
+    {
+      "id": 166973,
+      "name": "SparkFun: Tutorials",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/5cqnle3ua6m3at3vn24z2g8gmgp9",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/bl6chclhyv69mok7viwqdbgujeud?response-content-disposition=inline%3B%20filename%3D%22plugin-e5f225%22%3B%20filename%2A%3DUTF-8%27%27plugin-e5f225\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=a6063d27b068cf3c2169654433df9a8d447087077805685b32005b329cd38f5b",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Powered by SparkFun's RSS Feeds, see recently added tutorials added to \u003ca href=\"https://learn.sparkfun.com/\"\u003elearn.sparkfun.com\u003c/a\u003e.\u003cbr\u003eEach mashup view offers slight variations (e.g. with or without description).\u003cbr\u003eCreated by Mario Lurig @ TRMNL.",
+        "learn_more_url": "https://sparkfun.com/",
+        "email_address": "mario@usetrmnl.com?subject=SparkFun Tutorials Plugin"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Powered by SparkFun's RSS Feeds, see recently added tutorials added to \u003ca href=\"https://learn.sparkfun.com/\"\u003elearn.sparkfun.com\u003c/a\u003e.\u003cbr\u003eEach mashup view offers slight variations (e.g. with or without description).\u003cbr\u003eCreated by Mario Lurig @ TRMNL.",
+          "learn_more_url": "https://sparkfun.com/",
+          "email_address": "mario@usetrmnl.com?subject=SparkFun Tutorials Plugin"
+        }
+      ],
+      "stats": {
+        "installs": 13,
+        "forks": 2
+      }
+    },
+    {
+      "id": 166333,
+      "name": "SparkFun: New Products",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/vqx9gimmc4man9f68rylf4omkafi",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/wx3ep46yif3hul6p76yj5z4bnmkp?response-content-disposition=inline%3B%20filename%3D%22plugin-b15261%22%3B%20filename%2A%3DUTF-8%27%27plugin-b15261\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=de00c0c59e432649a3e69468c2a4a3c6da476ddd9fc875833cb68f45b224f8aa",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Powered by SparkFun's RSS Feeds, see recently added products to their store. Created by Mario Lurig @ TRMNL.",
+        "learn_more_url": "https://sparkfun.com/",
+        "email_address": "mario@usetrmnl.com?subject=SparkFun Products Plugin"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Powered by SparkFun's RSS Feeds, see recently added products to their store. Created by Mario Lurig @ TRMNL.",
+          "learn_more_url": "https://sparkfun.com/",
+          "email_address": "mario@usetrmnl.com?subject=SparkFun Products Plugin"
+        }
+      ],
+      "stats": {
+        "installs": 12,
+        "forks": 0
+      }
+    },
+    {
+      "id": 166116,
+      "name": "SBB Swiss Stationboard",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/uh5jxtopgcdooc6qetne4zeo9atn",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/iykibrm4q48zwu9qrowqypxqp4ae?response-content-disposition=inline%3B%20filename%3D%22plugin-91443e%22%3B%20filename%2A%3DUTF-8%27%27plugin-91443e\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=f7c19baec1c5e111cda8573d98e4851abb7d1f698163e4f0b9e4c463bbea1a61",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "SBB Swiss Stationboard Live was created by David M., a public transport enthusiast and updated by Jens-Christian Fischer to work with polling GET Urls (to make the Stationboard update)",
+        "github_url": "https://github.com/notaprogrammer-alt",
+        "learn_more_url": "https://www.instagram.com/david_meury/"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "SBB Swiss Stationboard Live was created by David M., a public transport enthusiast and updated by Jens-Christian Fischer to work with polling GET Urls (to make the Stationboard update)",
+          "github_url": "https://github.com/notaprogrammer-alt",
+          "learn_more_url": "https://www.instagram.com/david_meury/"
+        },
+        {
+          "keyname": "station_name",
+          "field_type": "string",
+          "name": "Name der Haltestelle",
+          "default": "Zürich HB",
+          "description": "Anzeigename der Haltestelle"
+        },
+        {
+          "keyname": "station_id",
+          "field_type": "string",
+          "name": "Stop",
+          "default": 8503000,
+          "description": "ID der Haltestelle. Diese muss leider manuell gesucht werden, z.B. via \u003ca href=\"http://transport.opendata.ch/v1/locations?query=Basel\"\u003ehttp://transport.opendata.ch/v1/locations?query=Basel\u003c/a\u003e (siehe \u003ca href=\"https://transport.opendata.ch/docs.html\"\u003ehttps://transport.opendata.ch/docs.html\u003c/a\u003e)"
+        },
+        {
+          "keyname": "walking_time",
+          "field_type": "number",
+          "placeholder": "5",
+          "name": "Fussweg zur Haltestelle",
+          "description": "(z.B. gib für 5 Minuten Fussweg bis zur Haltestelle die Zahl 5 ein)",
+          "help_text": "Gib die Anzahl Minuten für deinen Fussweg zur Haltestelle ein."
+        },
+        {
+          "keyname": "transport_hidegroups",
+          "field_type": "text",
+          "placeholder": "tram, EXT, NJ",
+          "name": "Einzelne Verkehrsmittel im Fahrplan ausblenden",
+          "description": "(z.B. bus, tram, IR, ICE, S)",
+          "help_text": "Gib die Fahrzeug-Kategorien oder die Bezeichnungen aller Verkehrsmittel ein, die du ausblenden möchtest. (Mit Kommas getrennt) Unterstützte Formate sind die offiziellen Fahrzeug-Kategorien (train, tram, ship, bus, cableway) und die wichtigsten Bezeichnungen (IC, IR, S, RE, EC, EXT, R, RJ,  PE, ICE, TGV, D, RB, REX)",
+          "optional": true
+        },
+        {
+          "keyname": "linetarget_filter",
+          "field_type": "text",
+          "placeholder": "11Auz, 14Tri",
+          "name": "Ungewünschte Linien im Fahrplan filtern",
+          "description": "(z.B. 14Tri, 8Klu, 11Aes für die Linie 14 Richtung Zürich, Triemli und die Linie 8 Richtung Zürich, Klusplatz und die Linie 11 Richtung Aesch)",
+          "help_text": "Filtere ungewünschte Linien und Ziele aus der Anzeige heraus. (Mit Kommas getrennt)",
+          "optional": true
+        },
+        {
+          "keyname": "target_hidewords",
+          "field_type": "text",
+          "placeholder": "Zürich, Bern",
+          "name": "Einzelne Wörter im Fahrplan ausblenden",
+          "description": "(z.B. Bahnhof, Zürich, ZOB, City)",
+          "help_text": "Gib Wörter ein, die du in der Tabelle ausblenden möchtest. (Mit Kommas getrennt)",
+          "optional": true
+        },
+        {
+          "keyname": "target_abbreviations",
+          "field_type": "text",
+          "placeholder": "Bahnhof=Bhf., Zürich=ZH",
+          "name": "Einzelne Wörter im Fahrplan abkürzen",
+          "description": "(z.B. Basel=BS, Stauffacher=Stauff., Barfüsserplatz=Barfi)",
+          "help_text": "Gib an, welche Wörter du in der Tabelle wie abkürzen möchtest. (Mit Kommas getrennt)",
+          "optional": true
+        },
+        {
+          "keyname": "minDepartureOffset",
+          "field_type": "number",
+          "placeholder": "10",
+          "name": "Zeitfilter für Abfahrtsanzeige",
+          "description": "Alle Abfahrten, die weniger als die angegebenen Minuten in der Zukunft liegen, werden ausgeblendet.",
+          "help_text": "Gib zum Beispiel 10 ein, damit das Gerät die früheste angezeigte Abfahrt in 10 Minuten angibt."
+        },
+        {
+          "keyname": "cableway_icon",
+          "field_type": "select",
+          "options": [
+            "Zahnradbahn",
+            "Gondel"
+          ],
+          "default": "Gondel",
+          "name": "Bevorzugtes Seilbahn-Icon",
+          "description": "(Zahnradbahn oder Gondel)",
+          "help_text": "Wähle „Zahnradbahn“ oder „Gondel“ für dein favorisiertes Icon."
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 11
+      }
+    },
+    {
+      "id": 166082,
+      "name": "NTS Radio: Live Now",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/szlobqkwqpy6fv03n18aotbf2dlb",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/i9aw70ppyu0mvpsklw1kv1cc89bb?response-content-disposition=inline%3B%20filename%3D%22plugin-e20ef9%22%3B%20filename%2A%3DUTF-8%27%27plugin-e20ef9\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=eccd6b37b230b4720721c948c16d9130924d4fbd3b801c8b7b7721d666fb8461",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "Plugin that display NTS Radio current show for either channel 1 or 2.",
+        "field_type": "author_bio",
+        "github_url": "https://github.com/UnicodeApocalypse"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "Plugin that display NTS Radio current show for either channel 1 or 2.",
+          "field_type": "author_bio",
+          "github_url": "https://github.com/UnicodeApocalypse"
+        },
+        {
+          "keyname": "selectedradio",
+          "field_type": "select",
+          "options": [
+            "NTS 1",
+            "NTS 2"
+          ],
+          "default": "nts_1",
+          "name": "Channel to display",
+          "description": "Choose to display either NTS 1 or NTS 2 channel informations"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 7
+      }
+    },
+    {
+      "id": 165968,
+      "name": "Yoda Says",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/beeuggukcq187jbvng0mwtpmhv00",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/29qgqyxeytccuim0btdnxwvrcts5?response-content-disposition=inline%3B%20filename%3D%22plugin-2e9faa%22%3B%20filename%2A%3DUTF-8%27%27plugin-2e9faa\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=15c3324587457a10675ecc0a3936a9c567f6936580af853903fd72879c6387ad",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Yoda's Words of Wisdom.\u003cbr\u003e\u003ca href=\"https://asciiart.website/art/2247\"\u003ehttps://asciiart.website/art/2247\u003c/a\u003e",
+        "github_url": "https://github.com/johannago/trmnl-yoda-says",
+        "learn_more_url": "https://ko-fi.com/johannago"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Yoda's Words of Wisdom.\u003cbr\u003e\u003ca href=\"https://asciiart.website/art/2247\"\u003ehttps://asciiart.website/art/2247\u003c/a\u003e",
+          "github_url": "https://github.com/johannago/trmnl-yoda-says",
+          "learn_more_url": "https://ko-fi.com/johannago"
+        }
+      ],
+      "stats": {
+        "installs": 29,
+        "forks": 2
+      }
+    },
+    {
+      "id": 165579,
+      "name": "Bears Football",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/vkzfond9daup6h7bw5q41hjry8le",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/yd02uxgfta0o5toq0x1eusg0w9rf?response-content-disposition=inline%3B%20filename%3D%22plugin-fe7200%22%3B%20filename%2A%3DUTF-8%27%27plugin-fe7200\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=4c35e338fe1cc77b02ed37e807caff63723ef4a111304128e981f63390e85343",
+      "author_bio": {
+        "keyname": "author",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "A Ruby script that fetches NFL team schedule information from ESPN's API and optionally publishes it to TRMNL webhooks for display on e-ink devices. Before it can run, a few setup steps are required. Make sure to visit the GitHub page for detailed instructions.",
+        "github_url": "https://github.com/qgriffith/trmnl-nfl-team",
+        "email_address": "qgriffith@gmail.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "A Ruby script that fetches NFL team schedule information from ESPN's API and optionally publishes it to TRMNL webhooks for display on e-ink devices. Before it can run, a few setup steps are required. Make sure to visit the GitHub page for detailed instructions.",
+          "github_url": "https://github.com/qgriffith/trmnl-nfl-team",
+          "email_address": "qgriffith@gmail.com"
+        },
+        {
+          "keyname": "team",
+          "field_type": "string",
+          "name": "team",
+          "description": "Team name or abbreviation (e.g., 'Bears' or 'CHI')"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 12
+      }
+    },
+    {
+      "id": 164583,
+      "name": "Spotify - Listening Stats",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/hry61rzxbzk9br59mi6z4i80ci6k",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/wzmmfjm61ee088kk4d4gtdoaklhr?response-content-disposition=inline%3B%20filename%3D%22plugin-6b8678%22%3B%20filename%2A%3DUTF-8%27%27plugin-6b8678\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=3d315c0fdea5cfc5fd6d3c36d7098d41ac862cd97c4a88fd7c61a676a66cbe19",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "This recipe displays your personal Spotify listening statistics. This includes your top artists, favorite tracks, and recently played. Before it can run, a few setup steps are required. Make sure to visit the GitHub page for detailed instructions.",
+        "github_url": "https://github.com/johannago/trmnl-spotify-stats",
+        "learn_more_url": "https://ko-fi.com/johannago"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "This recipe displays your personal Spotify listening statistics. This includes your top artists, favorite tracks, and recently played. Before it can run, a few setup steps are required. Make sure to visit the GitHub page for detailed instructions.",
+          "github_url": "https://github.com/johannago/trmnl-spotify-stats",
+          "learn_more_url": "https://ko-fi.com/johannago"
+        },
+        {
+          "keyname": "spotify_client_id",
+          "field_type": "string",
+          "name": "Spotify Client ID",
+          "description": "From your Spotify Developer Dashboard"
+        },
+        {
+          "keyname": "spotify_client_secret",
+          "field_type": "password",
+          "name": "Spotify Client Secret",
+          "description": "Your app's client secret"
+        },
+        {
+          "keyname": "spotify_refresh_token",
+          "field_type": "password",
+          "name": "Spotify Refresh Token",
+          "description": "Generated from get-refresh-token.js"
+        },
+        {
+          "keyname": "time_range",
+          "field_type": "select",
+          "name": "Time Range",
+          "description": "Statistics time period",
+          "default": "medium_term",
+          "options": [
+            {
+              "Last Month": "short_term"
+            },
+            {
+              "Last 6 Months": "medium_term"
+            },
+            {
+              "All Time": "long_term"
+            }
+          ]
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 8
+      }
+    },
+    {
+      "id": 163790,
+      "name": "Random Google Fonts",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/vtw0w3xbtzsv85hhra8ska5dwxfs",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/c6yrzdc3vc6522llvxe4nlglxcwm?response-content-disposition=inline%3B%20filename%3D%22plugin-284003%22%3B%20filename%2A%3DUTF-8%27%27plugin-284003\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=769923f59989f113577bd65b0ba983cd03f8db0eb1cd49244d91d14beb1ce693",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "A random typeface from \u003ca href=\"https://fonts.google.com/\"\u003eGoogle Fonts\u003c/a\u003e on each refresh.",
+        "github_url": "https://github.com/blueset/trmnl-recipes",
+        "learn_more_url": "https://fonts.google.com/"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "A random typeface from \u003ca href=\"https://fonts.google.com/\"\u003eGoogle Fonts\u003c/a\u003e on each refresh.",
+          "github_url": "https://github.com/blueset/trmnl-recipes",
+          "learn_more_url": "https://fonts.google.com/"
+        },
+        {
+          "keyname": "filter",
+          "field_type": "code",
+          "rows": 2,
+          "name": "Font selection",
+          "description": "Select which fonts to include in the random selection. Leave empty to include all fonts.",
+          "optional": true,
+          "placeholder": "f.primary_language.endsWith('Latn')",
+          "help_text": "\u003cb class=\"font-normal block mt-2\"\u003eExamples:\u003c/b\u003e\n\u003cb class=\"font-normal block mt-2\"\u003e\n  \u003cb\u003eOnly select fonts for Latin script\u003c/b\u003e:\u003cbr\u003e\n  \u003cb class=\"block border border-gray-250 p-2 dark:border-gray-700 font-mono font-normal\"\u003e\n    f.primary_language.endsWith('Latn')\n  \u003c/b\u003e\n\u003c/b\u003e\n\u003cb class=\"font-normal block mt-2\"\u003e\n  \u003cb\u003eOnly select pixel fonts\u003c/b\u003e:\u003cbr\u003e\n  \u003cb class=\"block border border-gray-250 p-2 dark:border-gray-700 font-mono font-normal\"\u003e\n    f.qualities?.some(q =\u0026gt; q.quality == 'Pixel')\n  \u003c/b\u003e\n\u003c/b\u003e\n\u003cb class=\"font-normal block mt-2\"\u003e\n  \u003cb\u003eOnly select variable fonts\u003c/b\u003e:\u003cbr\u003e\n  \u003cb class=\"block border border-gray-250 p-2 dark:border-gray-700 font-mono font-normal\"\u003e\n    f.axes?.length \u0026gt; 0\n  \u003c/b\u003e\n\u003c/b\u003e\n\u003cb class=\"font-normal block mt-2\"\u003e\n  \u003cb\u003eOnly select fonts that support extended Cyrillic\u003c/b\u003e:\u003cbr\u003e\n  \u003cb class=\"block border border-gray-250 p-2 dark:border-gray-700 font-mono font-normal\"\u003e\n    f.subsets.includes('cyrillic-ext')\n  \u003c/b\u003e\n\u003c/b\u003e\n\u003cb class=\"font-normal block mt-2\"\u003e\n  \u003cb\u003eOnly select the latest font published\u003c/b\u003e:\u003cbr\u003e\n  \u003cb class=\"block border border-gray-250 p-2 dark:border-gray-700 font-mono font-normal\"\u003e\n    f == array.reduce((latest, current) =\u0026gt; new Date(current.date_added) \u0026gt; new Date(latest.date_added) ? current : latest)\n  \u003c/b\u003e\n\u003c/b\u003e\n\u003cb class=\"font-normal block mt-6\"\u003eTechnical details:\u003c/b\u003e\u003cbr\u003e\nThis field is a JavaScript expression that is evaluated for the metadata of each font. \nThe font metadata is available as the variable \u003cb class=\"font-mono\"\u003ef\u003c/b\u003e, index available as \u003cb class=\"font-mono\"\u003eindex\u003c/b\u003e, and the entire font array available as \u003cb class=\"font-mono\"\u003earray\u003c/b\u003e.\u003cbr\u003e\nCheck the metadata properties here under \u003cb class=\"font-mono\"\u003e$.fonts[]\u003c/b\u003e: \n\u003ca href=\"https://blueset.github.io/google-fonts-metadata/metadata.json\" class=\"underline\"\u003ehttps://blueset.github.io/google-fonts-metadata/metadata.json\u003c/a\u003e\n"
+        },
+        {
+          "keyname": "override",
+          "field_type": "code",
+          "rows": 8,
+          "name": "Sample text override",
+          "description": "Override sample text with your custom string",
+          "optional": true,
+          "placeholder": "{ \n  \"large\": [ [\"1\", \"The quick brown fox jumps over the lazy dog.\"] ],\n  \"small\": [ [\"1\", \"Few black taxis drive up major roads on quiet hazy nights.\"] ]\n}\n",
+          "help_text": "\u003cb class=\"font-mono\"\u003elarge\u003c/b\u003e: Single-line sample text, only visible in full size.\u003cbr\u003e\n\u003cb class=\"font-mono\"\u003esmall\u003c/b\u003e: Multi-line sample text, visible in all sizes.\u003cbr\u003e\n\u003cb class=\"font-normal block mt-2\"\u003eExamples:\u003c/b\u003e\n\u003cb class=\"font-normal block mt-2\"\u003e\n  \u003cb\u003eOverride all fonts\u003c/b\u003e:\u003cbr\u003e\n  \u003cb class=\"block border border-gray-250 p-2 dark:border-gray-700 font-mono font-normal whitespace-pre-wrap\"\u003e{ \n  \"large\": [ [\"1\", \"The quick brown fox jumps over the lazy dog.\"] ],\n  \"small\": [ [\"1\", \"Few black taxis drive up major roads on quiet hazy nights.\"] ]\n}\u003c/b\u003e\n\u003c/b\u003e\n\u003cb class=\"font-normal block mt-2\"\u003e\n  \u003cb\u003eOverride fonts for Latin script\u003c/b\u003e:\u003cbr\u003e\n  \u003cb class=\"block border border-gray-250 p-2 dark:border-gray-700 font-mono font-normal whitespace-pre-wrap\"\u003e{ \n  \"large\": [ [\"f.primary_language.endsWith('Latn')\", \"The quick brown fox jumps over the lazy dog.\"] ]\n}\u003c/b\u003e\n\u003c/b\u003e\n\u003cb class=\"font-normal block mt-2\"\u003e\n  \u003cb\u003eOverride fonts for full Japanese fonts and Hiragana only fonts\u003c/b\u003e:\u003cbr\u003e\n  \u003cb class=\"block border border-gray-250 p-2 dark:border-gray-700 font-mono font-normal whitespace-pre-wrap\"\u003e{ \n  \"large\": [ \n    [\"f.primary_language.endsWith('Jpan')\", \"愛のあるユニークで豊かな書体\"],\n    [\"f.primary_language.endsWith('Hira')\", \"ゆにいくでゆたかなあいのもじ\"]\n  ]\n}\u003c/b\u003e\n\u003c/b\u003e\n\u003cb class=\"font-normal block mt-6\"\u003eTechnical details for TypeScript savvy:\u003c/b\u003e\n\u003cb class=\"block border border-gray-250 p-2 dark:border-gray-700 font-mono font-normal whitespace-pre-wrap\"\u003einterface OverrideConfig {\n  [size: \"small\" | \"large\"]?: Array\u0026lt;[\n    /**\n     * The condition to match. This is a JavaScript expression where `f` is the font metadata object.\n     * You can use any valid JavaScript expression to check properties of the font.\n     * Check the metadata properties here under `$.fonts[]`:\n     * @see \u003ca href=\"https://blueset.github.io/google-fonts-metadata/metadata.json\" class=\"font-mono font-normal underline\"\u003ehttps://blueset.github.io/google-fonts-metadata/metadata.json\u003c/a\u003e\n     */\n    condition: string, \n    /** The sample text to use when the condition matches. */\n    sampleText: string\n  ]\u0026gt;\n}\u003c/b\u003e"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 23
+      }
+    },
+    {
+      "id": 162296,
+      "name": "Fox News - Political Cartoon of the Day",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/slrmgsylr7oyqkinxz4vq3wlwzdp",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/adpa6m4amgo92qkxlzlspid7fisu?response-content-disposition=inline%3B%20filename%3D%22plugin-be0792%22%3B%20filename%2A%3DUTF-8%27%27plugin-be0792\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251108%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251108T153428Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=5f1dc8c0afaea226b71a55c72344e9a0933e6c4296a12fb36818f4046972d635",
+      "author_bio": {
+        "keyname": "foxnews_comic",
+        "name": "Fox News Political Cartoon of the Day",
+        "field_type": "author_bio",
+        "description": "Daily political cartoon from Foxnews.com (plugin author not responsible for cartoon contents)",
+        "learn_more_url": "https://www.foxnews.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "foxnews_comic",
+          "name": "Fox News Political Cartoon of the Day",
+          "field_type": "author_bio",
+          "description": "Daily political cartoon from Foxnews.com (plugin author not responsible for cartoon contents)",
+          "learn_more_url": "https://www.foxnews.com"
+        }
+      ],
+      "stats": {
+        "installs": 27,
+        "forks": 4
+      }
+    }
+  ],
+  "total": 490,
+  "from": 1,
+  "to": 25,
+  "per_page": 25,
+  "current_page": 1,
+  "prev_page_url": null,
+  "next_page_url": "/recipes?page=2\u0026sort_by=newest"
+}
