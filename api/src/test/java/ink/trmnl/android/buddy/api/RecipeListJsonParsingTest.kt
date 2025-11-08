@@ -74,12 +74,11 @@ class RecipeListJsonParsingTest {
         assertThat(androidAppsRecipe.name).isEqualTo("Top Android Apps")
         assertThat(androidAppsRecipe.customFields.size).isEqualTo(4)
 
-        // Verify custom fields are accessible even though options field was removed
+        // Verify custom fields are accessible
         val showField = androidAppsRecipe.customFields[1]
         assertThat(showField.keyname).isEqualTo("show")
         assertThat(showField.fieldType).isEqualTo("select")
-        assertThat(showField.default).isNotNull()
-        // Note: options and default fields are JsonElement (unused in app) to handle polymorphic JSON
+        // Note: options and default fields are not exposed in DTO (unused in app)
 
         // Verify other recipes parse successfully
         assertThat(response.data[3].name).isEqualTo("10 PRINT")

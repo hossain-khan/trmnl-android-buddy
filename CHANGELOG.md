@@ -13,9 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Recipe parsing error caused by unused polymorphic fields (`options` and `default`) in `custom_fields` 
-  - Removed `options` field (not used in app)
-  - Changed `default` field to JsonElement to handle strings, numbers, arrays, and objects
+- Recipe parsing error caused by unused polymorphic fields in `custom_fields` 
+  - Removed `options` field (not used in app, was causing parsing errors with mixed types)
+  - Removed `default` field (not used in app, was polymorphic string/number/array/object)
+  - Keeps DTO clean without exposing `JsonElement` types
 
 ## [2.4.0] - 2025-11-04
 

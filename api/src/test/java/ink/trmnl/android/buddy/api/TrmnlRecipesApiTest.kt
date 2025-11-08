@@ -298,8 +298,7 @@ class TrmnlRecipesApiTest {
                     "name": "Temperature Units",
                     "field_type": "select",
                     "description": "Select temperature units",
-                    "required": false,
-                    "default": "Celsius"
+                    "required": false
                   }
                 ],
                 "stats": {
@@ -349,7 +348,6 @@ class TrmnlRecipesApiTest {
         assertThat(unitsField.keyname).isEqualTo("units")
         assertThat(unitsField.fieldType).isEqualTo("select")
         assertThat(unitsField.required).isEqualTo(false)
-        assertThat(unitsField.default).isNotNull()
 
         // Verify stats
         assertThat(recipe.stats.installs).isEqualTo(500)
@@ -626,11 +624,10 @@ class TrmnlRecipesApiTest {
         assertThat(androidAppsRecipe.name).isEqualTo("Top Android Apps")
         assertThat(androidAppsRecipe.customFields.size).isEqualTo(4)
 
-        // Verify custom fields are accessible even though options field was removed
+        // Verify custom fields are accessible
         val showField = androidAppsRecipe.customFields[1]
         assertThat(showField.keyname).isEqualTo("show")
         assertThat(showField.fieldType).isEqualTo("select")
-        assertThat(showField.default).isEqualTo("free")
 
         // Verify request
         val request = mockWebServer.takeRequest()
