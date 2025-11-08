@@ -33,6 +33,7 @@ import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 fun ExtrasSection(
     onDeviceCatalogClick: () -> Unit,
     onRecipesCatalogClick: () -> Unit,
+    onContentHubClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -132,6 +133,43 @@ fun ExtrasSection(
                         ),
                     modifier = Modifier.clickable { onRecipesCatalogClick() },
                 )
+
+                // Content Hub
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Content Hub",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "View announcements and blog posts from TRMNL",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(26.dp),
+                        )
+                    },
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.arrow_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Navigate to Content Hub",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    colors =
+                        ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    modifier = Modifier.clickable { onContentHubClick() },
+                )
             }
         }
     }
@@ -148,6 +186,7 @@ private fun ExtrasSectionPreview() {
         ExtrasSection(
             onDeviceCatalogClick = {},
             onRecipesCatalogClick = {},
+            onContentHubClick = {},
         )
     }
 }

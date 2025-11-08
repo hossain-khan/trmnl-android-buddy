@@ -252,6 +252,24 @@ class SettingsScreenTest {
             }
         }
 
+    @Test
+    fun `content hub clicked event triggers navigation to ContentHubScreen`() =
+        runTest {
+            val navigator = FakeNavigator(SettingsScreen)
+            val repository = FakeUserPreferencesRepository()
+            val workerScheduler = FakeWorkerScheduler()
+            val biometricAuthHelper = FakeBiometricAuthHelper()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper)
+
+            presenter.test {
+                val state = awaitItem()
+
+                state.eventSink(SettingsScreen.Event.ContentHubClicked)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     // ========== Test Fakes ==========
 
     /**
