@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Haptic feedback for blog post and recipe bookmarks providing subtle tactile confirmation when adding or removing bookmarks
+
 ## [2.4.0] - 2025-11-04
 
 ### Added
