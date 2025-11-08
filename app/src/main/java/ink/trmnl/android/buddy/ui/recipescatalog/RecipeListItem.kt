@@ -9,7 +9,6 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,7 +33,6 @@ import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.transformations
 import ink.trmnl.android.buddy.R
-import ink.trmnl.android.buddy.api.models.AuthorBio
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
@@ -114,22 +112,11 @@ fun RecipeListItem(
                 )
             },
             supportingContent = {
-                Column {
-                    // Recipe description from author_bio
-                    recipe.authorBio?.description?.let { description ->
-                        Text(
-                            text = description,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-                    // Recipe statistics
-                    Text(
-                        text = "${recipe.stats.installs} installs • ${recipe.stats.forks} forks",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+                Text(
+                    text = "${recipe.stats.installs} installs • ${recipe.stats.forks} forks",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             },
             trailingContent = {
                 // Animated bookmark button
@@ -200,10 +187,6 @@ private fun RecipeListItemPreview() {
                     name = "Weather Chum",
                     iconUrl = null,
                     screenshotUrl = null,
-                    authorBio =
-                        AuthorBio(
-                            description = "Weather Chum was created by John Smith.",
-                        ),
                     stats = RecipeStats(installs = 1230, forks = 1),
                 ),
             isBookmarked = false,
@@ -224,10 +207,6 @@ private fun RecipeListItemWithHighStatsPreview() {
                     name = "Matrix",
                     iconUrl = null,
                     screenshotUrl = null,
-                    authorBio =
-                        AuthorBio(
-                            description = "Display Matrix-style falling characters on your TRMNL device.",
-                        ),
                     stats = RecipeStats(installs = 25, forks = 176),
                 ),
             isBookmarked = false,
@@ -248,10 +227,6 @@ private fun RecipeListItemBookmarkedPreview() {
                     name = "Bookmarked Recipe",
                     iconUrl = null,
                     screenshotUrl = null,
-                    authorBio =
-                        AuthorBio(
-                            description = "A bookmarked recipe example with a description that may be longer to demonstrate text wrapping.",
-                        ),
                     stats = RecipeStats(installs = 500, forks = 50),
                 ),
             isBookmarked = true,

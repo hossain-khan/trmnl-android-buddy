@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Recipe descriptions in Recipes Catalog list items from `author_bio.description` field
 - Haptic feedback for blog post and recipe bookmarks providing subtle tactile confirmation when adding or removing bookmarks
 - **Content Hub in Settings Extras**: Added Content Hub to the Settings screen Extras section for quick access to announcements and blog posts
 - Unit test to validate parsing of actual recipe_list.json API response
