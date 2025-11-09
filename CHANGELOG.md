@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Comprehensive Compose Multiplatform migration report analyzing feasibility of converting the app to support iOS and desktop platforms
+
 ## [2.5.0] - 2025-11-08
 
 ### Added
