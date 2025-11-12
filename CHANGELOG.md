@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Comprehensive test coverage for `api` module**: Increased code coverage from ~60% to ~85%
+  - Added `TrmnlDeviceRepositoryTest` with 11 tests covering all repository methods
+  - Added `TrmnlApiClientTest` with 11 tests covering OkHttpClient and Retrofit factory methods
+  - Added `DeviceModelTest` with 13 tests covering Device model helper methods
+  - Tests include success cases, error handling, filtering methods, and edge cases
 - **Code Coverage with Kover**: Integrated Kotlinx Kover plugin (v0.9.1) for Kotlin code coverage reporting
   - Generates XML reports for all modules (app, api, content)
   - Merged coverage reports available at `build/reports/kover/report.xml`
