@@ -55,6 +55,8 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
+import com.patrykandpatrick.vico.core.cartesian.AutoScrollCondition
+import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
@@ -82,6 +84,7 @@ import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
 import ink.trmnl.android.buddy.ui.utils.getWifiIcon
+import ink.trmnl.android.buddy.ui.utils.isLowBatteryAlert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -116,6 +119,8 @@ data class DeviceDetailScreen(
         val hasRecordedToday: Boolean = false,
         val hasDeviceToken: Boolean = false,
         val clearHistoryReason: ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer.ClearHistoryReason? = null,
+        val isLowBatteryNotificationEnabled: Boolean = false,
+        val lowBatteryThresholdPercent: Int = 20,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -153,12 +158,20 @@ class DeviceDetailPresenter
                 .collectAsState(initial = emptyList())
             var isLoading by rememberRetained { mutableStateOf(true) }
             var hasDeviceToken by rememberRetained { mutableStateOf(false) }
+            var isLowBatteryNotificationEnabled by rememberRetained { mutableStateOf(false) }
+            var lowBatteryThresholdPercent by rememberRetained { mutableStateOf(20) }
             val preferences by userPreferencesRepository.userPreferencesFlow.collectAsState(
                 initial =
                     ink.trmnl.android.buddy.data.preferences
                         .UserPreferences(),
             )
             val coroutineScope = rememberCoroutineScope()
+
+            // Update low battery preferences from user preferences
+            LaunchedEffect(preferences) {
+                isLowBatteryNotificationEnabled = preferences.isLowBatteryNotificationEnabled
+                lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent
+            }
 
             // Check if device token exists
             LaunchedEffect(screen.deviceId) {
@@ -209,6 +222,8 @@ class DeviceDetailPresenter
                 hasRecordedToday = hasRecordedToday,
                 hasDeviceToken = hasDeviceToken,
                 clearHistoryReason = clearHistoryReason,
+                isLowBatteryNotificationEnabled = isLowBatteryNotificationEnabled,
+                lowBatteryThresholdPercent = lowBatteryThresholdPercent,
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
@@ -341,6 +356,20 @@ fun DeviceDetailContent(
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            // Low Battery Banner
+            if (
+                isLowBatteryAlert(
+                    percentCharged = state.currentBattery,
+                    thresholdPercent = state.lowBatteryThresholdPercent,
+                    isNotificationEnabled = state.isLowBatteryNotificationEnabled,
+                )
+            ) {
+                LowBatteryBanner(
+                    currentBattery = state.currentBattery,
+                    thresholdPercent = state.lowBatteryThresholdPercent,
+                )
+            }
+
             // Current Status Card
             CurrentStatusCard(
                 currentBattery = state.currentBattery,
@@ -383,6 +412,52 @@ fun DeviceDetailContent(
                     onClearData = {
                         state.eventSink(DeviceDetailScreen.Event.ClearBatteryHistory)
                     },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LowBatteryBanner(
+    currentBattery: Double,
+    thresholdPercent: Int,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.battery_alert_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                contentDescription = "Low battery alert",
+                modifier = Modifier.size(24.dp),
+                tint = MaterialTheme.colorScheme.onErrorContainer,
+            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = "Low Battery Alert",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                )
+                Text(
+                    text =
+                        "Battery level (${currentBattery.toInt()}%) is below your threshold of $thresholdPercent%. " +
+                            "Consider charging the device soon to ensure continuous operation.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
                 )
             }
         }
@@ -709,7 +784,12 @@ private fun BatteryChart(
                 ),
             modelProducer = modelProducer,
             modifier = modifier.width(chartWidth.dp).height(200.dp),
-            scrollState = rememberVicoScrollState(scrollEnabled = true),
+            scrollState =
+                rememberVicoScrollState(
+                    scrollEnabled = true,
+                    initialScroll = Scroll.Absolute.End,
+                    autoScrollCondition = AutoScrollCondition.OnModelGrowth,
+                ),
             zoomState = rememberVicoZoomState(zoomEnabled = false),
         )
     }

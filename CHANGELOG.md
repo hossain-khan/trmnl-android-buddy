@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Battery alert indicators in Device List and Device Details screens
+  - Low battery icon button appears next to settings icon when device battery is below user-configured threshold
+  - Tapping battery alert icon shows snackbar with battery percentage and threshold information
+  - Device Details screen displays prominent banner when battery is below threshold
+  - Banner prompts user to charge device to ensure continuous operation
+  - Uses existing low battery notification settings (enabled/disabled and threshold percentage)
+  - Material 3 compliant with theme-aware colors (error color for alerts)
+  - Comprehensive unit tests for battery alert logic
 - **Clear Battery History Card**: Added ability to clear battery history data when charging events or stale data is detected
   - Automatically detects charging events (battery level jumps >50% between readings)
   - Identifies stale data (battery history older than 6 months)
@@ -16,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Confirmation dialog before clearing history to prevent accidental data loss
   - Comprehensive unit tests for battery history analysis logic
   - Material 3 themed UI components with proper color scheme support
+
+### Changed
+
+- **Battery History Chart Auto-Scroll**: The battery history chart now automatically scrolls to show the latest data point when the screen loads or when new data is added, improving UX by eliminating the need for manual horizontal scrolling to view recent battery readings
+
 
 ## [2.5.0] - 2025-11-08
 

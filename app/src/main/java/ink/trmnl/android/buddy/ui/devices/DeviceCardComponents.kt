@@ -51,6 +51,7 @@ import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
 import ink.trmnl.android.buddy.ui.utils.getWifiIcon
+import ink.trmnl.android.buddy.ui.utils.isLowBatteryAlert
 import ink.trmnl.android.buddy.util.PrivacyUtils
 import ink.trmnl.android.buddy.util.formatRefreshRate
 
@@ -65,6 +66,8 @@ internal fun DeviceCard(
     hasToken: Boolean,
     previewInfo: DevicePreviewInfo?,
     isPrivacyEnabled: Boolean,
+    isLowBatteryNotificationEnabled: Boolean,
+    lowBatteryThresholdPercent: Int,
     onClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onPreviewClick: () -> Unit,
@@ -109,6 +112,32 @@ internal fun DeviceCard(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f),
                     )
+                    // Show battery alert icon if enabled and battery is below threshold
+                    if (
+                        isLowBatteryAlert(
+                            percentCharged = device.percentCharged,
+                            thresholdPercent = lowBatteryThresholdPercent,
+                            isNotificationEnabled = isLowBatteryNotificationEnabled,
+                        )
+                    ) {
+                        IconButton(
+                            onClick = {
+                                eventSink(
+                                    TrmnlDevicesScreen.Event.BatteryAlertClicked(
+                                        device = device,
+                                        thresholdPercent = lowBatteryThresholdPercent,
+                                    ),
+                                )
+                            },
+                            modifier = Modifier.size(40.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.battery_alert_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Low battery alert",
+                                tint = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
                     IconButton(
                         onClick = onSettingsClick,
                         modifier = Modifier.size(40.dp),
@@ -526,6 +555,8 @@ private fun DeviceCardHighBatteryPreview() {
             hasToken = true,
             previewInfo = null,
             isPrivacyEnabled = false,
+            isLowBatteryNotificationEnabled = false,
+            lowBatteryThresholdPercent = 20,
             onClick = {},
             onSettingsClick = {},
             onPreviewClick = {},
@@ -543,6 +574,8 @@ private fun DeviceCardMediumBatteryPreview() {
             hasToken = true,
             previewInfo = null,
             isPrivacyEnabled = false,
+            isLowBatteryNotificationEnabled = false,
+            lowBatteryThresholdPercent = 20,
             onClick = {},
             onSettingsClick = {},
             onPreviewClick = {},
@@ -560,6 +593,8 @@ private fun DeviceCardLowBatteryPreview() {
             hasToken = false,
             previewInfo = null,
             isPrivacyEnabled = false,
+            isLowBatteryNotificationEnabled = true,
+            lowBatteryThresholdPercent = 20,
             onClick = {},
             onSettingsClick = {},
             onPreviewClick = {},
@@ -577,6 +612,8 @@ private fun DeviceCardPrivacyEnabledPreview() {
             hasToken = true,
             previewInfo = null,
             isPrivacyEnabled = true,
+            isLowBatteryNotificationEnabled = false,
+            lowBatteryThresholdPercent = 20,
             onClick = {},
             onSettingsClick = {},
             onPreviewClick = {},

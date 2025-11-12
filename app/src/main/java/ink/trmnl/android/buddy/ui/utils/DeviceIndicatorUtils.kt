@@ -64,3 +64,17 @@ fun getWifiIcon(wifiStrength: Double): Int =
         wifiStrength >= 25 -> R.drawable.outline_network_wifi_2_bar_24
         else -> R.drawable.outline_network_wifi_1_bar_24
     }
+
+/**
+ * Checks if a device's battery level is below the specified threshold.
+ *
+ * @param percentCharged Current battery percentage (0-100)
+ * @param thresholdPercent Low battery threshold percentage (0-100)
+ * @param isNotificationEnabled Whether low battery notifications are enabled
+ * @return true if battery is below threshold and notifications are enabled
+ */
+fun isLowBatteryAlert(
+    percentCharged: Double,
+    thresholdPercent: Int,
+    isNotificationEnabled: Boolean,
+): Boolean = isNotificationEnabled && percentCharged < thresholdPercent
