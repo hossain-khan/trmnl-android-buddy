@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Battery History Chart Auto-Scroll**: The battery history chart now automatically scrolls to show the latest data point when the screen loads or when new data is added, improving UX by eliminating the need for manual horizontal scrolling to view recent battery readings
 
+### Added
+
+- Battery alert indicators in Device List and Device Details screens
+  - Low battery icon button appears next to settings icon when device battery is below user-configured threshold
+  - Tapping battery alert icon shows snackbar with battery percentage and threshold information
+  - Device Details screen displays prominent banner when battery is below threshold
+  - Banner prompts user to charge device to ensure continuous operation
+  - Uses existing low battery notification settings (enabled/disabled and threshold percentage)
+  - Material 3 compliant with theme-aware colors (error color for alerts)
+  - Comprehensive unit tests for battery alert logic
+
 ## [2.5.0] - 2025-11-08
 
 ### Added
