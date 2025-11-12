@@ -20,20 +20,21 @@ import org.junit.Test
  * "Unexpected JSON token at offset 4917: Expected beginning of the string, but got {"
  */
 class RecipeListJsonParsingTest {
-
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
+    private val json =
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
 
     @Test
     fun `parse actual recipe_list json file successfully`() {
         // Given: Load actual recipe_list.json from test resources
-        val jsonContent = javaClass.classLoader
-            ?.getResourceAsStream("recipe_list.json")
-            ?.bufferedReader()
-            ?.use { it.readText() }
-            ?: throw IllegalStateException("Could not load recipe_list.json")
+        val jsonContent =
+            javaClass.classLoader
+                ?.getResourceAsStream("recipe_list.json")
+                ?.bufferedReader()
+                ?.use { it.readText() }
+                ?: throw IllegalStateException("Could not load recipe_list.json")
 
         // When: Parse the JSON
         val response = json.decodeFromString<RecipesResponse>(jsonContent)

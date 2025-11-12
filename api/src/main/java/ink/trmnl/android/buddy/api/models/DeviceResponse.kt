@@ -13,5 +13,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class DeviceResponse(
     @SerialName("data")
-    val data: Device
+    val data: Device,
 )

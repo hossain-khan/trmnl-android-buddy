@@ -17,11 +17,11 @@ import kotlinx.coroutines.withContext
  */
 class TrmnlDeviceRepository(
     private val apiService: TrmnlApiService,
-    private val apiKey: String
+    private val apiKey: String,
 ) {
     private val authHeader: String
         get() = "Bearer $apiKey"
-    
+
     /**
      * Fetch all devices belonging to the authenticated user.
      *
@@ -54,13 +54,14 @@ class TrmnlDeviceRepository(
      * }
      * ```
      */
-    suspend fun getDevices(): ApiResult<List<Device>, *> = withContext(Dispatchers.IO) {
-        when (val result = apiService.getDevices(authHeader)) {
-            is ApiResult.Success -> ApiResult.success(result.value.data)
-            is ApiResult.Failure -> result
+    suspend fun getDevices(): ApiResult<List<Device>, *> =
+        withContext(Dispatchers.IO) {
+            when (val result = apiService.getDevices(authHeader)) {
+                is ApiResult.Success -> ApiResult.success(result.value.data)
+                is ApiResult.Failure -> result
+            }
         }
-    }
-    
+
     /**
      * Fetch a specific device by ID.
      *
@@ -96,13 +97,14 @@ class TrmnlDeviceRepository(
      * }
      * ```
      */
-    suspend fun getDevice(deviceId: Int): ApiResult<Device, *> = withContext(Dispatchers.IO) {
-        when (val result = apiService.getDevice(deviceId, authHeader)) {
-            is ApiResult.Success -> ApiResult.success(result.value.data)
-            is ApiResult.Failure -> result
+    suspend fun getDevice(deviceId: Int): ApiResult<Device, *> =
+        withContext(Dispatchers.IO) {
+            when (val result = apiService.getDevice(deviceId, authHeader)) {
+                is ApiResult.Success -> ApiResult.success(result.value.data)
+                is ApiResult.Failure -> result
+            }
         }
-    }
-    
+
     /**
      * Get devices with low battery (below 20%).
      *
@@ -110,16 +112,15 @@ class TrmnlDeviceRepository(
      *
      * @return ApiResult containing list of devices with low battery or error
      */
-    suspend fun getDevicesWithLowBattery(): ApiResult<List<Device>, *> {
-        return when (val result = getDevices()) {
+    suspend fun getDevicesWithLowBattery(): ApiResult<List<Device>, *> =
+        when (val result = getDevices()) {
             is ApiResult.Success -> {
                 val lowBatteryDevices = result.value.filter { it.isBatteryLow() }
                 ApiResult.success(lowBatteryDevices)
             }
             is ApiResult.Failure -> result
         }
-    }
-    
+
     /**
      * Get devices with weak WiFi signal (below 40%).
      *
@@ -127,16 +128,15 @@ class TrmnlDeviceRepository(
      *
      * @return ApiResult containing list of devices with weak WiFi or error
      */
-    suspend fun getDevicesWithWeakWifi(): ApiResult<List<Device>, *> {
-        return when (val result = getDevices()) {
+    suspend fun getDevicesWithWeakWifi(): ApiResult<List<Device>, *> =
+        when (val result = getDevices()) {
             is ApiResult.Success -> {
                 val weakWifiDevices = result.value.filter { it.isWifiWeak() }
                 ApiResult.success(weakWifiDevices)
             }
             is ApiResult.Failure -> result
         }
-    }
-    
+
     /**
      * Get information about the authenticated user.
      *
@@ -172,10 +172,11 @@ class TrmnlDeviceRepository(
      * }
      * ```
      */
-    suspend fun userInfo(): ApiResult<User, *> = withContext(Dispatchers.IO) {
-        when (val result = apiService.userInfo(authHeader)) {
-            is ApiResult.Success -> ApiResult.success(result.value.data)
-            is ApiResult.Failure -> result
+    suspend fun userInfo(): ApiResult<User, *> =
+        withContext(Dispatchers.IO) {
+            when (val result = apiService.userInfo(authHeader)) {
+                is ApiResult.Success -> ApiResult.success(result.value.data)
+                is ApiResult.Failure -> result
+            }
         }
-    }
 }
