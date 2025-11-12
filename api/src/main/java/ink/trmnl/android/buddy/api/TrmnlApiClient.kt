@@ -25,13 +25,14 @@ object TrmnlApiClient {
     /**
      * JSON configuration for kotlinx.serialization
      */
-    private val json = Json {
-        ignoreUnknownKeys = true // Ignore unknown fields in API responses
-        isLenient = true // Be lenient with non-standard JSON
-        coerceInputValues = true // Coerce null to default values
-        encodeDefaults = true // Include default values in serialization
-        prettyPrint = false // Compact JSON for network efficiency
-    }
+    private val json =
+        Json {
+            ignoreUnknownKeys = true // Ignore unknown fields in API responses
+            isLenient = true // Be lenient with non-standard JSON
+            coerceInputValues = true // Coerce null to default values
+            encodeDefaults = true // Include default values in serialization
+            prettyPrint = false // Compact JSON for network efficiency
+        }
 
     /**
      * Creates a configured OkHttpClient with logging and timeouts.
@@ -45,41 +46,48 @@ object TrmnlApiClient {
         isDebug: Boolean = false,
         apiKey: String? = null,
         appVersion: String = "unknown",
-    ): OkHttpClient {
-        return OkHttpClient.Builder().apply {
-            // Timeouts
-            connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            writeTimeout(WRITE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+    ): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .apply {
+                // Timeouts
+                connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                writeTimeout(WRITE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
 
-            // Logging (only in debug builds)
-            if (isDebug) {
-                addInterceptor(
-                    HttpLoggingInterceptor().apply {
-                        level = HttpLoggingInterceptor.Level.BODY
+                // Logging (only in debug builds)
+                if (isDebug) {
+                    addInterceptor(
+                        HttpLoggingInterceptor().apply {
+                            level = HttpLoggingInterceptor.Level.BODY
+                        },
+                    )
+                }
+
+                // Authentication interceptor
+                if (apiKey != null) {
+                    addInterceptor { chain ->
+                        val request =
+                            chain
+                                .request()
+                                .newBuilder()
+                                .addHeader("Authorization", "Bearer $apiKey")
+                                .build()
+                        chain.proceed(request)
                     }
-                )
-            }
+                }
 
-            // Authentication interceptor
-            if (apiKey != null) {
+                // User-Agent header
                 addInterceptor { chain ->
-                    val request = chain.request().newBuilder()
-                        .addHeader("Authorization", "Bearer $apiKey")
-                        .build()
+                    val request =
+                        chain
+                            .request()
+                            .newBuilder()
+                            .addHeader("User-Agent", UserAgentProvider.getUserAgent(appVersion))
+                            .build()
                     chain.proceed(request)
                 }
-            }
-
-            // User-Agent header
-            addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("User-Agent", UserAgentProvider.getUserAgent(appVersion))
-                    .build()
-                chain.proceed(request)
-            }
-        }.build()
-    }
+            }.build()
 
     /**
      * Creates a configured Retrofit instance for TRMNL API.
@@ -90,12 +98,11 @@ object TrmnlApiClient {
      * @param okHttpClient Optional custom OkHttpClient
      * @return Configured Retrofit instance
      */
-    fun createRetrofit(
-        okHttpClient: OkHttpClient = createOkHttpClient()
-    ): Retrofit {
+    fun createRetrofit(okHttpClient: OkHttpClient = createOkHttpClient()): Retrofit {
         val contentType = "application/json".toMediaType()
-        
-        return Retrofit.Builder()
+
+        return Retrofit
+            .Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(ApiResultConverterFactory)

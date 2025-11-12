@@ -44,15 +44,15 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
  */
 @Ignore("Tests are hanging in CI environment, need investigation")
 class TrmnlRecipesApiTest {
-
     private lateinit var mockWebServer: MockWebServer
     private lateinit var apiService: TrmnlApiService
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-        coerceInputValues = true
-    }
+    private val json =
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+            coerceInputValues = true
+        }
 
     @Before
     fun setup() {
@@ -63,19 +63,18 @@ class TrmnlRecipesApiTest {
         // Create Retrofit instance pointing to mock server
         val okHttpClient = OkHttpClient.Builder().build()
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/"))
-            .client(okHttpClient)
-            .addConverterFactory(
-                com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
-            )
-            .addConverterFactory(
-                json.asConverterFactory("application/json".toMediaType())
-            )
-            .addCallAdapterFactory(
-                com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
-            )
-            .build()
+        val retrofit =
+            Retrofit
+                .Builder()
+                .baseUrl(mockWebServer.url("/"))
+                .client(okHttpClient)
+                .addConverterFactory(
+                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
+                ).addConverterFactory(
+                    json.asConverterFactory("application/json".toMediaType()),
+                ).addCallAdapterFactory(
+                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
+                ).build()
 
         apiService = retrofit.create(TrmnlApiService::class.java)
     }
@@ -86,552 +85,585 @@ class TrmnlRecipesApiTest {
     }
 
     @Test
-    fun `getRecipes returns success with recipe list`() = runTest {
-        // Given: Mock server returns successful response with recipes
-        val responseBody = """
-            {
-              "data": [
+    fun `getRecipes returns success with recipe list`() =
+        runTest {
+            // Given: Mock server returns successful response with recipes
+            val responseBody =
+                """
                 {
-                  "id": 1,
-                  "name": "Weather Chum",
-                  "icon_url": "https://example.com/weather-icon.png",
-                  "screenshot_url": "https://example.com/weather-screenshot.png",
-                  "stats": {
-                    "installs": 1230,
-                    "forks": 1
-                  }
-                },
+                  "data": [
+                    {
+                      "id": 1,
+                      "name": "Weather Chum",
+                      "icon_url": "https://example.com/weather-icon.png",
+                      "screenshot_url": "https://example.com/weather-screenshot.png",
+                      "stats": {
+                        "installs": 1230,
+                        "forks": 1
+                      }
+                    },
+                    {
+                      "id": 2,
+                      "name": "Matrix",
+                      "icon_url": "https://example.com/matrix-icon.png",
+                      "screenshot_url": "https://example.com/matrix-screenshot.png",
+                      "stats": {
+                        "installs": 25,
+                        "forks": 176
+                      }
+                    }
+                  ],
+                  "total": 100,
+                  "from": 1,
+                  "to": 2,
+                  "per_page": 25,
+                  "current_page": 1,
+                  "prev_page_url": null,
+                  "next_page_url": "https://usetrmnl.com/recipes.json?page=2"
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            // When: Call getRecipes
+            val result = apiService.getRecipes()
+
+            // Then: Verify success result with correct data
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val successResult = result as ApiResult.Success
+
+            assertThat(successResult.value.data).hasSize(2)
+            assertThat(successResult.value.total).isEqualTo(100)
+            assertThat(successResult.value.currentPage).isEqualTo(1)
+            assertThat(successResult.value.perPage).isEqualTo(25)
+            assertThat(successResult.value.prevPageUrl).isNull()
+            assertThat(successResult.value.nextPageUrl).isNotNull()
+
+            val firstRecipe = successResult.value.data[0]
+            assertThat(firstRecipe.id).isEqualTo(1)
+            assertThat(firstRecipe.name).isEqualTo("Weather Chum")
+            assertThat(firstRecipe.iconUrl).isEqualTo("https://example.com/weather-icon.png")
+            assertThat(firstRecipe.stats.installs).isEqualTo(1230)
+            assertThat(firstRecipe.stats.forks).isEqualTo(1)
+
+            val secondRecipe = successResult.value.data[1]
+            assertThat(secondRecipe.id).isEqualTo(2)
+            assertThat(secondRecipe.name).isEqualTo("Matrix")
+            assertThat(secondRecipe.stats.forks).isEqualTo(176)
+
+            // Verify request was made correctly
+            val request = mockWebServer.takeRequest()
+            assertThat(request.path).isEqualTo("/recipes.json")
+            assertThat(request.method).isEqualTo("GET")
+        }
+
+    @Test
+    fun `getRecipes with search parameter sends correct query`() =
+        runTest {
+            // Given: Mock server
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(
+                        """{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 25, "current_page": 1, "prev_page_url": null, "next_page_url": null}""",
+                    ),
+            )
+
+            // When: Call getRecipes with search
+            apiService.getRecipes(search = "weather")
+
+            // Then: Verify search query parameter
+            val request = mockWebServer.takeRequest()
+            assertThat(request.path).isEqualTo("/recipes.json?search=weather")
+        }
+
+    @Test
+    fun `getRecipes with sort parameter sends correct query`() =
+        runTest {
+            // Given: Mock server
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(
+                        """{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 25, "current_page": 1, "prev_page_url": null, "next_page_url": null}""",
+                    ),
+            )
+
+            // When: Call getRecipes with sort
+            apiService.getRecipes(sortBy = "popularity")
+
+            // Then: Verify sort query parameter
+            val request = mockWebServer.takeRequest()
+            assertThat(request.path).isEqualTo("/recipes.json?sort-by=popularity")
+        }
+
+    @Test
+    fun `getRecipes with pagination parameters sends correct query`() =
+        runTest {
+            // Given: Mock server
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(
+                        """{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 50, "current_page": 2, "prev_page_url": null, "next_page_url": null}""",
+                    ),
+            )
+
+            // When: Call getRecipes with pagination
+            apiService.getRecipes(page = 2, perPage = 50)
+
+            // Then: Verify pagination query parameters
+            val request = mockWebServer.takeRequest()
+            assertThat(request.path).isEqualTo("/recipes.json?page=2&per_page=50")
+        }
+
+    @Test
+    fun `getRecipes with all parameters sends correct query`() =
+        runTest {
+            // Given: Mock server
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(
+                        """{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 10, "current_page": 3, "prev_page_url": null, "next_page_url": null}""",
+                    ),
+            )
+
+            // When: Call getRecipes with all parameters
+            apiService.getRecipes(
+                search = "matrix",
+                sortBy = "install",
+                page = 3,
+                perPage = 10,
+            )
+
+            // Then: Verify all query parameters
+            val request = mockWebServer.takeRequest()
+            assertThat(request.path).isEqualTo("/recipes.json?search=matrix&sort-by=install&page=3&per_page=10")
+        }
+
+    @Test
+    fun `getRecipes returns empty list when no recipes`() =
+        runTest {
+            // Given: Mock server returns empty recipe list
+            val responseBody =
+                """
                 {
-                  "id": 2,
-                  "name": "Matrix",
-                  "icon_url": "https://example.com/matrix-icon.png",
-                  "screenshot_url": "https://example.com/matrix-screenshot.png",
-                  "stats": {
-                    "installs": 25,
-                    "forks": 176
+                  "data": [],
+                  "total": 0,
+                  "from": 0,
+                  "to": 0,
+                  "per_page": 25,
+                  "current_page": 1,
+                  "prev_page_url": null,
+                  "next_page_url": null
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody),
+            )
+
+            // When: Call getRecipes
+            val result = apiService.getRecipes()
+
+            // Then: Verify success with empty list
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val successResult = result as ApiResult.Success
+            assertThat(successResult.value.data).isEmpty()
+            assertThat(successResult.value.total).isEqualTo(0)
+        }
+
+    @Test
+    fun `getRecipe returns success with single recipe`() =
+        runTest {
+            // Given: Mock server returns single recipe with all fields
+            val responseBody =
+                """
+                {
+                  "data": {
+                    "id": 123,
+                    "name": "Weather Dashboard",
+                    "icon_url": "https://example.com/icon.png",
+                    "screenshot_url": "https://example.com/screenshot.png",
+                    "author_bio": {
+                      "keyname": "author_bio",
+                      "name": "Author Bio",
+                      "field_type": "author_bio",
+                      "description": "A passionate developer creating weather apps"
+                    },
+                    "custom_fields": [
+                      {
+                        "keyname": "api_key",
+                        "name": "API Key",
+                        "field_type": "string",
+                        "description": "Your weather API key",
+                        "placeholder": "Enter API key",
+                        "help_text": "Get your key from weather.com",
+                        "required": true,
+                        "default": ""
+                      },
+                      {
+                        "keyname": "units",
+                        "name": "Temperature Units",
+                        "field_type": "select",
+                        "description": "Select temperature units",
+                        "required": false
+                      }
+                    ],
+                    "stats": {
+                      "installs": 500,
+                      "forks": 25
+                    }
                   }
                 }
-              ],
-              "total": 100,
-              "from": 1,
-              "to": 2,
-              "per_page": 25,
-              "current_page": 1,
-              "prev_page_url": null,
-              "next_page_url": "https://usetrmnl.com/recipes.json?page=2"
-            }
-        """.trimIndent()
+                """.trimIndent()
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(responseBody)
-                .addHeader("Content-Type", "application/json")
-        )
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .addHeader("Content-Type", "application/json"),
+            )
 
-        // When: Call getRecipes
-        val result = apiService.getRecipes()
+            // When: Call getRecipe
+            val result = apiService.getRecipe(123)
 
-        // Then: Verify success result with correct data
-        assertThat(result).isInstanceOf(ApiResult.Success::class)
-        val successResult = result as ApiResult.Success
+            // Then: Verify success result with correct data
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val successResult = result as ApiResult.Success
+            val recipe = successResult.value.data
 
-        assertThat(successResult.value.data).hasSize(2)
-        assertThat(successResult.value.total).isEqualTo(100)
-        assertThat(successResult.value.currentPage).isEqualTo(1)
-        assertThat(successResult.value.perPage).isEqualTo(25)
-        assertThat(successResult.value.prevPageUrl).isNull()
-        assertThat(successResult.value.nextPageUrl).isNotNull()
+            assertThat(recipe.id).isEqualTo(123)
+            assertThat(recipe.name).isEqualTo("Weather Dashboard")
+            assertThat(recipe.iconUrl).isEqualTo("https://example.com/icon.png")
+            assertThat(recipe.screenshotUrl).isEqualTo("https://example.com/screenshot.png")
 
-        val firstRecipe = successResult.value.data[0]
-        assertThat(firstRecipe.id).isEqualTo(1)
-        assertThat(firstRecipe.name).isEqualTo("Weather Chum")
-        assertThat(firstRecipe.iconUrl).isEqualTo("https://example.com/weather-icon.png")
-        assertThat(firstRecipe.stats.installs).isEqualTo(1230)
-        assertThat(firstRecipe.stats.forks).isEqualTo(1)
+            // Verify author bio
+            assertThat(recipe.authorBio).isNotNull()
+            assertThat(recipe.authorBio?.description).isEqualTo("A passionate developer creating weather apps")
 
-        val secondRecipe = successResult.value.data[1]
-        assertThat(secondRecipe.id).isEqualTo(2)
-        assertThat(secondRecipe.name).isEqualTo("Matrix")
-        assertThat(secondRecipe.stats.forks).isEqualTo(176)
+            // Verify custom fields
+            assertThat(recipe.customFields).hasSize(2)
 
-        // Verify request was made correctly
-        val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/recipes.json")
-        assertThat(request.method).isEqualTo("GET")
-    }
+            val apiKeyField = recipe.customFields[0]
+            assertThat(apiKeyField.keyname).isEqualTo("api_key")
+            assertThat(apiKeyField.name).isEqualTo("API Key")
+            assertThat(apiKeyField.fieldType).isEqualTo("string")
+            assertThat(apiKeyField.required).isEqualTo(true)
+            assertThat(apiKeyField.placeholder).isEqualTo("Enter API key")
+            assertThat(apiKeyField.helpText).isEqualTo("Get your key from weather.com")
 
-    @Test
-    fun `getRecipes with search parameter sends correct query`() = runTest {
-        // Given: Mock server
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("""{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 25, "current_page": 1, "prev_page_url": null, "next_page_url": null}""")
-        )
+            val unitsField = recipe.customFields[1]
+            assertThat(unitsField.keyname).isEqualTo("units")
+            assertThat(unitsField.fieldType).isEqualTo("select")
+            assertThat(unitsField.required).isEqualTo(false)
 
-        // When: Call getRecipes with search
-        apiService.getRecipes(search = "weather")
+            // Verify stats
+            assertThat(recipe.stats.installs).isEqualTo(500)
+            assertThat(recipe.stats.forks).isEqualTo(25)
 
-        // Then: Verify search query parameter
-        val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/recipes.json?search=weather")
-    }
+            // Verify request
+            val request = mockWebServer.takeRequest()
+            assertThat(request.path).isEqualTo("/recipes/123.json")
+            assertThat(request.method).isEqualTo("GET")
+        }
 
     @Test
-    fun `getRecipes with sort parameter sends correct query`() = runTest {
-        // Given: Mock server
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("""{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 25, "current_page": 1, "prev_page_url": null, "next_page_url": null}""")
-        )
+    fun `getRecipes handles 404 not found`() =
+        runTest {
+            // Given: Mock server returns 404
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(404)
+                    .setBody("""{"error": "Not found"}"""),
+            )
 
-        // When: Call getRecipes with sort
-        apiService.getRecipes(sortBy = "popularity")
+            // When: Call getRecipes
+            val result = apiService.getRecipes()
 
-        // Then: Verify sort query parameter
-        val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/recipes.json?sort-by=popularity")
-    }
-
-    @Test
-    fun `getRecipes with pagination parameters sends correct query`() = runTest {
-        // Given: Mock server
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("""{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 50, "current_page": 2, "prev_page_url": null, "next_page_url": null}""")
-        )
-
-        // When: Call getRecipes with pagination
-        apiService.getRecipes(page = 2, perPage = 50)
-
-        // Then: Verify pagination query parameters
-        val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/recipes.json?page=2&per_page=50")
-    }
+            // Then: Verify HTTP failure
+            assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
+            val failure = result as ApiResult.Failure.HttpFailure
+            assertThat(failure.code).isEqualTo(404)
+        }
 
     @Test
-    fun `getRecipes with all parameters sends correct query`() = runTest {
-        // Given: Mock server
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("""{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 10, "current_page": 3, "prev_page_url": null, "next_page_url": null}""")
-        )
+    fun `getRecipes handles 500 server error`() =
+        runTest {
+            // Given: Mock server returns 500
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(500)
+                    .setBody("""{"error": "Internal server error"}"""),
+            )
 
-        // When: Call getRecipes with all parameters
-        apiService.getRecipes(
-            search = "matrix",
-            sortBy = "install",
-            page = 3,
-            perPage = 10
-        )
+            // When: Call getRecipes
+            val result = apiService.getRecipes()
 
-        // Then: Verify all query parameters
-        val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/recipes.json?search=matrix&sort-by=install&page=3&per_page=10")
-    }
+            // Then: Verify HTTP failure
+            assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
+            val failure = result as ApiResult.Failure.HttpFailure
+            assertThat(failure.code).isEqualTo(500)
+        }
 
     @Test
-    fun `getRecipes returns empty list when no recipes`() = runTest {
-        // Given: Mock server returns empty recipe list
-        val responseBody = """
-            {
-              "data": [],
-              "total": 0,
-              "from": 0,
-              "to": 0,
-              "per_page": 25,
-              "current_page": 1,
-              "prev_page_url": null,
-              "next_page_url": null
-            }
-        """.trimIndent()
+    fun `getRecipe handles 404 not found`() =
+        runTest {
+            // Given: Mock server returns 404
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(404)
+                    .setBody("""{"error": "Recipe not found"}"""),
+            )
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(responseBody)
-        )
+            // When: Call getRecipe
+            val result = apiService.getRecipe(999)
 
-        // When: Call getRecipes
-        val result = apiService.getRecipes()
-
-        // Then: Verify success with empty list
-        assertThat(result).isInstanceOf(ApiResult.Success::class)
-        val successResult = result as ApiResult.Success
-        assertThat(successResult.value.data).isEmpty()
-        assertThat(successResult.value.total).isEqualTo(0)
-    }
+            // Then: Verify HTTP failure
+            assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
+            val failure = result as ApiResult.Failure.HttpFailure
+            assertThat(failure.code).isEqualTo(404)
+        }
 
     @Test
-    fun `getRecipe returns success with single recipe`() = runTest {
-        // Given: Mock server returns single recipe with all fields
-        val responseBody = """
-            {
-              "data": {
-                "id": 123,
-                "name": "Weather Dashboard",
-                "icon_url": "https://example.com/icon.png",
-                "screenshot_url": "https://example.com/screenshot.png",
-                "author_bio": {
-                  "keyname": "author_bio",
-                  "name": "Author Bio",
-                  "field_type": "author_bio",
-                  "description": "A passionate developer creating weather apps"
-                },
-                "custom_fields": [
-                  {
-                    "keyname": "api_key",
-                    "name": "API Key",
-                    "field_type": "string",
-                    "description": "Your weather API key",
-                    "placeholder": "Enter API key",
-                    "help_text": "Get your key from weather.com",
-                    "required": true,
-                    "default": ""
-                  },
-                  {
-                    "keyname": "units",
-                    "name": "Temperature Units",
-                    "field_type": "select",
-                    "description": "Select temperature units",
-                    "required": false
-                  }
-                ],
-                "stats": {
-                  "installs": 500,
-                  "forks": 25
+    fun `getRecipes handles network timeout`() =
+        runTest {
+            // Given: Mock server with slow response (simulates timeout)
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setBody("""{"data": []}""")
+                    .setBodyDelay(2, java.util.concurrent.TimeUnit.SECONDS),
+            )
+
+            // When: Call getRecipes with short timeout client
+            val shortTimeoutClient =
+                OkHttpClient
+                    .Builder()
+                    .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+                    .build()
+
+            val shortTimeoutRetrofit =
+                Retrofit
+                    .Builder()
+                    .baseUrl(mockWebServer.url("/"))
+                    .client(shortTimeoutClient)
+                    .addConverterFactory(
+                        com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
+                    ).addConverterFactory(
+                        json.asConverterFactory("application/json".toMediaType()),
+                    ).addCallAdapterFactory(
+                        com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
+                    ).build()
+
+            val timeoutApiService = shortTimeoutRetrofit.create(TrmnlApiService::class.java)
+            val result = timeoutApiService.getRecipes()
+
+            // Then: Verify network failure
+            assertThat(result).isInstanceOf(ApiResult.Failure.NetworkFailure::class)
+        }
+
+    @Test
+    fun `getRecipes handles malformed JSON`() =
+        runTest {
+            // Given: Mock server returns invalid JSON
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody("""{"data": [this is not valid json]}""")
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            // When: Call getRecipes
+            val result = apiService.getRecipes()
+
+            // Then: Verify unknown failure (parsing error)
+            assertThat(result).isInstanceOf(ApiResult.Failure.UnknownFailure::class)
+        }
+
+    @Test
+    fun `recipe parsing handles missing optional fields`() =
+        runTest {
+            // Given: Response with minimal fields (icon_url, screenshot_url, author_bio are null)
+            val responseBody =
+                """
+                {
+                  "data": [{
+                    "id": 999,
+                    "name": "Minimal Recipe",
+                    "stats": {
+                      "installs": 0,
+                      "forks": 0
+                    }
+                  }],
+                  "total": 1,
+                  "from": 1,
+                  "to": 1,
+                  "per_page": 25,
+                  "current_page": 1,
+                  "prev_page_url": null,
+                  "next_page_url": null
                 }
-              }
-            }
-        """.trimIndent()
+                """.trimIndent()
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(responseBody)
-                .addHeader("Content-Type", "application/json")
-        )
-
-        // When: Call getRecipe
-        val result = apiService.getRecipe(123)
-
-        // Then: Verify success result with correct data
-        assertThat(result).isInstanceOf(ApiResult.Success::class)
-        val successResult = result as ApiResult.Success
-        val recipe = successResult.value.data
-
-        assertThat(recipe.id).isEqualTo(123)
-        assertThat(recipe.name).isEqualTo("Weather Dashboard")
-        assertThat(recipe.iconUrl).isEqualTo("https://example.com/icon.png")
-        assertThat(recipe.screenshotUrl).isEqualTo("https://example.com/screenshot.png")
-
-        // Verify author bio
-        assertThat(recipe.authorBio).isNotNull()
-        assertThat(recipe.authorBio?.description).isEqualTo("A passionate developer creating weather apps")
-
-        // Verify custom fields
-        assertThat(recipe.customFields).hasSize(2)
-        
-        val apiKeyField = recipe.customFields[0]
-        assertThat(apiKeyField.keyname).isEqualTo("api_key")
-        assertThat(apiKeyField.name).isEqualTo("API Key")
-        assertThat(apiKeyField.fieldType).isEqualTo("string")
-        assertThat(apiKeyField.required).isEqualTo(true)
-        assertThat(apiKeyField.placeholder).isEqualTo("Enter API key")
-        assertThat(apiKeyField.helpText).isEqualTo("Get your key from weather.com")
-
-        val unitsField = recipe.customFields[1]
-        assertThat(unitsField.keyname).isEqualTo("units")
-        assertThat(unitsField.fieldType).isEqualTo("select")
-        assertThat(unitsField.required).isEqualTo(false)
-
-        // Verify stats
-        assertThat(recipe.stats.installs).isEqualTo(500)
-        assertThat(recipe.stats.forks).isEqualTo(25)
-
-        // Verify request
-        val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/recipes/123.json")
-        assertThat(request.method).isEqualTo("GET")
-    }
-
-    @Test
-    fun `getRecipes handles 404 not found`() = runTest {
-        // Given: Mock server returns 404
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(404)
-                .setBody("""{"error": "Not found"}""")
-        )
-
-        // When: Call getRecipes
-        val result = apiService.getRecipes()
-
-        // Then: Verify HTTP failure
-        assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
-        val failure = result as ApiResult.Failure.HttpFailure
-        assertThat(failure.code).isEqualTo(404)
-    }
-
-    @Test
-    fun `getRecipes handles 500 server error`() = runTest {
-        // Given: Mock server returns 500
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(500)
-                .setBody("""{"error": "Internal server error"}""")
-        )
-
-        // When: Call getRecipes
-        val result = apiService.getRecipes()
-
-        // Then: Verify HTTP failure
-        assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
-        val failure = result as ApiResult.Failure.HttpFailure
-        assertThat(failure.code).isEqualTo(500)
-    }
-
-    @Test
-    fun `getRecipe handles 404 not found`() = runTest {
-        // Given: Mock server returns 404
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(404)
-                .setBody("""{"error": "Recipe not found"}""")
-        )
-
-        // When: Call getRecipe
-        val result = apiService.getRecipe(999)
-
-        // Then: Verify HTTP failure
-        assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
-        val failure = result as ApiResult.Failure.HttpFailure
-        assertThat(failure.code).isEqualTo(404)
-    }
-
-    @Test
-    fun `getRecipes handles network timeout`() = runTest {
-        // Given: Mock server with slow response (simulates timeout)
-        mockWebServer.enqueue(
-            MockResponse()
-                .setBody("""{"data": []}""")
-                .setBodyDelay(2, java.util.concurrent.TimeUnit.SECONDS)
-        )
-
-        // When: Call getRecipes with short timeout client
-        val shortTimeoutClient = OkHttpClient.Builder()
-            .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
-            .build()
-
-        val shortTimeoutRetrofit = Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/"))
-            .client(shortTimeoutClient)
-            .addConverterFactory(
-                com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody),
             )
-            .addConverterFactory(
-                json.asConverterFactory("application/json".toMediaType())
-            )
-            .addCallAdapterFactory(
-                com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
-            )
-            .build()
 
-        val timeoutApiService = shortTimeoutRetrofit.create(TrmnlApiService::class.java)
-        val result = timeoutApiService.getRecipes()
+            // When: Parse response
+            val result = apiService.getRecipes()
 
-        // Then: Verify network failure
-        assertThat(result).isInstanceOf(ApiResult.Failure.NetworkFailure::class)
-    }
+            // Then: Verify all fields parsed correctly with defaults
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val recipe = (result as ApiResult.Success).value.data[0]
 
-    @Test
-    fun `getRecipes handles malformed JSON`() = runTest {
-        // Given: Mock server returns invalid JSON
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("""{"data": [this is not valid json]}""")
-                .addHeader("Content-Type", "application/json")
-        )
-
-        // When: Call getRecipes
-        val result = apiService.getRecipes()
-
-        // Then: Verify unknown failure (parsing error)
-        assertThat(result).isInstanceOf(ApiResult.Failure.UnknownFailure::class)
-    }
+            assertThat(recipe.id).isEqualTo(999)
+            assertThat(recipe.name).isEqualTo("Minimal Recipe")
+            assertThat(recipe.iconUrl).isNull()
+            assertThat(recipe.screenshotUrl).isNull()
+            assertThat(recipe.authorBio).isNull()
+            assertThat(recipe.customFields).isEmpty()
+            assertThat(recipe.stats.installs).isEqualTo(0)
+            assertThat(recipe.stats.forks).isEqualTo(0)
+        }
 
     @Test
-    fun `recipe parsing handles missing optional fields`() = runTest {
-        // Given: Response with minimal fields (icon_url, screenshot_url, author_bio are null)
-        val responseBody = """
-            {
-              "data": [{
-                "id": 999,
-                "name": "Minimal Recipe",
-                "stats": {
-                  "installs": 0,
-                  "forks": 0
+    fun `pagination metadata is correctly parsed for last page`() =
+        runTest {
+            // Given: Last page response (no next page)
+            val responseBody =
+                """
+                {
+                  "data": [],
+                  "total": 50,
+                  "from": 26,
+                  "to": 50,
+                  "per_page": 25,
+                  "current_page": 2,
+                  "prev_page_url": "https://usetrmnl.com/recipes.json?page=1",
+                  "next_page_url": null
                 }
-              }],
-              "total": 1,
-              "from": 1,
-              "to": 1,
-              "per_page": 25,
-              "current_page": 1,
-              "prev_page_url": null,
-              "next_page_url": null
-            }
-        """.trimIndent()
+                """.trimIndent()
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(responseBody)
-        )
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody),
+            )
 
-        // When: Parse response
-        val result = apiService.getRecipes()
+            // When: Get page 2
+            val result = apiService.getRecipes(page = 2)
 
-        // Then: Verify all fields parsed correctly with defaults
-        assertThat(result).isInstanceOf(ApiResult.Success::class)
-        val recipe = (result as ApiResult.Success).value.data[0]
+            // Then: Verify pagination metadata
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val response = (result as ApiResult.Success).value
 
-        assertThat(recipe.id).isEqualTo(999)
-        assertThat(recipe.name).isEqualTo("Minimal Recipe")
-        assertThat(recipe.iconUrl).isNull()
-        assertThat(recipe.screenshotUrl).isNull()
-        assertThat(recipe.authorBio).isNull()
-        assertThat(recipe.customFields).isEmpty()
-        assertThat(recipe.stats.installs).isEqualTo(0)
-        assertThat(recipe.stats.forks).isEqualTo(0)
-    }
+            assertThat(response.total).isEqualTo(50)
+            assertThat(response.from).isEqualTo(26)
+            assertThat(response.to).isEqualTo(50)
+            assertThat(response.currentPage).isEqualTo(2)
+            assertThat(response.prevPageUrl).isNotNull()
+            assertThat(response.nextPageUrl).isNull()
+        }
 
     @Test
-    fun `pagination metadata is correctly parsed for last page`() = runTest {
-        // Given: Last page response (no next page)
-        val responseBody = """
-            {
-              "data": [],
-              "total": 50,
-              "from": 26,
-              "to": 50,
-              "per_page": 25,
-              "current_page": 2,
-              "prev_page_url": "https://usetrmnl.com/recipes.json?page=1",
-              "next_page_url": null
-            }
-        """.trimIndent()
+    fun `getRecipes does not send authorization header`() =
+        runTest {
+            // Given: Mock server
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(
+                        """{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 25, "current_page": 1, "prev_page_url": null, "next_page_url": null}""",
+                    ),
+            )
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(responseBody)
-        )
+            // When: Call getRecipes (public endpoint)
+            apiService.getRecipes()
 
-        // When: Get page 2
-        val result = apiService.getRecipes(page = 2)
-
-        // Then: Verify pagination metadata
-        assertThat(result).isInstanceOf(ApiResult.Success::class)
-        val response = (result as ApiResult.Success).value
-
-        assertThat(response.total).isEqualTo(50)
-        assertThat(response.from).isEqualTo(26)
-        assertThat(response.to).isEqualTo(50)
-        assertThat(response.currentPage).isEqualTo(2)
-        assertThat(response.prevPageUrl).isNotNull()
-        assertThat(response.nextPageUrl).isNull()
-    }
+            // Then: Verify no authorization header is sent
+            val request = mockWebServer.takeRequest()
+            assertThat(request.getHeader("Authorization")).isNull()
+        }
 
     @Test
-    fun `getRecipes does not send authorization header`() = runTest {
-        // Given: Mock server
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("""{"data": [], "total": 0, "from": 0, "to": 0, "per_page": 25, "current_page": 1, "prev_page_url": null, "next_page_url": null}""")
-        )
+    fun `parse actual recipe_list json file successfully`() =
+        runTest {
+            // Given: Load actual recipe_list.json from test resources
+            val jsonContent =
+                javaClass.classLoader
+                    ?.getResourceAsStream("recipe_list.json")
+                    ?.bufferedReader()
+                    ?.use { it.readText() }
+                    ?: throw IllegalStateException("Could not load recipe_list.json")
 
-        // When: Call getRecipes (public endpoint)
-        apiService.getRecipes()
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(jsonContent)
+                    .addHeader("Content-Type", "application/json"),
+            )
 
-        // Then: Verify no authorization header is sent
-        val request = mockWebServer.takeRequest()
-        assertThat(request.getHeader("Authorization")).isNull()
-    }
+            // When: Call getRecipes
+            val result = apiService.getRecipes()
 
-    @Test
-    fun `parse actual recipe_list json file successfully`() = runTest {
-        // Given: Load actual recipe_list.json from test resources
-        val jsonContent = javaClass.classLoader
-            ?.getResourceAsStream("recipe_list.json")
-            ?.bufferedReader()
-            ?.use { it.readText() }
-            ?: throw IllegalStateException("Could not load recipe_list.json")
+            // Then: Response should parse successfully
+            assertThat(result).isInstanceOf<ApiResult.Success<*>>()
+            val response = (result as ApiResult.Success).value
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(jsonContent)
-                .addHeader("Content-Type", "application/json")
-        )
+            // Verify pagination metadata
+            assertThat(response.total).isEqualTo(490)
+            assertThat(response.from).isEqualTo(1)
+            assertThat(response.to).isEqualTo(25)
+            assertThat(response.perPage).isEqualTo(25)
+            assertThat(response.currentPage).isEqualTo(1)
+            assertThat(response.prevPageUrl).isNull()
+            assertThat(response.nextPageUrl).isEqualTo("/recipes?page=2&sort_by=newest")
 
-        // When: Call getRecipes
-        val result = apiService.getRecipes()
+            // Verify data array
+            assertThat(response.data).hasSize(25)
 
-        // Then: Response should parse successfully
-        assertThat(result).isInstanceOf<ApiResult.Success<*>>()
-        val response = (result as ApiResult.Success).value
+            // Verify first recipe (DN Latest News)
+            val firstRecipe = response.data[0]
+            assertThat(firstRecipe.id).isEqualTo(176747)
+            assertThat(firstRecipe.name).isEqualTo("DN Latest News")
+            assertThat(firstRecipe.iconUrl).isNotNull()
+            assertThat(firstRecipe.screenshotUrl).isNotNull()
+            assertThat(firstRecipe.stats.installs).isEqualTo(1)
+            assertThat(firstRecipe.stats.forks).isEqualTo(0)
 
-        // Verify pagination metadata
-        assertThat(response.total).isEqualTo(490)
-        assertThat(response.from).isEqualTo(1)
-        assertThat(response.to).isEqualTo(25)
-        assertThat(response.perPage).isEqualTo(25)
-        assertThat(response.currentPage).isEqualTo(1)
-        assertThat(response.prevPageUrl).isNull()
-        assertThat(response.nextPageUrl).isEqualTo("/recipes?page=2&sort_by=newest")
+            // Verify author bio exists
+            assertThat(firstRecipe.authorBio).isNotNull()
+            assertThat(firstRecipe.authorBio?.keyname).isEqualTo("author_bio")
+            assertThat(firstRecipe.authorBio?.name).isEqualTo("About This Plugin")
+            assertThat(firstRecipe.authorBio?.fieldType).isEqualTo("author_bio")
 
-        // Verify data array
-        assertThat(response.data).hasSize(25)
+            // Verify custom fields are parsed (even with complex options)
+            assertThat(firstRecipe.customFields).hasSize(1)
 
-        // Verify first recipe (DN Latest News)
-        val firstRecipe = response.data[0]
-        assertThat(firstRecipe.id).isEqualTo(176747)
-        assertThat(firstRecipe.name).isEqualTo("DN Latest News")
-        assertThat(firstRecipe.iconUrl).isNotNull()
-        assertThat(firstRecipe.screenshotUrl).isNotNull()
-        assertThat(firstRecipe.stats.installs).isEqualTo(1)
-        assertThat(firstRecipe.stats.forks).isEqualTo(0)
+            // Verify third recipe (Top Android Apps) with complex custom_fields
+            val androidAppsRecipe = response.data[2]
+            assertThat(androidAppsRecipe.id).isEqualTo(176578)
+            assertThat(androidAppsRecipe.name).isEqualTo("Top Android Apps")
+            assertThat(androidAppsRecipe.customFields.size).isEqualTo(4)
 
-        // Verify author bio exists
-        assertThat(firstRecipe.authorBio).isNotNull()
-        assertThat(firstRecipe.authorBio?.keyname).isEqualTo("author_bio")
-        assertThat(firstRecipe.authorBio?.name).isEqualTo("About This Plugin")
-        assertThat(firstRecipe.authorBio?.fieldType).isEqualTo("author_bio")
+            // Verify custom fields are accessible
+            val showField = androidAppsRecipe.customFields[1]
+            assertThat(showField.keyname).isEqualTo("show")
+            assertThat(showField.fieldType).isEqualTo("select")
 
-        // Verify custom fields are parsed (even with complex options)
-        assertThat(firstRecipe.customFields).hasSize(1)
-
-        // Verify third recipe (Top Android Apps) with complex custom_fields
-        val androidAppsRecipe = response.data[2]
-        assertThat(androidAppsRecipe.id).isEqualTo(176578)
-        assertThat(androidAppsRecipe.name).isEqualTo("Top Android Apps")
-        assertThat(androidAppsRecipe.customFields.size).isEqualTo(4)
-
-        // Verify custom fields are accessible
-        val showField = androidAppsRecipe.customFields[1]
-        assertThat(showField.keyname).isEqualTo("show")
-        assertThat(showField.fieldType).isEqualTo("select")
-
-        // Verify request
-        val request = mockWebServer.takeRequest()
-        assertThat(request.path).isEqualTo("/recipes.json")
-        assertThat(request.method).isEqualTo("GET")
-    }
+            // Verify request
+            val request = mockWebServer.takeRequest()
+            assertThat(request.path).isEqualTo("/recipes.json")
+            assertThat(request.method).isEqualTo("GET")
+        }
 }

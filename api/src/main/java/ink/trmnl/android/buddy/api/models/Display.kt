@@ -29,14 +29,12 @@ data class Display(
      */
     @SerialName("status")
     val status: Int,
-
     /**
      * Refresh rate in seconds.
      * How often the device checks for new content.
      */
     @SerialName("refresh_rate")
     val refreshRate: Int,
-
     /**
      * URL to the rendered display image.
      * This is the actual image shown on the e-ink screen.
@@ -44,14 +42,12 @@ data class Display(
      */
     @SerialName("image_url")
     val imageUrl: String? = null,
-
     /**
      * Filename of the display image.
      * Can be null if no image is available.
      */
     @SerialName("filename")
     val filename: String? = null,
-
     /**
      * Timestamp when the display was last rendered (ISO 8601 format).
      * Can be null if the display hasn't been rendered yet.

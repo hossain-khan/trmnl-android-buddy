@@ -39,6 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Battery History Chart Auto-Scroll**: The battery history chart now automatically scrolls to show the latest data point when the screen loads or when new data is added, improving UX by eliminating the need for manual horizontal scrolling to view recent battery readings
 
+### Fixed
+
+- **API Module Kotlinter Plugin**: Added missing `kotlinter` plugin to the `api` module build configuration to ensure consistent code formatting and linting across all modules (app, api, content). The API module code has been formatted to match the project's code style standards.
+
 
 ## [2.5.0] - 2025-11-08
 

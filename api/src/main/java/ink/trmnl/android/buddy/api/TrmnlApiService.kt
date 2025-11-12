@@ -45,11 +45,10 @@ import retrofit2.http.Query
  * - 422: Unprocessable entity (validation error)
  */
 interface TrmnlApiService {
-    
     // ========================================
     // Devices API
     // ========================================
-    
+
     /**
      * Get a list of all devices belonging to the authenticated user.
      *
@@ -89,9 +88,9 @@ interface TrmnlApiService {
      */
     @GET("devices")
     suspend fun getDevices(
-        @Header("Authorization") authorization: String
+        @Header("Authorization") authorization: String,
     ): ApiResult<DevicesResponse, ApiError>
-    
+
     /**
      * Get detailed information about a specific device.
      *
@@ -119,13 +118,13 @@ interface TrmnlApiService {
     @GET("devices/{id}")
     suspend fun getDevice(
         @Path("id") id: Int,
-        @Header("Authorization") authorization: String
+        @Header("Authorization") authorization: String,
     ): ApiResult<DeviceResponse, ApiError>
-    
+
     // ========================================
     // Display API (Device API)
     // ========================================
-    
+
     /**
      * Get the current display content for a specific device.
      *
@@ -170,13 +169,13 @@ interface TrmnlApiService {
      */
     @GET("display/current")
     suspend fun getDisplayCurrent(
-        @Header("Access-Token") deviceApiKey: String
+        @Header("Access-Token") deviceApiKey: String,
     ): ApiResult<Display, ApiError>
-    
+
     // ========================================
     // Users API
     // ========================================
-    
+
     /**
      * Get information about the authenticated user.
      *
@@ -224,7 +223,7 @@ interface TrmnlApiService {
      */
     @GET("me")
     suspend fun userInfo(
-        @Header("Authorization") authorization: String
+        @Header("Authorization") authorization: String,
     ): ApiResult<UserResponse, ApiError>
 
     // ========================================
@@ -326,7 +325,6 @@ interface TrmnlApiService {
         @Path("id") id: Int,
     ): ApiResult<RecipeDetailResponse, ApiError>
 
-
     // ========================================
     // Models API
     // ========================================
@@ -380,6 +378,6 @@ interface TrmnlApiService {
      */
     @GET("models")
     suspend fun getDeviceModels(
-        @Header("Authorization") authorization: String
+        @Header("Authorization") authorization: String,
     ): ApiResult<DeviceModelsResponse, ApiError>
 }

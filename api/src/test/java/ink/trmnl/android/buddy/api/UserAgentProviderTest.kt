@@ -16,7 +16,6 @@ import org.junit.Test
  * industry best practices.
  */
 class UserAgentProviderTest {
-
     @Test
     fun `getUserAgent returns non-empty string`() {
         // When: Get user agent

@@ -29,46 +29,32 @@ import kotlinx.serialization.Serializable
 data class DeviceModel(
     @SerialName("name")
     val name: String,
-    
     @SerialName("label")
     val label: String,
-    
     @SerialName("description")
     val description: String,
-    
     @SerialName("width")
     val width: Int,
-    
     @SerialName("height")
     val height: Int,
-    
     @SerialName("colors")
     val colors: Int,
-    
     @SerialName("bit_depth")
     val bitDepth: Int,
-    
     @SerialName("scale_factor")
     val scaleFactor: Double,
-    
     @SerialName("rotation")
     val rotation: Int,
-    
     @SerialName("mime_type")
     val mimeType: String,
-    
     @SerialName("offset_x")
     val offsetX: Int,
-    
     @SerialName("offset_y")
     val offsetY: Int,
-    
     @SerialName("published_at")
     val publishedAt: String,
-    
     @SerialName("kind")
     val kind: String,
-    
     @SerialName("palette_ids")
     val paletteIds: List<String>,
 ) {
@@ -76,7 +62,5 @@ data class DeviceModel(
      * Get device specifications summary for display.
      * Format: "800×480 • 2 colors • 1-bit"
      */
-    fun getSpecsSummary(): String {
-        return "$width×$height • $colors colors • $bitDepth-bit"
-    }
+    fun getSpecsSummary(): String = "$width×$height • $colors colors • $bitDepth-bit"
 }

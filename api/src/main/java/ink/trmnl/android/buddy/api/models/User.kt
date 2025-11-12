@@ -23,28 +23,20 @@ import kotlinx.serialization.Serializable
 data class User(
     @SerialName("name")
     val name: String,
-    
     @SerialName("email")
     val email: String,
-    
     @SerialName("first_name")
     val firstName: String,
-    
     @SerialName("last_name")
     val lastName: String,
-    
     @SerialName("locale")
     val locale: String,
-    
     @SerialName("time_zone")
     val timeZone: String,
-    
     @SerialName("time_zone_iana")
     val timeZoneIana: String,
-    
     @SerialName("utc_offset")
     val utcOffset: Int,
-    
     @SerialName("api_key")
     val apiKey: String,
 )
