@@ -55,6 +55,8 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
+import com.patrykandpatrick.vico.core.cartesian.AutoScrollCondition
+import com.patrykandpatrick.vico.core.cartesian.Scroll
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
@@ -764,7 +766,12 @@ private fun BatteryChart(
                 ),
             modelProducer = modelProducer,
             modifier = modifier.width(chartWidth.dp).height(200.dp),
-            scrollState = rememberVicoScrollState(scrollEnabled = true),
+            scrollState =
+                rememberVicoScrollState(
+                    scrollEnabled = true,
+                    initialScroll = Scroll.Absolute.End,
+                    autoScrollCondition = AutoScrollCondition.OnModelGrowth,
+                ),
             zoomState = rememberVicoZoomState(zoomEnabled = false),
         )
     }
