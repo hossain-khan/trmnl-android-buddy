@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Comprehensive test coverage for `api` module**: Increased code coverage from ~60% to ~85%
+  - Added `TrmnlDeviceRepositoryTest` with 11 tests covering all repository methods
+  - Added `TrmnlApiClientTest` with 11 tests covering OkHttpClient and Retrofit factory methods
+  - Added `DeviceModelTest` with 13 tests covering Device model helper methods
+  - Tests include success cases, error handling, filtering methods, and edge cases
 - **Code Coverage with Kover**: Integrated Kotlinx Kover plugin (v0.9.1) for Kotlin code coverage reporting
   - Generates XML reports for all modules (app, api, content)
   - Merged coverage reports available at `build/reports/kover/report.xml`
@@ -34,6 +39,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `UserPreferencesRepositoryTest` for testing user preferences storage
   - All tests use fake implementations following repository testing patterns
   - Increases code coverage for the data layer
+- **Content Module Test Coverage**: Added comprehensive unit tests for content module
+  - RssParserFactoryTest: Tests for RSS parser factory
+  - AnnouncementRepositoryTest: 11 tests covering announcement repository functionality
+  - ContentFeedRepositoryTest: 9 tests covering combined content feed repository
+  - Increased test count from 23 to 45 tests (22 new tests)
   - Automatically detects charging events (battery level jumps >50% between readings)
   - Identifies stale data (battery history older than 6 months)
   - Shows recommendation card on Device Detail screen when conditions are met
