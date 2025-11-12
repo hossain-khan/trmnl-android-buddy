@@ -77,6 +77,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
 import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
@@ -118,6 +119,7 @@ data class DeviceDetailScreen(
         val isBatteryTrackingEnabled: Boolean = true,
         val hasRecordedToday: Boolean = false,
         val hasDeviceToken: Boolean = false,
+        val clearHistoryReason: BatteryHistoryAnalyzer.ClearHistoryReason? = null,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
         val eventSink: (Event) -> Unit = {},
@@ -195,6 +197,13 @@ class DeviceDetailPresenter
                 }
             }
 
+            // Check if battery history should be cleared
+            val clearHistoryReason by remember {
+                derivedStateOf {
+                    BatteryHistoryAnalyzer.getClearHistoryReason(batteryHistory)
+                }
+            }
+
             // Mark loading complete when we have data or after initial load
             LaunchedEffect(batteryHistory) {
                 isLoading = false
@@ -212,6 +221,7 @@ class DeviceDetailPresenter
                 isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
                 hasRecordedToday = hasRecordedToday,
                 hasDeviceToken = hasDeviceToken,
+                clearHistoryReason = clearHistoryReason,
                 isLowBatteryNotificationEnabled = isLowBatteryNotificationEnabled,
                 lowBatteryThresholdPercent = lowBatteryThresholdPercent,
             ) { event ->
@@ -383,6 +393,14 @@ fun DeviceDetailContent(
                 hasRecordedToday = state.hasRecordedToday,
                 onRecordBattery = { state.eventSink(DeviceDetailScreen.Event.RecordBatteryManually) },
             )
+
+            // Clear Battery History Card (shown when charging or stale data detected)
+            state.clearHistoryReason?.let { reason ->
+                ClearBatteryHistoryCard(
+                    clearReason = reason,
+                    onClearHistory = { state.eventSink(DeviceDetailScreen.Event.ClearBatteryHistory) },
+                )
+            }
 
             // Debug Panel (only in debug builds)
             if (BuildConfig.DEBUG) {
