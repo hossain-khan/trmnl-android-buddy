@@ -39,4 +39,16 @@ plugins {
     // Applies the Kotlinter plugin for Kotlin code formatting and linting.
     // Project: https://github.com/jeremymailen/kotlinter-gradle
     alias(libs.plugins.kotlinter) apply false
+
+    // Applies the Kover plugin for Kotlin code coverage.
+    // Project: https://github.com/Kotlin/kotlinx-kover
+    alias(libs.plugins.kover)
+}
+
+// Configure Kover for merged code coverage reports
+dependencies {
+    // Add all modules to Kover for merged coverage
+    kover(project(":app"))
+    kover(project(":api"))
+    kover(project(":content"))
 }

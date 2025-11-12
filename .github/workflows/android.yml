@@ -33,5 +33,24 @@ jobs:
       - name: Run test
         run: ./gradlew testDebugUnitTest --parallel --daemon
 
+      - name: Generate coverage report
+        run: ./gradlew koverXmlReport --parallel --daemon
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: hossain-khan/trmnl-android-buddy
+          files: ./build/reports/kover/report.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Build with Gradle
         run: ./gradlew lintKotlin assembleDebug --parallel --daemon
