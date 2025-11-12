@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Material 3 compliant with theme-aware colors (error color for alerts)
   - Comprehensive unit tests for battery alert logic
 - **Clear Battery History Card**: Added ability to clear battery history data when charging events or stale data is detected
+- **Content Module Test Coverage**: Added comprehensive unit tests for content module
+  - RssParserFactoryTest: Tests for RSS parser factory
+  - AnnouncementRepositoryTest: 11 tests covering announcement repository functionality
+  - ContentFeedRepositoryTest: 9 tests covering combined content feed repository
+  - Increased test count from 23 to 45 tests (22 new tests)
   - Automatically detects charging events (battery level jumps >50% between readings)
   - Identifies stale data (battery history older than 6 months)
   - Shows recommendation card on Device Detail screen when conditions are met
