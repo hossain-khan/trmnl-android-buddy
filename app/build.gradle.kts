@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.metro)
     alias(libs.plugins.kotlinter)
+    alias(libs.plugins.kover)
 }
 
 android {

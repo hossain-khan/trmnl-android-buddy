@@ -25,6 +25,10 @@ ksp = "2.2.20-2.0.3"
 # https://github.com/jeremymailen/kotlinter-gradle
 # https://github.com/pinterest/ktlint
 kotlinter = "5.2.0"
+
+# Kover - Kotlin code coverage
+# https://github.com/Kotlin/kotlinx-kover
+kover = "0.9.1"
 lifecycleRuntimeKtx = "2.9.4"
 metro = "0.6.8"
 androidxWork = "2.10.5"
@@ -219,5 +223,9 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 # https://github.com/jeremymailen/kotlinter-gradle
 # https://github.com/pinterest/ktlint
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
+
+# Kover - Kotlin code coverage
+# https://github.com/Kotlin/kotlinx-kover
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 
 

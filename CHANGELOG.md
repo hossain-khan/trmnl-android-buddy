@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Code Coverage with Kover**: Integrated Kotlinx Kover plugin (v0.9.1) for Kotlin code coverage reporting
+  - Generates XML reports for all modules (app, api, content)
+  - Merged coverage reports available at `build/reports/kover/report.xml`
+  - Coverage reports uploaded to Codecov.io via GitHub Actions
+- **Codecov.io Integration**: Added automated coverage reporting to Codecov.io
+  - Uploads coverage reports after test runs in CI
+  - Configured in GitHub Actions workflow
+- **Test Analytics**: Added Codecov Test Analytics for tracking test run times and failure rates
+  - JUnit XML test results automatically uploaded to Codecov
+  - Helps identify flaky tests and improve CI reliability
 - Battery alert indicators in Device List and Device Details screens
   - Low battery icon button appears next to settings icon when device battery is below user-configured threshold
   - Tapping battery alert icon shows snackbar with battery percentage and threshold information
