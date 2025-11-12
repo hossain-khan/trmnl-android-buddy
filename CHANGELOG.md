@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Improved
+
+- **Battery History Chart Auto-Scroll**: The battery history chart now automatically scrolls to show the latest data point when the screen loads or when new data is added, improving UX by eliminating the need for manual horizontal scrolling to view recent battery readings
+
 ## [2.5.0] - 2025-11-08
 
 ### Added
