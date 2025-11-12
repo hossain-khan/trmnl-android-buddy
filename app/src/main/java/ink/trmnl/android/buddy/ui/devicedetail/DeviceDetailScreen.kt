@@ -115,6 +115,7 @@ data class DeviceDetailScreen(
         val isBatteryTrackingEnabled: Boolean = true,
         val hasRecordedToday: Boolean = false,
         val hasDeviceToken: Boolean = false,
+        val clearHistoryReason: ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer.ClearHistoryReason? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -182,6 +183,14 @@ class DeviceDetailPresenter
                 }
             }
 
+            // Check if battery history should be cleared
+            val clearHistoryReason by remember {
+                derivedStateOf {
+                    ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
+                        .getClearHistoryReason(batteryHistory)
+                }
+            }
+
             // Mark loading complete when we have data or after initial load
             LaunchedEffect(batteryHistory) {
                 isLoading = false
@@ -199,6 +208,7 @@ class DeviceDetailPresenter
                 isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
                 hasRecordedToday = hasRecordedToday,
                 hasDeviceToken = hasDeviceToken,
+                clearHistoryReason = clearHistoryReason,
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
@@ -354,6 +364,14 @@ fun DeviceDetailContent(
                 hasRecordedToday = state.hasRecordedToday,
                 onRecordBattery = { state.eventSink(DeviceDetailScreen.Event.RecordBatteryManually) },
             )
+
+            // Clear Battery History Card (shown when charging or stale data detected)
+            state.clearHistoryReason?.let { reason ->
+                ClearBatteryHistoryCard(
+                    clearReason = reason,
+                    onClearHistory = { state.eventSink(DeviceDetailScreen.Event.ClearBatteryHistory) },
+                )
+            }
 
             // Debug Panel (only in debug builds)
             if (BuildConfig.DEBUG) {

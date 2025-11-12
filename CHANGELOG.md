@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Clear Battery History Card**: Added ability to clear battery history data when charging events or stale data is detected
+  - Automatically detects charging events (battery level jumps >50% between readings)
+  - Identifies stale data (battery history older than 6 months)
+  - Shows recommendation card on Device Detail screen when conditions are met
+  - Confirmation dialog before clearing history to prevent accidental data loss
+  - Comprehensive unit tests for battery history analysis logic
+  - Material 3 themed UI components with proper color scheme support
+
 ## [2.5.0] - 2025-11-08
 
 ### Added
