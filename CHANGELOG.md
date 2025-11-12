@@ -28,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Material 3 compliant with theme-aware colors (error color for alerts)
   - Comprehensive unit tests for battery alert logic
 - **Clear Battery History Card**: Added ability to clear battery history data when charging events or stale data is detected
+- **Unit tests for `ink.trmnl.android.buddy.data` package**:
+  - Added `RecipesRepositoryTest` for testing recipe catalog operations
+  - Added `DeviceTokenRepositoryTest` for testing device token storage
+  - Added `UserPreferencesRepositoryTest` for testing user preferences storage
+  - All tests use fake implementations following repository testing patterns
+  - Increases code coverage for the data layer
   - Automatically detects charging events (battery level jumps >50% between readings)
   - Identifies stale data (battery history older than 6 months)
   - Shows recommendation card on Device Detail screen when conditions are met
