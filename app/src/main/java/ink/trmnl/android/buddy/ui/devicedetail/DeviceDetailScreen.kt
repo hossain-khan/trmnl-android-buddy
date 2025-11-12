@@ -77,6 +77,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
 import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
@@ -118,7 +119,7 @@ data class DeviceDetailScreen(
         val isBatteryTrackingEnabled: Boolean = true,
         val hasRecordedToday: Boolean = false,
         val hasDeviceToken: Boolean = false,
-        val clearHistoryReason: ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer.ClearHistoryReason? = null,
+        val clearHistoryReason: BatteryHistoryAnalyzer.ClearHistoryReason? = null,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
         val eventSink: (Event) -> Unit = {},
@@ -199,8 +200,7 @@ class DeviceDetailPresenter
             // Check if battery history should be cleared
             val clearHistoryReason by remember {
                 derivedStateOf {
-                    ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
-                        .getClearHistoryReason(batteryHistory)
+                    BatteryHistoryAnalyzer.getClearHistoryReason(batteryHistory)
                 }
             }
 
