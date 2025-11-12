@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2025-11-12
+
 ### Added
 
 - **Comprehensive test coverage for `api` module**: Increased code coverage from ~60% to ~85%
@@ -58,7 +60,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **API Module Kotlinter Plugin**: Added missing `kotlinter` plugin to the `api` module build configuration to ensure consistent code formatting and linting across all modules (app, api, content). The API module code has been formatted to match the project's code style standards.
-
 
 ## [2.5.0] - 2025-11-08
 
@@ -1133,7 +1134,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.5.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.6.0...HEAD
+[2.6.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.5.0...2.6.0
 [2.5.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.3.0...2.4.0
 [2.3.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.2.1...2.3.0
