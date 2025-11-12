@@ -82,6 +82,8 @@ data object TrmnlDevicesScreen : Screen {
         val latestContent: List<ContentItem> = emptyList(),
         val isContentLoading: Boolean = true,
         val isRssFeedContentEnabled: Boolean = true,
+        val isLowBatteryNotificationEnabled: Boolean = false,
+        val lowBatteryThresholdPercent: Int = 20,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -116,6 +118,11 @@ data object TrmnlDevicesScreen : Screen {
         ) : Event()
 
         data object ViewAllContentClicked : Event()
+
+        data class BatteryAlertClicked(
+            val device: Device,
+            val thresholdPercent: Int,
+        ) : Event()
 
         data object DismissSnackbar : Event()
     }
@@ -152,6 +159,8 @@ class TrmnlDevicesPresenter
             }
             var isContentLoading by rememberRetained { mutableStateOf(true) }
             var isRssFeedContentEnabled by rememberRetained { mutableStateOf(true) }
+            var isLowBatteryNotificationEnabled by rememberRetained { mutableStateOf(false) }
+            var lowBatteryThresholdPercent by rememberRetained { mutableStateOf(20) }
             val coroutineScope = rememberCoroutineScope()
 
             // Create answering navigator for device preview to receive updated image URLs
@@ -177,6 +186,8 @@ class TrmnlDevicesPresenter
             LaunchedEffect(Unit) {
                 userPreferencesRepository.userPreferencesFlow.collect { preferences ->
                     isRssFeedContentEnabled = preferences.isRssFeedContentEnabled
+                    isLowBatteryNotificationEnabled = preferences.isLowBatteryNotificationEnabled
+                    lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent
                 }
             }
 
@@ -276,6 +287,8 @@ class TrmnlDevicesPresenter
                 latestContent = latestContent,
                 isContentLoading = isContentLoading,
                 isRssFeedContentEnabled = isRssFeedContentEnabled,
+                isLowBatteryNotificationEnabled = isLowBatteryNotificationEnabled,
+                lowBatteryThresholdPercent = lowBatteryThresholdPercent,
             ) { event ->
                 when (event) {
                     TrmnlDevicesScreen.Event.Refresh -> {
@@ -398,6 +411,11 @@ class TrmnlDevicesPresenter
 
                     TrmnlDevicesScreen.Event.ViewAllContentClicked -> {
                         navigator.goTo(ContentHubScreen)
+                    }
+
+                    is TrmnlDevicesScreen.Event.BatteryAlertClicked -> {
+                        snackbarMessage =
+                            "Battery level (${event.device.percentCharged.toInt()}%) is below your threshold of ${event.thresholdPercent}%. Consider charging soon."
                     }
 
                     TrmnlDevicesScreen.Event.DismissSnackbar -> {
@@ -584,6 +602,8 @@ fun TrmnlDevicesContent(
                     latestContent = state.latestContent,
                     isContentLoading = state.isContentLoading,
                     isRssFeedContentEnabled = state.isRssFeedContentEnabled,
+                    isLowBatteryNotificationEnabled = state.isLowBatteryNotificationEnabled,
+                    lowBatteryThresholdPercent = state.lowBatteryThresholdPercent,
                     onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
                     onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
                     onPreviewClick = { device, previewInfo ->
