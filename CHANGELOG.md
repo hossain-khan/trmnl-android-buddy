@@ -7,17 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+### Added
 
-- **Architecture Documentation**: Updated `docs/ARCHITECTURE_ANALYSIS.md` to reflect current state as of November 13, 2025
-  - Updated analysis from 13 to 15 screens (added DeviceCatalog, RecipesCatalog, BookmarkedRecipes)
-  - Updated total UI code from 8,044 to 15,393 lines (+91% growth)
-  - Updated overall grade from A- (92/100) to A (94/100)
-  - Added detailed analysis of new modular screens following established patterns
-  - Updated Settings screen to include ExtrasSection (8th section)
-  - Updated component reusability metrics (4,800+ lines, up from 2,883)
-  - Updated recommendations to prioritize maintaining current architectural excellence
-  - Updated metadata to Version 3.0 with November 13, 2025 analysis date
+- **Comprehensive unit test coverage for content module** - Added 65 new tests increasing total from 45 to 110 tests:
+  - `AnnouncementEntityTest`: 6 tests covering AnnouncementEntity data class (properties, defaults, copy, equality)
+  - `BlogPostEntityTest`: 10 tests covering BlogPostEntity data class (all properties, reading progress, favorites)
+  - `ContentItemTest`: 14 tests covering ContentItem sealed class (polymorphism, type discrimination, sorting, filtering)
+  - `AnnouncementDaoTest`: 15 tests covering all AnnouncementDao operations (insert, queries, updates, delete)
+  - `BlogPostDaoTest`: 20 tests covering all BlogPostDao operations (IGNORE strategy, queries, search, updates)
+  - `FakeAnnouncementDao` and `FakeBlogPostDao`: In-memory test fakes for Flow-based DAO testing
+  - Added turbine dependency to content module for Flow testing support
 
 ## [2.6.0] - 2025-11-12
 
