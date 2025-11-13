@@ -1,8 +1,8 @@
 # Product Requirements Document (PRD)
 ## TRMNL Android Buddy
 
-**Version:** 2.4.0  
-**Last Updated:** November 4, 2025  
+**Version:** 2.6.0  
+**Last Updated:** November 13, 2025  
 **Document Owner:** Product Team  
 **Status:** Active
 
@@ -28,6 +28,8 @@ To be the essential mobile companion for TRMNL device owners, providing seamless
 - Positive user ratings (4+ stars on Google Play)
 - Low battery alert effectiveness (users finding value in notifications)
 - Minimal app crashes and API errors
+- **Code coverage > 70% overall, ~85% for API module**
+- **Test suite passing rate > 95% in CI/CD pipeline**
 
 ---
 
@@ -44,6 +46,7 @@ To be the essential mobile companion for TRMNL device owners, providing seamless
 - **Image Loading**: Coil 3.3.0
 - **Image Zoom**: Telephoto 0.18.0
 - **Authentication**: AndroidX Biometric library
+- **Code Coverage**: Kotlinx Kover 0.9.1
 - **Build**: Gradle 9.1.0 with Kotlin DSL
 
 ### 2.2 Module Structure
@@ -202,10 +205,18 @@ trmnl-android-buddy/
 - FR-2.1.28: Smooth height animation (300ms) when switching between different-sized content
 - FR-2.1.29: Uses animateContentSize() modifier to prevent jarring visual jumps
 
+**Battery Alert Indicators**:
+- FR-2.1.30: Low battery icon button appears next to settings icon when device battery is below threshold
+- FR-2.1.31: Tapping battery alert icon shows snackbar with battery percentage and threshold information
+- FR-2.1.32: Alert uses Material 3 error color for visual prominence
+- FR-2.1.33: Alert state determined by comparing device battery to user-configured low battery threshold
+- FR-2.1.34: Only visible when low battery notifications are enabled in settings
+
 **User Actions**:
 - Tap device card → Navigate to Device Detail Screen
 - Tap device preview → Navigate to Device Preview Screen
 - Tap settings icon on device card → Navigate to Device Token Screen
+- Tap battery alert icon → Show snackbar with battery alert details
 - Tap refresh rate indicator → Show explanation snackbar
 - Pull down → Refresh all data (devices + content)
 - Toggle privacy → Show/hide PII with snackbar feedback
@@ -224,6 +235,7 @@ trmnl-android-buddy/
   - Battery percentage on y-axis (0-100%)
   - Data point dots (8dp circular indicators in primary color)
   - Horizontal scrolling (50dp per point to prevent label truncation)
+  - **Auto-scroll to latest data point** when screen loads or new data added
   - Material 3 theming with dynamic colors
 - FR-2.2.7: Show prediction disclaimer about battery trajectory accuracy
 - FR-2.2.8: Manual battery recording button (disables if already recorded today)
@@ -233,6 +245,15 @@ trmnl-android-buddy/
 - FR-2.2.12: Settings icon in app bar to navigate to Device Token configuration
 - FR-2.2.13: Icon shows "Settings" when device token configured, "Configure" when not set
 - FR-2.2.14: Icon color changes based on configuration status
+- FR-2.2.15: **Low battery alert banner** when battery is below user-configured threshold
+- FR-2.2.16: Banner prompts user to charge device to ensure continuous operation
+- FR-2.2.17: Alert banner uses Material 3 error color scheme
+- FR-2.2.18: **Clear Battery History Card** when charging events or stale data detected
+- FR-2.2.19: Automatically detects charging events (battery level jumps >50% between readings)
+- FR-2.2.20: Identifies stale data (battery history older than 6 months)
+- FR-2.2.21: Shows recommendation card when conditions are met
+- FR-2.2.22: Confirmation dialog before clearing history to prevent accidental data loss
+- FR-2.2.23: Material 3 themed UI components with proper color scheme support
 
 **Empty States**:
 - No data yet: "No battery history data available yet. Data is collected weekly."
@@ -446,6 +467,7 @@ trmnl-android-buddy/
   - Author name and relative date
   - Unread indicator (blue dot)
   - Favorite toggle button (heart icon)
+  - **Haptic feedback** when toggling favorite for tactile confirmation
   - Card tap opens in Chrome Custom Tabs
 - FR-5.2.12: Auto-mark as read when clicked
 - FR-5.2.13: Toggle favorite functionality (persisted across syncs)
@@ -571,6 +593,7 @@ trmnl-android-buddy/
   - Icon: Extension/puzzle icon
   - Link to Recipes Catalog screen
   - Link to Supported Device Catalog screen
+  - **Link to Content Hub screen** for quick access to announcements and blog posts
   - Provides quick access to community resources
 - FR-6.1.6: Development section (debug builds only):
   - Icon: Android icon
@@ -661,6 +684,7 @@ trmnl-android-buddy/
 - FR-8.1.9: Recipe cards display:
   - Recipe icon (smart color inversion in dark mode)
   - Recipe name
+  - **Recipe description** from `author_bio.description` field
   - Install count with icon
   - Fork count with icon
   - Bookmark toggle button (animated)
@@ -669,6 +693,7 @@ trmnl-android-buddy/
   - Persistent storage using Room database
   - Real-time sync across screens
   - Smooth Material 3 animations (fade + scale)
+  - **Haptic feedback** when adding or removing bookmarks for tactile confirmation
 - FR-8.1.11: Smart icon color inversion in dark mode:
   - Analyzes icon brightness (80%+ dark pixels threshold)
   - Automatically inverts dark icons for better visibility
@@ -686,7 +711,7 @@ trmnl-android-buddy/
 - Endpoint: GET /recipes (alpha testing)
 - Note: API endpoint may be moved before end of 2025
 - Response: RecipesResponse { data: List<Recipe>, meta: Pagination }
-- Recipe fields: id, name, slug, iconUrl, installs, forks
+- Recipe fields: id, name, slug, iconUrl, installs, forks, **description**
 - Supports query parameters: search, sort, page
 
 #### 3.8.2 Bookmarked Recipes Screen
@@ -696,23 +721,24 @@ trmnl-android-buddy/
 - FR-8.2.1: Display all bookmarked recipes in scrollable list
 - FR-8.2.2: Recipe cards show same information as catalog
 - FR-8.2.3: Remove bookmark with single tap on bookmark icon
-- FR-8.2.4: Share button in top app bar
-- FR-8.2.5: Share functionality:
+- FR-8.2.4: **Haptic feedback** when removing bookmarks for tactile confirmation
+- FR-8.2.5: Share button in top app bar
+- FR-8.2.6: Share functionality:
   - Opens Android share sheet
   - Formats recipe names as bulleted list
   - Automatically copies to clipboard
   - Shows confirmation message
   - Shares via any installed app (messaging, email, etc.)
-- FR-8.2.6: Clear all bookmarks button in top app bar
-- FR-8.2.7: Confirmation dialog before clearing all:
+- FR-8.2.7: Clear all bookmarks button in top app bar
+- FR-8.2.8: Confirmation dialog before clearing all:
   - Prevents accidental deletion
   - Shows count of bookmarks to be cleared
   - Material 3 AlertDialog
-- FR-8.2.8: Empty state when no bookmarks exist
-- FR-8.2.9: Loading state during initial fetch
-- FR-8.2.10: Real-time updates when bookmarks added/removed
-- FR-8.2.11: Material 3 design throughout
-- FR-8.2.12: Accessible from Recipes Catalog top bar
+- FR-8.2.9: Empty state when no bookmarks exist
+- FR-8.2.10: Loading state during initial fetch
+- FR-8.2.11: Real-time updates when bookmarks added/removed
+- FR-8.2.12: Material 3 design throughout
+- FR-8.2.13: Accessible from Recipes Catalog top bar
 
 **Database Schema** (BookmarkEntity):
 - recipeId: String (primary key)
@@ -1258,10 +1284,25 @@ data class BookmarkEntity(
 - TEST-1.3: Use AssertK for all assertions (never JUnit assertions)
 - TEST-1.4: Robolectric for Android framework dependencies
 - TEST-1.5: Coverage for success cases, error cases, edge cases
+- TEST-1.6: **Comprehensive test coverage for `api` module (~85% coverage)**
+  - TrmnlDeviceRepositoryTest: 11 tests covering all repository methods
+  - TrmnlApiClientTest: 11 tests covering OkHttpClient and Retrofit factory methods
+  - DeviceModelTest: 13 tests covering Device model helper methods
+  - Tests include success cases, error handling, filtering methods, and edge cases
+- TEST-1.7: **Unit tests for `ink.trmnl.android.buddy.data` package**
+  - RecipesRepositoryTest: Testing recipe catalog operations
+  - DeviceTokenRepositoryTest: Testing device token storage
+  - UserPreferencesRepositoryTest: Testing user preferences storage
+  - All tests use fake implementations following repository testing patterns
+- TEST-1.8: **Content Module test coverage**
+  - RssParserFactoryTest: Tests for RSS parser factory
+  - AnnouncementRepositoryTest: 11 tests covering announcement repository functionality
+  - ContentFeedRepositoryTest: 9 tests covering combined content feed repository
+  - Increased test count from 23 to 45 tests (22 new tests)
 
 **Instrumentation Tests**:
-- TEST-1.6: Circuit testing with FakeNavigator
-- TEST-1.7: Presenter testing with Presenter.test() helpers
+- TEST-1.9: Circuit testing with FakeNavigator
+- TEST-1.10: Presenter testing with Presenter.test() helpers
 
 **Testing Tools**:
 - AssertK 0.28.1 (assertions)
@@ -1270,27 +1311,48 @@ data class BookmarkEntity(
 - circuit-test (Circuit testing)
 - Robolectric 4.15 (Android framework)
 
-### 8.2 Code Quality
+### 8.2 Code Coverage
+
+**Coverage Tools**:
+- QUAL-2.1: **Kotlinx Kover plugin (v0.9.1)** for Kotlin code coverage reporting
+- QUAL-2.2: Generates XML reports for all modules (app, api, content)
+- QUAL-2.3: Merged coverage reports available at `build/reports/kover/report.xml`
+- QUAL-2.4: **Codecov.io Integration** for automated coverage reporting
+  - Coverage reports uploaded to Codecov.io via GitHub Actions
+  - Uploads coverage reports after test runs in CI
+  - Configured in GitHub Actions workflow
+- QUAL-2.5: **Test Analytics** via Codecov
+  - JUnit XML test results automatically uploaded to Codecov
+  - Tracks test run times and failure rates
+  - Helps identify flaky tests and improve CI reliability
+
+**Coverage Goals**:
+- QUAL-2.6: Target overall code coverage: >70%
+- QUAL-2.7: API module coverage: ~85%
+- QUAL-2.8: Critical paths (authentication, API calls, data storage): >90%
+- QUAL-2.9: UI layer (presenters, composables): >60%
+
+### 8.3 Code Quality
 
 **Linting & Formatting**:
-- QUAL-2.1: Kotlinter plugin (ktlint wrapper)
-- QUAL-2.2: Run `./gradlew formatKotlin` before commit
-- QUAL-2.3: Run `./gradlew lintKotlin` to check formatting
-- QUAL-2.4: Follow official Kotlin style guide
+- QUAL-3.1: Kotlinter plugin (ktlint wrapper)
+- QUAL-3.2: Run `./gradlew formatKotlin` before commit
+- QUAL-3.3: Run `./gradlew lintKotlin` to check formatting
+- QUAL-3.4: Follow official Kotlin style guide
 
 **Build Validation**:
-- QUAL-2.5: Run `./gradlew test` before commit
-- QUAL-2.6: Run `./gradlew assembleDebug` to verify build
+- QUAL-3.5: Run `./gradlew test` before commit
+- QUAL-3.6: Run `./gradlew assembleDebug` to verify build
 
-### 8.3 Documentation
+### 8.4 Documentation
 
 **Required**:
-- DOC-3.1: Keep CHANGELOG.md updated (Keep a Changelog format)
-- DOC-3.2: Semantic Versioning (MAJOR.MINOR.PATCH)
-- DOC-3.3: Add changes to [Unreleased] section
-- DOC-3.4: Avoid duplicate section headers in CHANGELOG
-- DOC-3.5: Inline code comments for complex logic
-- DOC-3.6: README.md with screenshots and feature list
+- DOC-4.1: Keep CHANGELOG.md updated (Keep a Changelog format)
+- DOC-4.2: Semantic Versioning (MAJOR.MINOR.PATCH)
+- DOC-4.3: Add changes to [Unreleased] section
+- DOC-4.4: Avoid duplicate section headers in CHANGELOG
+- DOC-4.5: Inline code comments for complex logic
+- DOC-4.6: README.md with screenshots and feature list
 
 ---
 
@@ -1305,7 +1367,7 @@ data class BookmarkEntity(
 - REL-1.4: PATCH: Bug fixes, backward compatible (only for hotfixes)
 - REL-1.5: Version in app/build.gradle.kts (versionCode + versionName)
 
-**Current Version**: 2.4.0 (versionCode: 20)
+**Current Version**: 2.6.0 (versionCode: 22)
 
 ### 9.2 Release Process
 
@@ -1398,7 +1460,7 @@ data class BookmarkEntity(
 
 ---
 
-**Document Version**: 2.0  
-**Generated**: November 4, 2025  
-**Last Major Update**: Version 2.4.0 release  
+**Document Version**: 2.6.0  
+**Generated**: November 13, 2025  
+**Last Major Update**: Version 2.6.0 release  
 **Next Review**: With each major release (X.0.0)
