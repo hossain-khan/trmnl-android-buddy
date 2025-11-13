@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Product Requirements Document (PRD)**: Updated to version 2.6.0 (November 13, 2025)
   - Documented all features from v2.5.0 and v2.6.0 releases
-  - Added battery alert indicators (FR-2.1.29 to FR-2.1.33, FR-2.2.15 to FR-2.2.23)
+  - Added battery alert indicators (FR-2.1.30 to FR-2.1.34, FR-2.2.15 to FR-2.2.23)
   - Added clear battery history feature (FR-2.2.18 to FR-2.2.23)
   - Added battery chart auto-scroll improvement (FR-2.2.6)
   - Documented comprehensive test coverage (~85% for API module)
