@@ -206,11 +206,11 @@ trmnl-android-buddy/
 - FR-2.1.29: Uses animateContentSize() modifier to prevent jarring visual jumps
 
 **Battery Alert Indicators**:
-- FR-2.1.29: Low battery icon button appears next to settings icon when device battery is below threshold
-- FR-2.1.30: Tapping battery alert icon shows snackbar with battery percentage and threshold information
-- FR-2.1.31: Alert uses Material 3 error color for visual prominence
-- FR-2.1.32: Alert state determined by comparing device battery to user-configured low battery threshold
-- FR-2.1.33: Only visible when low battery notifications are enabled in settings
+- FR-2.1.30: Low battery icon button appears next to settings icon when device battery is below threshold
+- FR-2.1.31: Tapping battery alert icon shows snackbar with battery percentage and threshold information
+- FR-2.1.32: Alert uses Material 3 error color for visual prominence
+- FR-2.1.33: Alert state determined by comparing device battery to user-configured low battery threshold
+- FR-2.1.34: Only visible when low battery notifications are enabled in settings
 
 **User Actions**:
 - Tap device card → Navigate to Device Detail Screen
