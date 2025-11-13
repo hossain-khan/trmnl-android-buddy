@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Worker-specific log tags for easier filtering (e.g., `[battery_collection_work]`, `[low_battery_notification_work]`)
   - Logged worker lifecycle events including start, success, failure, and retry attempts
   - Enhanced error logging with HTTP status codes, error types, and execution times
+- **Optimized image loading with Coil caching strategy** - Configured disk and memory cache policies for better performance
+  - Added `ImageCacheConfig` object with constants for disk (1% of disk space) and memory (10% of app memory) cache sizes
+  - Configured Coil `ImageLoader` with disk cache policy in DI module (`AppBindings`)
+  - Configured memory cache policy to reduce network requests and provide instant image display
+  - Set up singleton `ImageLoader` factory in `TrmnlBuddyApp` for app-wide usage
+  - Benefits: Faster image loading on repeated views, reduced network data usage, lower server load
 - **Comprehensive unit test coverage for content module** - Added 65 new tests increasing total from 45 to 110 tests:
   - `AnnouncementEntityTest`: 6 tests covering AnnouncementEntity data class (properties, defaults, copy, equality)
   - `BlogPostEntityTest`: 10 tests covering BlogPostEntity data class (all properties, reading progress, favorites)

@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.di
 import android.app.Activity
 import android.content.Context
 import androidx.work.WorkManager
+import coil3.ImageLoader
 import com.slack.circuit.foundation.Circuit
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
@@ -27,6 +28,7 @@ interface AppGraph {
     val workerFactory: AppWorkerFactory
     val userPreferencesRepository: UserPreferencesRepository
     val workerScheduler: WorkerScheduler
+    val imageLoader: ImageLoader
 
     @Provides
     fun providesWorkManager(

@@ -2,6 +2,10 @@ package ink.trmnl.android.buddy.di
 
 import android.content.Context
 import androidx.room.Room
+import coil3.ImageLoader
+import coil3.disk.DiskCache
+import coil3.memory.MemoryCache
+import coil3.request.CachePolicy
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
@@ -9,6 +13,7 @@ import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.api.TrmnlApiClient
 import ink.trmnl.android.buddy.api.TrmnlApiService
+import ink.trmnl.android.buddy.config.ImageCacheConfig
 import ink.trmnl.android.buddy.content.db.AnnouncementDao
 import ink.trmnl.android.buddy.content.db.BlogPostDao
 import ink.trmnl.android.buddy.content.db.ContentDatabase
@@ -17,6 +22,7 @@ import ink.trmnl.android.buddy.data.DefaultBookmarkRepository
 import ink.trmnl.android.buddy.data.database.BatteryHistoryDao
 import ink.trmnl.android.buddy.data.database.BookmarkedRecipeDao
 import ink.trmnl.android.buddy.data.database.TrmnlDatabase
+import okio.Path.Companion.toOkioPath
 
 @ContributesTo(AppScope::class)
 interface AppBindings {
@@ -90,4 +96,26 @@ interface AppBindings {
     ): ink.trmnl.android.buddy.content.repository.ContentFeedRepository =
         ink.trmnl.android.buddy.content.repository
             .ContentFeedRepository(announcementDao, blogPostDao)
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideImageLoader(
+        @ApplicationContext context: Context,
+    ): ImageLoader =
+        ImageLoader
+            .Builder(context)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .diskCache {
+                DiskCache
+                    .Builder()
+                    .directory(context.cacheDir.resolve("image_cache").toOkioPath())
+                    .maxSizePercent(ImageCacheConfig.DISK_CACHE_SIZE_PERCENT)
+                    .build()
+            }.memoryCache {
+                MemoryCache
+                    .Builder()
+                    .maxSizePercent(context, ImageCacheConfig.MEMORY_CACHE_SIZE_PERCENT)
+                    .build()
+            }.build()
 }
