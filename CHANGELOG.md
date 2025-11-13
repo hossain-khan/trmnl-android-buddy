@@ -7,22 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+### Added
 
-- **Product Requirements Document (PRD)**: Updated to version 2.6.0 (November 13, 2025)
-  - Documented all features from v2.5.0 and v2.6.0 releases
-  - Added battery alert indicators (FR-2.1.30 to FR-2.1.34, FR-2.2.15 to FR-2.2.23)
-  - Added clear battery history feature (FR-2.2.18 to FR-2.2.23)
-  - Added battery chart auto-scroll improvement (FR-2.2.6)
-  - Documented comprehensive test coverage (~85% for API module)
-  - Added Kover code coverage integration section
-  - Added Codecov.io integration and test analytics sections
-  - Documented recipe descriptions (FR-8.1.9)
-  - Documented haptic feedback for bookmarks (FR-8.1.10, FR-8.2.4, FR-5.2.11)
-  - Added Content Hub in Settings Extras (FR-6.1.5)
-  - Updated success metrics with test coverage goals
-  - Updated technical stack with Kover 0.9.1
-  - Updated current version to 2.6.0 (versionCode: 22)
+- **Comprehensive unit test coverage for content module** - Added 65 new tests increasing total from 45 to 110 tests:
+  - `AnnouncementEntityTest`: 6 tests covering AnnouncementEntity data class (properties, defaults, copy, equality)
+  - `BlogPostEntityTest`: 10 tests covering BlogPostEntity data class (all properties, reading progress, favorites)
+  - `ContentItemTest`: 14 tests covering ContentItem sealed class (polymorphism, type discrimination, sorting, filtering)
+  - `AnnouncementDaoTest`: 15 tests covering all AnnouncementDao operations (insert, queries, updates, delete)
+  - `BlogPostDaoTest`: 20 tests covering all BlogPostDao operations (IGNORE strategy, queries, search, updates)
+  - `FakeAnnouncementDao` and `FakeBlogPostDao`: In-memory test fakes for Flow-based DAO testing
+  - Added turbine dependency to content module for Flow testing support
 
 ## [2.6.0] - 2025-11-12
 
