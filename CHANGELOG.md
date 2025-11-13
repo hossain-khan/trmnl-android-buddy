@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `AnnouncementEntityTest`: 6 tests covering AnnouncementEntity data class
   - `BlogPostEntityTest`: 11 tests covering BlogPostEntity data class
   - `ContentItemTest`: 17 tests covering ContentItem sealed class and polymorphism
+- Unit tests for content module DAO interfaces:
+  - `AnnouncementDaoTest`: 16 tests covering all AnnouncementDao operations
+  - `BlogPostDaoTest`: 23 tests covering all BlogPostDao operations
+  - `FakeAnnouncementDao` and `FakeBlogPostDao`: Test fakes for in-memory testing
+  - Added turbine dependency to content module for Flow testing
 
 ## [2.6.0] - 2025-11-12
 
