@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Test coverage investigation for app module presenters**: Analyzed unit test coverage for Circuit presenters
+  - Identified testing limitations for presenters using `LocalContext.current` (BookmarkedRecipesPresenter, DevelopmentPresenter)
+  - Current presenter test coverage: 50% (DeviceCatalogPresenter and RecipesCatalogPresenter have comprehensive tests)
+  - Documented that remaining presenters require instrumented tests or refactoring to be unit testable
+
 ## [2.6.0] - 2025-11-12
 
 ### Added
