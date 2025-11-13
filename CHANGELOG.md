@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Unit tests for content module data entities and models:
+  - `AnnouncementEntityTest`: 6 tests covering AnnouncementEntity data class
+  - `BlogPostEntityTest`: 11 tests covering BlogPostEntity data class
+  - `ContentItemTest`: 17 tests covering ContentItem sealed class and polymorphism
+
 ## [2.6.0] - 2025-11-12
 
 ### Added
