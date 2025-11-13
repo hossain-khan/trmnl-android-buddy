@@ -1,11 +1,14 @@
 package ink.trmnl.android.buddy
 
 import android.app.Application
+import android.content.Context
 import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
 import dev.zacsweers.metro.createGraphFactory
 import ink.trmnl.android.buddy.di.AppGraph
 import ink.trmnl.android.buddy.notification.NotificationHelper
@@ -18,13 +21,16 @@ import java.util.concurrent.TimeUnit
  */
 class TrmnlBuddyApp :
     Application(),
-    Configuration.Provider {
+    Configuration.Provider,
+    SingletonImageLoader.Factory {
     val appGraph by lazy { createGraphFactory<AppGraph.Factory>().create(this) }
 
     fun appGraph(): AppGraph = appGraph
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(appGraph.workerFactory).build()
+
+    override fun newImageLoader(context: Context): ImageLoader = appGraph.imageLoader
 
     override fun onCreate() {
         super.onCreate()
