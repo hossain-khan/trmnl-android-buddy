@@ -10,13 +10,58 @@
 TRMNL Android Buddy is an actively developed Android companion app for TRMNL e-ink displays. The project has seen intensive development over a 43-day period with continuous improvements in code quality, test coverage, and features, maintaining a clean, modern codebase built with Kotlin and Jetpack Compose.
 
 ### Key Metrics
-- **Current Version**: 2.6.0 (versionCode 22)
-- **Kotlin Files**: 147+ files
-- **XML Resources**: 129+ files
-- **Documentation**: 16 Markdown files
+- **Total Commits**: 757
+- **Total Development Time**: ~84.76 hours
+- **Active Days**: 21+ out of 43 days (49%)
+- **Development Sessions**: 51 sessions
+- **Average Session Duration**: 1.66 hours
 - **Contributors**: 2 (1 human developer + 1 AI assistant)
-- **Test Coverage**: ~85% for API module, comprehensive coverage across all modules
-- **Active Development Period**: 43 days (October 2 - November 13, 2025)
+- **Current Version**: 2.6.0 (versionCode 22)
+
+---
+
+## ⏱️ Time Investment Analysis
+
+### Methodology
+
+Time estimation is based on git commit timestamp analysis with the following assumptions:
+
+1. **Session Gap Threshold**: 1 hour
+   - If time between commits ≤ 1 hour → same work session (accumulate time)
+   - If time between commits > 1 hour → new work session (previous session ended)
+2. **Session Duration**: Time from first commit to last commit in a continuous session
+3. **Idle Time**: Not counted (gaps > 1 hour are considered breaks/offline)
+
+This heuristic provides a realistic estimate of focused development time. The 1-hour threshold better captures actual coding sessions, as gaps longer than 1 hour typically indicate breaks, context switching, research, or other non-coding activities.
+
+> **Note**: A reusable Python script for calculating development time with configurable thresholds is available at `docs/calculate_dev_time.py`.
+
+### Development Time Breakdown
+
+| Metric | Value |
+|--------|-------|
+| Total Development Time | **84.76 hours** |
+| Total Sessions | 51 |
+| Average Session Duration | 1.66 hours |
+| Longest Session | 6.69 hours (Oct 2) |
+| Total Commits | 757 |
+
+### Top 10 Longest Development Sessions
+
+| Rank | Date | Duration | Time Range | Commits |
+|------|------|----------|------------|---------|
+| 1 | Oct 2, 2025 | 6.69 hrs | 17:18 - 23:59 | 53 |
+| 2 | Oct 24, 2025 | 5.21 hrs | 17:10 - 02:22 | 57 |
+| 3 | Oct 24, 2025 | 4.75 hrs | 09:38 - 14:24 | 31 |
+| 4 | Oct 25, 2025 | 4.65 hrs | 18:33 - 23:12 | 31 |
+| 5 | Oct 25, 2025 | 4.27 hrs | 07:50 - 12:06 | 36 |
+| 6 | Oct 23, 2025 | 4.27 hrs | 19:29 - 23:45 | 32 |
+| 7 | Nov 4, 2025 | 3.83 hrs | 19:11 - 23:01 | 49 |
+| 8 | Oct 3, 2025 | 3.40 hrs | 09:51 - 13:15 | 31 |
+| 9 | Nov 2, 2025 | 3.32 hrs | 18:28 - 21:48 | 29 |
+| 10 | Oct 23, 2025 | 3.12 hrs | 02:04 - 01:12 | 35 |
+
+**Insight**: The project shows a classic sprint pattern with intensive development bursts (Oct 24-26, Nov 4), likely corresponding to major feature implementations and release preparation.
 
 ---
 
@@ -372,6 +417,11 @@ timeline
 
 ### Development Metrics
 - **Duration**: 43 days (October 2 - November 13, 2025)
+- **Total Commits**: 757
+- **Total Development Time**: ~84.76 hours
+- **Active Days**: 21+ out of 43 days (49%)
+- **Development Sessions**: 51 sessions
+- **Average Session Duration**: 1.66 hours
 - **Current Version**: 2.6.0 (versionCode 22)
 - **Major Versions Released**: 14+ versions (1.0.0 to 2.6.0)
 - **Release Cadence**: Frequent iterative releases with continuous improvements
@@ -426,8 +476,9 @@ TRMNL Android Buddy represents a modern, well-architected Android application de
 
 - **Professional Development Practices**: PR-based workflow, CI/CD, semantic versioning, comprehensive testing
 - **Modern Architecture**: Circuit, Metro DI, Jetpack Compose with Material You compliance
+- **Rapid Iteration**: 757 commits over 43 days (~84.76 hours of focused development)
 - **Quality Focus**: ~85% test coverage for API module, integrated code coverage tracking with Kover and Codecov.io
-- **Continuous Improvement**: Active development over 43 days with regular releases and feature additions
+- **Continuous Improvement**: Active development over 43 days with 51 sessions averaging 1.66 hours each
 - **Testing Excellence**: Comprehensive test suite with analytics for reliability tracking
 - **Innovative Approach**: Human + AI collaboration for accelerated development while maintaining quality
 - **Rich Feature Set**: Device monitoring, battery tracking with alerts, content feeds, recipe catalog, zoom capabilities, and smart theming
@@ -437,6 +488,6 @@ The project is actively maintained, well-documented, and follows Android best pr
 ---
 
 **Generated**: November 13, 2025  
-**Analysis Methodology**: Git repository inspection, CHANGELOG analysis, file statistics  
+**Analysis Methodology**: Git repository inspection, CHANGELOG analysis, file statistics, Python-based time calculation script  
 **Data Source**: Git repository history (Oct 2 - Nov 13, 2025)  
 **Previous Analysis**: November 4, 2025
