@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Comprehensive unit test coverage for content module** - Added 65 new tests increasing total from 45 to 110 tests:
+  - `AnnouncementEntityTest`: 6 tests covering AnnouncementEntity data class (properties, defaults, copy, equality)
+  - `BlogPostEntityTest`: 10 tests covering BlogPostEntity data class (all properties, reading progress, favorites)
+  - `ContentItemTest`: 14 tests covering ContentItem sealed class (polymorphism, type discrimination, sorting, filtering)
+  - `AnnouncementDaoTest`: 15 tests covering all AnnouncementDao operations (insert, queries, updates, delete)
+  - `BlogPostDaoTest`: 20 tests covering all BlogPostDao operations (IGNORE strategy, queries, search, updates)
+  - `FakeAnnouncementDao` and `FakeBlogPostDao`: In-memory test fakes for Flow-based DAO testing
+  - Added turbine dependency to content module for Flow testing support
+
 ## [2.6.0] - 2025-11-12
 
 ### Added
