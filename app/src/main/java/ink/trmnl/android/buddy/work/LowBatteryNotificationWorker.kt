@@ -43,7 +43,8 @@ class LowBatteryNotificationWorker(
     }
 
     override suspend fun doWork(): Result {
-        Timber.d("Starting low battery notification check")
+        val startTime = System.currentTimeMillis()
+        Timber.d("[$WORK_NAME] Starting low battery notification check (run attempt: ${runAttemptCount + 1})")
 
         try {
             // Get preferences
@@ -52,23 +53,25 @@ class LowBatteryNotificationWorker(
 
             // Check if notifications are enabled
             if (!preferences.isLowBatteryNotificationEnabled) {
-                Timber.d("Low battery notifications are disabled, skipping check")
+                Timber.d("[$WORK_NAME] Low battery notifications are disabled, skipping check")
                 return Result.success()
             }
 
             if (apiToken.isNullOrBlank()) {
-                Timber.w("No API token found, skipping notification check")
+                Timber.w("[$WORK_NAME] No API token found, skipping notification check")
                 return Result.success()
             }
 
             val thresholdPercent = preferences.lowBatteryThresholdPercent
+            Timber.d("[$WORK_NAME] Checking for devices below %d%% battery threshold", thresholdPercent)
 
             // Fetch devices from API
             val authHeader = "Bearer $apiToken"
             when (val result = apiService.getDevices(authHeader)) {
                 is ApiResult.Success -> {
                     val devices = result.value.data
-                    Timber.d("Fetched %d devices", devices.size)
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.d("[$WORK_NAME] Fetched %d devices in %d ms", devices.size, executionTime)
 
                     // Find devices with low battery
                     val lowBatteryDevices =
@@ -78,8 +81,9 @@ class LowBatteryNotificationWorker(
 
                     if (lowBatteryDevices.isNotEmpty()) {
                         Timber.d(
-                            "Found %d devices with low battery",
+                            "[$WORK_NAME] Found %d devices with low battery: %s",
                             lowBatteryDevices.size,
+                            lowBatteryDevices.joinToString { "${it.name} (${it.percentCharged}%)" },
                         )
                         val deviceNames = lowBatteryDevices.map { it.name }
 
@@ -89,40 +93,53 @@ class LowBatteryNotificationWorker(
                             deviceNames = deviceNames,
                             thresholdPercent = thresholdPercent,
                         )
+                        Timber.d("[$WORK_NAME] Low battery notification sent")
                     } else {
-                        Timber.d("No devices with low battery")
+                        Timber.d("[$WORK_NAME] No devices with low battery (all above %d%%)", thresholdPercent)
                     }
 
-                    Timber.d("Low battery notification check completed successfully")
+                    val totalExecutionTime = System.currentTimeMillis() - startTime
+                    Timber.d("[$WORK_NAME] Low battery notification check completed successfully in %d ms", totalExecutionTime)
                     return Result.success()
                 }
 
                 is ApiResult.Failure.HttpFailure -> {
-                    Timber.e("HTTP error %d fetching devices", result.code)
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.e("[$WORK_NAME] HTTP error %d fetching devices (execution time: %d ms)", result.code, executionTime)
                     return if (result.code == 401) {
+                        Timber.e("[$WORK_NAME] Authentication failed, returning failure")
                         Result.failure()
                     } else {
+                        Timber.w("[$WORK_NAME] Temporary HTTP error, scheduling retry")
                         Result.retry()
                     }
                 }
 
                 is ApiResult.Failure.NetworkFailure -> {
-                    Timber.e(result.error, "Network error fetching devices")
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.e(
+                        result.error,
+                        "[$WORK_NAME] Network error fetching devices (execution time: %d ms), scheduling retry",
+                        executionTime,
+                    )
                     return Result.retry()
                 }
 
                 is ApiResult.Failure.ApiFailure -> {
-                    Timber.e("API error: %s", result.error)
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.e("[$WORK_NAME] API error: %s (execution time: %d ms)", result.error, executionTime)
                     return Result.failure()
                 }
 
                 is ApiResult.Failure.UnknownFailure -> {
-                    Timber.e(result.error, "Unknown error fetching devices")
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.e(result.error, "[$WORK_NAME] Unknown error fetching devices (execution time: %d ms)", executionTime)
                     return Result.failure()
                 }
             }
         } catch (e: Exception) {
-            Timber.e(e, "Error checking low battery")
+            val executionTime = System.currentTimeMillis() - startTime
+            Timber.e(e, "[$WORK_NAME] Error checking low battery (execution time: %d ms)", executionTime)
             return Result.failure()
         }
     }

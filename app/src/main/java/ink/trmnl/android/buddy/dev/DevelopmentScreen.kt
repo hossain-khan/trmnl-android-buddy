@@ -1,8 +1,10 @@
 package ink.trmnl.android.buddy.dev
 
+import androidx.work.WorkInfo
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import ink.trmnl.android.buddy.work.WorkerStatus
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -15,6 +17,7 @@ import kotlinx.parcelize.Parcelize
  * - Trigger workers manually (one-time requests)
  * - Test notification channels and permissions
  * - Quick access to development flags (AppDevConfig)
+ * - Monitor WorkManager worker status and execution
  */
 @Parcelize
 data object DevelopmentScreen : Screen {
@@ -23,6 +26,7 @@ data object DevelopmentScreen : Screen {
      */
     data class State(
         val notificationPermissionGranted: Boolean = false,
+        val workerStatuses: List<WorkerStatus> = emptyList(),
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -50,6 +54,13 @@ data object DevelopmentScreen : Screen {
         data object TriggerBlogPostWorker : Event
 
         data object TriggerAnnouncementWorker : Event
+
+        data object TriggerBatteryCollectionWorker : Event
+
+        // Worker management events
+        data object CancelAllWorkers : Event
+
+        data object ResetWorkerSchedules : Event
 
         // System events
         data object RequestNotificationPermission : Event

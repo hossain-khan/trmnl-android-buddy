@@ -36,7 +36,8 @@ class BlogPostSyncWorker(
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
-        Timber.d("BlogPostSyncWorker: Starting blog post sync")
+        val startTime = System.currentTimeMillis()
+        Timber.d("[$WORK_NAME] Starting blog post sync (run attempt: ${runAttemptCount + 1})")
 
         return try {
             // Get user preferences to check if notifications are enabled
@@ -44,6 +45,7 @@ class BlogPostSyncWorker(
 
             // Get unread count before refresh
             val unreadCountBefore = blogPostRepository.getUnreadCount().first()
+            Timber.d("[$WORK_NAME] Unread blog posts before sync: $unreadCountBefore")
 
             // Fetch blog posts from RSS feed
             val result = blogPostRepository.refreshBlogPosts()
@@ -52,8 +54,12 @@ class BlogPostSyncWorker(
                 // Get unread count after refresh
                 val unreadCountAfter = blogPostRepository.getUnreadCount().first()
                 val newPostsCount = unreadCountAfter - unreadCountBefore
+                val executionTime = System.currentTimeMillis() - startTime
 
-                Timber.d("BlogPostSyncWorker: Sync successful. New posts: $newPostsCount")
+                Timber.d(
+                    "[$WORK_NAME] Sync successful. New posts: $newPostsCount (execution time: %d ms)",
+                    executionTime,
+                )
 
                 // Show notification if new posts were fetched AND user has notifications enabled
                 // OR if dev flag is enabled for testing
@@ -63,23 +69,26 @@ class BlogPostSyncWorker(
 
                 if (shouldShowNotification) {
                     if (AppDevConfig.ENABLE_BLOG_NOTIFICATION) {
-                        Timber.d("BlogPostSyncWorker: Dev flag enabled - showing blog post notification for testing")
+                        Timber.d("[$WORK_NAME] Dev flag enabled - showing blog post notification for testing")
                     }
                     NotificationHelper.showBlogPostNotification(applicationContext, newPostsCount)
+                    Timber.d("[$WORK_NAME] Blog post notification sent for $newPostsCount new items")
                 } else if (newPostsCount > 0) {
-                    Timber.d("BlogPostSyncWorker: Notifications disabled, skipping notification")
+                    Timber.d("[$WORK_NAME] Notifications disabled, skipping notification")
                 }
 
                 Result.success()
             } else {
                 val error = result.exceptionOrNull()
-                Timber.e(error, "BlogPostSyncWorker: Failed to sync blog posts")
+                val executionTime = System.currentTimeMillis() - startTime
+                Timber.e(error, "[$WORK_NAME] Failed to sync blog posts (execution time: %d ms), scheduling retry", executionTime)
 
                 // Retry on failure (WorkManager will use exponential backoff)
                 Result.retry()
             }
         } catch (e: Exception) {
-            Timber.e(e, "BlogPostSyncWorker: Unexpected error during sync")
+            val executionTime = System.currentTimeMillis() - startTime
+            Timber.e(e, "[$WORK_NAME] Unexpected error during sync (execution time: %d ms), scheduling retry", executionTime)
             Result.retry()
         }
     }

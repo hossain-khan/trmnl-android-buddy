@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **WorkManager Observability and Debugging**: Enhanced monitoring and debugging capabilities for background workers
+  - Added `WorkManagerObserver` class to track WorkInfo for all workers (BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, AnnouncementSyncWorker)
+  - Development screen now displays real-time worker status including state (ENQUEUED, RUNNING, SUCCEEDED, FAILED), run attempts, and constraints
+  - Added "Cancel All Workers" and "Reset Worker Schedules" options in Development screen
+  - Added trigger button for BatteryCollectionWorker in Development screen
+  - Comprehensive structured logging with execution time tracking for all workers
+  - Worker-specific log tags for easier filtering (e.g., `[battery_collection_work]`, `[low_battery_notification_work]`)
+  - Logged worker lifecycle events including start, success, failure, and retry attempts
+  - Enhanced error logging with HTTP status codes, error types, and execution times
 - **Comprehensive unit test coverage for content module** - Added 65 new tests increasing total from 45 to 110 tests:
   - `AnnouncementEntityTest`: 6 tests covering AnnouncementEntity data class (properties, defaults, copy, equality)
   - `BlogPostEntityTest`: 10 tests covering BlogPostEntity data class (all properties, reading progress, favorites)
