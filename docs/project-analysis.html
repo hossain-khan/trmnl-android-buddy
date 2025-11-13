@@ -735,6 +735,18 @@
             type: 'bar',
             data: {
                 labels: [
+                    '🚀 v2.6.0 Release',
+                    'Nov 12: Testing Sprint (38 commits)',
+                    '🚀 v2.5.0 Release',
+                    'Nov 8: Recipe Enhancements (7 commits)',
+                    '🚀 v2.4.0 Release',
+                    'Nov 4: Feature Sprint (42 commits)',
+                    'Nov 2: Development (29 commits)',
+                    'Nov 1: Releases (12 commits)',
+                    '🚀 v2.3.0 Release',
+                    '🚀 v2.2.1 Release',
+                    '🚀 v2.2.0 Release',
+                    'Oct 31: Documentation (22 commits)',
                     '🚀 v2.1.0 Release',
                     '🚀 v2.0.0 Release',
                     'Oct 25: Major Releases (85 commits)',
@@ -763,9 +775,31 @@
                     'Oct 2: Project Initialization (14 commits)'
                 ],
                 datasets: [{
-                    label: 'Day in October',
-                    data: [25, 25, 25, 24, 23, 23, 23, 23, 22, 22, 22, 21, 21, 21, 20, 20, 8, 8, 4, 4, 3, 3, 3, 3, 3, 2],
+                    label: 'Day in Timeline',
+                    data: [42, 42, 36, 36, 33, 33, 31, 30, 30, 30, 30, 29, 24, 24, 23, 22, 21, 21, 21, 21, 20, 20, 20, 19, 19, 19, 18, 18, 6, 6, 2, 2, 1, 1, 1, 1, 1, 0],
                     backgroundColor: [
+                        // v2.6.0
+                        'rgba(168, 85, 247, 0.9)',
+                        // Nov 12 development
+                        'rgba(37, 99, 235, 0.7)',
+                        // v2.5.0
+                        'rgba(168, 85, 247, 0.9)',
+                        // Nov 8 development
+                        'rgba(37, 99, 235, 0.7)',
+                        // v2.4.0
+                        'rgba(168, 85, 247, 0.9)',
+                        // Nov 4 development
+                        'rgba(37, 99, 235, 0.7)',
+                        // Nov 2 development
+                        'rgba(37, 99, 235, 0.7)',
+                        // Nov 1 development
+                        'rgba(37, 99, 235, 0.7)',
+                        // v2.3.0, v2.2.1, v2.2.0
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        'rgba(168, 85, 247, 0.9)',
+                        // Oct 31 development
+                        'rgba(37, 99, 235, 0.7)',
                         // Releases in gradient purple
                         'rgba(168, 85, 247, 0.9)',
                         'rgba(168, 85, 247, 0.9)',
@@ -810,6 +844,18 @@
                         'rgba(37, 99, 235, 0.7)'
                     ],
                     borderColor: [
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(168, 85, 247, 1)',
+                        'rgba(37, 99, 235, 1)',
                         'rgba(168, 85, 247, 1)',
                         'rgba(168, 85, 247, 1)',
                         'rgba(37, 99, 235, 1)',
@@ -894,10 +940,10 @@
         new Chart(dailyCommitsCtx, {
             type: 'bar',
             data: {
-                labels: ['Oct 2', 'Oct 3', 'Oct 4', 'Oct 5', 'Oct 6', 'Oct 8', 'Oct 16', 'Oct 18', 'Oct 19', 'Oct 20', 'Oct 21', 'Oct 22', 'Oct 23', 'Oct 24', 'Oct 25', 'Oct 26', 'Oct 31', 'Nov 1', 'Nov 2', 'Nov 4'],
+                labels: ['Oct 2', 'Oct 3', 'Oct 4', 'Oct 5', 'Oct 6', 'Oct 8', 'Oct 16', 'Oct 18', 'Oct 19', 'Oct 20', 'Oct 21', 'Oct 22', 'Oct 23', 'Oct 24', 'Oct 25', 'Oct 26', 'Oct 31', 'Nov 1', 'Nov 2', 'Nov 4', 'Nov 8', 'Nov 12'],
                 datasets: [{
                     label: 'Commits per Day',
-                    data: [14, 69, 24, 11, 3, 8, 9, 2, 15, 18, 34, 38, 57, 93, 85, 19, 22, 12, 29, 42],
+                    data: [14, 69, 24, 11, 3, 8, 9, 2, 15, 18, 34, 38, 57, 93, 85, 19, 22, 12, 29, 42, 7, 38],
                     backgroundColor: 'rgba(37, 99, 235, 0.8)',
                     borderColor: 'rgba(37, 99, 235, 1)',
                     borderWidth: 2
@@ -933,9 +979,9 @@
         new Chart(fileTypesCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Kotlin (133)', 'XML (147)', 'Markdown (15)', 'SVG (13)', 'JSON (6)', 'YAML (5)', 'Gradle (5)', 'Other (14)'],
+                labels: ['Kotlin (154)', 'XML (104)', 'Markdown (16)', 'SVG (13)', 'JSON (6)', 'YAML (5)', 'Gradle (5)', 'Other (15)'],
                 datasets: [{
-                    data: [133, 147, 15, 13, 6, 5, 5, 14],
+                    data: [154, 104, 16, 13, 6, 5, 5, 15],
                     backgroundColor: [
                         'rgba(37, 99, 235, 0.8)',
                         'rgba(124, 58, 237, 0.8)',
@@ -1052,10 +1098,10 @@
         new Chart(releasesCtx, {
             type: 'line',
             data: {
-                labels: ['Oct 2', 'Oct 5', 'Oct 8', 'Oct 16', 'Oct 20', 'Oct 22', 'Oct 23', 'Oct 24', 'Oct 25', 'Oct 26', 'Oct 31', 'Nov 1', 'Nov 1', 'Nov 4'],
+                labels: ['Oct 2', 'Oct 5', 'Oct 8', 'Oct 16', 'Oct 20', 'Oct 22', 'Oct 23', 'Oct 24', 'Oct 25', 'Oct 26', 'Oct 31', 'Nov 1', 'Nov 1', 'Nov 4', 'Nov 8', 'Nov 12'],
                 datasets: [{
                     label: 'Version Number',
-                    data: [1.0, 1.1, 1.2, 1.4, 1.5, 1.6, 1.6, 1.7, 2.0, 2.1, 2.2, 2.21, 2.3, 2.4],
+                    data: [1.0, 1.1, 1.2, 1.4, 1.5, 1.6, 1.6, 1.7, 2.0, 2.1, 2.2, 2.21, 2.3, 2.4, 2.5, 2.6],
                     borderColor: 'rgba(37, 99, 235, 1)',
                     backgroundColor: 'rgba(37, 99, 235, 0.1)',
                     tension: 0.4,
@@ -1081,7 +1127,7 @@
                             text: 'Version'
                         },
                         min: 1.0,
-                        max: 2.5
+                        max: 2.7
                     }
                 }
             }
@@ -1095,7 +1141,7 @@
                 labels: ['Development Velocity', 'Code Quality', 'Documentation', 'Test Coverage', 'Modern Stack', 'AI Integration'],
                 datasets: [{
                     label: 'Project Metrics',
-                    data: [95, 88, 92, 75, 98, 85],
+                    data: [95, 92, 92, 85, 98, 85],
                     backgroundColor: 'rgba(37, 99, 235, 0.2)',
                     borderColor: 'rgba(37, 99, 235, 1)',
                     borderWidth: 2,

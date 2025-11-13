@@ -100,22 +100,25 @@ gantt
 
 | Date | Commits | % of Total |
 |------|---------|-----------|
-| Oct 24, 2025 | 93 | 13.4% |
-| Oct 25, 2025 | 85 | 12.3% |
-| Oct 3, 2025 | 69 | 10.0% |
-| Oct 23, 2025 | 57 | 8.2% |
-| Nov 4, 2025 | 42 | 6.1% |
-| Oct 22, 2025 | 38 | 5.5% |
-| Oct 21, 2025 | 34 | 4.9% |
-| Nov 2, 2025 | 29 | 4.2% |
-| Oct 4, 2025 | 24 | 3.5% |
-| Oct 26, 2025 | 19 | 2.7% |
-| Oct 20, 2025 | 18 | 2.6% |
-| Oct 19, 2025 | 15 | 2.2% |
-| Nov 1, 2025 | 12 | 1.7% |
-| Others | 158 | 22.8% |
+| Oct 24, 2025 | 93 | 12.1% |
+| Oct 25, 2025 | 85 | 11.1% |
+| Oct 3, 2025 | 69 | 9.0% |
+| Oct 23, 2025 | 57 | 7.4% |
+| Nov 4, 2025 | 42 | 5.5% |
+| Nov 12, 2025 | 38 | 4.9% |
+| Oct 22, 2025 | 38 | 4.9% |
+| Oct 21, 2025 | 34 | 4.4% |
+| Nov 2, 2025 | 29 | 3.8% |
+| Oct 4, 2025 | 24 | 3.1% |
+| Oct 31, 2025 | 22 | 2.9% |
+| Oct 26, 2025 | 19 | 2.5% |
+| Oct 20, 2025 | 18 | 2.3% |
+| Oct 19, 2025 | 15 | 2.0% |
+| Nov 1, 2025 | 12 | 1.6% |
+| Nov 8, 2025 | 7 | 0.9% |
+| Others | 126 | 16.4% |
 
-**Insight**: The project shows a classic sprint pattern with intensive development bursts (Oct 24-26, Nov 4), likely corresponding to major feature implementations and release preparation.
+**Insight**: The project shows a classic sprint pattern with intensive development bursts (Oct 24-26, Nov 4-12, Oct 3), likely corresponding to major feature implementations and release preparation.
 
 ---
 
@@ -152,14 +155,14 @@ gantt
 
 ```mermaid
 pie title Project Files by Type
-    "Kotlin (101)" : 38.1
-    "XML (104)" : 39.2
-    "Markdown (16)" : 6.0
-    "SVG (13)" : 4.9
-    "JSON (6)" : 2.3
-    "YAML (5)" : 1.9
-    "Gradle (5)" : 1.9
-    "Other (15)" : 5.7
+    "Kotlin (154)" : 48.4
+    "XML (104)" : 32.7
+    "Markdown (16)" : 5.0
+    "SVG (13)" : 4.1
+    "JSON (6)" : 1.9
+    "YAML (5)" : 1.6
+    "Gradle (5)" : 1.6
+    "Other (15)" : 4.7
 ```
 
 ### Key Directories
@@ -315,13 +318,29 @@ timeline
                : Settings enhancements
                : 🚀 v2.3.0 - Content hub badges
     
-    Nov 4, 2025 : Major Feature Release (32+ commits)
+    Nov 4, 2025 : Major Feature Release (42 commits)
                : Recipes Catalog with search & bookmarks
                : Device Catalog with 17 models
                : Pinch to zoom (Telephoto)
                : Smart icon inverter (dark mode)
                : 🚀 v2.4.0 - Major feature release
                : PRD documentation updates
+    
+    Nov 8, 2025 : Recipe Enhancements (7 commits)
+               : Recipe descriptions
+               : Haptic feedback for bookmarks
+               : Content Hub in settings
+               : 🚀 v2.5.0 - UX improvements
+    
+    Nov 12, 2025 : Testing & Code Quality Sprint (38 commits)
+                : Comprehensive test coverage (~85% api module)
+                : Kover integration for coverage reporting
+                : Codecov.io integration
+                : Battery alert indicators
+                : Clear battery history card
+                : Battery chart auto-scroll
+                : Kotlinter added to all modules
+                : 🚀 v2.6.0 - Testing excellence release
 ```
 
 ---
