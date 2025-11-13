@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Product Requirements Document (PRD)**: Updated to version 2.6.0 (November 13, 2025)
+  - Documented all features from v2.5.0 and v2.6.0 releases
+  - Added battery alert indicators (FR-2.1.29 to FR-2.1.33, FR-2.2.15 to FR-2.2.23)
+  - Added clear battery history feature (FR-2.2.18 to FR-2.2.23)
+  - Added battery chart auto-scroll improvement (FR-2.2.6)
+  - Documented comprehensive test coverage (~85% for API module)
+  - Added Kover code coverage integration section
+  - Added Codecov.io integration and test analytics sections
+  - Documented recipe descriptions (FR-8.1.9)
+  - Documented haptic feedback for bookmarks (FR-8.1.10, FR-8.2.4, FR-5.2.11)
+  - Added Content Hub in Settings Extras (FR-6.1.5)
+  - Updated success metrics with test coverage goals
+  - Updated technical stack with Kover 0.9.1
+  - Updated current version to 2.6.0 (versionCode: 22)
+
 ## [2.6.0] - 2025-11-12
 
 ### Added
