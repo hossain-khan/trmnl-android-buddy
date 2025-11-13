@@ -520,19 +520,14 @@ private fun WorkerStatusItem(workerStatus: ink.trmnl.android.buddy.work.WorkerSt
                 )
             }
 
-            // Constraints
-            workerStatus.constraints?.let { constraints ->
+            // Tags (for debugging) - show first 2 tags that aren't the worker class name
+            val displayTags =
+                workerStatus.tags
+                    .filter { !it.contains("Worker", ignoreCase = true) && !it.contains("androidx.work", ignoreCase = true) }
+                    .take(2)
+            if (displayTags.isNotEmpty()) {
                 Text(
-                    text = "Constraints: $constraints",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-
-            // Tags (for debugging)
-            if (workerStatus.tags.isNotEmpty()) {
-                Text(
-                    text = "Tags: ${workerStatus.tags.take(3).joinToString(", ")}",
+                    text = "Tags: ${displayTags.joinToString(", ")}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
