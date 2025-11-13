@@ -58,10 +58,13 @@ trmnl-android-buddy/
 ```
 
 ### 2.3 Data Layer
-- **TrmnlDatabase**: Battery history tracking (Room)
+- **TrmnlDatabase**: Battery history tracking and recipe bookmarks (Room)
   - BatteryHistoryEntity
   - BatteryHistoryDao
   - BatteryHistoryRepository
+  - BookmarkedRecipeEntity
+  - BookmarkedRecipeDao
+  - BookmarkRepository
   
 - **ContentDatabase**: RSS feed content (Room)
   - AnnouncementEntity & AnnouncementDao
@@ -69,11 +72,6 @@ trmnl-android-buddy/
   - AnnouncementRepository
   - BlogPostRepository
   - ContentFeedRepository
-
-- **BookmarkDatabase**: Recipe bookmarks (Room)
-  - BookmarkEntity
-  - BookmarkDao
-  - BookmarkRepository
 
 - **DataStore Preferences**:
   - UserPreferencesRepository (app settings)
@@ -1418,7 +1416,6 @@ data class BookmarkEntity(
 ### 10.2 Technical Debt
 
 **Known Areas for Improvement**:
-- TrmnlDevicesScreen refactoring (1,303 lines → split into modules)
 - Improved error handling for network failures
 - Better offline support for content feed
 - Reduce dependencies on legacy libraries
