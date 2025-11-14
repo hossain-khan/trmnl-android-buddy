@@ -46,7 +46,7 @@ class BatteryCollectionWorker(
 
     override suspend fun doWork(): Result {
         val startTime = System.currentTimeMillis()
-        Timber.d("[$WORK_NAME] Starting battery collection work")
+        Timber.d("[$WORK_NAME] Starting battery collection work (run attempt: ${runAttemptCount + 1})")
 
         try {
             // Get API token and preferences

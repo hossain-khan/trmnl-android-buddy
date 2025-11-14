@@ -117,13 +117,13 @@ class WorkManagerObserverImpl(
                 // Announcement Sync Worker
                 val announcementInfo =
                     workManager
-                        .getWorkInfosForUniqueWork("announcement_sync")
+                        .getWorkInfosForUniqueWork(AnnouncementSyncWorker.WORK_NAME)
                         .get()
                         .firstOrNull()
                 announcementInfo?.let {
                     statuses.add(
                         WorkerStatus(
-                            name = "announcement_sync",
+                            name = AnnouncementSyncWorker.WORK_NAME,
                             displayName = "Announcement Sync",
                             state = it.state,
                             runAttemptCount = it.runAttemptCount,
@@ -144,7 +144,7 @@ class WorkManagerObserverImpl(
         workManager.cancelUniqueWork(BatteryCollectionWorker.WORK_NAME)
         workManager.cancelUniqueWork(LowBatteryNotificationWorker.WORK_NAME)
         workManager.cancelUniqueWork(BlogPostSyncWorker.WORK_NAME)
-        workManager.cancelUniqueWork("announcement_sync")
+        workManager.cancelUniqueWork(AnnouncementSyncWorker.WORK_NAME)
     }
 
     override fun resetAllWorkerSchedules() {
