@@ -48,6 +48,19 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>
+
+        <!-- Device Widget -->
+        <receiver
+            android:name=".widget.DeviceWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_device_description">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/device_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

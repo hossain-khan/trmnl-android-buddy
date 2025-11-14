@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TRMNL Buddy</string>
+    
+    <!-- Widget strings -->
+    <string name="widget_device_description">Display your TRMNL device screen on your home screen</string>
+    <string name="widget_loading">Loading…</string>
 </resources>

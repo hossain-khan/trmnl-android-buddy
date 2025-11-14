@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Home Screen Widget Support**: Added Jetpack Glance-based widget for displaying device status on home screen
+  - Created `DeviceWidget` composable using Glance API for widget UI
+  - Implemented `DeviceWidgetReceiver` (AppWidgetProvider) for widget lifecycle management
+  - Added `DeviceWidgetWorker` for periodic widget data updates via WorkManager
+  - Created `WidgetConfigRepository` for storing widget-to-device mappings using DataStore
+  - Implemented `WidgetState` data model with serialization for widget state persistence
+  - Added `WidgetStateDefinition` for Glance state management using DataStore
+  - Created `RefreshWidgetCallback` for manual widget refresh action
+  - Widget displays device name, current display image, battery percentage, and WiFi strength
+  - Supports device selection and widget configuration
+  - Includes loading, error, and unconfigured states
+  - Widget XML metadata and Android manifest registration
+  - Dependencies: Glance 1.1.1, kotlinx-serialization-json
 - **WorkManager Observability and Debugging**: Enhanced monitoring and debugging capabilities for background workers
   - Added `WorkManagerObserver` class to track WorkInfo for all workers (BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, AnnouncementSyncWorker)
   - Development screen now displays real-time worker status including state (ENQUEUED, RUNNING, SUCCEEDED, FAILED), run attempts, and constraints

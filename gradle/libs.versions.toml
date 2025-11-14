@@ -91,6 +91,10 @@ turbine = "1.2.0"
 # https://github.com/saket/telephoto
 telephoto = "0.18.0"
 
+# Glance - Jetpack Compose for App Widgets
+# https://developer.android.com/jetpack/androidx/releases/glance
+glance = "1.1.1"
+
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -194,6 +198,11 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 # Telephoto - Zoomable images for Compose
 # https://github.com/saket/telephoto
 telephoto-zoomable-image-coil3 = { group = "me.saket.telephoto", name = "zoomable-image-coil3", version.ref = "telephoto" }
+
+# Glance - Jetpack Compose for App Widgets
+# https://developer.android.com/jetpack/androidx/releases/glance
+androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
+androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glance" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

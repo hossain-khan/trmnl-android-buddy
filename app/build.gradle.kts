@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.metro)
     alias(libs.plugins.kotlinter)
@@ -152,6 +153,13 @@ dependencies {
 
     // Telephoto - Zoomable images for Compose
     implementation(libs.telephoto.zoomable.image.coil3)
+
+    // Glance - Jetpack Compose for App Widgets
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
+
+    // kotlinx.serialization for widget state serialization
+    implementation(libs.kotlinx.serialization.json)
 
     // Accompanist - Compose utilities for permissions
     implementation(libs.accompanist.permissions)
