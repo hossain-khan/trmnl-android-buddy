@@ -17,8 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implemented `WidgetState` data model with serialization for widget state persistence
   - Added `WidgetStateDefinition` for Glance state management using DataStore
   - Created `RefreshWidgetCallback` for manual widget refresh action
+  - Implemented `DeviceWidgetConfigActivity` for device selection during widget setup
   - Widget displays device name, current display image, battery percentage, and WiFi strength
-  - Supports device selection and widget configuration
+  - Supports device selection via configuration activity
   - Includes loading, error, and unconfigured states
   - Widget XML metadata and Android manifest registration
   - Dependencies: Glance 1.1.1, kotlinx-serialization-json
