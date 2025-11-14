@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **WorkManager Observability and Debugging**: Enhanced monitoring and debugging capabilities for background workers
+  - Added `WorkManagerObserver` class to track WorkInfo for all workers (BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, AnnouncementSyncWorker)
+  - Development screen now displays real-time worker status including state (ENQUEUED, RUNNING, SUCCEEDED, FAILED), run attempts, and constraints
+  - Added "Cancel All Workers" and "Reset Worker Schedules" options in Development screen
+  - Added trigger button for BatteryCollectionWorker in Development screen
+  - Comprehensive structured logging with execution time tracking for all workers
+  - Worker-specific log tags for easier filtering (e.g., `[battery_collection_work]`, `[low_battery_notification_work]`)
+  - Logged worker lifecycle events including start, success, failure, and retry attempts
+  - Enhanced error logging with HTTP status codes, error types, and execution times
 - **Optimized image loading with Coil caching strategy** - Configured disk and memory cache policies for better performance
   - Added `ImageCacheConfig` object with constants for disk (1% of disk space) and memory (10% of app memory) cache sizes
   - Configured Coil `ImageLoader` with disk cache policy in DI module (`AppBindings`)

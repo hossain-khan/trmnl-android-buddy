@@ -121,6 +121,14 @@ fun DevelopmentContent(
                 eventSink = state.eventSink,
             )
 
+            // Worker status section
+            WorkerStatusSection(
+                title = "Background Workers",
+                description = "Monitor worker status and execution",
+                workerStatuses = state.workerStatuses,
+                eventSink = state.eventSink,
+            )
+
             // Development info
             DevelopmentInfoSection()
         }
@@ -403,6 +411,127 @@ private fun WorkerTestingSection(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Trigger Announcement Worker")
+            }
+
+            OutlinedButton(
+                onClick = { eventSink(Event.TriggerBatteryCollectionWorker) },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Trigger Battery Collection Worker")
+            }
+        }
+    }
+}
+
+@Composable
+private fun WorkerStatusSection(
+    title: String,
+    description: String,
+    workerStatuses: List<ink.trmnl.android.buddy.work.WorkerStatus>,
+    eventSink: (Event) -> Unit,
+) {
+    SectionCard(title = title, description = description) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            if (workerStatuses.isEmpty()) {
+                Text(
+                    text = "No workers scheduled",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                workerStatuses.forEach { workerStatus ->
+                    WorkerStatusItem(workerStatus)
+                }
+            }
+
+            HorizontalDivider()
+
+            // Worker management buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(
+                    onClick = { eventSink(Event.CancelAllWorkers) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Cancel All")
+                }
+
+                OutlinedButton(
+                    onClick = { eventSink(Event.ResetWorkerSchedules) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Reset All")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun WorkerStatusItem(workerStatus: ink.trmnl.android.buddy.work.WorkerStatus) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            // Worker name and state
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = workerStatus.displayName,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
+                Text(
+                    text = workerStatus.state.name,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color =
+                        when (workerStatus.state) {
+                            androidx.work.WorkInfo.State.SUCCEEDED -> MaterialTheme.colorScheme.primary
+                            androidx.work.WorkInfo.State.RUNNING -> MaterialTheme.colorScheme.tertiary
+                            androidx.work.WorkInfo.State.ENQUEUED -> MaterialTheme.colorScheme.secondary
+                            androidx.work.WorkInfo.State.FAILED -> MaterialTheme.colorScheme.error
+                            androidx.work.WorkInfo.State.BLOCKED -> MaterialTheme.colorScheme.outline
+                            androidx.work.WorkInfo.State.CANCELLED -> MaterialTheme.colorScheme.outline
+                        },
+                )
+            }
+
+            // Run attempt count
+            if (workerStatus.runAttemptCount > 0) {
+                Text(
+                    text = "Run attempts: ${workerStatus.runAttemptCount}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            // Tags (for debugging) - show first 2 tags that aren't the worker class name
+            val displayTags =
+                workerStatus.tags
+                    .filter { !it.contains("Worker", ignoreCase = true) && !it.contains("androidx.work", ignoreCase = true) }
+                    .take(2)
+            if (displayTags.isNotEmpty()) {
+                Text(
+                    text = "Tags: ${displayTags.joinToString(", ")}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                )
             }
         }
     }

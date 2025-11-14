@@ -33,7 +33,8 @@ class AnnouncementSyncWorker(
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
-        Timber.d("Starting announcement sync")
+        val startTime = System.currentTimeMillis()
+        Timber.d("[$WORK_NAME] Starting announcement sync (run attempt: ${runAttemptCount + 1})")
 
         return try {
             // Get user preferences to check if notifications are enabled
@@ -41,6 +42,7 @@ class AnnouncementSyncWorker(
 
             // Get unread count before refresh
             val unreadCountBefore = announcementRepository.getUnreadCount().first()
+            Timber.d("[$WORK_NAME] Unread announcements before sync: $unreadCountBefore")
 
             val result = announcementRepository.refreshAnnouncements()
 
@@ -48,8 +50,12 @@ class AnnouncementSyncWorker(
                 // Get unread count after refresh
                 val unreadCountAfter = announcementRepository.getUnreadCount().first()
                 val newAnnouncementsCount = unreadCountAfter - unreadCountBefore
+                val executionTime = System.currentTimeMillis() - startTime
 
-                Timber.d("Announcement sync completed successfully. New announcements: $newAnnouncementsCount")
+                Timber.d(
+                    "[$WORK_NAME] Announcement sync completed successfully. New announcements: $newAnnouncementsCount (execution time: %d ms)",
+                    executionTime,
+                )
 
                 // Show notification if new announcements were fetched AND user has notifications enabled
                 // OR if dev flag is enabled for testing
@@ -59,23 +65,30 @@ class AnnouncementSyncWorker(
 
                 if (shouldShowNotification) {
                     if (AppDevConfig.ENABLE_ANNOUNCEMENT_NOTIFICATION) {
-                        Timber.d("Dev flag enabled - showing announcement notification for testing")
+                        Timber.d("[$WORK_NAME] Dev flag enabled - showing announcement notification for testing")
                     }
                     NotificationHelper.showAnnouncementNotification(applicationContext, newAnnouncementsCount)
+                    Timber.d("[$WORK_NAME] Announcement notification sent for $newAnnouncementsCount new items")
                 } else if (newAnnouncementsCount > 0) {
-                    Timber.d("Notifications disabled, skipping notification")
+                    Timber.d("[$WORK_NAME] Notifications disabled, skipping notification")
                 }
 
                 Result.success()
             } else {
                 val error = result.exceptionOrNull()
-                Timber.e(error, "Announcement sync failed")
+                val executionTime = System.currentTimeMillis() - startTime
+                Timber.e(error, "[$WORK_NAME] Announcement sync failed (execution time: %d ms), scheduling retry", executionTime)
                 Result.retry()
             }
         } catch (e: Exception) {
-            Timber.e(e, "Unexpected error during announcement sync")
+            val executionTime = System.currentTimeMillis() - startTime
+            Timber.e(e, "[$WORK_NAME] Unexpected error during announcement sync (execution time: %d ms), scheduling retry", executionTime)
             Result.retry()
         }
+    }
+
+    companion object {
+        const val WORK_NAME = "announcement_sync"
     }
 
     @WorkerKey(AnnouncementSyncWorker::class)

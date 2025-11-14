@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,8 +30,10 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.dev.DevelopmentScreen.Event
 import ink.trmnl.android.buddy.notification.NotificationHelper
 import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
+import ink.trmnl.android.buddy.work.BatteryCollectionWorker
 import ink.trmnl.android.buddy.work.BlogPostSyncWorker
 import ink.trmnl.android.buddy.work.LowBatteryNotificationWorker
+import ink.trmnl.android.buddy.work.WorkManagerObserver
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -42,10 +45,12 @@ import timber.log.Timber
  * - Manual notification triggering with test data
  * - One-time worker execution
  * - Navigation to system settings
+ * - WorkManager worker status monitoring
  */
 @Inject
 class DevelopmentPresenter(
     @Assisted private val navigator: Navigator,
+    private val workManagerObserver: WorkManagerObserver,
 ) : Presenter<DevelopmentScreen.State> {
     @OptIn(ExperimentalPermissionsApi::class)
     @Composable
@@ -64,8 +69,12 @@ class DevelopmentPresenter(
 
         var permissionRequested by remember { mutableStateOf(false) }
 
+        // Observe worker statuses
+        val workerStatuses by workManagerObserver.observeAllWorkers().collectAsState(initial = emptyList())
+
         return DevelopmentScreen.State(
             notificationPermissionGranted = notificationPermissionGranted,
+            workerStatuses = workerStatuses,
         ) { event ->
             when (event) {
                 // Notification testing with mock data
@@ -103,6 +112,28 @@ class DevelopmentPresenter(
                     Timber.d("Triggering one-time AnnouncementSyncWorker")
                     scope.launch {
                         triggerWorker<AnnouncementSyncWorker>(context)
+                    }
+                }
+
+                Event.TriggerBatteryCollectionWorker -> {
+                    Timber.d("Triggering one-time BatteryCollectionWorker")
+                    scope.launch {
+                        triggerWorker<BatteryCollectionWorker>(context)
+                    }
+                }
+
+                // Worker management
+                Event.CancelAllWorkers -> {
+                    Timber.d("Cancelling all workers via DevelopmentPresenter")
+                    scope.launch {
+                        workManagerObserver.cancelAllWorkers()
+                    }
+                }
+
+                Event.ResetWorkerSchedules -> {
+                    Timber.d("Resetting all worker schedules via DevelopmentPresenter")
+                    scope.launch {
+                        workManagerObserver.resetAllWorkerSchedules()
                     }
                 }
 

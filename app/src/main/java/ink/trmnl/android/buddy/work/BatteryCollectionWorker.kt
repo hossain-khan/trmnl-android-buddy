@@ -45,7 +45,8 @@ class BatteryCollectionWorker(
     }
 
     override suspend fun doWork(): Result {
-        Timber.d("Starting battery collection work")
+        val startTime = System.currentTimeMillis()
+        Timber.d("[$WORK_NAME] Starting battery collection work (run attempt: ${runAttemptCount + 1})")
 
         try {
             // Get API token and preferences
@@ -54,21 +55,23 @@ class BatteryCollectionWorker(
 
             // Check if battery tracking is enabled
             if (!preferences.isBatteryTrackingEnabled) {
-                Timber.d("Battery tracking is disabled, skipping collection")
+                Timber.d("[$WORK_NAME] Battery tracking is disabled, skipping collection")
                 return Result.success()
             }
 
             if (apiToken.isNullOrBlank()) {
-                Timber.w("No API token found, skipping battery collection")
+                Timber.w("[$WORK_NAME] No API token found, skipping battery collection")
                 return Result.success()
             }
 
             // Fetch devices from API
+            Timber.d("[$WORK_NAME] Fetching devices from API")
             val authHeader = "Bearer $apiToken"
             when (val result = apiService.getDevices(authHeader)) {
                 is ApiResult.Success -> {
                     val devices = result.value.data
-                    Timber.d("Fetched %d devices", devices.size)
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.d("[$WORK_NAME] Fetched %d devices in %d ms", devices.size, executionTime)
 
                     // Record battery data for each device
                     val timestamp = System.currentTimeMillis()
@@ -80,44 +83,57 @@ class BatteryCollectionWorker(
                             timestamp = timestamp,
                         )
                         Timber.d(
-                            "Recorded battery data for %s: %.1f%%",
+                            "[$WORK_NAME] Recorded battery data for %s: %.1f%% (%.2fV)",
                             device.name,
                             device.percentCharged,
+                            device.batteryVoltage ?: 0.0,
                         )
                     }
 
-                    Timber.d("Battery collection completed successfully")
+                    val totalExecutionTime = System.currentTimeMillis() - startTime
+                    Timber.d("[$WORK_NAME] Battery collection completed successfully in %d ms", totalExecutionTime)
                     return Result.success()
                 }
 
                 is ApiResult.Failure.HttpFailure -> {
-                    Timber.e("HTTP error %d fetching devices", result.code)
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.e("[$WORK_NAME] HTTP error %d fetching devices (execution time: %d ms)", result.code, executionTime)
                     return if (result.code == 401) {
                         // Token is invalid, don't retry
+                        Timber.e("[$WORK_NAME] Authentication failed, returning failure")
                         Result.failure()
                     } else {
                         // Temporary error, retry
+                        Timber.w("[$WORK_NAME] Temporary HTTP error, scheduling retry")
                         Result.retry()
                     }
                 }
 
                 is ApiResult.Failure.NetworkFailure -> {
-                    Timber.e(result.error, "Network error fetching devices")
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.e(
+                        result.error,
+                        "[$WORK_NAME] Network error fetching devices (execution time: %d ms), scheduling retry",
+                        executionTime,
+                    )
                     return Result.retry()
                 }
 
                 is ApiResult.Failure.ApiFailure -> {
-                    Timber.e("API error: %s", result.error)
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.e("[$WORK_NAME] API error: %s (execution time: %d ms)", result.error, executionTime)
                     return Result.failure()
                 }
 
                 is ApiResult.Failure.UnknownFailure -> {
-                    Timber.e(result.error, "Unknown error fetching devices")
+                    val executionTime = System.currentTimeMillis() - startTime
+                    Timber.e(result.error, "[$WORK_NAME] Unknown error fetching devices (execution time: %d ms)", executionTime)
                     return Result.failure()
                 }
             }
         } catch (e: Exception) {
-            Timber.e(e, "Error collecting battery data")
+            val executionTime = System.currentTimeMillis() - startTime
+            Timber.e(e, "[$WORK_NAME] Error collecting battery data (execution time: %d ms)", executionTime)
             return Result.failure()
         }
     }
