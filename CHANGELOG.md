@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Home Screen Widget Support**: Added Jetpack Glance-based widget for displaying device status on home screen
   - Created `DeviceWidget` composable using Glance API for widget UI
   - Implemented `DeviceWidgetReceiver` (AppWidgetProvider) for widget lifecycle management
-  - Added `DeviceWidgetWorker` for periodic widget data updates via WorkManager
+  - Added `DeviceWidgetWorker` for periodic widget data updates via WorkManager (updates every 4 hours)
   - Created `WidgetConfigRepository` for storing widget-to-device mappings using DataStore
   - Implemented `WidgetState` data model with serialization for widget state persistence
   - Added `WidgetStateDefinition` for Glance state management using DataStore
@@ -23,6 +23,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Includes loading, error, and unconfigured states
   - Widget XML metadata and Android manifest registration
   - Dependencies: Glance 1.1.1, kotlinx-serialization-json
+- **Widget Image Loading**: Implemented remote image loading for widget display images
+  - Created `WidgetImageLoader` utility to download images using Coil and cache to internal storage
+  - Images are downloaded by `DeviceWidgetWorker` and saved as PNG files
+  - Widget loads cached images as Bitmaps using Glance `ImageProvider`
+  - Added `imagePath` field to `WidgetState` for storing cached image location
+- **Widget Periodic Updates**: Scheduled automatic widget data refreshes
+  - Widgets update every 4 hours via WorkManager with network connectivity requirement
+  - Uses KEEP policy to avoid duplicate worker scheduling
+  - Scheduled in `TrmnlBuddyApp.onCreate()` alongside other periodic tasks
+- **Widget Refresh Button**: Added manual refresh capability
+  - Displays Material Design refresh icon in top-right corner when device is configured
+  - Triggers immediate widget update via `RefreshWidgetCallback`
+  - Uses `refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24` drawable resource
 - **WorkManager Observability and Debugging**: Enhanced monitoring and debugging capabilities for background workers
   - Added `WorkManagerObserver` class to track WorkInfo for all workers (BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, AnnouncementSyncWorker)
   - Development screen now displays real-time worker status including state (ENQUEUED, RUNNING, SUCCEEDED, FAILED), run attempts, and constraints
