@@ -73,24 +73,22 @@ class DeviceWidget : GlanceAppWidget() {
             }
 
             // Refresh button in top-right corner
-            // TODO: Add proper refresh icon
-            /*
             if (state.deviceId != null) {
                 Box(
                     modifier = GlanceModifier.fillMaxSize(),
                     contentAlignment = Alignment.TopEnd,
                 ) {
                     Image(
-                        provider = ImageProvider(R.mipmap.ic_launcher),
+                        provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                         contentDescription = "Refresh",
                         modifier =
                             GlanceModifier
                                 .size(40.dp)
+                                .padding(8.dp)
                                 .clickable(onClick = actionRunCallback<RefreshWidgetCallback>()),
                     )
                 }
             }
-             */
         }
     }
 
@@ -191,7 +189,7 @@ class DeviceWidget : GlanceAppWidget() {
             Spacer(modifier = GlanceModifier.height(4.dp))
 
             // Device image
-            if (state.imageUrl != null) {
+            if (state.imagePath != null) {
                 Box(
                     modifier =
                         GlanceModifier
@@ -200,12 +198,21 @@ class DeviceWidget : GlanceAppWidget() {
                             .background(GlanceTheme.colors.surfaceVariant),
                     contentAlignment = Alignment.Center,
                 ) {
-                    // TODO: Load image from URL using Coil
-                    // For now, show placeholder
-                    Text(
-                        text = "Device Display",
-                        style = TextStyle(fontSize = 12.sp, color = GlanceTheme.colors.onSurfaceVariant),
-                    )
+                    // Load image from saved file
+                    val bitmap = WidgetImageLoader.loadSavedImage(state.imagePath)
+                    if (bitmap != null) {
+                        Image(
+                            provider = ImageProvider(bitmap),
+                            contentDescription = "Device display",
+                            modifier = GlanceModifier.fillMaxSize(),
+                        )
+                    } else {
+                        // Fallback if image loading failed
+                        Text(
+                            text = "Device Display",
+                            style = TextStyle(fontSize = 12.sp, color = GlanceTheme.colors.onSurfaceVariant),
+                        )
+                    }
                 }
             }
 

@@ -12,6 +12,7 @@ import coil3.SingletonImageLoader
 import dev.zacsweers.metro.createGraphFactory
 import ink.trmnl.android.buddy.di.AppGraph
 import ink.trmnl.android.buddy.notification.NotificationHelper
+import ink.trmnl.android.buddy.widget.DeviceWidgetWorker
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -43,6 +44,7 @@ class TrmnlBuddyApp :
         NotificationHelper.createNotificationChannels(this)
         scheduleBatteryCollection()
         scheduleRssFeedContentWorkers()
+        scheduleWidgetUpdates()
     }
 
     /**
@@ -78,5 +80,31 @@ class TrmnlBuddyApp :
         Timber.d("Scheduling RSS feed content workers (announcement and blog post sync)")
         appGraph.workerScheduler.scheduleAnnouncementSync()
         appGraph.workerScheduler.scheduleBlogPostSync()
+    }
+
+    /**
+     * Schedules periodic widget updates using WorkManager.
+     * The worker updates all widgets with fresh device data every 4 hours.
+     */
+    private fun scheduleWidgetUpdates() {
+        Timber.d("Scheduling widget update worker (every 4 hours, network required)")
+
+        val widgetWorkRequest =
+            PeriodicWorkRequestBuilder<DeviceWidgetWorker>(
+                repeatInterval = 4,
+                repeatIntervalTimeUnit = TimeUnit.HOURS,
+            ).setConstraints(
+                Constraints
+                    .Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build(),
+            ).build()
+
+        // Use KEEP policy to avoid duplicates
+        appGraph.workManager.enqueueUniquePeriodicWork(
+            DeviceWidgetWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            widgetWorkRequest,
+        )
     }
 }
