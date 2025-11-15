@@ -103,6 +103,7 @@ class DeviceWidgetWorker(
                         val deviceToken = deviceTokenRepository.getDeviceToken(device.friendlyId)
 
                         var imageUrl: String? = null
+                        var imagePath: String? = null
                         if (deviceToken != null) {
                             // Create a new API service for device API
                             val deviceApiService = apiClient.create()
@@ -111,6 +112,15 @@ class DeviceWidgetWorker(
                             when (val displayResult = deviceApiService.getDisplayCurrent(deviceToken)) {
                                 is ApiResult.Success -> {
                                     imageUrl = displayResult.value.imageUrl
+                                    // Download and save the image for widget display
+                                    if (imageUrl != null) {
+                                        imagePath =
+                                            WidgetImageLoader.downloadAndSaveImage(
+                                                context,
+                                                imageUrl,
+                                                device.id,
+                                            )
+                                    }
                                 }
 
                                 else -> {
@@ -126,6 +136,7 @@ class DeviceWidgetWorker(
                                 deviceName = device.name,
                                 deviceFriendlyId = device.friendlyId,
                                 imageUrl = imageUrl,
+                                imagePath = imagePath,
                                 batteryPercent = device.percentCharged,
                                 wifiStrength = device.wifiStrength,
                                 lastUpdated = System.currentTimeMillis(),

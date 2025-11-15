@@ -26,6 +26,11 @@ data class WidgetState(
      */
     val imageUrl: String? = null,
     /**
+     * Local file path to the cached display image.
+     * This is used by Glance to display the image.
+     */
+    val imagePath: String? = null,
+    /**
      * Battery percentage (0.0 to 100.0).
      */
     val batteryPercent: Double? = null,
