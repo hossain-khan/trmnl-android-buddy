@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unit tests for BookmarkedRecipesPresenter** - Added 13 comprehensive tests for bookmark management functionality:
+  - Repository-level tests for loading, displaying, and managing bookmarked recipes
+  - Tests for empty state, single recipe, and large datasets (120+ recipes)
+  - Bookmark toggle (add/remove) operations
+  - Clear all bookmarks functionality
+  - Edge cases: recipes with missing icons/screenshots, very long titles
+  - Real-time Flow updates verification
+  - Navigation operations testing
+  - All tests use `FakeBookmarkRepository` following existing patterns with assertk assertions
 - **Comprehensive unit test coverage for preferences repositories** - Added 26 new edge case tests (from 31 to 57 tests total):
   - `DeviceTokenRepositoryTest`: Added 14 new tests covering empty tokens, special characters in device IDs, very long tokens, unicode characters, numeric IDs, whitespace handling, case sensitivity, flow isolation, and multiple observers
   - `UserPreferencesRepositoryTest`: Added 12 new tests covering empty tokens, very long tokens, special characters, boundary values for thresholds (0, 100, negative, >100), rapid changes, boolean flag toggles, and field independence
