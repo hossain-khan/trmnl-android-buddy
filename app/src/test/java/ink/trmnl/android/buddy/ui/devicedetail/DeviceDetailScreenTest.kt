@@ -13,6 +13,7 @@ import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
+import ink.trmnl.android.buddy.fakes.FakeBatteryHistoryRepository
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
@@ -692,46 +693,5 @@ class DeviceDetailScreenTest {
                 timestamp = now - TimeUnit.DAYS.toMillis(index * 7L), // Weekly readings
             )
         }
-    }
-}
-
-/**
- * Fake implementation of BatteryHistoryRepository for testing.
- */
-private class FakeBatteryHistoryRepository(
-    initialHistory: List<BatteryHistoryEntity> = emptyList(),
-) : BatteryHistoryRepository {
-    private val historyFlow = MutableStateFlow(initialHistory)
-    val recordedReadings = mutableListOf<BatteryHistoryEntity>()
-
-    override suspend fun recordBatteryReading(
-        deviceId: String,
-        percentCharged: Double,
-        batteryVoltage: Double?,
-        timestamp: Long,
-    ) {
-        val entity =
-            BatteryHistoryEntity(
-                deviceId = deviceId,
-                percentCharged = percentCharged,
-                batteryVoltage = batteryVoltage,
-                timestamp = timestamp,
-            )
-        recordedReadings.add(entity)
-        historyFlow.value = historyFlow.value + entity
-    }
-
-    override fun getBatteryHistoryForDevice(deviceId: String): Flow<List<BatteryHistoryEntity>> = historyFlow
-
-    override suspend fun getLatestBatteryReading(deviceId: String): BatteryHistoryEntity? = historyFlow.value.maxByOrNull { it.timestamp }
-
-    override fun getBatteryHistoryInRange(
-        deviceId: String,
-        startTime: Long,
-        endTime: Long,
-    ): Flow<List<BatteryHistoryEntity>> = historyFlow
-
-    override suspend fun deleteHistoryForDevice(deviceId: String) {
-        historyFlow.value = emptyList()
     }
 }

@@ -12,8 +12,7 @@ import ink.trmnl.android.buddy.content.db.FakeBlogPostDao
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -436,50 +435,5 @@ class BlogPostSyncWorkerTest {
                 refreshResult
             }
         }
-    }
-
-    /**
-     * Fake implementation of [UserPreferencesRepository] for testing.
-     */
-    private class FakeUserPreferencesRepository : UserPreferencesRepository {
-        private val preferencesFlow =
-            MutableStateFlow(
-                UserPreferences(
-                    isRssFeedContentNotificationEnabled = false,
-                ),
-            )
-
-        override val userPreferencesFlow: Flow<UserPreferences> = preferencesFlow
-
-        fun setNotificationsEnabled(enabled: Boolean) {
-            preferencesFlow.value =
-                preferencesFlow.value.copy(
-                    isRssFeedContentNotificationEnabled = enabled,
-                )
-        }
-
-        override suspend fun saveApiToken(token: String) = Unit
-
-        override suspend fun clearApiToken() = Unit
-
-        override suspend fun setOnboardingCompleted() = Unit
-
-        override suspend fun setBatteryTrackingEnabled(enabled: Boolean) = Unit
-
-        override suspend fun setLowBatteryNotificationEnabled(enabled: Boolean) = Unit
-
-        override suspend fun setLowBatteryThreshold(percent: Int) = Unit
-
-        override suspend fun setRssFeedContentEnabled(enabled: Boolean) = Unit
-
-        override suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean) {
-            setNotificationsEnabled(enabled)
-        }
-
-        override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) = Unit
-
-        override suspend fun setSecurityEnabled(enabled: Boolean) = Unit
-
-        override suspend fun clearAll() = Unit
     }
 }

@@ -13,17 +13,23 @@ import kotlinx.coroutines.flow.flowOf
  * Tracks whether clearAll() was called to verify behavior.
  *
  * @param hasToken If true, initializes with a test token for "ABC-123" device.
+ * @param initialTokens Optional map of device IDs to tokens to pre-populate the repository.
+ * @param shouldThrowOnSave If true, saveDeviceToken will throw an exception. Useful for testing error handling.
+ * @param shouldThrowOnClear If true, clearDeviceToken will throw an exception. Useful for testing error handling.
  */
 class FakeDeviceTokenRepository(
     hasToken: Boolean = false,
+    initialTokens: Map<String, String> = emptyMap(),
+    private val shouldThrowOnSave: Boolean = false,
+    private val shouldThrowOnClear: Boolean = false,
 ) : DeviceTokenRepository {
-    private val deviceTokens = mutableMapOf<String, String>()
-
-    init {
-        if (hasToken) {
-            deviceTokens["ABC-123"] = "test-token"
+    private val deviceTokens =
+        mutableMapOf<String, String>().apply {
+            if (hasToken) {
+                put("ABC-123", "test-token")
+            }
+            putAll(initialTokens)
         }
-    }
 
     /**
      * Test-visible property to verify that clearAll() was called.
@@ -35,6 +41,9 @@ class FakeDeviceTokenRepository(
         deviceFriendlyId: String,
         token: String,
     ) {
+        if (shouldThrowOnSave) {
+            throw Exception("Test exception")
+        }
         deviceTokens[deviceFriendlyId] = token
     }
 
@@ -43,6 +52,9 @@ class FakeDeviceTokenRepository(
     override fun getDeviceTokenFlow(deviceFriendlyId: String): Flow<String?> = flowOf(deviceTokens[deviceFriendlyId])
 
     override suspend fun clearDeviceToken(deviceFriendlyId: String) {
+        if (shouldThrowOnClear) {
+            throw Exception("Test exception")
+        }
         deviceTokens.remove(deviceFriendlyId)
     }
 
