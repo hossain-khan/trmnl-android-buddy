@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unit tests for bookmark management operations** - Added 13 comprehensive tests for bookmark repository functionality:
+  - Repository-level tests for loading, displaying, and managing bookmarked recipes
+  - Tests for empty state, single recipe, and large datasets (120+ recipes)
+  - Bookmark toggle (add/remove) operations
+  - Clear all bookmarks functionality
+  - Edge cases: recipes with missing icons/screenshots, very long titles
+  - Real-time Flow updates verification
+  - Navigation operations testing
+  - All tests use `FakeBookmarkRepository` following existing patterns with assertk assertions
 - **Presenter unit tests for AccessTokenScreen and DeviceTokenScreen** - Added 34 new unit tests covering token input and management:
   - `AccessTokenScreenTest`: 15 tests covering initial state, token validation (empty, blank, short, boundary cases), save operations, whitespace trimming, special characters, unicode, very long tokens (1000+ chars), and exception handling
   - `DeviceTokenScreenTest`: 19 tests covering initial state with device info, token loading, validation (empty, blank, short, 20-char boundary), save/update operations, clear functionality, whitespace trimming, special characters, very long tokens, error handling, and multiple device scenarios
