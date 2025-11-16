@@ -77,54 +77,6 @@ class TrmnlDeviceApiTest {
         mockWebServer.shutdown()
     }
 
-    /**
-     * Helper function to create API service with custom timeout.
-     */
-    private fun createApiServiceWithTimeout(timeoutSeconds: Long): TrmnlApiService {
-        val shortTimeoutClient =
-            OkHttpClient
-                .Builder()
-                .readTimeout(timeoutSeconds, java.util.concurrent.TimeUnit.SECONDS)
-                .build()
-
-        val retrofit =
-            Retrofit
-                .Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .client(shortTimeoutClient)
-                .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                ).addConverterFactory(
-                    json.asConverterFactory("application/json".toMediaType()),
-                ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                ).build()
-
-        return retrofit.create(TrmnlApiService::class.java)
-    }
-
-    /**
-     * Helper function to create API service with custom app version.
-     */
-    private fun createApiServiceWithAppVersion(appVersion: String): TrmnlApiService {
-        val okHttpClient = TrmnlApiClient.createOkHttpClient(appVersion = appVersion)
-
-        val retrofit =
-            Retrofit
-                .Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .client(okHttpClient)
-                .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                ).addConverterFactory(
-                    json.asConverterFactory("application/json".toMediaType()),
-                ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                ).build()
-
-        return retrofit.create(TrmnlApiService::class.java)
-    }
-
     @Test
     fun `getDevices returns success with device list`() =
         runTest {
@@ -324,7 +276,7 @@ class TrmnlDeviceApiTest {
             )
 
             // When: Call getDevices with short timeout client
-            val timeoutApiService = createApiServiceWithTimeout(1)
+            val timeoutApiService = ApiServiceTestHelper.createApiServiceWithTimeout(mockWebServer, json, 1)
             val result = timeoutApiService.getDevices("Bearer test_token")
 
             // Then: Verify network failure
@@ -423,7 +375,7 @@ class TrmnlDeviceApiTest {
 
             // Create API service with custom app version
             val appVersion = "1.6.0"
-            val customApiService = createApiServiceWithAppVersion(appVersion)
+            val customApiService = ApiServiceTestHelper.createApiServiceWithAppVersion(mockWebServer, json, appVersion)
 
             // When: Call API
             customApiService.getDevices("Bearer test_token")
