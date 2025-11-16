@@ -400,15 +400,15 @@ private class FakeApiService(
 private class FakeUserPreferencesRepository(
     initialPreferences: UserPreferences = UserPreferences(apiToken = "test_token"),
 ) : UserPreferencesRepository {
-    private val _flow = MutableStateFlow(initialPreferences)
-    override val userPreferencesFlow = _flow
+    private val _userPreferencesFlow = MutableStateFlow(initialPreferences)
+    override val userPreferencesFlow = _userPreferencesFlow
 
     override suspend fun saveApiToken(token: String) {
-        _flow.value = _flow.value.copy(apiToken = token)
+        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(apiToken = token)
     }
 
     override suspend fun clearApiToken() {
-        _flow.value = _flow.value.copy(apiToken = null)
+        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(apiToken = null)
     }
 
     override suspend fun setOnboardingCompleted() {}
