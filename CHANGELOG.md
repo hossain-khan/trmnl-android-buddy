@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Optimized unit test setup code** - Created shared `ApiServiceTestHelper` to centralize duplicate Retrofit/OkHttp setup logic across API test files (TrmnlDeviceApiTest, TrmnlRecipesApiTest, TrmnlDeviceModelsApiTest), eliminating ~145 lines of duplicate code (previously ~70 lines with local helpers, now fully centralized)
+- **Optimized unit test setup code** - Created shared `ApiServiceTestHelper` to centralize duplicate Retrofit/OkHttp test setup logic, improving test maintainability.
 - **Optimized RecipesCatalogPresenterTest performance** - Achieved 97% speed improvement (~36s → ~0.6s) by fixing test patterns, splitting monolithic test into 5 separate tests, and replacing arbitrary delays with proper test scheduler usage
 - **Refactored centralized test fakes** - Consolidated duplicate fake implementations to centralized fakes in `ink.trmnl.android.buddy.fakes`, eliminating ~160 lines of duplicate code across 4 test files. Enhanced fakes with MutableStateFlow for reactive updates, initialHistory/initialTokens parameters, error injection support, and notification helpers.
 
