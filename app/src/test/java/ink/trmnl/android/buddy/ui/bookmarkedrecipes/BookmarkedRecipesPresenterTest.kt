@@ -1,9 +1,5 @@
 package ink.trmnl.android.buddy.ui.bookmarkedrecipes
 
-import android.app.Application
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.test.core.app.ApplicationProvider
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
@@ -19,8 +15,6 @@ import ink.trmnl.android.buddy.data.FakeBookmarkRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
 /**
  * Tests for BookmarkedRecipesScreen presenter.
@@ -39,7 +33,6 @@ import org.robolectric.RobolectricTestRunner
  * on the core bookmark management logic that can be tested without triggering
  * Context-dependent operations.
  */
-@RunWith(RobolectricTestRunner::class)
 class BookmarkedRecipesPresenterTest {
     @Test
     fun `repository loads bookmarked recipes correctly`() =
@@ -190,7 +183,9 @@ class BookmarkedRecipesPresenterTest {
         runTest {
             // Given
             val bookmarkRepository = FakeBookmarkRepository()
-            val longTitle = "This is a very long recipe title that exceeds normal length and should be handled properly by the UI without causing issues"
+            val longTitle =
+                "This is a very long recipe title that exceeds normal length " +
+                    "and should be handled properly by the UI without causing issues"
             val recipe = createSampleRecipe(1, longTitle)
 
             // When

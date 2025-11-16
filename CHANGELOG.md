@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Unit tests for BookmarkedRecipesPresenter** - Added 13 comprehensive tests for bookmark management functionality:
+- **Unit tests for bookmark management operations** - Added 13 comprehensive tests for bookmark repository functionality:
   - Repository-level tests for loading, displaying, and managing bookmarked recipes
   - Tests for empty state, single recipe, and large datasets (120+ recipes)
   - Bookmark toggle (add/remove) operations
