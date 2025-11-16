@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
  *
  * @property blogPostDao DAO for blog post database operations
  */
-class BlogPostRepository(
+open class BlogPostRepository(
     private val blogPostDao: BlogPostDao,
 ) {
     companion object {
@@ -88,7 +88,7 @@ class BlogPostRepository(
      *
      * @return Result with success or error
      */
-    suspend fun refreshBlogPosts(): Result<Unit> =
+    open suspend fun refreshBlogPosts(): Result<Unit> =
         try {
             // Create RSS parser
             val rssParser = RssParser()
