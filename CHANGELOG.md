@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Refactored centralized test fakes** - Consolidated duplicate fake implementations to centralized fakes in `ink.trmnl.android.buddy.fakes`, eliminating ~160 lines of duplicate code across 4 test files. Enhanced fakes with MutableStateFlow for reactive updates, initialHistory/initialTokens parameters, error injection support, and notification helpers.
+
 ### Added
 
 - **Unit tests for AnnouncementSyncWorker** - Added 30 tests covering RSS sync, read state preservation, error handling, notifications, and edge cases

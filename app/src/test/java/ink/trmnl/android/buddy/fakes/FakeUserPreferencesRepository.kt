@@ -110,6 +110,15 @@ class FakeUserPreferencesRepository(
             _userPreferencesFlow.value.copy(isRssFeedContentNotificationEnabled = enabled)
     }
 
+    /**
+     * Test helper to easily set RSS feed content notification enabled state.
+     * Useful for tests that need to verify notification behavior.
+     */
+    fun setNotificationsEnabled(enabled: Boolean) {
+        _userPreferencesFlow.value =
+            _userPreferencesFlow.value.copy(isRssFeedContentNotificationEnabled = enabled)
+    }
+
     override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
         _userPreferencesFlow.value =
             _userPreferencesFlow.value.copy(isAnnouncementAuthBannerDismissed = dismissed)

@@ -10,6 +10,7 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
+import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import java.io.IOException
@@ -68,7 +69,7 @@ class DevicePreviewScreenTest {
                 )
             val tokenRepository =
                 FakeDeviceTokenRepository(
-                    tokens = mapOf("ABC-123" to "device-token-123"),
+                    initialTokens = mapOf("ABC-123" to "device-token-123"),
                 )
             val presenter = DevicePreviewPresenter(testScreen, navigator, apiService, tokenRepository)
 
@@ -102,7 +103,7 @@ class DevicePreviewScreenTest {
                 )
             val tokenRepository =
                 FakeDeviceTokenRepository(
-                    tokens = mapOf("ABC-123" to "device-token-123"),
+                    initialTokens = mapOf("ABC-123" to "device-token-123"),
                 )
             val presenter = DevicePreviewPresenter(testScreen, navigator, apiService, tokenRepository)
 
@@ -135,7 +136,7 @@ class DevicePreviewScreenTest {
                 )
             val tokenRepository =
                 FakeDeviceTokenRepository(
-                    tokens = mapOf("ABC-123" to "device-token-123"),
+                    initialTokens = mapOf("ABC-123" to "device-token-123"),
                 )
             val presenter = DevicePreviewPresenter(testScreen, navigator, apiService, tokenRepository)
 
@@ -168,7 +169,7 @@ class DevicePreviewScreenTest {
                 )
             val tokenRepository =
                 FakeDeviceTokenRepository(
-                    tokens = mapOf("ABC-123" to "device-token-123"),
+                    initialTokens = mapOf("ABC-123" to "device-token-123"),
                 )
             val presenter = DevicePreviewPresenter(testScreen, navigator, apiService, tokenRepository)
 
@@ -237,7 +238,7 @@ class DevicePreviewScreenTest {
                 )
             val tokenRepository =
                 FakeDeviceTokenRepository(
-                    tokens = mapOf("ABC-123" to "device-token-123"),
+                    initialTokens = mapOf("ABC-123" to "device-token-123"),
                 )
             val presenter = DevicePreviewPresenter(testScreen, navigator, apiService, tokenRepository)
 
@@ -297,26 +298,4 @@ private class FakeApiService(
     ) = throw NotImplementedError("Not needed for this test")
 
     override suspend fun getRecipe(id: Int) = throw NotImplementedError("Not needed for this test")
-}
-
-/**
- * Fake implementation of DeviceTokenRepository for testing.
- */
-private class FakeDeviceTokenRepository(
-    private val tokens: Map<String, String> = emptyMap(),
-) : DeviceTokenRepository {
-    override suspend fun saveDeviceToken(
-        deviceFriendlyId: String,
-        token: String,
-    ): Unit = throw NotImplementedError("Not needed for this test")
-
-    override suspend fun getDeviceToken(deviceFriendlyId: String): String? = tokens[deviceFriendlyId]
-
-    override fun getDeviceTokenFlow(deviceFriendlyId: String) = throw NotImplementedError("Not needed for this test")
-
-    override suspend fun clearDeviceToken(deviceFriendlyId: String): Unit = throw NotImplementedError("Not needed for this test")
-
-    override suspend fun hasDeviceToken(deviceFriendlyId: String): Boolean = tokens.containsKey(deviceFriendlyId)
-
-    override suspend fun clearAll(): Unit = throw NotImplementedError("Not needed for this test")
 }

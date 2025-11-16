@@ -8,8 +8,7 @@ import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -476,51 +475,4 @@ class DeviceTokenScreenTest {
                 assertThat(state2.currentToken).isEqualTo("") // Different device, no token
             }
         }
-
-    /**
-     * Fake implementation of DeviceTokenRepository for testing.
-     */
-    private class FakeDeviceTokenRepository(
-        private val shouldThrowOnSave: Boolean = false,
-        private val shouldThrowOnClear: Boolean = false,
-    ) : DeviceTokenRepository {
-        private val tokens = mutableMapOf<String, String>()
-        private val flows = mutableMapOf<String, MutableStateFlow<String?>>()
-
-        override suspend fun saveDeviceToken(
-            deviceFriendlyId: String,
-            token: String,
-        ) {
-            if (shouldThrowOnSave) {
-                throw Exception("Test exception")
-            }
-            tokens[deviceFriendlyId] = token
-            getOrCreateFlow(deviceFriendlyId).value = token
-        }
-
-        override suspend fun getDeviceToken(deviceFriendlyId: String): String? = tokens[deviceFriendlyId]
-
-        override fun getDeviceTokenFlow(deviceFriendlyId: String): Flow<String?> = getOrCreateFlow(deviceFriendlyId)
-
-        override suspend fun clearDeviceToken(deviceFriendlyId: String) {
-            if (shouldThrowOnClear) {
-                throw Exception("Test exception")
-            }
-            tokens.remove(deviceFriendlyId)
-            getOrCreateFlow(deviceFriendlyId).value = null
-        }
-
-        override suspend fun hasDeviceToken(deviceFriendlyId: String): Boolean = tokens.containsKey(deviceFriendlyId)
-
-        override suspend fun clearAll() {
-            val keys = tokens.keys.toList()
-            tokens.clear()
-            keys.forEach { key ->
-                flows[key]?.value = null
-            }
-        }
-
-        private fun getOrCreateFlow(deviceFriendlyId: String): MutableStateFlow<String?> =
-            flows.getOrPut(deviceFriendlyId) { MutableStateFlow(tokens[deviceFriendlyId]) }
-    }
 }
