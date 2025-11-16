@@ -46,7 +46,10 @@ class DeviceCatalogPresenterTest {
                 FakeApiService(
                     deviceModelsResponse = ApiResult.success(DeviceModelsResponse(data = deviceModels)),
                 )
-            val repository = FakeUserPreferencesRepository()
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
             val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
 
             presenter.test {
@@ -71,7 +74,10 @@ class DeviceCatalogPresenterTest {
                 FakeApiService(
                     deviceModelsResponse = ApiResult.success(DeviceModelsResponse(data = deviceModels)),
                 )
-            val repository = FakeUserPreferencesRepository()
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
             val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
 
             presenter.test {
@@ -98,7 +104,10 @@ class DeviceCatalogPresenterTest {
                 FakeApiService(
                     deviceModelsResponse = ApiResult.success(DeviceModelsResponse(data = deviceModels)),
                 )
-            val repository = FakeUserPreferencesRepository()
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
             val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
 
             presenter.test {
@@ -125,7 +134,10 @@ class DeviceCatalogPresenterTest {
                 FakeApiService(
                     deviceModelsResponse = ApiResult.success(DeviceModelsResponse(data = deviceModels)),
                 )
-            val repository = FakeUserPreferencesRepository()
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
             val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
 
             presenter.test {
@@ -152,7 +164,10 @@ class DeviceCatalogPresenterTest {
                 FakeApiService(
                     deviceModelsResponse = ApiResult.success(DeviceModelsResponse(data = deviceModels)),
                 )
-            val repository = FakeUserPreferencesRepository()
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
             val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
 
             presenter.test {
@@ -186,7 +201,10 @@ class DeviceCatalogPresenterTest {
                             ApiError("Unauthorized"),
                         ),
                 )
-            val repository = FakeUserPreferencesRepository()
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
             val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
 
             presenter.test {
@@ -213,7 +231,10 @@ class DeviceCatalogPresenterTest {
                             IOException("Network error"),
                         ),
                 )
-            val repository = FakeUserPreferencesRepository()
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
             val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
 
             presenter.test {
@@ -259,7 +280,10 @@ class DeviceCatalogPresenterTest {
                             ApiResult.success(DeviceModelsResponse(data = deviceModels))
                         }
                 }
-            val repository = FakeUserPreferencesRepository()
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
             val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
 
             presenter.test {

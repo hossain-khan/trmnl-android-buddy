@@ -69,7 +69,7 @@ class FakeUserPreferencesRepository(
 
     override suspend fun saveApiToken(token: String) {
         if (shouldThrowOnSave) {
-            throw RuntimeException("Simulated save failure")
+            throw Exception("Test exception")
         }
         savedToken = token
         _userPreferencesFlow.value = _userPreferencesFlow.value.copy(apiToken = token)
