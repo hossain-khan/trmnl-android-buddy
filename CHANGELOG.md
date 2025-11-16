@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unit tests for BatteryCollectionWorker** - Added comprehensive unit tests (15 tests) for BatteryCollectionWorker covering all critical background task functionality:
+  - Core functionality: Successful data collection, multi-device handling, data persistence to Room database
+  - Configuration: Battery tracking enabled/disabled, API token validation (missing, blank)
+  - API integration: Success with empty list, null battery voltage, null RSSI, boundary percentages (0%, 100%, 5.5%)
+  - Error handling: HTTP 401 (unauthorized returns failure), HTTP 404/500/503 (returns retry)
+  - Database errors: Write failure propagation
+  - Edge cases: Null values, timestamp validation across multiple devices
+  - Tests use MockWebServer for realistic API simulation with EitherNet, fake implementations (FakeBatteryHistoryRepository, FakeUserPreferencesRepository)
+  - All tests use assertk assertions and WorkManager testing utilities (TestListenableWorkerBuilder, Robolectric)
+  - Test dependencies: Added `androidx-work-testing:2.10.5` for WorkManager testing support
 - **Unit tests for WorkManagerObserver** - Added comprehensive unit tests (20 tests) for WorkManagerObserver implementation covering worker monitoring and management:
   - Core functionality: Observer initialization, `observeAllWorkers()` flow emission (initial empty state and worker statuses), exception handling during status fetch
   - Worker state tracking: WorkerStatus properties validation, run attempt count tracking, support for all WorkInfo states (ENQUEUED, RUNNING, SUCCEEDED, FAILED, BLOCKED, CANCELLED), multiple tags handling, empty tags
