@@ -18,6 +18,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Uses fake implementations (FakeBlogPostRepository, FakeUserPreferencesRepository) following established patterns
   - All tests use assertk for assertions and follow Android WorkManager testing best practices
   - Added `androidx.work:work-testing` dependency for WorkManager test support
+- **Unit tests for BatteryCollectionWorker** - Added comprehensive unit tests (15 tests) for BatteryCollectionWorker covering all critical background task functionality:
+  - Core functionality: Successful data collection, multi-device handling, data persistence to Room database
+  - Configuration: Battery tracking enabled/disabled, API token validation (missing, blank)
+  - API integration: Success with empty list, null battery voltage, null RSSI, boundary percentages (0%, 100%, 5.5%)
+  - Error handling: HTTP 401 (unauthorized returns failure), HTTP 404/500/503 (returns retry)
+  - Database errors: Write failure propagation
+  - Edge cases: Null values, timestamp validation across multiple devices
+  - Tests use MockWebServer for realistic API simulation with EitherNet, fake implementations (FakeBatteryHistoryRepository, FakeUserPreferencesRepository)
+  - All tests use assertk assertions and WorkManager testing utilities (TestListenableWorkerBuilder, Robolectric)
+  - Test dependencies: Added `androidx-work-testing:2.10.5` for WorkManager testing support
+- **Unit tests for WorkManagerObserver** - Added comprehensive unit tests (20 tests) for WorkManagerObserver implementation covering worker monitoring and management:
+  - Core functionality: Observer initialization, `observeAllWorkers()` flow emission (initial empty state and worker statuses), exception handling during status fetch
+  - Worker state tracking: WorkerStatus properties validation, run attempt count tracking, support for all WorkInfo states (ENQUEUED, RUNNING, SUCCEEDED, FAILED, BLOCKED, CANCELLED), multiple tags handling, empty tags
+  - Worker cancellation: `cancelAllWorkers()` functionality, handling already cancelled workers gracefully
+  - Worker reset: `resetAllWorkerSchedules()` cancels and reschedules workers, verifies correct call order to WorkerScheduler, supports multiple calls
+  - Known worker tracking: Validates worker names for BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, and AnnouncementSyncWorker
+  - Edge cases: No workers scheduled, snapshot emission behavior, flow completion without hanging
+  - Tests use Robolectric with WorkManager testing utilities (`WorkManagerTestInitHelper`), Turbine for Flow testing, AssertK assertions, and FakeWorkerScheduler for isolation
+  - All 20 tests passing
+- **AndroidX Work Testing dependency** - Added `androidx.work:work-testing:2.10.5` for WorkManager unit testing support
 - **Unit tests for TrmnlDevicesScreen presenter** - Added 12 comprehensive presenter tests for the main devices screen covering device loading, error handling, and navigation flows
   - Tests cover: initial loading and device fetch, empty state, error handling (401, 404, network failures, missing token), navigation events (settings, device detail, device token screen, content hub), reset token functionality, and multiple devices handling
   - Uses Circuit test patterns with FakeNavigator, `.test {}` extension, and assertk assertions
