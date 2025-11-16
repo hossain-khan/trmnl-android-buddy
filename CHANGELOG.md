@@ -9,172 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Unit tests for AnnouncementSyncWorker** - Added comprehensive unit tests (30 tests) for background announcement synchronization:
-  - Core functionality: Successful RSS feed sync, database operations, Result.success() on completion
-  - Read state preservation: Preserves read/unread state during sync for existing announcements, new announcements default to unread
-  - Error handling: Network errors (Result.retry()), parse errors (Result.retry()), database errors (Result.retry()), exceptions during sync
-  - Notification logic: Respects user preferences for enabled/disabled notifications, no notification when no new announcements
-  - Unread count tracking: Correctly tracks unread count before/after sync, handles mixed read/unread states
-  - Edge cases: Empty feed (doesn't clear existing data), single announcement, large feed (50+ announcements), special characters and emoji, very long content, announcements with same timestamp
-  - Incremental sync: Only adds new announcements, preserves existing announcements, updates existing content when changed
-  - Uses fake implementations (FakeAnnouncementRepository, FakeAnnouncementDao, FakeUserPreferencesRepository) following project testing patterns
-  - All tests use assertk for assertions, Robolectric for Android framework access, and WorkManager testing utilities
-  - Made AnnouncementRepository.refreshAnnouncements() `open` to allow test overriding (matches BlogPostRepository pattern)
-- **Comprehensive unit tests for WorkerScheduler** - Added 27 unit tests covering all worker scheduling, rescheduling, and cancellation functionality:
-  - Low battery notification worker: scheduling with network constraint, 7-day periodic interval, REPLACE policy, cancellation, immediate trigger for testing
-  - Announcement sync worker: scheduling with network/idle/charging constraints, 2-day periodic interval, REPLACE policy, cancellation
-  - Blog post sync worker: scheduling with network/idle/charging constraints, 2-day periodic interval, REPLACE policy, cancellation
-  - Multiple workers interaction: independent scheduling, isolated cancellation without affecting other workers
-  - Edge cases: duplicate scheduling with REPLACE policy, rescheduling after cancellation, safe cancellation of non-existent work
-  - Constraint verification: network-only for battery notifications, strict constraints (network + idle + charging) for RSS sync workers
-  - Tests use WorkManager testing library with Robolectric (API 28) for full constraint support
-  - All tests pass successfully with work-testing dependency added
-- **Unit tests for LowBatteryNotificationWorker** - Added comprehensive unit tests (22 tests) for the low battery notification worker covering all critical functionality:
-  - Core functionality: Notifications enabled/disabled check, API token validation (null/blank), device fetching with correct authorization
-  - Battery threshold logic: Below/above/exactly at threshold (20%), custom thresholds (10%, 30%), multiple devices, mixed battery levels
-  - Edge case battery values: Zero percent, 100 percent, fractional percentages (19.5%)
-  - API error handling: HTTP errors (401, 404, 500, 503), network failures, API failures, unknown failures with correct Result types (Success, Retry, Failure)
-  - Uses Robolectric for Android framework testing with shadow NotificationManager to verify notifications posted
-  - Tests use fake implementations (`FakeTrmnlApiService`, `FakeUserPreferencesRepository`) following project guidelines
-  - WorkManager testing using `TestListenableWorkerBuilder` with custom dependency injection via dummy worker for `WorkerParameters` extraction
-  - All assertions use assertk library for type-safe testing
-- **FakeTrmnlApiService** - Added reusable fake implementation of `TrmnlApiService` for testing API interactions across the app
-  - Provides configurable responses for all API endpoints (devices, user, recipes, device models, display)
-  - Tracks call counts and last parameters for verification
-  - Follows project guidelines of using fakes instead of mocks
-- **Unit tests for BlogPostSyncWorker** - Added comprehensive unit tests (15 tests) for BlogPostSyncWorker covering background RSS feed synchronization:
-  - Core functionality: Successful sync returns success, new posts saved to database, preserves existing read status, handles zero new posts
-  - Error handling: Network errors return retry, repository failures return retry, unexpected exceptions return retry
-  - Notification logic: Tests for enabled/disabled notifications, zero new posts skipping notifications
-  - Edge cases: Single post, multiple posts with same pubDate, large feeds (50 posts), multiple sync attempts, calculates new post count correctly
-  - Uses WorkManager testing utilities with custom WorkerFactory for dependency injection
-  - Uses fake implementations (FakeBlogPostRepository, FakeUserPreferencesRepository) following established patterns
-  - All tests use assertk for assertions and follow Android WorkManager testing best practices
-  - Added `androidx.work:work-testing` dependency for WorkManager test support
-- **Unit tests for BatteryCollectionWorker** - Added comprehensive unit tests (15 tests) for BatteryCollectionWorker covering all critical background task functionality:
-  - Core functionality: Successful data collection, multi-device handling, data persistence to Room database
-  - Configuration: Battery tracking enabled/disabled, API token validation (missing, blank)
-  - API integration: Success with empty list, null battery voltage, null RSSI, boundary percentages (0%, 100%, 5.5%)
-  - Error handling: HTTP 401 (unauthorized returns failure), HTTP 404/500/503 (returns retry)
-  - Database errors: Write failure propagation
-  - Edge cases: Null values, timestamp validation across multiple devices
-  - Tests use MockWebServer for realistic API simulation with EitherNet, fake implementations (FakeBatteryHistoryRepository, FakeUserPreferencesRepository)
-  - All tests use assertk assertions and WorkManager testing utilities (TestListenableWorkerBuilder, Robolectric)
-  - Test dependencies: Added `androidx-work-testing:2.10.5` for WorkManager testing support
-- **Unit tests for WorkManagerObserver** - Added comprehensive unit tests (20 tests) for WorkManagerObserver implementation covering worker monitoring and management:
-  - Core functionality: Observer initialization, `observeAllWorkers()` flow emission (initial empty state and worker statuses), exception handling during status fetch
-  - Worker state tracking: WorkerStatus properties validation, run attempt count tracking, support for all WorkInfo states (ENQUEUED, RUNNING, SUCCEEDED, FAILED, BLOCKED, CANCELLED), multiple tags handling, empty tags
-  - Worker cancellation: `cancelAllWorkers()` functionality, handling already cancelled workers gracefully
-  - Worker reset: `resetAllWorkerSchedules()` cancels and reschedules workers, verifies correct call order to WorkerScheduler, supports multiple calls
-  - Known worker tracking: Validates worker names for BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, and AnnouncementSyncWorker
-  - Edge cases: No workers scheduled, snapshot emission behavior, flow completion without hanging
-  - Tests use Robolectric with WorkManager testing utilities (`WorkManagerTestInitHelper`), Turbine for Flow testing, AssertK assertions, and FakeWorkerScheduler for isolation
-  - All 20 tests passing
+- **Unit tests for AnnouncementSyncWorker** - Added 30 tests covering RSS sync, read state preservation, error handling, notifications, and edge cases
+- **Unit tests for WorkerScheduler** - Added 27 tests covering scheduling, rescheduling, cancellation, and constraints for all background workers
+- **Unit tests for LowBatteryNotificationWorker** - Added 22 tests covering notifications, battery thresholds, API errors, and edge cases
+- **FakeTrmnlApiService** - Added reusable fake implementation for testing API interactions across the app
+- **Unit tests for BlogPostSyncWorker** - Added 15 tests covering RSS sync, error handling, notifications, and edge cases
+- **Unit tests for BatteryCollectionWorker** - Added 15 tests covering data collection, API integration, error handling, and edge cases
+- **Unit tests for WorkManagerObserver** - Added 20 tests covering worker monitoring, state tracking, cancellation, and reset functionality
 - **AndroidX Work Testing dependency** - Added `androidx.work:work-testing:2.10.5` for WorkManager unit testing support
-- **Unit tests for TrmnlDevicesScreen presenter** - Added 12 comprehensive presenter tests for the main devices screen covering device loading, error handling, and navigation flows
-  - Tests cover: initial loading and device fetch, empty state, error handling (401, 404, network failures, missing token), navigation events (settings, device detail, device token screen, content hub), reset token functionality, and multiple devices handling
-  - Uses Circuit test patterns with FakeNavigator, `.test {}` extension, and assertk assertions
-  - All tests pass successfully
-- **DeviceDetailScreen presenter tests** - Added comprehensive unit tests (19 tests) for DeviceDetailScreen presenter covering all critical functionality:
-  - Core functionality: Initial state composition, battery history loading, loading state management
-  - Battery tracking: Battery tracking enabled/disabled state, recorded today flag, manual recording, clear history
-  - Battery analysis: Charging event detection, stale data detection, clear history reason calculation
-  - User interactions: Back button navigation, settings button navigation
-  - Low battery notifications: Settings loading for notification enabled state and threshold
-  - Edge cases: Null battery voltage, null RSSI, empty battery history, missing device token
-  - Tests use fake implementations (FakeBatteryHistoryRepository, FakeUserPreferencesRepository, FakeDeviceTokenRepository) following established patterns
-  - All tests use assertk for assertions and Circuit test utilities (FakeNavigator, .test{})
-- **Unit tests for bookmark management operations** - Added 13 comprehensive tests for bookmark repository functionality:
-  - Repository-level tests for loading, displaying, and managing bookmarked recipes
-  - Tests for empty state, single recipe, and large datasets (120+ recipes)
-  - Bookmark toggle (add/remove) operations
-  - Clear all bookmarks functionality
-  - Edge cases: recipes with missing icons/screenshots, very long titles
-  - Real-time Flow updates verification
-  - Navigation operations testing
-  - All tests use `FakeBookmarkRepository` following existing patterns with assertk assertions
-- **Presenter unit tests for AccessTokenScreen and DeviceTokenScreen** - Added 34 new unit tests covering token input and management:
-  - `AccessTokenScreenTest`: 15 tests covering initial state, token validation (empty, blank, short, boundary cases), save operations, whitespace trimming, special characters, unicode, very long tokens (1000+ chars), and exception handling
-  - `DeviceTokenScreenTest`: 19 tests covering initial state with device info, token loading, validation (empty, blank, short, 20-char boundary), save/update operations, clear functionality, whitespace trimming, special characters, very long tokens, error handling, and multiple device scenarios
-  - Tests follow Circuit testing patterns using `FakeNavigator` and `.test {}` extension
-  - All assertions use assertk library for type-safe, Kotlin-native test assertions
-  - Comprehensive edge case coverage including empty strings, whitespace, special characters, unicode (🚀, 日本語, العربية), and boundary values
-- **Comprehensive presenter tests for BlogPostsScreen** - Added 14 unit tests covering all business logic:
-  - Initial loading state and blog post fetch from repository
-  - Empty state handling when no posts are available
-  - Blog post display and sorting (newest first)
-  - Pull-to-refresh functionality with refreshing state
-  - Toggle favorite functionality with state updates
-  - Category filtering (select category and clear filter)
-  - Mark all as read functionality
-  - Blog post click marks post as read
-  - Unread count tracking and updates
-  - Error handling on refresh with error message display
-  - Error handling on initial load
-  - Embedded mode behavior (hides top bar)
-  - Non-embedded mode behavior (shows top bar)
-  - Available categories extraction from blog posts
-  - Tests use `FakeNavigator`, circuit-test `.test {}` extension, assertk assertions, and fake implementations (no mocks)
-  - Tests follow patterns from `RecipesCatalogPresenterTest.kt`
-- **BlogPostRepository made open for testing** - Changed `class BlogPostRepository` to `open class` and `suspend fun refreshBlogPosts()` to `open suspend fun` to enable testing with test doubles
-- **Presenter tests for AnnouncementsScreen** - Added comprehensive unit tests for AnnouncementsScreen presenter covering:
-  - Initial loading and data fetch from repository (3 test cases)
-  - Filter selection functionality (ALL, UNREAD, READ filters) with 3 tests
-  - User interactions: announcement clicks, toggle read status, mark all as read (4 tests)
-  - Authentication banner display and dismissal (3 tests)
-  - Navigation events including back button (1 test)
-  - Embedded mode (top bar visibility) with 2 tests
-  - Created `FakeAnnouncementDao` and helper functions for testing with fake implementations
-  - Used Robolectric `ApplicationProvider` for Context dependencies
-  - All 15 tests passing, following existing test patterns from `RecipesCatalogPresenterTest`
-- **ContentHubScreen presenter unit tests** - Added comprehensive test coverage for ContentHubScreen presenter:
-  - Tab selection and switching between Announcements and Blog Posts
-  - Unread count tracking for both content types (announcements and blog posts)
-  - Navigation handling (back button)
-  - Edge cases including zero counts, large counts (999, 1234), and simultaneous updates
-  - All tests use fake DAO implementations for fast, reliable unit testing without database dependencies
-  - 10 tests covering initial state, tab switching, unread count updates, and navigation
-- **Unit tests for DevelopmentPresenter** - Added comprehensive test coverage (18 tests) for development/debug tools including worker status observation, notification events, worker triggers, and navigation
-- **Comprehensive unit test coverage for preferences repositories** - Added 26 new edge case tests (from 31 to 57 tests total):
-  - `DeviceTokenRepositoryTest`: Added 14 new tests covering empty tokens, special characters in device IDs, very long tokens, unicode characters, numeric IDs, whitespace handling, case sensitivity, flow isolation, and multiple observers
-  - `UserPreferencesRepositoryTest`: Added 12 new tests covering empty tokens, very long tokens, special characters, boundary values for thresholds (0, 100, negative, >100), rapid changes, boolean flag toggles, and field independence
-  - Tests validate edge cases like empty strings, unicode (🚀, 日本語, العربية), special characters, and data isolation
-  - All tests use fake implementations (no Robolectric) for fast, reliable unit testing
+- **Unit tests for TrmnlDevicesScreen presenter** - Added 12 tests covering device loading, error handling, and navigation flows
+- **Unit tests for DeviceDetailScreen presenter** - Added 19 tests covering battery tracking, history, notifications, and user interactions
+- **Unit tests for bookmark management** - Added 13 tests for bookmark repository covering loading, toggling, clearing, and edge cases
+- **Unit tests for AccessTokenScreen and DeviceTokenScreen presenters** - Added 34 tests covering token validation, save/update operations, and edge cases
+- **Unit tests for BlogPostsScreen presenter** - Added 14 tests covering loading, filtering, favorites, refresh, and error handling
+- **Unit tests for AnnouncementsScreen presenter** - Added 15 tests covering loading, filtering, interactions, authentication banner, and embedded mode
+- **Unit tests for ContentHubScreen presenter** - Added 10 tests covering tab switching, unread counts, and navigation
+- **Unit tests for DevelopmentPresenter** - Added 18 tests for development/debug tools covering worker observation, notifications, and triggers
+- **Unit tests for preferences repositories** - Added 26 edge case tests (57 total) for DeviceTokenRepository and UserPreferencesRepository
 - **AndroidX Test Core dependency** - Added `androidx.test:core:1.6.1` for unit testing support (ApplicationProvider)
-- **WorkManager Observability and Debugging**: Enhanced monitoring and debugging capabilities for background workers
-  - Added `WorkManagerObserver` class to track WorkInfo for all workers (BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, AnnouncementSyncWorker)
-  - Development screen now displays real-time worker status including state (ENQUEUED, RUNNING, SUCCEEDED, FAILED), run attempts, and constraints
-  - Added "Cancel All Workers" and "Reset Worker Schedules" options in Development screen
-  - Added trigger button for BatteryCollectionWorker in Development screen
-  - Comprehensive structured logging with execution time tracking for all workers
-  - Worker-specific log tags for easier filtering (e.g., `[battery_collection_work]`, `[low_battery_notification_work]`)
-  - Logged worker lifecycle events including start, success, failure, and retry attempts
-  - Enhanced error logging with HTTP status codes, error types, and execution times
-- **Optimized image loading with Coil caching strategy** - Configured disk and memory cache policies for better performance
-  - Added `ImageCacheConfig` object with constants for disk (1% of disk space) and memory (10% of app memory) cache sizes
-  - Configured Coil `ImageLoader` with disk cache policy in DI module (`AppBindings`)
-  - Configured memory cache policy to reduce network requests and provide instant image display
-  - Set up singleton `ImageLoader` factory in `TrmnlBuddyApp` for app-wide usage
-  - Benefits: Faster image loading on repeated views, reduced network data usage, lower server load
-- **Comprehensive unit test coverage for content module** - Added 65 new tests increasing total from 45 to 110 tests:
-  - `AnnouncementEntityTest`: 6 tests covering AnnouncementEntity data class (properties, defaults, copy, equality)
-  - `BlogPostEntityTest`: 10 tests covering BlogPostEntity data class (all properties, reading progress, favorites)
-  - `ContentItemTest`: 14 tests covering ContentItem sealed class (polymorphism, type discrimination, sorting, filtering)
-  - `AnnouncementDaoTest`: 15 tests covering all AnnouncementDao operations (insert, queries, updates, delete)
-  - `BlogPostDaoTest`: 20 tests covering all BlogPostDao operations (IGNORE strategy, queries, search, updates)
-  - `FakeAnnouncementDao` and `FakeBlogPostDao`: In-memory test fakes for Flow-based DAO testing
-  - Added turbine dependency to content module for Flow testing support
-- **VS Code devcontainer configuration for Android development** - Enables consistent development environment across all contributors
-  - Base image: Java 21 (Bookworm)
-  - Android SDK, NDK, and Command Line Tools automatically installed with latest versions
-  - Environment variables: `ANDROID_HOME` and `ANDROID_SDK_ROOT` configured to `/usr/local/lib/android/sdk`
-  - VS Code extensions: Kotlin, Gradle, Java, GitHub Copilot pre-installed
-  - Automated post-create script (`post-create.sh`) handles SDK license acceptance, installs Platform 35 and Build Tools 35.0.0, and downloads Gradle dependencies
-  - Privileged mode enabled for ADB device access
-  - Local `.android` directory mounted for persistent settings and ADB keys
-  - Port forwarding configured for ADB (port 5037)
-  - Comprehensive README documentation with setup instructions, usage examples, and troubleshooting guide
-  - Enables running `./gradlew koverHtmlReport` locally for test coverage reports
+- **WorkManager Observability and Debugging** - Enhanced monitoring with WorkManagerObserver, real-time status display, worker cancellation/reset, and structured logging
+- **Optimized image loading with Coil caching** - Configured disk (1% of disk, max 50 MB) and memory cache (10% of app memory) for faster image loading
+- **Unit tests for content module** - Added 65 tests (110 total) covering entities, DAOs, and ContentItem sealed class with fake implementations
+- **VS Code devcontainer** - Added configuration with Java 21, Android SDK, NDK, build tools, VS Code extensions, and automated setup script for consistent development environment
 
 ## [2.6.0] - 2025-11-12
 
