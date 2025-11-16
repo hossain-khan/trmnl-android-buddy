@@ -27,6 +27,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tests use `FakeNavigator`, circuit-test `.test {}` extension, assertk assertions, and fake implementations (no mocks)
   - Tests follow patterns from `RecipesCatalogPresenterTest.kt`
 - **BlogPostRepository made open for testing** - Changed `class BlogPostRepository` to `open class` and `suspend fun refreshBlogPosts()` to `open suspend fun` to enable testing with test doubles
+- **Presenter tests for AnnouncementsScreen** - Added comprehensive unit tests for AnnouncementsScreen presenter covering:
+  - Initial loading and data fetch from repository (3 test cases)
+  - Filter selection functionality (ALL, UNREAD, READ filters) with 3 tests
+  - User interactions: announcement clicks, toggle read status, mark all as read (4 tests)
+  - Authentication banner display and dismissal (3 tests)
+  - Navigation events including back button (1 test)
+  - Embedded mode (top bar visibility) with 2 tests
+  - Created `FakeAnnouncementDao` and helper functions for testing with fake implementations
+  - Used Robolectric `ApplicationProvider` for Context dependencies
+  - All 15 tests passing, following existing test patterns from `RecipesCatalogPresenterTest`
+- **ContentHubScreen presenter unit tests** - Added comprehensive test coverage for ContentHubScreen presenter:
+  - Tab selection and switching between Announcements and Blog Posts
+  - Unread count tracking for both content types (announcements and blog posts)
+  - Navigation handling (back button)
+  - Edge cases including zero counts, large counts (999, 1234), and simultaneous updates
+  - All tests use fake DAO implementations for fast, reliable unit testing without database dependencies
+  - 10 tests covering initial state, tab switching, unread count updates, and navigation
+- **Unit tests for DevelopmentPresenter** - Added comprehensive test coverage (18 tests) for development/debug tools including worker status observation, notification events, worker triggers, and navigation
 - **Comprehensive unit test coverage for preferences repositories** - Added 26 new edge case tests (from 31 to 57 tests total):
   - `DeviceTokenRepositoryTest`: Added 14 new tests covering empty tokens, special characters in device IDs, very long tokens, unicode characters, numeric IDs, whitespace handling, case sensitivity, flow isolation, and multiple observers
   - `UserPreferencesRepositoryTest`: Added 12 new tests covering empty tokens, very long tokens, special characters, boundary values for thresholds (0, 100, negative, >100), rapid changes, boolean flag toggles, and field independence
