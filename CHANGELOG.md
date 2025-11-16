@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unit tests for BatteryCollectionWorker** - Added comprehensive unit tests (15 tests) for BatteryCollectionWorker covering all critical background task functionality:
+  - Core functionality: Successful data collection, multi-device handling, data persistence to Room database
+  - Configuration: Battery tracking enabled/disabled, API token validation (missing, blank)
+  - API integration: Success with empty list, null battery voltage, null RSSI, boundary percentages (0%, 100%, 5.5%)
+  - Error handling: HTTP 401 (unauthorized returns failure), HTTP 404/500/503 (returns retry)
+  - Database errors: Write failure propagation
+  - Edge cases: Null values, timestamp validation across multiple devices
+  - Tests use MockWebServer for realistic API simulation with EitherNet, fake implementations (FakeBatteryHistoryRepository, FakeUserPreferencesRepository)
+  - All tests use assertk assertions and WorkManager testing utilities (TestListenableWorkerBuilder, Robolectric)
+  - Test dependencies: Added `androidx-work-testing:2.10.5` for WorkManager testing support
 - **Unit tests for TrmnlDevicesScreen presenter** - Added 12 comprehensive presenter tests for the main devices screen covering device loading, error handling, and navigation flows
   - Tests cover: initial loading and device fetch, empty state, error handling (401, 404, network failures, missing token), navigation events (settings, device detail, device token screen, content hub), reset token functionality, and multiple devices handling
   - Uses Circuit test patterns with FakeNavigator, `.test {}` extension, and assertk assertions
