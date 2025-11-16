@@ -324,11 +324,11 @@ class BlogPostRepositoryTest {
         override suspend fun updateReadingProgress(
             id: String,
             progress: Float,
-            lastReadAt: java.time.Instant,
+            timestamp: java.time.Instant,
         ) {
             posts.find { it.id == id }?.let {
                 val index = posts.indexOf(it)
-                posts[index] = it.copy(lastReadAt = lastReadAt)
+                posts[index] = it.copy(lastReadAt = timestamp)
             }
         }
 
@@ -339,8 +339,8 @@ class BlogPostRepositoryTest {
             }
         }
 
-        override suspend fun deleteOlderThan(timestamp: Long) {
-            posts.removeAll { it.fetchedAt.epochSecond < timestamp }
+        override suspend fun deleteOlderThan(threshold: Long) {
+            posts.removeAll { it.fetchedAt.epochSecond < threshold }
         }
     }
 }
