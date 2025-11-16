@@ -543,7 +543,7 @@ class DevelopmentPresenterTest {
  * Avoids mocking per project guidelines.
  */
 private class FakeWorkManagerObserver : WorkManagerObserver {
-    private val _workerStatusesFlow = MutableStateFlow<List<WorkerStatus>>(emptyList())
+    private val workerStatusesFlow = MutableStateFlow<List<WorkerStatus>>(emptyList())
 
     var cancelAllWorkersCalled = false
         private set
@@ -551,7 +551,7 @@ private class FakeWorkManagerObserver : WorkManagerObserver {
     var resetWorkerSchedulesCalled = false
         private set
 
-    override fun observeAllWorkers(): Flow<List<WorkerStatus>> = _workerStatusesFlow
+    override fun observeAllWorkers(): Flow<List<WorkerStatus>> = workerStatusesFlow
 
     override fun cancelAllWorkers() {
         cancelAllWorkersCalled = true
@@ -565,6 +565,6 @@ private class FakeWorkManagerObserver : WorkManagerObserver {
      * Helper method to update worker statuses for testing.
      */
     fun updateWorkerStatuses(statuses: List<WorkerStatus>) {
-        _workerStatusesFlow.value = statuses
+        workerStatusesFlow.value = statuses
     }
 }
