@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Edge cases including zero counts, large counts (999, 1234), and simultaneous updates
   - All tests use fake DAO implementations for fast, reliable unit testing without database dependencies
   - 10 tests covering initial state, tab switching, unread count updates, and navigation
+- **Unit tests for DevelopmentPresenter** - Added comprehensive test coverage (18 tests) for development/debug tools including worker status observation, notification events, worker triggers, and navigation
 - **Comprehensive unit test coverage for preferences repositories** - Added 26 new edge case tests (from 31 to 57 tests total):
   - `DeviceTokenRepositoryTest`: Added 14 new tests covering empty tokens, special characters in device IDs, very long tokens, unicode characters, numeric IDs, whitespace handling, case sensitivity, flow isolation, and multiple observers
   - `UserPreferencesRepositoryTest`: Added 12 new tests covering empty tokens, very long tokens, special characters, boundary values for thresholds (0, 100, negative, >100), rapid changes, boolean flag toggles, and field independence
