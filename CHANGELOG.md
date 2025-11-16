@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unit tests for TrmnlDevicesScreen presenter** - Added 12 comprehensive presenter tests for the main devices screen covering device loading, error handling, and navigation flows
+  - Tests cover: initial loading and device fetch, empty state, error handling (401, 404, network failures, missing token), navigation events (settings, device detail, device token screen, content hub), reset token functionality, and multiple devices handling
+  - Uses Circuit test patterns with FakeNavigator, `.test {}` extension, and assertk assertions
+  - All tests pass successfully
 - **DeviceDetailScreen presenter tests** - Added comprehensive unit tests (19 tests) for DeviceDetailScreen presenter covering all critical functionality:
   - Core functionality: Initial state composition, battery history loading, loading state management
   - Battery tracking: Battery tracking enabled/disabled state, recorded today flag, manual recording, clear history
