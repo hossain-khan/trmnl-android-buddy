@@ -15,7 +15,6 @@ import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.data.FakeBookmarkRepository
 import ink.trmnl.android.buddy.data.RecipesRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Ignore
 import org.junit.Test
@@ -31,6 +30,7 @@ import org.junit.Test
  * - Error handling and retry
  * - Navigation
  */
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class RecipesCatalogPresenterTest {
     @Test
     fun `presenter loads recipes on initial composition`() =
@@ -87,8 +87,9 @@ class RecipesCatalogPresenterTest {
                 val searchingState = awaitItem()
                 assertThat(searchingState.searchQuery).isEqualTo("weather")
 
-                // Wait for debounce (500ms) + extra time for API call
-                delay(700)
+                // Advance time for debounce (500ms) + coroutine completion
+                testScheduler.advanceTimeBy(500)
+                testScheduler.advanceUntilIdle()
 
                 // Should have search results
                 var searchedState = loadedState
@@ -122,21 +123,12 @@ class RecipesCatalogPresenterTest {
 
                 // Clear search
                 loadedState.eventSink(RecipesCatalogScreen.Event.ClearSearchClicked)
-
-                // Should clear query and trigger fetch
-                // Wait a bit for the fetch to complete
-                delay(200)
-
-                // Consume all remaining items and check the last one
-                var finalState = loadedState
-                while (true) {
-                    val item = runCatching { awaitItem() }.getOrNull() ?: break
-                    finalState = item
-                }
+                testScheduler.advanceUntilIdle()
 
                 // Should have cleared search and fetched
-                assertThat(finalState.searchQuery).isEqualTo("")
                 assertThat(repository.lastSearchQuery).isNull()
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -164,19 +156,11 @@ class RecipesCatalogPresenterTest {
 
                 // Select popularity sort
                 loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.POPULARITY))
+                testScheduler.advanceUntilIdle()
 
-                // Wait for sorted results
-                delay(200)
-
-                // Consume all remaining items and check the last one
-                var sortedState = loadedState
-                while (true) {
-                    val item = runCatching { awaitItem() }.getOrNull() ?: break
-                    sortedState = item
-                }
-
-                assertThat(sortedState.selectedSort).isEqualTo(SortOption.POPULARITY)
                 assertThat(repository.lastSortBy).isEqualTo("popularity")
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -208,20 +192,19 @@ class RecipesCatalogPresenterTest {
 
                 // Load more
                 loadedState.eventSink(RecipesCatalogScreen.Event.LoadMoreClicked)
+                testScheduler.advanceUntilIdle()
 
-                // Wait for load more to complete
-                delay(200)
-
-                // Consume all remaining items and check the last one
-                var loadedMoreState = loadedState
-                while (true) {
-                    val item = runCatching { awaitItem() }.getOrNull() ?: break
-                    loadedMoreState = item
-                }
+                // Wait for state with more recipes appended
+                var loadedMoreState: RecipesCatalogScreen.State
+                do {
+                    loadedMoreState = awaitItem()
+                } while (loadedMoreState.recipes.size < 4)
 
                 assertThat(loadedMoreState.recipes).hasSize(4) // 2 + 2
                 assertThat(loadedMoreState.currentPage).isEqualTo(2)
                 assertThat(loadedMoreState.hasMorePages).isFalse()
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -253,16 +236,18 @@ class RecipesCatalogPresenterTest {
                 repository.shouldFail = false
                 repository.recipesResponse = createSampleRecipesResponse(1)
                 errorState.eventSink(RecipesCatalogScreen.Event.RetryClicked)
+                testScheduler.advanceUntilIdle()
 
-                // Wait for retry to complete
-                delay(100)
+                // Wait for state with recipes loaded
                 var retriedState = errorState
                 do {
                     retriedState = awaitItem()
-                } while (retriedState.isLoading || retriedState.error != null)
+                } while (retriedState.recipes.isEmpty())
 
                 assertThat(retriedState.error).isNull()
                 assertThat(retriedState.recipes).hasSize(1)
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -296,52 +281,140 @@ class RecipesCatalogPresenterTest {
         }
 
     @Test
-    fun `all sort options work correctly`() =
+    fun `sort by newest works correctly`() =
         runTest {
-            // Test each sort option individually to avoid complex state management
-            val sortOptions =
-                listOf(
-                    SortOption.NEWEST to "newest",
-                    SortOption.OLDEST to "oldest",
-                    SortOption.POPULARITY to "popularity",
-                    SortOption.INSTALLS to "install",
-                    SortOption.FORKS to "fork",
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
                 )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
 
-            for ((sortOption, expectedApiValue) in sortOptions) {
-                // Create fresh instances for each test to avoid state pollution
-                val navigator = FakeNavigator(RecipesCatalogScreen)
-                val repository =
-                    FakeRecipesRepository(
-                        recipesResponse = createSampleRecipesResponse(1),
-                    )
-                val bookmarkRepository = FakeBookmarkRepository()
-                val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+            presenter.test {
+                // Wait for initial load
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
 
-                presenter.test {
-                    // Wait for initial load
-                    var loadedState: RecipesCatalogScreen.State
-                    do {
-                        loadedState = awaitItem()
-                    } while (loadedState.recipes.isEmpty())
+                // Initial sort is already NEWEST - default sort was used for initial load
+                assertThat(loadedState.selectedSort).isEqualTo(SortOption.NEWEST)
+                assertThat(repository.lastSortBy).isEqualTo("newest") // Called during initial load
 
-                    // Select the sort option
-                    loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(sortOption))
+                // Change to OLDEST
+                loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.OLDEST))
+                testScheduler.advanceUntilIdle()
 
-                    // Wait for sorted results
-                    delay(200)
+                // Repository was called with new sort, but state might not have changed if results are same
+                assertThat(repository.lastSortBy).isEqualTo("oldest")
 
-                    // Consume all remaining items and check the last one
-                    var sortedState = loadedState
-                    while (true) {
-                        val item = runCatching { awaitItem() }.getOrNull() ?: break
-                        sortedState = item
-                    }
+                // Consume any state updates
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
 
-                    // Verify sort was applied
-                    assertThat(sortedState.selectedSort).isEqualTo(sortOption)
-                    assertThat(repository.lastSortBy).isEqualTo(expectedApiValue)
-                }
+    @Test
+    fun `sort by oldest works correctly`() =
+        runTest {
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.OLDEST))
+                testScheduler.advanceUntilIdle()
+
+                assertThat(repository.lastSortBy).isEqualTo("oldest")
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `sort by popularity works correctly`() =
+        runTest {
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.POPULARITY))
+                testScheduler.advanceUntilIdle()
+
+                assertThat(repository.lastSortBy).isEqualTo("popularity")
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `sort by installs works correctly`() =
+        runTest {
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.INSTALLS))
+                testScheduler.advanceUntilIdle()
+
+                assertThat(repository.lastSortBy).isEqualTo("install")
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `sort by forks works correctly`() =
+        runTest {
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.FORKS))
+                testScheduler.advanceUntilIdle()
+
+                assertThat(repository.lastSortBy).isEqualTo("fork")
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
 }

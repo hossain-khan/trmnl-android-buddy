@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Optimized RecipesCatalogPresenterTest performance** - Achieved 97% speed improvement (~36s → ~0.6s) by fixing test patterns. Split monolithic 15-second sort test into 5 separate tests. Replaced arbitrary `delay()` calls with `testScheduler.advanceUntilIdle()`. Fixed incorrect test pattern that waited for Turbine's 3-second timeout - now uses proper Circuit/Turbine pattern: `eventSink()` → `testScheduler.advanceUntilIdle()` → verify side effects → `cancelAndIgnoreRemainingEvents()`. Tests no longer block on state emissions due to Circuit's "distinct until changed" behavior.
 - **Refactored centralized test fakes** - Consolidated duplicate fake implementations to centralized fakes in `ink.trmnl.android.buddy.fakes`, eliminating ~160 lines of duplicate code across 4 test files. Enhanced fakes with MutableStateFlow for reactive updates, initialHistory/initialTokens parameters, error injection support, and notification helpers.
 
 ### Added
