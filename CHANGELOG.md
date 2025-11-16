@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unit tests for BlogPostSyncWorker** - Added comprehensive unit tests (15 tests) for BlogPostSyncWorker covering background RSS feed synchronization:
+  - Core functionality: Successful sync returns success, new posts saved to database, preserves existing read status, handles zero new posts
+  - Error handling: Network errors return retry, repository failures return retry, unexpected exceptions return retry
+  - Notification logic: Tests for enabled/disabled notifications, zero new posts skipping notifications
+  - Edge cases: Single post, multiple posts with same pubDate, large feeds (50 posts), multiple sync attempts, calculates new post count correctly
+  - Uses WorkManager testing utilities with custom WorkerFactory for dependency injection
+  - Uses fake implementations (FakeBlogPostRepository, FakeUserPreferencesRepository) following established patterns
+  - All tests use assertk for assertions and follow Android WorkManager testing best practices
+  - Added `androidx.work:work-testing` dependency for WorkManager test support
 - **Unit tests for BatteryCollectionWorker** - Added comprehensive unit tests (15 tests) for BatteryCollectionWorker covering all critical background task functionality:
   - Core functionality: Successful data collection, multi-device handling, data persistence to Room database
   - Configuration: Battery tracking enabled/disabled, API token validation (missing, blank)
