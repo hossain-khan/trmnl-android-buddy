@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unit tests for LowBatteryNotificationWorker** - Added comprehensive unit tests (22 tests) for the low battery notification worker covering all critical functionality:
+  - Core functionality: Notifications enabled/disabled check, API token validation (null/blank), device fetching with correct authorization
+  - Battery threshold logic: Below/above/exactly at threshold (20%), custom thresholds (10%, 30%), multiple devices, mixed battery levels
+  - Edge case battery values: Zero percent, 100 percent, fractional percentages (19.5%)
+  - API error handling: HTTP errors (401, 404, 500, 503), network failures, API failures, unknown failures with correct Result types (Success, Retry, Failure)
+  - Uses Robolectric for Android framework testing with shadow NotificationManager to verify notifications posted
+  - Tests use fake implementations (`FakeTrmnlApiService`, `FakeUserPreferencesRepository`) following project guidelines
+  - WorkManager testing using `TestListenableWorkerBuilder` with custom dependency injection via dummy worker for `WorkerParameters` extraction
+  - All assertions use assertk library for type-safe testing
+- **FakeTrmnlApiService** - Added reusable fake implementation of `TrmnlApiService` for testing API interactions across the app
+  - Provides configurable responses for all API endpoints (devices, user, recipes, device models, display)
+  - Tracks call counts and last parameters for verification
+  - Follows project guidelines of using fakes instead of mocks
 - **Unit tests for BlogPostSyncWorker** - Added comprehensive unit tests (15 tests) for BlogPostSyncWorker covering background RSS feed synchronization:
   - Core functionality: Successful sync returns success, new posts saved to database, preserves existing read status, handles zero new posts
   - Error handling: Network errors return retry, repository failures return retry, unexpected exceptions return retry
