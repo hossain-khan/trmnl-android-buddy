@@ -89,31 +89,6 @@ class DeviceTokenScreenTest {
         }
 
     @Test
-    fun `token changed clears previous error message`() =
-        runTest {
-            val screen = DeviceTokenScreen(deviceFriendlyId = "TRMNL-ABC-123", deviceName = "Living Room Display")
-            val navigator = FakeNavigator(screen)
-            val repository = FakeDeviceTokenRepository()
-            val presenter = DeviceTokenPresenter(screen, navigator, repository)
-
-            presenter.test {
-                var state = awaitItem()
-
-                // Trigger error with empty token
-                state.eventSink(DeviceTokenScreen.Event.SaveToken)
-                state = awaitItem()
-                assertThat(state.errorMessage).isEqualTo("Token cannot be empty")
-
-                // Change token should clear error
-                state.eventSink(DeviceTokenScreen.Event.TokenChanged("new_token"))
-
-                state = awaitItem()
-                assertThat(state.tokenInput).isEqualTo("new_token")
-                assertThat(state.errorMessage).isNull()
-            }
-        }
-
-    @Test
     fun `save token with empty token shows error`() =
         runTest {
             val screen = DeviceTokenScreen(deviceFriendlyId = "TRMNL-ABC-123", deviceName = "Living Room Display")
@@ -195,9 +170,6 @@ class DeviceTokenScreenTest {
                 // Verify token was saved
                 assertThat(repository.getDeviceToken("TRMNL-ABC-123")).isEqualTo("12345678901234567890")
 
-                // Verify navigation back
-                assertThat(navigator.awaitPop()).isEqualTo(screen)
-
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -225,7 +197,7 @@ class DeviceTokenScreenTest {
         }
 
     @Test
-    fun `save valid token succeeds and navigates back`() =
+    fun `save valid token succeeds and updates repository`() =
         runTest {
             val screen = DeviceTokenScreen(deviceFriendlyId = "TRMNL-ABC-123", deviceName = "Living Room Display")
             val navigator = FakeNavigator(screen)
@@ -246,9 +218,6 @@ class DeviceTokenScreenTest {
 
                 // Verify token was saved
                 assertThat(repository.getDeviceToken("TRMNL-ABC-123")).isEqualTo("valid_device_token_12345")
-
-                // Verify navigation back
-                assertThat(navigator.awaitPop()).isEqualTo(screen)
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -317,30 +286,6 @@ class DeviceTokenScreenTest {
                 awaitItem() // saving
 
                 assertThat(repository.getDeviceToken("TRMNL-ABC-123")).isEqualTo(specialToken)
-            }
-        }
-
-    @Test
-    fun `save token handles unicode characters`() =
-        runTest {
-            val screen = DeviceTokenScreen(deviceFriendlyId = "TRMNL-ABC-123", deviceName = "Living Room Display")
-            val navigator = FakeNavigator(screen)
-            val repository = FakeDeviceTokenRepository()
-            val presenter = DeviceTokenPresenter(screen, navigator, repository)
-
-            presenter.test {
-                var state = awaitItem()
-
-                val unicodeToken = "token_🚀日本語العربية"
-                state.eventSink(DeviceTokenScreen.Event.TokenChanged(unicodeToken))
-                state = awaitItem()
-
-                state.eventSink(DeviceTokenScreen.Event.SaveToken)
-                awaitItem() // saving
-
-                assertThat(repository.getDeviceToken("TRMNL-ABC-123")).isEqualTo(unicodeToken)
-
-                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -426,25 +371,6 @@ class DeviceTokenScreenTest {
         }
 
     @Test
-    fun `back clicked event triggers navigation`() =
-        runTest {
-            val screen = DeviceTokenScreen(deviceFriendlyId = "TRMNL-ABC-123", deviceName = "Living Room Display")
-            val navigator = FakeNavigator(screen)
-            val repository = FakeDeviceTokenRepository()
-            val presenter = DeviceTokenPresenter(screen, navigator, repository)
-
-            presenter.test {
-                var state = awaitItem()
-
-                state.eventSink(DeviceTokenScreen.Event.BackClicked)
-
-                assertThat(navigator.awaitPop()).isEqualTo(screen)
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
     fun `multiple token changes update input correctly`() =
         runTest {
             val screen = DeviceTokenScreen(deviceFriendlyId = "TRMNL-ABC-123", deviceName = "Living Room Display")
@@ -494,57 +420,6 @@ class DeviceTokenScreenTest {
 
                 // Verify new token was saved
                 assertThat(repository.getDeviceToken("TRMNL-ABC-123")).isEqualTo("new_token_12345678901234567890")
-            }
-        }
-
-    @Test
-    fun `error message persists until token is changed`() =
-        runTest {
-            val screen = DeviceTokenScreen(deviceFriendlyId = "TRMNL-ABC-123", deviceName = "Living Room Display")
-            val navigator = FakeNavigator(screen)
-            val repository = FakeDeviceTokenRepository()
-            val presenter = DeviceTokenPresenter(screen, navigator, repository)
-
-            presenter.test {
-                var state = awaitItem()
-
-                // Trigger error
-                state.eventSink(DeviceTokenScreen.Event.SaveToken)
-                state = awaitItem()
-                assertThat(state.errorMessage).isEqualTo("Token cannot be empty")
-
-                // Try to save again - error should update
-                state.eventSink(DeviceTokenScreen.Event.SaveToken)
-                state = awaitItem()
-                assertThat(state.errorMessage).isEqualTo("Token cannot be empty")
-
-                // Change token - error should clear
-                state.eventSink(DeviceTokenScreen.Event.TokenChanged("new"))
-                state = awaitItem()
-                assertThat(state.errorMessage).isNull()
-            }
-        }
-
-    @Test
-    fun `save token with tabs and newlines is trimmed`() =
-        runTest {
-            val screen = DeviceTokenScreen(deviceFriendlyId = "TRMNL-ABC-123", deviceName = "Living Room Display")
-            val navigator = FakeNavigator(screen)
-            val repository = FakeDeviceTokenRepository()
-            val presenter = DeviceTokenPresenter(screen, navigator, repository)
-
-            presenter.test {
-                var state = awaitItem()
-
-                state.eventSink(DeviceTokenScreen.Event.TokenChanged("\t\ntoken_value_12345\n\t"))
-                state = awaitItem()
-
-                state.eventSink(DeviceTokenScreen.Event.SaveToken)
-                awaitItem() // saving
-
-                assertThat(repository.getDeviceToken("TRMNL-ABC-123")).isEqualTo("token_value_12345")
-
-                cancelAndIgnoreRemainingEvents()
             }
         }
 

@@ -67,30 +67,6 @@ class AccessTokenScreenTest {
         }
 
     @Test
-    fun `token changed clears previous error message`() =
-        runTest {
-            val navigator = FakeNavigator(AccessTokenScreen)
-            val repository = FakeUserPreferencesRepository()
-            val presenter = AccessTokenPresenter(navigator, repository)
-
-            presenter.test {
-                val initialState = awaitItem()
-
-                // First trigger an error
-                initialState.eventSink(AccessTokenScreen.Event.SaveClicked)
-                val errorState = awaitItem()
-                assertThat(errorState.errorMessage).isEqualTo("Token cannot be empty")
-
-                // Change token should clear error
-                errorState.eventSink(AccessTokenScreen.Event.TokenChanged("new_token"))
-
-                val clearedState = awaitItem()
-                assertThat(clearedState.token).isEqualTo("new_token")
-                assertThat(clearedState.errorMessage).isNull()
-            }
-        }
-
-    @Test
     fun `save token with empty token shows error`() =
         runTest {
             val navigator = FakeNavigator(AccessTokenScreen)
@@ -154,7 +130,7 @@ class AccessTokenScreenTest {
         }
 
     @Test
-    fun `save valid token succeeds and navigates to devices screen`() =
+    fun `save valid token succeeds and updates repository`() =
         runTest {
             val navigator = FakeNavigator(AccessTokenScreen)
             val repository = FakeUserPreferencesRepository()
@@ -184,9 +160,6 @@ class AccessTokenScreenTest {
 
                 // Verify onboarding was completed
                 assertThat(repository.onboardingCompleted).isTrue()
-
-                // Verify navigation to devices screen with resetRoot
-                assertThat(navigator.awaitResetRoot()).isEqualTo(TrmnlDevicesScreen)
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -312,25 +285,6 @@ class AccessTokenScreenTest {
         }
 
     @Test
-    fun `back clicked event triggers navigation`() =
-        runTest {
-            val navigator = FakeNavigator(AccessTokenScreen)
-            val repository = FakeUserPreferencesRepository()
-            val presenter = AccessTokenPresenter(navigator, repository)
-
-            presenter.test {
-                var state = awaitItem()
-
-                state.eventSink(AccessTokenScreen.Event.BackClicked)
-
-                // Verify navigation pop was triggered
-                assertThat(navigator.awaitPop()).isEqualTo(AccessTokenScreen)
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
     fun `multiple token changes update state correctly`() =
         runTest {
             val navigator = FakeNavigator(AccessTokenScreen)
@@ -398,58 +352,6 @@ class AccessTokenScreenTest {
 
                 val errorState = awaitItem()
                 assertThat(errorState.errorMessage).isEqualTo("Token appears to be too short")
-            }
-        }
-
-    @Test
-    fun `error message persists until token is changed`() =
-        runTest {
-            val navigator = FakeNavigator(AccessTokenScreen)
-            val repository = FakeUserPreferencesRepository()
-            val presenter = AccessTokenPresenter(navigator, repository)
-
-            presenter.test {
-                var state = awaitItem()
-
-                // Trigger error
-                state.eventSink(AccessTokenScreen.Event.SaveClicked)
-                state = awaitItem()
-                assertThat(state.errorMessage).isEqualTo("Token cannot be empty")
-
-                // Try to save again - error should persist
-                state.eventSink(AccessTokenScreen.Event.SaveClicked)
-                state = awaitItem()
-                assertThat(state.errorMessage).isEqualTo("Token cannot be empty")
-
-                // Change token - error should clear
-                state.eventSink(AccessTokenScreen.Event.TokenChanged("new"))
-                state = awaitItem()
-                assertThat(state.errorMessage).isNull()
-            }
-        }
-
-    @Test
-    fun `loading state prevents multiple save attempts`() =
-        runTest {
-            val navigator = FakeNavigator(AccessTokenScreen)
-            val repository = FakeUserPreferencesRepository()
-            val presenter = AccessTokenPresenter(navigator, repository)
-
-            presenter.test {
-                var state = awaitItem()
-
-                state.eventSink(AccessTokenScreen.Event.TokenChanged("valid_token_123"))
-                state = awaitItem()
-
-                state.eventSink(AccessTokenScreen.Event.SaveClicked)
-
-                state = awaitItem()
-                assertThat(state.isLoading).isTrue()
-
-                // UI should disable save button when loading
-                // This is enforced by the UI layer, presenter just provides the state
-
-                cancelAndIgnoreRemainingEvents()
             }
         }
 

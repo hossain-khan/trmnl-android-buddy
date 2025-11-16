@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Presenter unit tests for AccessTokenScreen and DeviceTokenScreen** - Added 43 new unit tests covering token input and management:
-  - `AccessTokenScreenTest`: 19 tests covering initial state, token validation (empty, blank, short, boundary cases), save operations, whitespace trimming, special characters, unicode, very long tokens (1000+ chars), and exception handling
-  - `DeviceTokenScreenTest`: 24 tests covering initial state with device info, token loading, validation (empty, blank, short, 20-char boundary), save/update operations, clear functionality, whitespace trimming, special characters, unicode, very long tokens, error handling, and multiple device scenarios
+- **Presenter unit tests for AccessTokenScreen and DeviceTokenScreen** - Added 34 new unit tests covering token input and management:
+  - `AccessTokenScreenTest`: 15 tests covering initial state, token validation (empty, blank, short, boundary cases), save operations, whitespace trimming, special characters, unicode, very long tokens (1000+ chars), and exception handling
+  - `DeviceTokenScreenTest`: 19 tests covering initial state with device info, token loading, validation (empty, blank, short, 20-char boundary), save/update operations, clear functionality, whitespace trimming, special characters, very long tokens, error handling, and multiple device scenarios
   - Tests follow Circuit testing patterns using `FakeNavigator` and `.test {}` extension
   - All assertions use assertk library for type-safe, Kotlin-native test assertions
   - Comprehensive edge case coverage including empty strings, whitespace, special characters, unicode (🚀, 日本語, العربية), and boundary values
