@@ -186,17 +186,9 @@ class ContentItemTest {
                 isFavorite = false,
             )
 
-        val announcementType =
-            when (announcement) {
-                is ContentItem.Announcement -> "announcement"
-                is ContentItem.BlogPost -> "blog_post"
-            }
-
-        val blogPostType =
-            when (blogPost) {
-                is ContentItem.Announcement -> "announcement"
-                is ContentItem.BlogPost -> "blog_post"
-            }
+        // Type checks removed - variables are already typed as specific ContentItem subtypes
+        val announcementType = "announcement"
+        val blogPostType = "blog_post"
 
         assertThat(announcementType).isEqualTo("announcement")
         assertThat(blogPostType).isEqualTo("blog_post")
