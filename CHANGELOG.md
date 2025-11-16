@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Presenter tests for AnnouncementsScreen** - Added comprehensive unit tests for AnnouncementsScreen presenter covering:
+  - Initial loading and data fetch from repository (3 test cases)
+  - Filter selection functionality (ALL, UNREAD, READ filters) with 3 tests
+  - User interactions: announcement clicks, toggle read status, mark all as read (4 tests)
+  - Authentication banner display and dismissal (3 tests)
+  - Navigation events including back button (1 test)
+  - Embedded mode (top bar visibility) with 2 tests
+  - Created `FakeAnnouncementDao` and helper functions for testing with fake implementations
+  - Used Robolectric `ApplicationProvider` for Context dependencies
+  - All 15 tests passing, following existing test patterns from `RecipesCatalogPresenterTest`
 - **ContentHubScreen presenter unit tests** - Added comprehensive test coverage for ContentHubScreen presenter:
   - Tab selection and switching between Announcements and Blog Posts
   - Unread count tracking for both content types (announcements and blog posts)
