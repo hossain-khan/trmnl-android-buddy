@@ -295,26 +295,7 @@ class TrmnlDeviceModelsApiTest {
             )
 
             // When: Calling getDeviceModels with short timeout client
-            val shortTimeoutClient =
-                OkHttpClient
-                    .Builder()
-                    .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
-                    .build()
-
-            val shortTimeoutRetrofit =
-                Retrofit
-                    .Builder()
-                    .baseUrl(mockWebServer.url("/"))
-                    .client(shortTimeoutClient)
-                    .addConverterFactory(
-                        com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                    ).addConverterFactory(
-                        json.asConverterFactory("application/json".toMediaType()),
-                    ).addCallAdapterFactory(
-                        com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                    ).build()
-
-            val timeoutApiService = shortTimeoutRetrofit.create(TrmnlApiService::class.java)
+            val timeoutApiService = ApiServiceTestHelper.createApiServiceWithTimeout(mockWebServer, json, 1)
             val result = timeoutApiService.getDeviceModels("Bearer test_token")
 
             // Then: Response should be network failure

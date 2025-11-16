@@ -276,26 +276,7 @@ class TrmnlDeviceApiTest {
             )
 
             // When: Call getDevices with short timeout client
-            val shortTimeoutClient =
-                OkHttpClient
-                    .Builder()
-                    .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
-                    .build()
-
-            val shortTimeoutRetrofit =
-                Retrofit
-                    .Builder()
-                    .baseUrl(mockWebServer.url("/"))
-                    .client(shortTimeoutClient)
-                    .addConverterFactory(
-                        com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                    ).addConverterFactory(
-                        json.asConverterFactory("application/json".toMediaType()),
-                    ).addCallAdapterFactory(
-                        com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                    ).build()
-
-            val timeoutApiService = shortTimeoutRetrofit.create(TrmnlApiService::class.java)
+            val timeoutApiService = ApiServiceTestHelper.createApiServiceWithTimeout(mockWebServer, json, 1)
             val result = timeoutApiService.getDevices("Bearer test_token")
 
             // Then: Verify network failure
@@ -394,23 +375,10 @@ class TrmnlDeviceApiTest {
 
             // Create API service with custom app version
             val appVersion = "1.6.0"
-            val okHttpClient = TrmnlApiClient.createOkHttpClient(appVersion = appVersion)
-            val retrofit =
-                Retrofit
-                    .Builder()
-                    .baseUrl(mockWebServer.url("/"))
-                    .client(okHttpClient)
-                    .addConverterFactory(
-                        com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                    ).addConverterFactory(
-                        json.asConverterFactory("application/json".toMediaType()),
-                    ).addCallAdapterFactory(
-                        com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                    ).build()
-            val apiService = retrofit.create(TrmnlApiService::class.java)
+            val customApiService = ApiServiceTestHelper.createApiServiceWithAppVersion(mockWebServer, json, appVersion)
 
             // When: Call API
-            apiService.getDevices("Bearer test_token")
+            customApiService.getDevices("Bearer test_token")
 
             // Then: Verify User-Agent header is present and contains expected values
             val request = mockWebServer.takeRequest()
