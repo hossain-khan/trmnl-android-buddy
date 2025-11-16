@@ -6,8 +6,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -537,57 +536,4 @@ class UserPreferencesRepositoryTest {
                 assertThat(prefs.isRssFeedContentNotificationEnabled).isTrue()
             }
         }
-
-    /**
-     * Fake in-memory implementation of UserPreferencesRepository for testing.
-     */
-    private class FakeUserPreferencesRepository : UserPreferencesRepository {
-        private val prefsFlow = MutableStateFlow(UserPreferences())
-
-        override val userPreferencesFlow: Flow<UserPreferences> = prefsFlow
-
-        override suspend fun saveApiToken(token: String) {
-            prefsFlow.value = prefsFlow.value.copy(apiToken = token)
-        }
-
-        override suspend fun clearApiToken() {
-            prefsFlow.value = prefsFlow.value.copy(apiToken = null)
-        }
-
-        override suspend fun setOnboardingCompleted() {
-            prefsFlow.value = prefsFlow.value.copy(isOnboardingCompleted = true)
-        }
-
-        override suspend fun setBatteryTrackingEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isBatteryTrackingEnabled = enabled)
-        }
-
-        override suspend fun setLowBatteryNotificationEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isLowBatteryNotificationEnabled = enabled)
-        }
-
-        override suspend fun setLowBatteryThreshold(percent: Int) {
-            prefsFlow.value = prefsFlow.value.copy(lowBatteryThresholdPercent = percent)
-        }
-
-        override suspend fun setRssFeedContentEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isRssFeedContentEnabled = enabled)
-        }
-
-        override suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isRssFeedContentNotificationEnabled = enabled)
-        }
-
-        override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isAnnouncementAuthBannerDismissed = dismissed)
-        }
-
-        override suspend fun setSecurityEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isSecurityEnabled = enabled)
-        }
-
-        override suspend fun clearAll() {
-            prefsFlow.value = UserPreferences()
-        }
-    }
 }

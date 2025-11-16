@@ -9,7 +9,7 @@ import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
-import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -375,70 +375,4 @@ class AccessTokenScreenTest {
                 assertThat(repository.savedToken).isEqualTo("token_value")
             }
         }
-
-    /**
-     * Fake implementation of UserPreferencesRepository for testing.
-     */
-    private class FakeUserPreferencesRepository(
-        private val shouldThrowOnSave: Boolean = false,
-    ) : UserPreferencesRepository {
-        var savedToken: String? = null
-        var onboardingCompleted: Boolean = false
-
-        private val prefsFlow = MutableStateFlow(UserPreferences())
-
-        override val userPreferencesFlow: Flow<UserPreferences> = prefsFlow
-
-        override suspend fun saveApiToken(token: String) {
-            if (shouldThrowOnSave) {
-                throw Exception("Test exception")
-            }
-            savedToken = token
-            prefsFlow.value = prefsFlow.value.copy(apiToken = token)
-        }
-
-        override suspend fun clearApiToken() {
-            savedToken = null
-            prefsFlow.value = prefsFlow.value.copy(apiToken = null)
-        }
-
-        override suspend fun setOnboardingCompleted() {
-            onboardingCompleted = true
-            prefsFlow.value = prefsFlow.value.copy(isOnboardingCompleted = true)
-        }
-
-        override suspend fun setBatteryTrackingEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isBatteryTrackingEnabled = enabled)
-        }
-
-        override suspend fun setLowBatteryNotificationEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isLowBatteryNotificationEnabled = enabled)
-        }
-
-        override suspend fun setLowBatteryThreshold(percent: Int) {
-            prefsFlow.value = prefsFlow.value.copy(lowBatteryThresholdPercent = percent)
-        }
-
-        override suspend fun setRssFeedContentEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isRssFeedContentEnabled = enabled)
-        }
-
-        override suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isRssFeedContentNotificationEnabled = enabled)
-        }
-
-        override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isAnnouncementAuthBannerDismissed = dismissed)
-        }
-
-        override suspend fun setSecurityEnabled(enabled: Boolean) {
-            prefsFlow.value = prefsFlow.value.copy(isSecurityEnabled = enabled)
-        }
-
-        override suspend fun clearAll() {
-            savedToken = null
-            onboardingCompleted = false
-            prefsFlow.value = UserPreferences()
-        }
-    }
 }

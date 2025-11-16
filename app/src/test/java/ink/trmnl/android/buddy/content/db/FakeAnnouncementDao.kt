@@ -69,4 +69,15 @@ class FakeAnnouncementDao : AnnouncementDao {
         announcements.map { map ->
             map.values.count { !it.isRead }
         }
+
+    /**
+     * Test helper method to seed initial data.
+     * This replaces any existing data with the provided list.
+     *
+     * @param data The list of announcements to seed.
+     */
+    fun seedData(data: List<AnnouncementEntity>) {
+        val newMap = data.associateBy { it.id }
+        announcements.value = newMap
+    }
 }

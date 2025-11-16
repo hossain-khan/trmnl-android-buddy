@@ -1,5 +1,4 @@
 package ink.trmnl.android.buddy.ui.devicedetail
-
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
@@ -14,7 +13,8 @@ import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
-import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
+import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
@@ -733,96 +733,5 @@ private class FakeBatteryHistoryRepository(
 
     override suspend fun deleteHistoryForDevice(deviceId: String) {
         historyFlow.value = emptyList()
-    }
-}
-
-/**
- * Fake implementation of UserPreferencesRepository for testing.
- */
-private class FakeUserPreferencesRepository(
-    initialPreferences: UserPreferences = UserPreferences(apiToken = "test_token"),
-) : UserPreferencesRepository {
-    private val _userPreferencesFlow = MutableStateFlow(initialPreferences)
-
-    override val userPreferencesFlow: Flow<UserPreferences> = _userPreferencesFlow
-
-    override suspend fun saveApiToken(token: String) {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(apiToken = token)
-    }
-
-    override suspend fun clearApiToken() {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(apiToken = null)
-    }
-
-    override suspend fun setOnboardingCompleted() {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isOnboardingCompleted = true)
-    }
-
-    override suspend fun setBatteryTrackingEnabled(enabled: Boolean) {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isBatteryTrackingEnabled = enabled)
-    }
-
-    override suspend fun setLowBatteryNotificationEnabled(enabled: Boolean) {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isLowBatteryNotificationEnabled = enabled)
-    }
-
-    override suspend fun setLowBatteryThreshold(percent: Int) {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(lowBatteryThresholdPercent = percent)
-    }
-
-    override suspend fun setRssFeedContentEnabled(enabled: Boolean) {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isRssFeedContentEnabled = enabled)
-    }
-
-    override suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean) {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isRssFeedContentNotificationEnabled = enabled)
-    }
-
-    override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isAnnouncementAuthBannerDismissed = dismissed)
-    }
-
-    override suspend fun setSecurityEnabled(enabled: Boolean) {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isSecurityEnabled = enabled)
-    }
-
-    override suspend fun clearAll() {
-        _userPreferencesFlow.value = UserPreferences()
-    }
-}
-
-/**
- * Fake implementation of DeviceTokenRepository for testing.
- */
-private class FakeDeviceTokenRepository(
-    private val hasToken: Boolean = false,
-) : DeviceTokenRepository {
-    private val tokens = mutableMapOf<String, String>()
-
-    init {
-        if (hasToken) {
-            tokens["ABC-123"] = "test-token"
-        }
-    }
-
-    override suspend fun saveDeviceToken(
-        deviceFriendlyId: String,
-        token: String,
-    ) {
-        tokens[deviceFriendlyId] = token
-    }
-
-    override suspend fun getDeviceToken(deviceFriendlyId: String): String? = tokens[deviceFriendlyId]
-
-    override fun getDeviceTokenFlow(deviceFriendlyId: String): Flow<String?> = MutableStateFlow(tokens[deviceFriendlyId])
-
-    override suspend fun clearDeviceToken(deviceFriendlyId: String) {
-        tokens.remove(deviceFriendlyId)
-    }
-
-    override suspend fun hasDeviceToken(deviceFriendlyId: String): Boolean = tokens.containsKey(deviceFriendlyId)
-
-    override suspend fun clearAll() {
-        tokens.clear()
     }
 }
