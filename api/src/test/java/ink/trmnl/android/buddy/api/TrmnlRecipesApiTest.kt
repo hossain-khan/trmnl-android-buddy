@@ -84,6 +84,32 @@ class TrmnlRecipesApiTest {
         mockWebServer.shutdown()
     }
 
+    /**
+     * Helper function to create API service with custom timeout.
+     */
+    private fun createApiServiceWithTimeout(timeoutSeconds: Long): TrmnlApiService {
+        val shortTimeoutClient =
+            OkHttpClient
+                .Builder()
+                .readTimeout(timeoutSeconds, java.util.concurrent.TimeUnit.SECONDS)
+                .build()
+
+        val retrofit =
+            Retrofit
+                .Builder()
+                .baseUrl(mockWebServer.url("/"))
+                .client(shortTimeoutClient)
+                .addConverterFactory(
+                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
+                ).addConverterFactory(
+                    json.asConverterFactory("application/json".toMediaType()),
+                ).addCallAdapterFactory(
+                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
+                ).build()
+
+        return retrofit.create(TrmnlApiService::class.java)
+    }
+
     @Test
     fun `getRecipes returns success with recipe list`() =
         runTest {
@@ -444,26 +470,7 @@ class TrmnlRecipesApiTest {
             )
 
             // When: Call getRecipes with short timeout client
-            val shortTimeoutClient =
-                OkHttpClient
-                    .Builder()
-                    .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
-                    .build()
-
-            val shortTimeoutRetrofit =
-                Retrofit
-                    .Builder()
-                    .baseUrl(mockWebServer.url("/"))
-                    .client(shortTimeoutClient)
-                    .addConverterFactory(
-                        com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                    ).addConverterFactory(
-                        json.asConverterFactory("application/json".toMediaType()),
-                    ).addCallAdapterFactory(
-                        com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                    ).build()
-
-            val timeoutApiService = shortTimeoutRetrofit.create(TrmnlApiService::class.java)
+            val timeoutApiService = createApiServiceWithTimeout(1)
             val result = timeoutApiService.getRecipes()
 
             // Then: Verify network failure
