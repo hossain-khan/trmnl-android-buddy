@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Presenter tests for AnnouncementsScreen** - Added comprehensive unit tests for AnnouncementsScreen presenter covering:
+  - Initial loading and data fetch from repository (3 test cases)
+  - Filter selection functionality (ALL, UNREAD, READ filters) with 3 tests
+  - User interactions: announcement clicks, toggle read status, mark all as read (4 tests)
+  - Authentication banner display and dismissal (3 tests)
+  - Navigation events including back button (1 test)
+  - Embedded mode (top bar visibility) with 2 tests
+  - Created `FakeAnnouncementDao` and helper functions for testing with fake implementations
+  - Used Robolectric `ApplicationProvider` for Context dependencies
+  - All 15 tests passing, following existing test patterns from `RecipesCatalogPresenterTest`
 - **Comprehensive unit test coverage for preferences repositories** - Added 26 new edge case tests (from 31 to 57 tests total):
   - `DeviceTokenRepositoryTest`: Added 14 new tests covering empty tokens, special characters in device IDs, very long tokens, unicode characters, numeric IDs, whitespace handling, case sensitivity, flow isolation, and multiple observers
   - `UserPreferencesRepositoryTest`: Added 12 new tests covering empty tokens, very long tokens, special characters, boundary values for thresholds (0, 100, negative, >100), rapid changes, boolean flag toggles, and field independence
