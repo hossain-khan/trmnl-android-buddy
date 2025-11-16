@@ -11,9 +11,19 @@ import kotlinx.coroutines.flow.flowOf
  * following the project's testing guidelines of using fakes instead of mocks.
  *
  * Tracks whether clearAll() was called to verify behavior.
+ *
+ * @param hasToken If true, initializes with a test token for "ABC-123" device.
  */
-class FakeDeviceTokenRepository : DeviceTokenRepository {
+class FakeDeviceTokenRepository(
+    hasToken: Boolean = false,
+) : DeviceTokenRepository {
     private val deviceTokens = mutableMapOf<String, String>()
+
+    init {
+        if (hasToken) {
+            deviceTokens["ABC-123"] = "test-token"
+        }
+    }
 
     /**
      * Test-visible property to verify that clearAll() was called.

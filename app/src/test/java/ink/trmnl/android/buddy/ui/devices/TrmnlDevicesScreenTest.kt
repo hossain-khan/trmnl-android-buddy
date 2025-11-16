@@ -396,3 +396,62 @@ private class FakeApiService(
 
     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = throw NotImplementedError()
 }
+
+private class FakeAnnouncementDao : AnnouncementDao {
+    override fun getAll() = flowOf(emptyList<AnnouncementEntity>())
+
+    override fun getLatest(limit: Int) = flowOf(emptyList<AnnouncementEntity>())
+
+    override fun getUnread() = flowOf(emptyList<AnnouncementEntity>())
+
+    override fun getRead() = flowOf(emptyList<AnnouncementEntity>())
+
+    override suspend fun insertAll(announcements: List<AnnouncementEntity>) {}
+
+    override suspend fun markAsRead(id: String) {}
+
+    override suspend fun markAsUnread(id: String) {}
+
+    override suspend fun markAllAsRead() {}
+
+    override suspend fun deleteOlderThan(threshold: Long) {}
+
+    override fun getUnreadCount() = flowOf(0)
+}
+
+private class FakeBlogPostDao : BlogPostDao {
+    override fun getAll() = flowOf(emptyList<BlogPostEntity>())
+
+    override fun getByCategory(category: String) = flowOf(emptyList<BlogPostEntity>())
+
+    override fun getFavorites() = flowOf(emptyList<BlogPostEntity>())
+
+    override fun getUnread() = flowOf(emptyList<BlogPostEntity>())
+
+    override fun getRecentlyRead() = flowOf(emptyList<BlogPostEntity>())
+
+    override suspend fun insertAll(posts: List<BlogPostEntity>) {}
+
+    override suspend fun markAsRead(id: String) {}
+
+    override suspend fun markAllAsRead(timestamp: java.time.Instant) {}
+
+    override fun getUnreadCount() = flowOf(0)
+
+    override suspend fun updateReadingProgress(
+        id: String,
+        progress: Float,
+        timestamp: java.time.Instant,
+    ) {}
+
+    override suspend fun toggleFavorite(id: String) {}
+
+    override suspend fun updateSummary(
+        id: String,
+        summary: String,
+    ) {}
+
+    override suspend fun deleteOlderThan(threshold: Long) {}
+
+    override fun searchPosts(query: String) = flowOf(emptyList<BlogPostEntity>())
+}
