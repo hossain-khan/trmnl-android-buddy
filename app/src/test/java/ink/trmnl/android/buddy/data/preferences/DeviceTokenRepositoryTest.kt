@@ -241,6 +241,207 @@ class DeviceTokenRepositoryTest {
             assertThat(repository.hasDeviceToken("DEF-456")).isFalse()
         }
 
+    @Test
+    fun `saveDeviceToken handles empty token string`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+
+            // When
+            repository.saveDeviceToken("ABC-123", "")
+
+            // Then
+            assertThat(repository.getDeviceToken("ABC-123")).isEqualTo("")
+            assertThat(repository.hasDeviceToken("ABC-123")).isTrue()
+        }
+
+    @Test
+    fun `saveDeviceToken handles special characters in device ID`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+
+            // When
+            repository.saveDeviceToken("ABC-123_test", "token-with-special-id")
+            repository.saveDeviceToken("DEF.456", "token-with-dot")
+            repository.saveDeviceToken("GHI@789", "token-with-at")
+
+            // Then
+            assertThat(repository.getDeviceToken("ABC-123_test")).isEqualTo("token-with-special-id")
+            assertThat(repository.getDeviceToken("DEF.456")).isEqualTo("token-with-dot")
+            assertThat(repository.getDeviceToken("GHI@789")).isEqualTo("token-with-at")
+        }
+
+    @Test
+    fun `saveDeviceToken handles very long token strings`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+            val longToken = "a".repeat(1000)
+
+            // When
+            repository.saveDeviceToken("ABC-123", longToken)
+
+            // Then
+            assertThat(repository.getDeviceToken("ABC-123")).isEqualTo(longToken)
+        }
+
+    @Test
+    fun `getDeviceTokenFlow only emits for specific device`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+
+            // When - Observe device A
+            repository.getDeviceTokenFlow("ABC-123").test {
+                assertThat(awaitItem()).isNull()
+
+                // Save token for device B (should not emit on A's flow)
+                repository.saveDeviceToken("DEF-456", "token-b")
+
+                // Save token for device A (should emit)
+                repository.saveDeviceToken("ABC-123", "token-a")
+                assertThat(awaitItem()).isEqualTo("token-a")
+
+                // Update device B again (should not emit on A's flow)
+                repository.saveDeviceToken("DEF-456", "token-b-updated")
+
+                expectNoEvents()
+            }
+        }
+
+    @Test
+    fun `clearAll emits null for all device flows`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+            repository.saveDeviceToken("ABC-123", "token-a")
+            repository.saveDeviceToken("DEF-456", "token-b")
+
+            // When
+            repository.getDeviceTokenFlow("ABC-123").test {
+                assertThat(awaitItem()).isEqualTo("token-a")
+
+                repository.clearAll()
+
+                assertThat(awaitItem()).isNull()
+            }
+        }
+
+    @Test
+    fun `hasDeviceToken distinguishes between empty token and no token`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+
+            // Empty token should be considered as having a token
+            repository.saveDeviceToken("ABC-123", "")
+
+            // Then
+            assertThat(repository.hasDeviceToken("ABC-123")).isTrue()
+            assertThat(repository.hasDeviceToken("DEF-456")).isFalse()
+        }
+
+    @Test
+    fun `multiple flows can observe same device token`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+
+            // When - Save initial token
+            repository.saveDeviceToken("ABC-123", "shared-token")
+
+            // Then - Multiple observers should get same values
+            repository.getDeviceTokenFlow("ABC-123").test {
+                assertThat(awaitItem()).isEqualTo("shared-token")
+            }
+
+            repository.getDeviceTokenFlow("ABC-123").test {
+                assertThat(awaitItem()).isEqualTo("shared-token")
+            }
+        }
+
+    @Test
+    fun `device IDs are case sensitive`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+
+            // When
+            repository.saveDeviceToken("ABC-123", "token-upper")
+            repository.saveDeviceToken("abc-123", "token-lower")
+
+            // Then - Should be treated as different devices
+            assertThat(repository.getDeviceToken("ABC-123")).isEqualTo("token-upper")
+            assertThat(repository.getDeviceToken("abc-123")).isEqualTo("token-lower")
+        }
+
+    @Test
+    fun `saveDeviceToken with whitespace in device ID`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+
+            // When
+            repository.saveDeviceToken("ABC 123", "token-with-space")
+            repository.saveDeviceToken(" DEF-456", "token-with-leading-space")
+            repository.saveDeviceToken("GHI-789 ", "token-with-trailing-space")
+
+            // Then - IDs with spaces should work
+            assertThat(repository.getDeviceToken("ABC 123")).isEqualTo("token-with-space")
+            assertThat(repository.getDeviceToken(" DEF-456")).isEqualTo("token-with-leading-space")
+            assertThat(repository.getDeviceToken("GHI-789 ")).isEqualTo("token-with-trailing-space")
+        }
+
+    @Test
+    fun `clearDeviceToken emits null on flow`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+            repository.saveDeviceToken("ABC-123", "token-to-clear")
+
+            // When
+            repository.getDeviceTokenFlow("ABC-123").test {
+                assertThat(awaitItem()).isEqualTo("token-to-clear")
+
+                repository.clearDeviceToken("ABC-123")
+
+                assertThat(awaitItem()).isNull()
+            }
+        }
+
+    @Test
+    fun `saveDeviceToken with unicode characters`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+
+            // When - Save tokens with unicode
+            repository.saveDeviceToken("ABC-123", "token-with-emoji-🚀")
+            repository.saveDeviceToken("DEF-456", "token-日本語")
+            repository.saveDeviceToken("GHI-789", "token-العربية")
+
+            // Then
+            assertThat(repository.getDeviceToken("ABC-123")).isEqualTo("token-with-emoji-🚀")
+            assertThat(repository.getDeviceToken("DEF-456")).isEqualTo("token-日本語")
+            assertThat(repository.getDeviceToken("GHI-789")).isEqualTo("token-العربية")
+        }
+
+    @Test
+    fun `saveDeviceToken handles numeric device IDs`() =
+        runTest {
+            // Given
+            val repository = FakeDeviceTokenRepository()
+
+            // When
+            repository.saveDeviceToken("123", "token-numeric-id")
+            repository.saveDeviceToken("456789", "token-longer-numeric")
+
+            // Then
+            assertThat(repository.getDeviceToken("123")).isEqualTo("token-numeric-id")
+            assertThat(repository.getDeviceToken("456789")).isEqualTo("token-longer-numeric")
+        }
+
     /**
      * Fake in-memory implementation of DeviceTokenRepository for testing.
      */
