@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **DeviceDetailScreen presenter tests** - Added comprehensive unit tests (19 tests) for DeviceDetailScreen presenter covering all critical functionality:
+  - Core functionality: Initial state composition, battery history loading, loading state management
+  - Battery tracking: Battery tracking enabled/disabled state, recorded today flag, manual recording, clear history
+  - Battery analysis: Charging event detection, stale data detection, clear history reason calculation
+  - User interactions: Back button navigation, settings button navigation
+  - Low battery notifications: Settings loading for notification enabled state and threshold
+  - Edge cases: Null battery voltage, null RSSI, empty battery history, missing device token
+  - Tests use fake implementations (FakeBatteryHistoryRepository, FakeUserPreferencesRepository, FakeDeviceTokenRepository) following established patterns
+  - All tests use assertk for assertions and Circuit test utilities (FakeNavigator, .test{})
 - **Comprehensive unit test coverage for preferences repositories** - Added 26 new edge case tests (from 31 to 57 tests total):
   - `DeviceTokenRepositoryTest`: Added 14 new tests covering empty tokens, special characters in device IDs, very long tokens, unicode characters, numeric IDs, whitespace handling, case sensitivity, flow isolation, and multiple observers
   - `UserPreferencesRepositoryTest`: Added 12 new tests covering empty tokens, very long tokens, special characters, boundary values for thresholds (0, 100, negative, >100), rapid changes, boolean flag toggles, and field independence
