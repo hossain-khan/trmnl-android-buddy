@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Comprehensive unit tests for WorkerScheduler** - Added 27 unit tests covering all worker scheduling, rescheduling, and cancellation functionality:
+  - Low battery notification worker: scheduling with network constraint, 7-day periodic interval, REPLACE policy, cancellation, immediate trigger for testing
+  - Announcement sync worker: scheduling with network/idle/charging constraints, 2-day periodic interval, REPLACE policy, cancellation
+  - Blog post sync worker: scheduling with network/idle/charging constraints, 2-day periodic interval, REPLACE policy, cancellation
+  - Multiple workers interaction: independent scheduling, isolated cancellation without affecting other workers
+  - Edge cases: duplicate scheduling with REPLACE policy, rescheduling after cancellation, safe cancellation of non-existent work
+  - Constraint verification: network-only for battery notifications, strict constraints (network + idle + charging) for RSS sync workers
+  - Tests use WorkManager testing library with Robolectric (API 28) for full constraint support
+  - All tests pass successfully with work-testing dependency added
 - **Unit tests for TrmnlDevicesScreen presenter** - Added 12 comprehensive presenter tests for the main devices screen covering device loading, error handling, and navigation flows
   - Tests cover: initial loading and device fetch, empty state, error handling (401, 404, network failures, missing token), navigation events (settings, device detail, device token screen, content hub), reset token functionality, and multiple devices handling
   - Uses Circuit test patterns with FakeNavigator, `.test {}` extension, and assertk assertions
