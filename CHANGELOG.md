@@ -18,6 +18,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Constraint verification: network-only for battery notifications, strict constraints (network + idle + charging) for RSS sync workers
   - Tests use WorkManager testing library with Robolectric (API 28) for full constraint support
   - All tests pass successfully with work-testing dependency added
+- **Unit tests for LowBatteryNotificationWorker** - Added comprehensive unit tests (22 tests) for the low battery notification worker covering all critical functionality:
+  - Core functionality: Notifications enabled/disabled check, API token validation (null/blank), device fetching with correct authorization
+  - Battery threshold logic: Below/above/exactly at threshold (20%), custom thresholds (10%, 30%), multiple devices, mixed battery levels
+  - Edge case battery values: Zero percent, 100 percent, fractional percentages (19.5%)
+  - API error handling: HTTP errors (401, 404, 500, 503), network failures, API failures, unknown failures with correct Result types (Success, Retry, Failure)
+  - Uses Robolectric for Android framework testing with shadow NotificationManager to verify notifications posted
+  - Tests use fake implementations (`FakeTrmnlApiService`, `FakeUserPreferencesRepository`) following project guidelines
+  - WorkManager testing using `TestListenableWorkerBuilder` with custom dependency injection via dummy worker for `WorkerParameters` extraction
+  - All assertions use assertk library for type-safe testing
+- **FakeTrmnlApiService** - Added reusable fake implementation of `TrmnlApiService` for testing API interactions across the app
+  - Provides configurable responses for all API endpoints (devices, user, recipes, device models, display)
+  - Tracks call counts and last parameters for verification
+  - Follows project guidelines of using fakes instead of mocks
+- **Unit tests for BlogPostSyncWorker** - Added comprehensive unit tests (15 tests) for BlogPostSyncWorker covering background RSS feed synchronization:
+  - Core functionality: Successful sync returns success, new posts saved to database, preserves existing read status, handles zero new posts
+  - Error handling: Network errors return retry, repository failures return retry, unexpected exceptions return retry
+  - Notification logic: Tests for enabled/disabled notifications, zero new posts skipping notifications
+  - Edge cases: Single post, multiple posts with same pubDate, large feeds (50 posts), multiple sync attempts, calculates new post count correctly
+  - Uses WorkManager testing utilities with custom WorkerFactory for dependency injection
+  - Uses fake implementations (FakeBlogPostRepository, FakeUserPreferencesRepository) following established patterns
+  - All tests use assertk for assertions and follow Android WorkManager testing best practices
+  - Added `androidx.work:work-testing` dependency for WorkManager test support
+- **Unit tests for BatteryCollectionWorker** - Added comprehensive unit tests (15 tests) for BatteryCollectionWorker covering all critical background task functionality:
+  - Core functionality: Successful data collection, multi-device handling, data persistence to Room database
+  - Configuration: Battery tracking enabled/disabled, API token validation (missing, blank)
+  - API integration: Success with empty list, null battery voltage, null RSSI, boundary percentages (0%, 100%, 5.5%)
+  - Error handling: HTTP 401 (unauthorized returns failure), HTTP 404/500/503 (returns retry)
+  - Database errors: Write failure propagation
+  - Edge cases: Null values, timestamp validation across multiple devices
+  - Tests use MockWebServer for realistic API simulation with EitherNet, fake implementations (FakeBatteryHistoryRepository, FakeUserPreferencesRepository)
+  - All tests use assertk assertions and WorkManager testing utilities (TestListenableWorkerBuilder, Robolectric)
+  - Test dependencies: Added `androidx-work-testing:2.10.5` for WorkManager testing support
+- **Unit tests for WorkManagerObserver** - Added comprehensive unit tests (20 tests) for WorkManagerObserver implementation covering worker monitoring and management:
+  - Core functionality: Observer initialization, `observeAllWorkers()` flow emission (initial empty state and worker statuses), exception handling during status fetch
+  - Worker state tracking: WorkerStatus properties validation, run attempt count tracking, support for all WorkInfo states (ENQUEUED, RUNNING, SUCCEEDED, FAILED, BLOCKED, CANCELLED), multiple tags handling, empty tags
+  - Worker cancellation: `cancelAllWorkers()` functionality, handling already cancelled workers gracefully
+  - Worker reset: `resetAllWorkerSchedules()` cancels and reschedules workers, verifies correct call order to WorkerScheduler, supports multiple calls
+  - Known worker tracking: Validates worker names for BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, and AnnouncementSyncWorker
+  - Edge cases: No workers scheduled, snapshot emission behavior, flow completion without hanging
+  - Tests use Robolectric with WorkManager testing utilities (`WorkManagerTestInitHelper`), Turbine for Flow testing, AssertK assertions, and FakeWorkerScheduler for isolation
+  - All 20 tests passing
+- **AndroidX Work Testing dependency** - Added `androidx.work:work-testing:2.10.5` for WorkManager unit testing support
 - **Unit tests for TrmnlDevicesScreen presenter** - Added 12 comprehensive presenter tests for the main devices screen covering device loading, error handling, and navigation flows
   - Tests cover: initial loading and device fetch, empty state, error handling (401, 404, network failures, missing token), navigation events (settings, device detail, device token screen, content hub), reset token functionality, and multiple devices handling
   - Uses Circuit test patterns with FakeNavigator, `.test {}` extension, and assertk assertions
