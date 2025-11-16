@@ -32,6 +32,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `BlogPostDaoTest`: 20 tests covering all BlogPostDao operations (IGNORE strategy, queries, search, updates)
   - `FakeAnnouncementDao` and `FakeBlogPostDao`: In-memory test fakes for Flow-based DAO testing
   - Added turbine dependency to content module for Flow testing support
+- **VS Code devcontainer configuration for Android development** - Enables consistent development environment across all contributors
+  - Base image: Java 21 (Bookworm)
+  - Android SDK, NDK, and Command Line Tools automatically installed with latest versions
+  - Environment variables: `ANDROID_HOME` and `ANDROID_SDK_ROOT` configured to `/usr/local/lib/android/sdk`
+  - VS Code extensions: Kotlin, Gradle, Java, GitHub Copilot pre-installed
+  - Automated post-create script (`post-create.sh`) handles SDK license acceptance, installs Platform 35 and Build Tools 35.0.0, and downloads Gradle dependencies
+  - Privileged mode enabled for ADB device access
+  - Local `.android` directory mounted for persistent settings and ADB keys
+  - Port forwarding configured for ADB (port 5037)
+  - Comprehensive README documentation with setup instructions, usage examples, and troubleshooting guide
+  - Enables running `./gradlew koverHtmlReport` locally for test coverage reports
 
 ## [2.6.0] - 2025-11-12
 
