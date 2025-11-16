@@ -295,7 +295,7 @@ class TrmnlDevicesScreenTest {
                 } while (loadedState.devices.isEmpty())
 
                 loadedState.eventSink(TrmnlDevicesScreen.Event.ResetToken)
-                assertThat(navigator.awaitResetRoot()).isEqualTo(AccessTokenScreen)
+                assertThat(navigator.awaitResetRoot().newRoot).isEqualTo(AccessTokenScreen)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -480,25 +480,36 @@ private class FakeAnnouncementDao : AnnouncementDao {
 private class FakeBlogPostDao : BlogPostDao {
     override fun getAll() = flowOf(emptyList<BlogPostEntity>())
 
-    override fun getLatest(limit: Int) = flowOf(emptyList<BlogPostEntity>())
-
-    override fun getUnread() = flowOf(emptyList<BlogPostEntity>())
-
-    override fun getRead() = flowOf(emptyList<BlogPostEntity>())
+    override fun getByCategory(category: String) = flowOf(emptyList<BlogPostEntity>())
 
     override fun getFavorites() = flowOf(emptyList<BlogPostEntity>())
 
-    override suspend fun insertAll(blogPosts: List<BlogPostEntity>) {}
+    override fun getUnread() = flowOf(emptyList<BlogPostEntity>())
+
+    override fun getRecentlyRead() = flowOf(emptyList<BlogPostEntity>())
+
+    override suspend fun insertAll(posts: List<BlogPostEntity>) {}
 
     override suspend fun markAsRead(id: String) {}
 
-    override suspend fun markAsUnread(id: String) {}
+    override suspend fun markAllAsRead(timestamp: java.time.Instant) {}
 
-    override suspend fun markAllAsRead() {}
+    override fun getUnreadCount() = flowOf(0)
+
+    override suspend fun updateReadingProgress(
+        id: String,
+        progress: Float,
+        timestamp: java.time.Instant,
+    ) {}
 
     override suspend fun toggleFavorite(id: String) {}
 
+    override suspend fun updateSummary(
+        id: String,
+        summary: String,
+    ) {}
+
     override suspend fun deleteOlderThan(threshold: Long) {}
 
-    override fun getUnreadCount() = flowOf(0)
+    override fun searchPosts(query: String) = flowOf(emptyList<BlogPostEntity>())
 }
