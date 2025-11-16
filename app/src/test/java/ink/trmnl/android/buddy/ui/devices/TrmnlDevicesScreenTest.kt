@@ -1,5 +1,4 @@
 package ink.trmnl.android.buddy.ui.devices
-
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
@@ -31,7 +30,8 @@ import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.content.repository.ContentFeedRepository
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
-import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
+import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicedetail.DeviceDetailScreen
@@ -395,64 +395,6 @@ private class FakeApiService(
     override suspend fun getRecipe(id: Int): ApiResult<RecipeDetailResponse, ApiError> = throw NotImplementedError()
 
     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = throw NotImplementedError()
-}
-
-private class FakeUserPreferencesRepository(
-    initialPreferences: UserPreferences = UserPreferences(apiToken = "test_token"),
-) : UserPreferencesRepository {
-    private val _userPreferencesFlow = MutableStateFlow(initialPreferences)
-    override val userPreferencesFlow = _userPreferencesFlow
-
-    override suspend fun saveApiToken(token: String) {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(apiToken = token)
-    }
-
-    override suspend fun clearApiToken() {
-        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(apiToken = null)
-    }
-
-    override suspend fun setOnboardingCompleted() {}
-
-    override suspend fun setBatteryTrackingEnabled(enabled: Boolean) {}
-
-    override suspend fun setLowBatteryNotificationEnabled(enabled: Boolean) {}
-
-    override suspend fun setLowBatteryThreshold(percent: Int) {}
-
-    override suspend fun setRssFeedContentEnabled(enabled: Boolean) {}
-
-    override suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean) {}
-
-    override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {}
-
-    override suspend fun setSecurityEnabled(enabled: Boolean) {}
-
-    override suspend fun clearAll() {}
-}
-
-private class FakeDeviceTokenRepository : DeviceTokenRepository {
-    private val tokens = mutableMapOf<String, String>()
-
-    override suspend fun saveDeviceToken(
-        deviceFriendlyId: String,
-        token: String,
-    ) {
-        tokens[deviceFriendlyId] = token
-    }
-
-    override suspend fun getDeviceToken(deviceFriendlyId: String) = tokens[deviceFriendlyId]
-
-    override fun getDeviceTokenFlow(deviceFriendlyId: String): Flow<String?> = flowOf(tokens[deviceFriendlyId])
-
-    override suspend fun clearDeviceToken(deviceFriendlyId: String) {
-        tokens.remove(deviceFriendlyId)
-    }
-
-    override suspend fun hasDeviceToken(deviceFriendlyId: String) = tokens.containsKey(deviceFriendlyId)
-
-    override suspend fun clearAll() {
-        tokens.clear()
-    }
 }
 
 private class FakeAnnouncementDao : AnnouncementDao {

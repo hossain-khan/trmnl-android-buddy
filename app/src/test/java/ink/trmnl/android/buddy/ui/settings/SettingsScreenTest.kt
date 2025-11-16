@@ -7,10 +7,9 @@ import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
-import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import ink.trmnl.android.buddy.security.FakeBiometricAuthHelper
 import ink.trmnl.android.buddy.work.WorkerScheduler
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -306,79 +305,6 @@ class SettingsScreenTest {
 
         override fun cancelBlogPostSync() {
             isBlogPostSyncScheduled = false
-        }
-    }
-
-    /**
-     * Fake implementation of UserPreferencesRepository for testing.
-     */
-    private class FakeUserPreferencesRepository(
-        initialPreferences: UserPreferences = UserPreferences(),
-    ) : UserPreferencesRepository {
-        var batteryTrackingEnabled = initialPreferences.isBatteryTrackingEnabled
-            private set
-
-        var lowBatteryNotificationEnabled = initialPreferences.isLowBatteryNotificationEnabled
-            private set
-
-        var lowBatteryThreshold = initialPreferences.lowBatteryThresholdPercent
-            private set
-
-        private val _userPreferencesFlow =
-            MutableStateFlow(initialPreferences)
-
-        override val userPreferencesFlow = _userPreferencesFlow
-
-        override suspend fun saveApiToken(token: String) {
-            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(apiToken = token)
-        }
-
-        override suspend fun clearApiToken() {
-            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(apiToken = null)
-        }
-
-        override suspend fun setOnboardingCompleted() {
-            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isOnboardingCompleted = true)
-        }
-
-        override suspend fun setBatteryTrackingEnabled(enabled: Boolean) {
-            batteryTrackingEnabled = enabled
-            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isBatteryTrackingEnabled = enabled)
-        }
-
-        override suspend fun setLowBatteryNotificationEnabled(enabled: Boolean) {
-            lowBatteryNotificationEnabled = enabled
-            _userPreferencesFlow.value =
-                _userPreferencesFlow.value.copy(isLowBatteryNotificationEnabled = enabled)
-        }
-
-        override suspend fun setLowBatteryThreshold(percent: Int) {
-            lowBatteryThreshold = percent
-            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(lowBatteryThresholdPercent = percent)
-        }
-
-        override suspend fun setRssFeedContentEnabled(enabled: Boolean) {
-            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isRssFeedContentEnabled = enabled)
-        }
-
-        override suspend fun setRssFeedContentNotificationEnabled(enabled: Boolean) {
-            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isRssFeedContentNotificationEnabled = enabled)
-        }
-
-        override suspend fun setAnnouncementAuthBannerDismissed(dismissed: Boolean) {
-            _userPreferencesFlow.value =
-                _userPreferencesFlow.value.copy(isAnnouncementAuthBannerDismissed = dismissed)
-        }
-
-        override suspend fun setSecurityEnabled(enabled: Boolean) {
-            _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isSecurityEnabled = enabled)
-        }
-
-        override suspend fun clearAll() {
-            _userPreferencesFlow.value = UserPreferences()
-            batteryTrackingEnabled = true
-            lowBatteryNotificationEnabled = false
-            lowBatteryThreshold = 20
         }
     }
 }
