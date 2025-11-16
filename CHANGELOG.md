@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unit tests for WorkManagerObserver** - Added comprehensive unit tests (20 tests) for WorkManagerObserver implementation covering worker monitoring and management:
+  - Core functionality: Observer initialization, `observeAllWorkers()` flow emission (initial empty state and worker statuses), exception handling during status fetch
+  - Worker state tracking: WorkerStatus properties validation, run attempt count tracking, support for all WorkInfo states (ENQUEUED, RUNNING, SUCCEEDED, FAILED, BLOCKED, CANCELLED), multiple tags handling, empty tags
+  - Worker cancellation: `cancelAllWorkers()` functionality, handling already cancelled workers gracefully
+  - Worker reset: `resetAllWorkerSchedules()` cancels and reschedules workers, verifies correct call order to WorkerScheduler, supports multiple calls
+  - Known worker tracking: Validates worker names for BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, and AnnouncementSyncWorker
+  - Edge cases: No workers scheduled, snapshot emission behavior, flow completion without hanging
+  - Tests use Robolectric with WorkManager testing utilities (`WorkManagerTestInitHelper`), Turbine for Flow testing, AssertK assertions, and FakeWorkerScheduler for isolation
+  - All 20 tests passing
+- **AndroidX Work Testing dependency** - Added `androidx.work:work-testing:2.10.5` for WorkManager unit testing support
 - **Unit tests for TrmnlDevicesScreen presenter** - Added 12 comprehensive presenter tests for the main devices screen covering device loading, error handling, and navigation flows
   - Tests cover: initial loading and device fetch, empty state, error handling (401, 404, network failures, missing token), navigation events (settings, device detail, device token screen, content hub), reset token functionality, and multiple devices handling
   - Uses Circuit test patterns with FakeNavigator, `.test {}` extension, and assertk assertions
