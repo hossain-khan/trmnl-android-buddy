@@ -296,6 +296,248 @@ class UserPreferencesRepositoryTest {
             }
         }
 
+    @Test
+    fun `saveApiToken handles empty string`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // When
+            repository.saveApiToken("")
+
+            // Then
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().apiToken).isEqualTo("")
+            }
+        }
+
+    @Test
+    fun `saveApiToken handles very long tokens`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+            val longToken = "x".repeat(5000)
+
+            // When
+            repository.saveApiToken(longToken)
+
+            // Then
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().apiToken).isEqualTo(longToken)
+            }
+        }
+
+    @Test
+    fun `saveApiToken handles special characters`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // When
+            repository.saveApiToken("token-with-special!@#\$%^&*()")
+
+            // Then
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().apiToken).isEqualTo("token-with-special!@#\$%^&*()")
+            }
+        }
+
+    @Test
+    fun `setLowBatteryThreshold handles boundary values`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // Test minimum
+            repository.setLowBatteryThreshold(0)
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().lowBatteryThresholdPercent).isEqualTo(0)
+            }
+
+            // Test maximum
+            repository.setLowBatteryThreshold(100)
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().lowBatteryThresholdPercent).isEqualTo(100)
+            }
+        }
+
+    @Test
+    fun `setLowBatteryThreshold handles negative values`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // When - even though negative doesn't make sense, repository should store it
+            repository.setLowBatteryThreshold(-10)
+
+            // Then
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().lowBatteryThresholdPercent).isEqualTo(-10)
+            }
+        }
+
+    @Test
+    fun `setLowBatteryThreshold handles values over 100`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // When - even though over 100 doesn't make sense, repository should store it
+            repository.setLowBatteryThreshold(150)
+
+            // Then
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().lowBatteryThresholdPercent).isEqualTo(150)
+            }
+        }
+
+    @Test
+    fun `all boolean flags can be toggled back and forth`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // Test battery tracking
+            repository.setBatteryTrackingEnabled(false)
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().isBatteryTrackingEnabled).isFalse()
+            }
+            repository.setBatteryTrackingEnabled(true)
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().isBatteryTrackingEnabled).isTrue()
+            }
+
+            // Test low battery notification
+            repository.setLowBatteryNotificationEnabled(true)
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().isLowBatteryNotificationEnabled).isTrue()
+            }
+            repository.setLowBatteryNotificationEnabled(false)
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().isLowBatteryNotificationEnabled).isFalse()
+            }
+
+            // Test RSS feed content
+            repository.setRssFeedContentEnabled(true)
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().isRssFeedContentEnabled).isTrue()
+            }
+            repository.setRssFeedContentEnabled(false)
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().isRssFeedContentEnabled).isFalse()
+            }
+        }
+
+    @Test
+    fun `clearAll restores all preferences to defaults`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // Set all preferences to non-default values
+            repository.saveApiToken("test-token")
+            repository.setOnboardingCompleted()
+            repository.setBatteryTrackingEnabled(false)
+            repository.setLowBatteryNotificationEnabled(true)
+            repository.setLowBatteryThreshold(25)
+            repository.setRssFeedContentEnabled(true)
+            repository.setRssFeedContentNotificationEnabled(true)
+            repository.setAnnouncementAuthBannerDismissed(true)
+            repository.setSecurityEnabled(true)
+
+            // When
+            repository.clearAll()
+
+            // Then - verify ALL fields are back to defaults
+            repository.userPreferencesFlow.test {
+                val prefs = awaitItem()
+                assertThat(prefs.apiToken).isNull()
+                assertThat(prefs.isOnboardingCompleted).isFalse()
+                assertThat(prefs.isBatteryTrackingEnabled).isTrue()
+                assertThat(prefs.isLowBatteryNotificationEnabled).isFalse()
+                assertThat(prefs.lowBatteryThresholdPercent).isEqualTo(UserPreferences.DEFAULT_LOW_BATTERY_THRESHOLD)
+                assertThat(prefs.isRssFeedContentEnabled).isFalse()
+                assertThat(prefs.isRssFeedContentNotificationEnabled).isFalse()
+                assertThat(prefs.isAnnouncementAuthBannerDismissed).isFalse()
+                assertThat(prefs.isSecurityEnabled).isFalse()
+            }
+        }
+
+    @Test
+    fun `onboarding completed cannot be reversed`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // When
+            repository.setOnboardingCompleted()
+
+            // Then - there's no method to set it back to false
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().isOnboardingCompleted).isTrue()
+            }
+
+            // Only clearAll can reset it
+            repository.clearAll()
+            repository.userPreferencesFlow.test {
+                assertThat(awaitItem().isOnboardingCompleted).isFalse()
+            }
+        }
+
+    @Test
+    fun `multiple rapid changes emit all updates`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            repository.userPreferencesFlow.test {
+                val initial = awaitItem()
+                assertThat(initial.apiToken).isNull()
+
+                // When - make multiple rapid changes
+                repository.saveApiToken("token-1")
+                assertThat(awaitItem().apiToken).isEqualTo("token-1")
+
+                repository.saveApiToken("token-2")
+                assertThat(awaitItem().apiToken).isEqualTo("token-2")
+
+                repository.saveApiToken("token-3")
+                assertThat(awaitItem().apiToken).isEqualTo("token-3")
+
+                repository.clearApiToken()
+                assertThat(awaitItem().apiToken).isNull()
+            }
+        }
+
+    @Test
+    fun `setRssFeedContentEnabled and setRssFeedContentNotificationEnabled are independent`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // When - enable content but not notifications
+            repository.setRssFeedContentEnabled(true)
+            repository.setRssFeedContentNotificationEnabled(false)
+
+            // Then
+            repository.userPreferencesFlow.test {
+                val prefs = awaitItem()
+                assertThat(prefs.isRssFeedContentEnabled).isTrue()
+                assertThat(prefs.isRssFeedContentNotificationEnabled).isFalse()
+            }
+
+            // When - enable notifications but disable content
+            repository.setRssFeedContentEnabled(false)
+            repository.setRssFeedContentNotificationEnabled(true)
+
+            // Then - they remain independent
+            repository.userPreferencesFlow.test {
+                val prefs = awaitItem()
+                assertThat(prefs.isRssFeedContentEnabled).isFalse()
+                assertThat(prefs.isRssFeedContentNotificationEnabled).isTrue()
+            }
+        }
+
     /**
      * Fake in-memory implementation of UserPreferencesRepository for testing.
      */

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Comprehensive unit test coverage for preferences repositories** - Added 26 new edge case tests (from 31 to 57 tests total):
+  - `DeviceTokenRepositoryTest`: Added 14 new tests covering empty tokens, special characters in device IDs, very long tokens, unicode characters, numeric IDs, whitespace handling, case sensitivity, flow isolation, and multiple observers
+  - `UserPreferencesRepositoryTest`: Added 12 new tests covering empty tokens, very long tokens, special characters, boundary values for thresholds (0, 100, negative, >100), rapid changes, boolean flag toggles, and field independence
+  - Tests validate edge cases like empty strings, unicode (🚀, 日本語, العربية), special characters, and data isolation
+  - All tests use fake implementations (no Robolectric) for fast, reliable unit testing
+- **AndroidX Test Core dependency** - Added `androidx.test:core:1.6.1` for unit testing support (ApplicationProvider)
 - **WorkManager Observability and Debugging**: Enhanced monitoring and debugging capabilities for background workers
   - Added `WorkManagerObserver` class to track WorkInfo for all workers (BatteryCollectionWorker, LowBatteryNotificationWorker, BlogPostSyncWorker, AnnouncementSyncWorker)
   - Development screen now displays real-time worker status including state (ENQUEUED, RUNNING, SUCCEEDED, FAILED), run attempts, and constraints
