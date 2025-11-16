@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Comprehensive presenter tests for BlogPostsScreen** - Added 14 unit tests covering all business logic:
+  - Initial loading state and blog post fetch from repository
+  - Empty state handling when no posts are available
+  - Blog post display and sorting (newest first)
+  - Pull-to-refresh functionality with refreshing state
+  - Toggle favorite functionality with state updates
+  - Category filtering (select category and clear filter)
+  - Mark all as read functionality
+  - Blog post click marks post as read
+  - Unread count tracking and updates
+  - Error handling on refresh with error message display
+  - Error handling on initial load
+  - Embedded mode behavior (hides top bar)
+  - Non-embedded mode behavior (shows top bar)
+  - Available categories extraction from blog posts
+  - Tests use `FakeNavigator`, circuit-test `.test {}` extension, assertk assertions, and fake implementations (no mocks)
+  - Tests follow patterns from `RecipesCatalogPresenterTest.kt`
+- **BlogPostRepository made open for testing** - Changed `class BlogPostRepository` to `open class` and `suspend fun refreshBlogPosts()` to `open suspend fun` to enable testing with test doubles
 - **Presenter tests for AnnouncementsScreen** - Added comprehensive unit tests for AnnouncementsScreen presenter covering:
   - Initial loading and data fetch from repository (3 test cases)
   - Filter selection functionality (ALL, UNREAD, READ filters) with 3 tests
