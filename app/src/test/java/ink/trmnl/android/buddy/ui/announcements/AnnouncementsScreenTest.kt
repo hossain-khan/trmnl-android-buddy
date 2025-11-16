@@ -621,19 +621,19 @@ class AnnouncementsScreenTest {
  */
 private class FakeAnnouncementDao : AnnouncementDao {
     private val announcements = mutableListOf<AnnouncementEntity>()
-    private val _allFlow = MutableStateFlow<List<AnnouncementEntity>>(emptyList())
-    private val _unreadFlow = MutableStateFlow<List<AnnouncementEntity>>(emptyList())
-    private val _readFlow = MutableStateFlow<List<AnnouncementEntity>>(emptyList())
-    private val _unreadCountFlow = MutableStateFlow(0)
+    private val allFlow = MutableStateFlow<List<AnnouncementEntity>>(emptyList())
+    private val unreadFlow = MutableStateFlow<List<AnnouncementEntity>>(emptyList())
+    private val readFlow = MutableStateFlow<List<AnnouncementEntity>>(emptyList())
+    private val unreadCountFlow = MutableStateFlow(0)
 
-    override fun getAll(): Flow<List<AnnouncementEntity>> = _allFlow
+    override fun getAll(): Flow<List<AnnouncementEntity>> = allFlow
 
     override fun getLatest(limit: Int): Flow<List<AnnouncementEntity>> =
         MutableStateFlow(announcements.sortedByDescending { it.publishedDate }.take(limit))
 
-    override fun getUnread(): Flow<List<AnnouncementEntity>> = _unreadFlow
+    override fun getUnread(): Flow<List<AnnouncementEntity>> = unreadFlow
 
-    override fun getRead(): Flow<List<AnnouncementEntity>> = _readFlow
+    override fun getRead(): Flow<List<AnnouncementEntity>> = readFlow
 
     override suspend fun insertAll(announcements: List<AnnouncementEntity>) {
         this.announcements.clear()
@@ -669,14 +669,14 @@ private class FakeAnnouncementDao : AnnouncementDao {
         updateFlows()
     }
 
-    override fun getUnreadCount(): Flow<Int> = _unreadCountFlow
+    override fun getUnreadCount(): Flow<Int> = unreadCountFlow
 
     private fun updateFlows() {
         val sorted = announcements.sortedByDescending { it.publishedDate }
-        _allFlow.value = sorted
-        _unreadFlow.value = sorted.filter { !it.isRead }
-        _readFlow.value = sorted.filter { it.isRead }
-        _unreadCountFlow.value = announcements.count { !it.isRead }
+        allFlow.value = sorted
+        unreadFlow.value = sorted.filter { !it.isRead }
+        readFlow.value = sorted.filter { it.isRead }
+        unreadCountFlow.value = announcements.count { !it.isRead }
     }
 
     /**
