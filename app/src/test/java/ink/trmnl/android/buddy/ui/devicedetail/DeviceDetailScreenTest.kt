@@ -701,7 +701,7 @@ class DeviceDetailScreenTest {
 private class FakeBatteryHistoryRepository(
     initialHistory: List<BatteryHistoryEntity> = emptyList(),
 ) : BatteryHistoryRepository {
-    private val _historyFlow = MutableStateFlow(initialHistory)
+    private val historyFlow = MutableStateFlow(initialHistory)
     val recordedReadings = mutableListOf<BatteryHistoryEntity>()
 
     override suspend fun recordBatteryReading(
@@ -718,21 +718,21 @@ private class FakeBatteryHistoryRepository(
                 timestamp = timestamp,
             )
         recordedReadings.add(entity)
-        _historyFlow.value = _historyFlow.value + entity
+        historyFlow.value = historyFlow.value + entity
     }
 
-    override fun getBatteryHistoryForDevice(deviceId: String): Flow<List<BatteryHistoryEntity>> = _historyFlow
+    override fun getBatteryHistoryForDevice(deviceId: String): Flow<List<BatteryHistoryEntity>> = historyFlow
 
-    override suspend fun getLatestBatteryReading(deviceId: String): BatteryHistoryEntity? = _historyFlow.value.maxByOrNull { it.timestamp }
+    override suspend fun getLatestBatteryReading(deviceId: String): BatteryHistoryEntity? = historyFlow.value.maxByOrNull { it.timestamp }
 
     override fun getBatteryHistoryInRange(
         deviceId: String,
         startTime: Long,
         endTime: Long,
-    ): Flow<List<BatteryHistoryEntity>> = _historyFlow
+    ): Flow<List<BatteryHistoryEntity>> = historyFlow
 
     override suspend fun deleteHistoryForDevice(deviceId: String) {
-        _historyFlow.value = emptyList()
+        historyFlow.value = emptyList()
     }
 }
 
