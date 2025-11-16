@@ -15,8 +15,10 @@ import javax.inject.Inject
  *
  * Implements offline-first pattern: data is fetched from RSS feed,
  * stored in Room database, and emitted via Flow for reactive UI updates.
+ *
+ * Marked as `open` to allow subclassing for testing purposes.
  */
-class AnnouncementRepository
+open class AnnouncementRepository
     @Inject
     constructor(
         private val announcementDao: AnnouncementDao,
@@ -70,9 +72,11 @@ class AnnouncementRepository
          * Fetches the latest announcements from usetrmnl.com and stores them
          * in the local database. Preserves read status for existing announcements.
          *
+         * Marked as `open` to allow overriding in tests.
+         *
          * @return Result indicating success or failure with error message.
          */
-        suspend fun refreshAnnouncements(): Result<Unit> =
+        open suspend fun refreshAnnouncements(): Result<Unit> =
             withContext(Dispatchers.IO) {
                 try {
                     val channel = rssParser.getRssChannel(ANNOUNCEMENTS_FEED_URL)

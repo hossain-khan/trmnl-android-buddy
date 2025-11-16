@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unit tests for AnnouncementSyncWorker** - Added comprehensive unit tests (30 tests) for background announcement synchronization:
+  - Core functionality: Successful RSS feed sync, database operations, Result.success() on completion
+  - Read state preservation: Preserves read/unread state during sync for existing announcements, new announcements default to unread
+  - Error handling: Network errors (Result.retry()), parse errors (Result.retry()), database errors (Result.retry()), exceptions during sync
+  - Notification logic: Respects user preferences for enabled/disabled notifications, no notification when no new announcements
+  - Unread count tracking: Correctly tracks unread count before/after sync, handles mixed read/unread states
+  - Edge cases: Empty feed (doesn't clear existing data), single announcement, large feed (50+ announcements), special characters and emoji, very long content, announcements with same timestamp
+  - Incremental sync: Only adds new announcements, preserves existing announcements, updates existing content when changed
+  - Uses fake implementations (FakeAnnouncementRepository, FakeAnnouncementDao, FakeUserPreferencesRepository) following project testing patterns
+  - All tests use assertk for assertions, Robolectric for Android framework access, and WorkManager testing utilities
+  - Made AnnouncementRepository.refreshAnnouncements() `open` to allow test overriding (matches BlogPostRepository pattern)
 - **Unit tests for TrmnlDevicesScreen presenter** - Added 12 comprehensive presenter tests for the main devices screen covering device loading, error handling, and navigation flows
   - Tests cover: initial loading and device fetch, empty state, error handling (401, 404, network failures, missing token), navigation events (settings, device detail, device token screen, content hub), reset token functionality, and multiple devices handling
   - Uses Circuit test patterns with FakeNavigator, `.test {}` extension, and assertk assertions
