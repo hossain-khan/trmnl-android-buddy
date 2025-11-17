@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Applied Jetpack Compose best practices for performance** - Optimized composable functions by memoizing expensive calculations with `remember`, avoiding unnecessary recompositions. Key improvements:
+  - Memoized filter counts in DeviceCatalogContent to prevent recalculation on every recomposition
+  - Memoized filtered device list based on selection to avoid redundant filtering
+  - Pre-sorted battery history in BatteryChart to avoid repeated sorting in valueFormatter
+  - Memoized date formatter in BatteryChart to avoid recreating SimpleDateFormat
+  - Memoized logo resource lookup in DeviceListItem based on device kind
 - **Refactored UI architecture** - Split `AccessTokenScreen`, `AuthenticationScreen`, and `DevicePreviewScreen` into separate files following the pattern of `BookmarkedRecipesScreen`:
   - Screen definition (State, Event) in `*Screen.kt`
   - Presenter logic in `*Presenter.kt`

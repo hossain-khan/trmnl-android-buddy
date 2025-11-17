@@ -10,6 +10,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -35,14 +36,16 @@ fun DeviceListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Determine which logo to show based on device kind
+    // Determine which logo to show based on device kind - memoized
     val logoResource =
-        when (device.deviceKind) {
-            DeviceKind.TRMNL -> R.drawable.trmnl_logo_brand_orange
-            DeviceKind.KINDLE -> R.drawable.amazon_kindle_logo
-            DeviceKind.SEEED_STUDIO -> R.drawable.seed_studio_color_logo
-            DeviceKind.KOBO -> R.drawable.kobo_logo
-            DeviceKind.BYOD -> null
+        remember(device.deviceKind) {
+            when (device.deviceKind) {
+                DeviceKind.TRMNL -> R.drawable.trmnl_logo_brand_orange
+                DeviceKind.KINDLE -> R.drawable.amazon_kindle_logo
+                DeviceKind.SEEED_STUDIO -> R.drawable.seed_studio_color_logo
+                DeviceKind.KOBO -> R.drawable.kobo_logo
+                DeviceKind.BYOD -> null
+            }
         }
 
     Card(
