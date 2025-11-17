@@ -3,11 +3,6 @@
   "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
   
   "features": {
-    "ghcr.io/devcontainers/features/android-sdk:1": {
-      "version": "latest",
-      "ndkVersion": "latest",
-      "cmdLineToolsVersion": "latest"
-    },
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
