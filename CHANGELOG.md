@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Refactored UI architecture** - Split `AccessTokenScreen`, `AuthenticationScreen`, and `DevicePreviewScreen` into separate files following the pattern of `BookmarkedRecipesScreen`:
+  - Screen definition (State, Event) in `*Screen.kt`
+  - Presenter logic in `*Presenter.kt`
+  - UI composables in `*Content.kt`
+  - Improves code organization, maintainability, and follows project architecture patterns
+
 ### Fixed
 
 - **Removed untestable ignored unit tests** - Removed 6 DevelopmentPresenterTest tests that were fundamentally untestable due to Circuit test framework limitations with CompositionLocalProvider and Activity context requirements. The removed tests were redundant with existing passing tests.
