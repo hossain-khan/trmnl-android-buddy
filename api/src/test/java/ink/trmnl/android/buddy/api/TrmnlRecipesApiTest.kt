@@ -41,8 +41,15 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
  * - Pagination metadata
  *
  * **Note**: These are public endpoints that do NOT require authentication.
+ *
+ * **IGNORED**: These tests use hardcoded URLs (https://usetrmnl.com/recipes.json) that bypass
+ * MockWebServer's base URL, making them incompatible with unit testing. The recipe endpoints
+ * are at a different path than the main API (/recipes vs /api/).
+ *
+ * JSON parsing is covered by RecipeListJsonParsingTest which tests model deserialization directly.
+ * API integration should be tested manually or with integration tests.
  */
-@Ignore("Tests are hanging in CI environment, need investigation")
+@Ignore("Recipe endpoints use hardcoded URLs that bypass MockWebServer base URL")
 class TrmnlRecipesApiTest {
     private lateinit var mockWebServer: MockWebServer
     private lateinit var apiService: TrmnlApiService
