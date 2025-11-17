@@ -9,19 +9,10 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
-import assertk.assertions.prop
 import com.slack.eithernet.ApiResult
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
-import retrofit2.Retrofit
-import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 /**
  * Unit tests for TrmnlApiService device endpoints using MockWebServer.
@@ -36,47 +27,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
  * - Network failures
  * - JSON parsing
  */
-class TrmnlDeviceApiTest {
-    private lateinit var mockWebServer: MockWebServer
-    private lateinit var apiService: TrmnlApiService
-
-    private val json =
-        Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            coerceInputValues = true
-        }
-
-    @Before
-    fun setup() {
-        // Create and start MockWebServer
-        mockWebServer = MockWebServer()
-        mockWebServer.start()
-
-        // Create Retrofit instance pointing to mock server
-        val okHttpClient = OkHttpClient.Builder().build()
-
-        val retrofit =
-            Retrofit
-                .Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .client(okHttpClient)
-                .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                ).addConverterFactory(
-                    json.asConverterFactory("application/json".toMediaType()),
-                ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                ).build()
-
-        apiService = retrofit.create(TrmnlApiService::class.java)
-    }
-
-    @After
-    fun teardown() {
-        mockWebServer.shutdown()
-    }
-
+class TrmnlDeviceApiTest : BaseApiTest() {
     @Test
     fun `getDevices returns success with device list`() =
         runTest {

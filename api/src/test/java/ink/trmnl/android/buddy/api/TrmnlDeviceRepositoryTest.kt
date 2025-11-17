@@ -11,16 +11,9 @@ import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.User
 import ink.trmnl.android.buddy.api.models.UserResponse
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Retrofit
-import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 /**
  * Unit tests for TrmnlDeviceRepository.
@@ -28,49 +21,15 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
  * Tests the repository layer that wraps the API service,
  * verifying proper error handling, data transformation, and convenience methods.
  */
-class TrmnlDeviceRepositoryTest {
-    private lateinit var mockWebServer: MockWebServer
-    private lateinit var apiService: TrmnlApiService
+class TrmnlDeviceRepositoryTest : BaseApiTest() {
     private lateinit var repository: TrmnlDeviceRepository
 
     private val testApiKey = "user_test123"
 
-    private val json =
-        Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            coerceInputValues = true
-        }
-
     @Before
-    fun setup() {
-        // Create and start MockWebServer
-        mockWebServer = MockWebServer()
-        mockWebServer.start()
-
-        // Create Retrofit instance pointing to mock server
-        val okHttpClient = OkHttpClient.Builder().build()
-
-        val retrofit =
-            Retrofit
-                .Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .client(okHttpClient)
-                .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                ).addConverterFactory(
-                    json.asConverterFactory("application/json".toMediaType()),
-                ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                ).build()
-
-        apiService = retrofit.create(TrmnlApiService::class.java)
+    override fun setUp() {
+        super.setUp()
         repository = TrmnlDeviceRepository(apiService, testApiKey)
-    }
-
-    @After
-    fun teardown() {
-        mockWebServer.shutdown()
     }
 
     @Test
