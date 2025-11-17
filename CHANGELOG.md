@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Removed untestable ignored unit tests** - Removed 6 DevelopmentPresenterTest tests that were fundamentally untestable due to Circuit test framework limitations with CompositionLocalProvider and Activity context requirements. The removed tests were redundant with existing passing tests.
+
 ### Changed
 
+- **Improved ignored test documentation** - Enhanced TrmnlRecipesApiTest @Ignore annotation to explain architectural constraints: recipe endpoints use hardcoded absolute URLs that bypass MockWebServer. JSON parsing is already covered by RecipeListJsonParsingTest.
 - **Optimized unit test setup code** - Created shared `ApiServiceTestHelper` to centralize duplicate Retrofit/OkHttp test setup logic, improving test maintainability.
 - **Optimized RecipesCatalogPresenterTest performance** - Achieved 97% speed improvement (~36s → ~0.6s) by fixing test patterns, splitting monolithic test into 5 separate tests, and replacing arbitrary delays with proper test scheduler usage
 - **Refactored centralized test fakes** - Consolidated duplicate fake implementations to centralized fakes in `ink.trmnl.android.buddy.fakes`, eliminating ~160 lines of duplicate code across 4 test files. Enhanced fakes with MutableStateFlow for reactive updates, initialHistory/initialTokens parameters, error injection support, and notification helpers.
