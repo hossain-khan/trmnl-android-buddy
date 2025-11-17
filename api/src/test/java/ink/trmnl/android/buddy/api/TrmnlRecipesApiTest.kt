@@ -2,7 +2,6 @@ package ink.trmnl.android.buddy.api
 
 import assertk.assertThat
 import assertk.assertions.hasSize
-import assertk.assertions.isCloseTo
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
@@ -12,17 +11,9 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.slack.eithernet.ApiResult
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
-import retrofit2.Retrofit
-import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 /**
  * Unit tests for TrmnlApiService recipe endpoints using MockWebServer.
@@ -50,47 +41,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
  * API integration should be tested manually or with integration tests.
  */
 @Ignore("Recipe endpoints use hardcoded URLs that bypass MockWebServer base URL")
-class TrmnlRecipesApiTest {
-    private lateinit var mockWebServer: MockWebServer
-    private lateinit var apiService: TrmnlApiService
-
-    private val json =
-        Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            coerceInputValues = true
-        }
-
-    @Before
-    fun setup() {
-        // Create and start MockWebServer
-        mockWebServer = MockWebServer()
-        mockWebServer.start()
-
-        // Create Retrofit instance pointing to mock server
-        val okHttpClient = OkHttpClient.Builder().build()
-
-        val retrofit =
-            Retrofit
-                .Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .client(okHttpClient)
-                .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                ).addConverterFactory(
-                    json.asConverterFactory("application/json".toMediaType()),
-                ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                ).build()
-
-        apiService = retrofit.create(TrmnlApiService::class.java)
-    }
-
-    @After
-    fun teardown() {
-        mockWebServer.shutdown()
-    }
-
+class TrmnlRecipesApiTest : BaseApiTest() {
     @Test
     fun `getRecipes returns success with recipe list`() =
         runTest {
