@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Refactored UI architecture for better maintainability** - Split three additional monolithic Circuit UI screen files into separate Screen, Presenter, and Content files following the established `BookmarkedRecipesScreen` pattern:
+- **Refactored UI architecture for better maintainability** - Split five monolithic Circuit UI screen files into separate Screen, Presenter, and Content files following the established `BookmarkedRecipesScreen` pattern:
+  - `BlogPostsScreen.kt` (953 lines) → `BlogPostsScreen.kt` (55 lines) + `BlogPostsPresenter.kt` (157 lines) + `BlogPostsContent.kt` (757 lines)
+  - `AnnouncementsScreen.kt` (1038 lines) → `AnnouncementsScreen.kt` (57 lines) + `AnnouncementsPresenter.kt` (164 lines) + `AnnouncementsContent.kt` (834 lines)
   - `WelcomeScreen.kt` (644 lines) → `WelcomeScreen.kt` (28 lines) + `WelcomePresenter.kt` (144 lines) + `WelcomeContent.kt` (482 lines)
   - `DeviceTokenScreen.kt` (690 lines) → `DeviceTokenScreen.kt` (42 lines) + `DeviceTokenPresenter.kt` (117 lines) + `DeviceTokenContent.kt` (539 lines)
   - `DeviceDetailScreen.kt` (894 lines) → `DeviceDetailScreen.kt` (53 lines) + `DeviceDetailPresenter.kt` (176 lines) + `DeviceDetailContent.kt` (683 lines)
-  - Benefits: Clear separation of concerns (state contract, business logic, UI composition), easier navigation with focused ~100-200 line files instead of 600-900 line files, improved testability with business logic isolated from UI concerns
+  - Benefits: Clear separation of concerns (state contract, business logic, UI composition), easier navigation with focused ~100-200 line files instead of 600-1000 line files, improved testability with business logic isolated from UI concerns
 - **Applied Jetpack Compose best practices for performance** - Optimized composable functions by memoizing expensive calculations with `remember`, avoiding unnecessary recompositions. Key improvements:
   - Memoized filter counts in DeviceCatalogContent to prevent recalculation on every recomposition
   - Memoized filtered device list based on selection to avoid redundant filtering
