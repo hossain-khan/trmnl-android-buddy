@@ -16,7 +16,8 @@
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "redhat.java",
-        "vscjava.vscode-java-pack"
+        "vscjava.vscode-java-pack",
+        "k--kato.intellij-idea-keybindings"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
