@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Fixed dev container permission errors** - Added `sudo` commands in post-create script for Android SDK installation to resolve permission denied errors when creating directories in `/usr/local/lib/android`
 - **Removed untestable ignored unit tests** - Removed 6 DevelopmentPresenterTest tests that were fundamentally untestable due to Circuit test framework limitations with CompositionLocalProvider and Activity context requirements. The removed tests were redundant with existing passing tests.
 
 ### Changed

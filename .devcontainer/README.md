@@ -5,9 +5,9 @@ This directory contains the development container configuration for TRMNL Androi
 ## Features
 
 - **Base Image**: Java 21 (Bookworm)
-- **Android SDK**: Automatically installed with latest version
-- **Android NDK**: Latest version
-- **Command Line Tools**: Latest version
+- **Android SDK**: Manually installed via post-create script
+- **Android Command Line Tools**: Version 11076708
+- **Platform Tools**: Latest version
 - **VS Code Extensions**: Kotlin, Gradle, Java, and GitHub Copilot support
 
 ## Environment Variables
@@ -18,11 +18,12 @@ This directory contains the development container configuration for TRMNL Androi
 ## Post-Create Setup
 
 The `post-create.sh` script automatically:
-1. Accepts Android SDK licenses
-2. Installs Android SDK Platform 35 and Build Tools 35.0.0
-3. Updates SDK components
-4. Sets Gradle wrapper permissions
-5. Pre-downloads Gradle dependencies
+1. Downloads and installs Android SDK Command Line Tools if not present
+2. Accepts Android SDK licenses
+3. Installs Android SDK Platform 35 and Build Tools 35.0.0
+4. Updates SDK components
+5. Sets Gradle wrapper permissions
+6. Pre-downloads Gradle dependencies
 
 ## Usage
 
