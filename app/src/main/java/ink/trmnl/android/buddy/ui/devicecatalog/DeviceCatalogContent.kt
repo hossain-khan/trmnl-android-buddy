@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,19 @@ import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.launch
+
+/**
+ * Data class to hold filter counts for device catalog.
+ * Using a data class helps Compose optimize recompositions.
+ */
+private data class FilterCounts(
+    val total: Int,
+    val trmnl: Int,
+    val kindle: Int,
+    val byod: Int,
+    val seeedStudio: Int,
+    val kobo: Int,
+)
 
 /**
  * Main UI content for the device catalog screen.
@@ -142,20 +156,27 @@ private fun DeviceListContent(
     onDeviceClick: (DeviceModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Filter devices based on selected filter
+    // Filter devices based on selected filter - memoized to avoid recalculation
     val filteredDevices =
-        when (selectedFilter) {
-            null -> devices // All
-            else -> devices.filter { it.deviceKind == selectedFilter }
+        remember(devices, selectedFilter) {
+            when (selectedFilter) {
+                null -> devices // All
+                else -> devices.filter { it.deviceKind == selectedFilter }
+            }
         }
 
-    // Calculate counts for each filter
-    val totalCount = devices.size
-    val trmnlCount = devices.count { it.deviceKind == DeviceKind.TRMNL }
-    val kindleCount = devices.count { it.deviceKind == DeviceKind.KINDLE }
-    val byodCount = devices.count { it.deviceKind == DeviceKind.BYOD }
-    val seeedStudioCount = devices.count { it.deviceKind == DeviceKind.SEEED_STUDIO }
-    val koboCount = devices.count { it.deviceKind == DeviceKind.KOBO }
+    // Calculate counts for each filter - memoized to avoid recalculation on every recomposition
+    val filterCounts =
+        remember(devices) {
+            FilterCounts(
+                total = devices.size,
+                trmnl = devices.count { it.deviceKind == DeviceKind.TRMNL },
+                kindle = devices.count { it.deviceKind == DeviceKind.KINDLE },
+                byod = devices.count { it.deviceKind == DeviceKind.BYOD },
+                seeedStudio = devices.count { it.deviceKind == DeviceKind.SEEED_STUDIO },
+                kobo = devices.count { it.deviceKind == DeviceKind.KOBO },
+            )
+        }
 
     Column(modifier = modifier.fillMaxSize()) {
         // Filter chips row
@@ -170,32 +191,32 @@ private fun DeviceListContent(
             FilterChip(
                 selected = selectedFilter == null,
                 onClick = { onFilterSelected(null) },
-                label = { Text("All ($totalCount)") },
+                label = { Text("All (${filterCounts.total})") },
             )
             FilterChip(
                 selected = selectedFilter == DeviceKind.TRMNL,
                 onClick = { onFilterSelected(DeviceKind.TRMNL) },
-                label = { Text("TRMNL ($trmnlCount)") },
+                label = { Text("TRMNL (${filterCounts.trmnl})") },
             )
             FilterChip(
                 selected = selectedFilter == DeviceKind.KINDLE,
                 onClick = { onFilterSelected(DeviceKind.KINDLE) },
-                label = { Text("Kindle ($kindleCount)") },
+                label = { Text("Kindle (${filterCounts.kindle})") },
             )
             FilterChip(
                 selected = selectedFilter == DeviceKind.BYOD,
                 onClick = { onFilterSelected(DeviceKind.BYOD) },
-                label = { Text("BYOD ($byodCount)") },
+                label = { Text("BYOD (${filterCounts.byod})") },
             )
             FilterChip(
                 selected = selectedFilter == DeviceKind.SEEED_STUDIO,
                 onClick = { onFilterSelected(DeviceKind.SEEED_STUDIO) },
-                label = { Text("Seeed Studio ($seeedStudioCount)") },
+                label = { Text("Seeed Studio (${filterCounts.seeedStudio})") },
             )
             FilterChip(
                 selected = selectedFilter == DeviceKind.KOBO,
                 onClick = { onFilterSelected(DeviceKind.KOBO) },
-                label = { Text("Kobo ($koboCount)") },
+                label = { Text("Kobo (${filterCounts.kobo})") },
             )
         }
 

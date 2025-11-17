@@ -711,17 +711,18 @@ private fun BatteryChart(
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }
 
+    // Pre-sort battery history once for use in chart and formatter
+    val sortedHistory = remember(batteryHistory) { batteryHistory.sortedBy { it.timestamp } }
+
     // Calculate chart width based on number of data points (50dp per data point minimum)
     val chartWidth =
         remember(batteryHistory.size) {
             maxOf(300, batteryHistory.size * 50)
         }
 
-    LaunchedEffect(batteryHistory) {
+    LaunchedEffect(sortedHistory) {
         withContext(Dispatchers.Default) {
-            if (batteryHistory.isNotEmpty()) {
-                // Sort by timestamp ascending for chart
-                val sortedHistory = batteryHistory.sortedBy { it.timestamp }
+            if (sortedHistory.isNotEmpty()) {
                 val yValues = sortedHistory.map { it.percentCharged.toFloat() }
 
                 modelProducer.runTransaction {
@@ -733,7 +734,7 @@ private fun BatteryChart(
         }
     }
 
-    if (batteryHistory.isNotEmpty()) {
+    if (sortedHistory.isNotEmpty()) {
         val primaryColor = MaterialTheme.colorScheme.primary
 
         // Create a custom line layer with points
@@ -761,6 +762,9 @@ private fun BatteryChart(
                 ),
             )
 
+        // Memoize the date formatter to avoid recreating SimpleDateFormat
+        val dateFormatter = remember { SimpleDateFormat("MM/dd", Locale.getDefault()) }
+
         CartesianChartHost(
             chart =
                 rememberCartesianChart(
@@ -770,12 +774,11 @@ private fun BatteryChart(
                         HorizontalAxis.rememberBottom(
                             title = "Time",
                             valueFormatter = { _, value, _ ->
-                                // Convert index to date
+                                // Convert index to date using pre-sorted history
                                 val index = value.toInt()
-                                if (index >= 0 && index < batteryHistory.size) {
-                                    val sortedHistory = batteryHistory.sortedBy { it.timestamp }
+                                if (index >= 0 && index < sortedHistory.size) {
                                     val timestamp = sortedHistory[index].timestamp
-                                    SimpleDateFormat("MM/dd", Locale.getDefault()).format(Date(timestamp))
+                                    dateFormatter.format(Date(timestamp))
                                 } else {
                                     ""
                                 }

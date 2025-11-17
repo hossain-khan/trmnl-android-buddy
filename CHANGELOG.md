@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Applied Jetpack Compose best practices for performance** - Optimized composable functions by memoizing expensive calculations with `remember`, avoiding unnecessary recompositions. Key improvements:
+  - Memoized filter counts in DeviceCatalogContent to prevent recalculation on every recomposition
+  - Memoized filtered device list based on selection to avoid redundant filtering
+  - Pre-sorted battery history in BatteryChart to avoid repeated sorting in valueFormatter
+  - Memoized date formatter in BatteryChart to avoid recreating SimpleDateFormat
+  - Memoized logo resource lookup in DeviceListItem based on device kind
+
 ### Fixed
 
 - **Removed untestable ignored unit tests** - Removed 6 DevelopmentPresenterTest tests that were fundamentally untestable due to Circuit test framework limitations with CompositionLocalProvider and Activity context requirements. The removed tests were redundant with existing passing tests.
