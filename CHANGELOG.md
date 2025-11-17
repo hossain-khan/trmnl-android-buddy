@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Jetpack Compose previews for UI components** - Added `@Preview` annotations to composables that were missing them for better development experience and visual verification:
+  - `TrmnlTitle` component with previews for short text, long text, and dark theme
+  - `DeviceDetailContent` internal composables including LowBatteryBanner, CurrentStatusCard, BatteryHistoryChart states, DisclaimerCard, and ManualBatteryRecordingCard with various states and themes
+
 ### Changed
 
 - **Refactored UI architecture for better maintainability** - Split five monolithic Circuit UI screen files into separate Screen, Presenter, and Content files following the established `BookmarkedRecipesScreen` pattern:

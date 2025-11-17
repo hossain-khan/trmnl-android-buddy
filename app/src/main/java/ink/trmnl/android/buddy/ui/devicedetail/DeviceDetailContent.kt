@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
@@ -68,6 +69,7 @@ import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
+import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
@@ -680,5 +682,180 @@ private fun ManualBatteryRecordingCard(
                 }
             }
         }
+    }
+}
+
+// Preview Composables
+@Preview(
+    name = "Low Battery Banner",
+    showBackground = true,
+)
+@Composable
+private fun LowBatteryBannerPreview() {
+    TrmnlBuddyAppTheme {
+        LowBatteryBanner(
+            currentBattery = 15.0,
+            thresholdPercent = 20,
+        )
+    }
+}
+
+@Preview(
+    name = "Low Battery Banner - Dark Theme",
+    showBackground = true,
+)
+@Composable
+private fun LowBatteryBannerDarkPreview() {
+    TrmnlBuddyAppTheme(darkTheme = true) {
+        LowBatteryBanner(
+            currentBattery = 10.0,
+            thresholdPercent = 20,
+        )
+    }
+}
+
+@Preview(
+    name = "Current Status Card - Full Battery",
+    showBackground = true,
+)
+@Composable
+private fun CurrentStatusCardFullPreview() {
+    TrmnlBuddyAppTheme {
+        CurrentStatusCard(
+            currentBattery = 98.0,
+            currentVoltage = 3.7,
+            wifiStrength = 85.0,
+            rssi = -45,
+        )
+    }
+}
+
+@Preview(
+    name = "Current Status Card - Low Battery",
+    showBackground = true,
+)
+@Composable
+private fun CurrentStatusCardLowPreview() {
+    TrmnlBuddyAppTheme {
+        CurrentStatusCard(
+            currentBattery = 15.0,
+            currentVoltage = 3.2,
+            wifiStrength = 50.0,
+            rssi = -70,
+        )
+    }
+}
+
+@Preview(
+    name = "Current Status Card - No Voltage/RSSI",
+    showBackground = true,
+)
+@Composable
+private fun CurrentStatusCardNoDataPreview() {
+    TrmnlBuddyAppTheme {
+        CurrentStatusCard(
+            currentBattery = 67.0,
+            currentVoltage = null,
+            wifiStrength = 75.0,
+            rssi = null,
+        )
+    }
+}
+
+@Preview(
+    name = "Battery History Chart - No Data",
+    showBackground = true,
+)
+@Composable
+private fun BatteryHistoryChartEmptyPreview() {
+    TrmnlBuddyAppTheme {
+        BatteryHistoryChart(
+            batteryHistory = emptyList(),
+            isLoading = false,
+            isBatteryTrackingEnabled = true,
+        )
+    }
+}
+
+@Preview(
+    name = "Battery History Chart - Loading",
+    showBackground = true,
+)
+@Composable
+private fun BatteryHistoryChartLoadingPreview() {
+    TrmnlBuddyAppTheme {
+        BatteryHistoryChart(
+            batteryHistory = emptyList(),
+            isLoading = true,
+            isBatteryTrackingEnabled = true,
+        )
+    }
+}
+
+@Preview(
+    name = "Battery History Chart - Tracking Disabled",
+    showBackground = true,
+)
+@Composable
+private fun BatteryHistoryChartDisabledPreview() {
+    TrmnlBuddyAppTheme {
+        BatteryHistoryChart(
+            batteryHistory = emptyList(),
+            isLoading = false,
+            isBatteryTrackingEnabled = false,
+        )
+    }
+}
+
+@Preview(
+    name = "Disclaimer Card",
+    showBackground = true,
+)
+@Composable
+private fun DisclaimerCardPreview() {
+    TrmnlBuddyAppTheme {
+        DisclaimerCard()
+    }
+}
+
+@Preview(
+    name = "Manual Battery Recording Card - Not Recorded",
+    showBackground = true,
+)
+@Composable
+private fun ManualBatteryRecordingCardPreview() {
+    TrmnlBuddyAppTheme {
+        ManualBatteryRecordingCard(
+            hasRecordedToday = false,
+            onRecordBattery = {},
+        )
+    }
+}
+
+@Preview(
+    name = "Manual Battery Recording Card - Already Recorded",
+    showBackground = true,
+)
+@Composable
+private fun ManualBatteryRecordingCardRecordedPreview() {
+    TrmnlBuddyAppTheme {
+        ManualBatteryRecordingCard(
+            hasRecordedToday = true,
+            onRecordBattery = {},
+        )
+    }
+}
+
+@Preview(
+    name = "Manual Battery Recording Card - Dark Theme",
+    showBackground = true,
+)
+@Composable
+private fun ManualBatteryRecordingCardDarkPreview() {
+    TrmnlBuddyAppTheme(darkTheme = true) {
+        ManualBatteryRecordingCard(
+            hasRecordedToday = false,
+            onRecordBattery = {},
+        )
     }
 }
