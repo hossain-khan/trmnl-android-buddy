@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Pre-sorted battery history in BatteryChart to avoid repeated sorting in valueFormatter
   - Memoized date formatter in BatteryChart to avoid recreating SimpleDateFormat
   - Memoized logo resource lookup in DeviceListItem based on device kind
+- **Refactored UI architecture** - Split `AccessTokenScreen`, `AuthenticationScreen`, and `DevicePreviewScreen` into separate files following the pattern of `BookmarkedRecipesScreen`:
+  - Screen definition (State, Event) in `*Screen.kt`
+  - Presenter logic in `*Presenter.kt`
+  - UI composables in `*Content.kt`
+  - Improves code organization, maintainability, and follows project architecture patterns
 
 ### Fixed
 
