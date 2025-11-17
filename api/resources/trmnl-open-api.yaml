@@ -4,7 +4,7 @@ info:
   title: TRMNL API
   version: '1'
 paths:
-  "/display":
+  "/api/display":
     get:
       summary: Fetch the next screen
       tags:
@@ -104,7 +104,7 @@ paths:
                     type: string
                     nullable: true
                     example: identify
-  "/display/current":
+  "/api/display/current":
     get:
       summary: Fetch the current screen
       tags:
@@ -142,7 +142,7 @@ paths:
                     type: string
                     nullable: true
                     example: '2023-01-01T00:00:00Z'
-  "/log":
+  "/api/log":
     post:
       summary: Log with logs[] (array)
       tags:
@@ -170,7 +170,7 @@ paths:
         required: true
         description: 'An array of log entries. Each entry can be any JSON type: string,
           object, etc.'
-  "/setup":
+  "/api/setup":
     get:
       summary: Set up device
       tags:
@@ -217,7 +217,80 @@ paths:
                   message:
                     type: string
                     example: Register at usetrmnl.com/signup with Device ID 'ABC-123'
-  "/models":
+  "/api/ips":
+    get:
+      summary: List all TRMNL server IP addresses
+      tags:
+      - Server IPs
+      description: |
+        Returns a list of public IP addresses for all TRMNL core servers.
+
+        Plugin poll requests will only originate from these IPs.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      ipv4:
+                        type: array
+                        items:
+                          type: string
+                      ipv6:
+                        type: array
+                        items:
+                          type: string
+  "/api/markup":
+    post:
+      summary: Render Liquid template
+      tags:
+      - Markup
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                markup:
+                  type: string
+                  example: Hello, {{ name }}!
+                variables:
+                  type: object
+                  example:
+                    name: World
+              required:
+              - markup
+              - variables
+              additionalProperties: false
+        required: true
+        description: The Liquid markup to render and an optional set of variables
+          to use in the rendering process.
+  "/api/models":
     get:
       summary: List all device models
       tags:
@@ -234,7 +307,7 @@ paths:
                     type: array
                     items:
                       "$ref": "#/components/schemas/Model"
-  "/palettes":
+  "/api/palettes":
     get:
       summary: List all palettes
       tags:
@@ -251,7 +324,7 @@ paths:
                     type: array
                     items:
                       "$ref": "#/components/schemas/Palette"
-  "/devices":
+  "/api/devices":
     get:
       summary: List my devices
       tags:
@@ -276,7 +349,7 @@ paths:
                     type: array
                     items:
                       "$ref": "#/components/schemas/Device"
-  "/devices/{id}":
+  "/api/devices/{id}":
     parameters:
     - name: id
       in: path
@@ -312,7 +385,7 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
-  "/me":
+  "/api/me":
     get:
       summary: Get my user data
       tags:
@@ -335,7 +408,7 @@ paths:
                 properties:
                   data:
                     "$ref": "#/components/schemas/User"
-  "/playlists/items":
+  "/api/playlists/items":
     get:
       summary: List my playlist items
       tags:
@@ -360,7 +433,7 @@ paths:
                     type: array
                     items:
                       "$ref": "#/components/schemas/PlaylistItem"
-  "/playlists/items/{id}":
+  "/api/playlists/items/{id}":
     patch:
       summary: Update a playlist item
       tags:
@@ -393,7 +466,7 @@ paths:
                   type: boolean
               required:
               - visible
-  "/plugin_settings/{id}/archive":
+  "/api/plugin_settings/{id}/archive":
     parameters:
     - name: id
       in: path
@@ -405,15 +478,15 @@ paths:
       summary: Download a plugin setting archive
       tags:
       - Plugin Settings
+      description: |
+        This endpoint is available for unauthenticated requests.
+
+        When unauthenticated, any published recipe may be archived.
+
+        When authenticated, the requesting user's private plugins are also archivable.
       security:
       - bearer_auth: []
       responses:
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/Error"
         '200':
           description: Success
         '404':
@@ -464,7 +537,7 @@ paths:
               type: file
         required: true
         description: Plugin setting archive file
-  "/plugin_settings/{id}/data":
+  "/api/plugin_settings/{id}/data":
     parameters:
     - name: id
       in: path
@@ -553,7 +626,7 @@ paths:
               additionalProperties: false
         required: true
         description: The value of `merge_variables` must be a JSON object
-  "/plugin_settings":
+  "/api/plugin_settings":
     get:
       summary: List my plugin settings
       tags:
@@ -620,7 +693,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/PluginSettingParams"
         required: true
-  "/plugin_settings/{id}":
+  "/api/plugin_settings/{id}":
     delete:
       summary: Delete a plugin setting
       tags:
@@ -650,7 +723,7 @@ paths:
               schema:
                 "$ref": "#/components/schemas/Error"
 servers:
-- url: https://{defaultHost}/api
+- url: https://{defaultHost}
   variables:
     defaultHost:
       default: usetrmnl.com
@@ -908,6 +981,9 @@ components:
       type: object
       additionalProperties: false
       properties:
+        id:
+          type: integer
+          example: 42
         name:
           type: string
           example: Jim Bob
