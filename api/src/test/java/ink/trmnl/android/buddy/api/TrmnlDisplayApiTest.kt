@@ -7,16 +7,8 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import com.slack.eithernet.ApiResult
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
-import retrofit2.Retrofit
-import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 /**
  * Unit tests for TRMNL Display API endpoints.
@@ -35,46 +27,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
  * - Network failures
  * - JSON field parsing and deserialization
  */
-class TrmnlDisplayApiTest {
-    private lateinit var mockWebServer: MockWebServer
-    private lateinit var apiService: TrmnlApiService
-
-    private val json =
-        Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            coerceInputValues = true
-        }
-
-    @Before
-    fun setUp() {
-        mockWebServer = MockWebServer()
-        mockWebServer.start()
-
-        // Create Retrofit instance pointing to mock server
-        val okHttpClient = OkHttpClient.Builder().build()
-
-        val retrofit =
-            Retrofit
-                .Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .client(okHttpClient)
-                .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
-                ).addConverterFactory(
-                    json.asConverterFactory("application/json".toMediaType()),
-                ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
-                ).build()
-
-        apiService = retrofit.create(TrmnlApiService::class.java)
-    }
-
-    @After
-    fun tearDown() {
-        mockWebServer.shutdown()
-    }
-
+class TrmnlDisplayApiTest : BaseApiTest() {
     @Test
     fun `getDisplayCurrent returns success with full display data`() =
         runTest {
