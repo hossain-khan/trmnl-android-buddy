@@ -220,3 +220,7 @@ fun DevicePreviewContent(
         }
     }
 }
+
+// Preview Composables
+// Note: Full preview not possible due to SharedElementTransitionScope requirement
+// Individual components can be previewed in isolation if needed
