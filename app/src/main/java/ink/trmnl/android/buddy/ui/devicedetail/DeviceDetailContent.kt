@@ -45,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
@@ -686,6 +687,7 @@ private fun ManualBatteryRecordingCard(
 }
 
 // Preview Composables
+@PreviewLightDark
 @Preview(
     name = "Low Battery Banner",
     showBackground = true,
@@ -695,20 +697,6 @@ private fun LowBatteryBannerPreview() {
     TrmnlBuddyAppTheme {
         LowBatteryBanner(
             currentBattery = 15.0,
-            thresholdPercent = 20,
-        )
-    }
-}
-
-@Preview(
-    name = "Low Battery Banner - Dark Theme",
-    showBackground = true,
-)
-@Composable
-private fun LowBatteryBannerDarkPreview() {
-    TrmnlBuddyAppTheme(darkTheme = true) {
-        LowBatteryBanner(
-            currentBattery = 10.0,
             thresholdPercent = 20,
         )
     }
@@ -818,6 +806,7 @@ private fun DisclaimerCardPreview() {
     }
 }
 
+@PreviewLightDark
 @Preview(
     name = "Manual Battery Recording Card - Not Recorded",
     showBackground = true,
@@ -832,6 +821,7 @@ private fun ManualBatteryRecordingCardPreview() {
     }
 }
 
+@PreviewLightDark
 @Preview(
     name = "Manual Battery Recording Card - Already Recorded",
     showBackground = true,
@@ -841,20 +831,6 @@ private fun ManualBatteryRecordingCardRecordedPreview() {
     TrmnlBuddyAppTheme {
         ManualBatteryRecordingCard(
             hasRecordedToday = true,
-            onRecordBattery = {},
-        )
-    }
-}
-
-@Preview(
-    name = "Manual Battery Recording Card - Dark Theme",
-    showBackground = true,
-)
-@Composable
-private fun ManualBatteryRecordingCardDarkPreview() {
-    TrmnlBuddyAppTheme(darkTheme = true) {
-        ManualBatteryRecordingCard(
-            hasRecordedToday = false,
             onRecordBattery = {},
         )
     }
