@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +33,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -70,6 +73,7 @@ import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
+import ink.trmnl.android.buddy.ui.theme.Dimens
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
@@ -93,11 +97,14 @@ fun DeviceDetailContent(
     state: DeviceDetailScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { TrmnlTitle(state.deviceName) },
+                scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(DeviceDetailScreen.Event.BackClicked) }) {
                         Icon(
@@ -146,8 +153,8 @@ fun DeviceDetailContent(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(Dimens.paddingMedium),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingLarge),
         ) {
             // Low Battery Banner
             if (
@@ -217,17 +224,17 @@ private fun LowBatteryBanner(
     thresholdPercent: Int,
     modifier: Modifier = Modifier,
 ) {
-    Card(
+    ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         colors =
-            CardDefaults.cardColors(
+            CardDefaults.elevatedCardColors(
                 containerColor = MaterialTheme.colorScheme.errorContainer,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = Dimens.elevationSmall),
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(Dimens.paddingMedium),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spacingMedium),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -265,9 +272,9 @@ private fun CurrentStatusCard(
     rssi: Int?,
     modifier: Modifier = Modifier,
 ) {
-    Card(
+    ElevatedCard(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = Dimens.elevationSmall),
     ) {
         ListItem(
             headlineContent = {
@@ -279,8 +286,8 @@ private fun CurrentStatusCard(
             },
             supportingContent = {
                 Column(
-                    modifier = Modifier.padding(top = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(top = Dimens.paddingSmall),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium),
                 ) {
                     // Battery Level
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -394,13 +401,13 @@ private fun BatteryHistoryChart(
 ) {
     var isInitialized by remember { mutableStateOf(false) }
 
-    Card(
+    ElevatedCard(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = Dimens.elevationSmall),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(Dimens.paddingMedium),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium),
         ) {
             Text(
                 text = "Battery History",
@@ -593,13 +600,13 @@ private fun BatteryChart(
 
 @Composable
 private fun DisclaimerCard(modifier: Modifier = Modifier) {
-    Card(
+    ElevatedCard(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(Dimens.paddingMedium),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spacingMedium),
         ) {
             Icon(
                 painter = painterResource(R.drawable.outline_info_24),
@@ -625,13 +632,13 @@ private fun ManualBatteryRecordingCard(
     onRecordBattery: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
+    ElevatedCard(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = Dimens.elevationSmall),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(Dimens.paddingMedium),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium),
         ) {
             Text(
                 text = "Manual Battery Recording",
