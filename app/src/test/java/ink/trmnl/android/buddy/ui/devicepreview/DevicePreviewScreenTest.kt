@@ -277,25 +277,25 @@ private class FakeApiService(
             ),
         ),
 ) : TrmnlApiService {
-    override suspend fun getDevices(authorization: String) = throw NotImplementedError("Not needed for this test")
+    override suspend fun getDevices(authorization: String) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
     override suspend fun getDevice(
         id: Int,
         authorization: String,
-    ) = throw NotImplementedError("Not needed for this test")
+    ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
     override suspend fun getDisplayCurrent(deviceApiKey: String): ApiResult<Display, ApiError> = displayResponse
 
-    override suspend fun userInfo(authorization: String) = throw NotImplementedError("Not needed for this test")
+    override suspend fun userInfo(authorization: String) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
-    override suspend fun getDeviceModels(authorization: String) = throw NotImplementedError("Not needed for this test")
+    override suspend fun getDeviceModels(authorization: String) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
     override suspend fun getRecipes(
         search: String?,
         sortBy: String?,
         page: Int?,
         perPage: Int?,
-    ) = throw NotImplementedError("Not needed for this test")
+    ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
-    override suspend fun getRecipe(id: Int) = throw NotImplementedError("Not needed for this test")
+    override suspend fun getRecipe(id: Int) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 }
