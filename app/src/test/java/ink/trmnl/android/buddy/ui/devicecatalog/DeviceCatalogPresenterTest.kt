@@ -265,13 +265,10 @@ class DeviceCatalogPresenterTest {
                         sortBy: String?,
                         page: Int?,
                         perPage: Int?,
-                    ): ApiResult<RecipesResponse, ApiError> {
-                        TODO("Not yet implemented")
-                    }
+                    ): ApiResult<RecipesResponse, ApiError> = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
-                    override suspend fun getRecipe(id: Int): ApiResult<RecipeDetailResponse, ApiError> {
-                        TODO("Not yet implemented")
-                    }
+                    override suspend fun getRecipe(id: Int): ApiResult<RecipeDetailResponse, ApiError> =
+                        throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
                     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> =
                         if (failureCount++ == 0) {
@@ -419,29 +416,26 @@ private open class FakeApiService(
     private val deviceModelsResponse: ApiResult<DeviceModelsResponse, ApiError> =
         ApiResult.success(DeviceModelsResponse(data = emptyList())),
 ) : TrmnlApiService {
-    override suspend fun getDevices(authorization: String) = throw NotImplementedError("Not needed for this test")
+    override suspend fun getDevices(authorization: String) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
     override suspend fun getDevice(
         id: Int,
         authorization: String,
-    ) = throw NotImplementedError("Not needed for this test")
+    ) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
-    override suspend fun getDisplayCurrent(deviceApiKey: String) = throw NotImplementedError("Not needed for this test")
+    override suspend fun getDisplayCurrent(deviceApiKey: String) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
-    override suspend fun userInfo(authorization: String) = throw NotImplementedError("Not needed for this test")
+    override suspend fun userInfo(authorization: String) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
     override suspend fun getRecipes(
         search: String?,
         sortBy: String?,
         page: Int?,
         perPage: Int?,
-    ): ApiResult<RecipesResponse, ApiError> {
-        TODO("Not yet implemented")
-    }
+    ): ApiResult<RecipesResponse, ApiError> = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
-    override suspend fun getRecipe(id: Int): ApiResult<RecipeDetailResponse, ApiError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getRecipe(id: Int): ApiResult<RecipeDetailResponse, ApiError> =
+        throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = deviceModelsResponse
 }
