@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.ui.theme.Dimens
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import timber.log.Timber
 
@@ -41,12 +42,12 @@ fun AppInformationSection(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.primary,
         )
 
-        Card(
+        ElevatedCard(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    .padding(top = Dimens.paddingSmall),
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = Dimens.elevationSmall),
         ) {
             Column {
                 ListItem(

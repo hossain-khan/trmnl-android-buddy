@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.content.models.ContentItem
+import ink.trmnl.android.buddy.ui.theme.Dimens
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 
 /**
@@ -41,7 +42,7 @@ internal fun LoadingState(modifier: Modifier = Modifier) {
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingLarge),
         ) {
             CircularProgressIndicator()
             Text("Loading devices...")
@@ -67,7 +68,7 @@ internal fun ErrorState(
         Column(
             modifier = Modifier.padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingLarge),
         ) {
             Text(
                 text = "Error",
@@ -80,7 +81,7 @@ internal fun ErrorState(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             if (isUnauthorized) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(Dimens.spacingSmall))
                 OutlinedButton(onClick = onResetToken) {
                     Text("Reset Token")
                 }
@@ -102,7 +103,7 @@ internal fun EmptyState(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier.padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingLarge),
         ) {
             Icon(
                 painter = painterResource(R.drawable.trmnl_device_frame),
@@ -152,8 +153,8 @@ internal fun DevicesList(
             modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(Dimens.paddingMedium),
+        verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium),
     ) {
         // Content carousel at the top
         // Only show if RSS feed content is enabled AND there is unread content

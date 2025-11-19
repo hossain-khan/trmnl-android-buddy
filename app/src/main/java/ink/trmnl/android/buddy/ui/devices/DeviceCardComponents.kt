@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,6 +47,7 @@ import com.slack.circuit.sharedelements.SharedElementTransitionScope.AnimatedSco
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
+import ink.trmnl.android.buddy.ui.theme.Dimens
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.utils.getBatteryColor
 import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
@@ -94,10 +96,10 @@ internal fun DeviceCard(
         isInitialized = true
     }
 
-    Card(
+    ElevatedCard(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = Dimens.elevationSmall),
     ) {
         ListItem(
             headlineContent = {
@@ -164,8 +166,8 @@ internal fun DeviceCard(
             },
             supportingContent = {
                 Column(
-                    modifier = Modifier.padding(top = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(top = Dimens.paddingSmall),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
                 ) {
                     // Device ID (obfuscated for privacy)
                     DeviceInfoRow(
@@ -212,7 +214,7 @@ internal fun DeviceCard(
                 Icon(
                     painter = painterResource(R.drawable.trmnl_device_frame),
                     contentDescription = "Device",
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(Dimens.iconSizeLarge),
                     tint = MaterialTheme.colorScheme.primary,
                 )
             },
@@ -249,12 +251,12 @@ internal fun DeviceInfoRow(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
     ) {
         Icon(
             painter = painterResource(icon),
             contentDescription = contentDescription,
-            modifier = Modifier.size(16.dp),
+            modifier = Modifier.size(Dimens.iconSizeSmall),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
@@ -283,7 +285,7 @@ internal fun BatteryIndicator(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -292,12 +294,12 @@ internal fun BatteryIndicator(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
             ) {
                 Icon(
                     painter = painterResource(getBatteryIcon(percentCharged)),
                     contentDescription = "Battery",
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(Dimens.iconSizeSmall),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
@@ -318,7 +320,7 @@ internal fun BatteryIndicator(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(8.dp),
+                    .height(Dimens.spacingSmall),
             color = getBatteryColor(percentCharged),
         )
         batteryVoltage?.let { voltage ->
@@ -344,7 +346,7 @@ internal fun WifiIndicator(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -353,12 +355,12 @@ internal fun WifiIndicator(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall),
             ) {
                 Icon(
                     painter = painterResource(getWifiIcon(wifiStrength)),
                     contentDescription = "WiFi Signal",
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(Dimens.iconSizeSmall),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
@@ -379,7 +381,7 @@ internal fun WifiIndicator(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(8.dp),
+                    .height(Dimens.spacingSmall),
             color = getWifiColor(wifiStrength),
         )
         rssi?.let { rssiValue ->
@@ -418,7 +420,7 @@ internal fun DevicePreviewImage(
                         modifier
                             .fillMaxWidth()
                             .aspectRatio(800f / 480f) // TRMNL device aspect ratio
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                            .padding(horizontal = Dimens.paddingMedium, vertical = Dimens.paddingSmall),
                 ) {
                     SubcomposeAsyncImage(
                         model = previewInfo.imageUrl,
@@ -474,19 +476,20 @@ internal fun RefreshRateIndicator(
     onInfoClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
+    ElevatedCard(
         onClick = { onInfoClick(refreshRate) },
         modifier =
             modifier
-                .padding(8.dp),
+                .padding(Dimens.paddingSmall),
         colors =
-            CardDefaults.cardColors(
+            CardDefaults.elevatedCardColors(
                 containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f),
             ),
         shape = MaterialTheme.shapes.small,
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = Dimens.elevationSmall),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = Dimens.paddingSmall, vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {

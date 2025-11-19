@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.ui.theme.Dimens
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 
 /**
@@ -45,7 +46,7 @@ fun ExtrasSection(
                 painter = painterResource(R.drawable.design_services_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(Dimens.iconSizeMedium),
             )
             Text(
                 text = "Extras",
@@ -55,9 +56,9 @@ fun ExtrasSection(
             )
         }
 
-        Card(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ElevatedCard(
+            modifier = Modifier.fillMaxWidth().padding(top = Dimens.paddingSmall),
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = Dimens.elevationSmall),
         ) {
             Column {
                 // Supported Device Catalog

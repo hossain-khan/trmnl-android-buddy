@@ -16,6 +16,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,6 +46,7 @@ import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicecatalog.DeviceCatalogScreen
 import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
+import ink.trmnl.android.buddy.ui.theme.Dimens
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.user.UserAccountScreen
 import ink.trmnl.android.buddy.work.WorkerScheduler
@@ -221,11 +224,13 @@ fun SettingsContent(
     state: SettingsScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { TrmnlTitle("Settings") },
+                scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(SettingsScreen.Event.BackClicked) }) {
                         Icon(
@@ -241,7 +246,7 @@ fun SettingsContent(
                         Icon(
                             painter = painterResource(R.drawable.account_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                             contentDescription = "Your Account",
-                            modifier = Modifier.size(18.dp),
+                            modifier = Modifier.size(Dimens.iconSizeSmall),
                         )
                         Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
                         Text("Account")
@@ -256,8 +261,10 @@ fun SettingsContent(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(Dimens.paddingMedium),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium),
         ) {
             // RSS Feed Content Section (Announcements & Blog Posts)
             RssFeedContentSection(

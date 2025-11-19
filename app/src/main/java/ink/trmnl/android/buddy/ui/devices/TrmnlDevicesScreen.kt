@@ -11,6 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -533,6 +535,7 @@ fun TrmnlDevicesContent(
     state: TrmnlDevicesScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val snackbarHostState = remember { SnackbarHostState() }
 
     // Show snackbar when message changes
@@ -551,6 +554,7 @@ fun TrmnlDevicesContent(
         topBar = {
             TopAppBar(
                 title = { TrmnlTitle("TRMNL Devices") },
+                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.TogglePrivacy) }) {
                         Icon(
