@@ -131,7 +131,7 @@ curl -L https://github.com/JakeWharton/diffuse/releases/download/0.3.0/diffuse-0
 2. **Build your PR APK**:
    ```bash
    ./gradlew assembleRelease
-   cp app/build/outputs/apk/release/app-release-unsigned.apk pr.apk
+   cp app/build/outputs/apk/release/app-release.apk pr.apk
    ```
 
 3. **Run Diffuse**:
