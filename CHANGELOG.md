@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **APK size analysis with Diffuse** - Integrated Diffuse tool to automatically track APK size, method count, and code complexity changes in pull requests
+  - Uses [diffuse-action](https://github.com/usefulness/diffuse-action) for simplified GitHub Actions integration
+  - Compares PR APK against latest release APK (production baseline)
+  - Posts detailed Diffuse report as PR comment with size/method count changes
+  - Updates existing comment on subsequent pushes to avoid spam
+  - Uploads APKs as artifacts for manual inspection (7-day retention)
+  - Comprehensive documentation in `docs/DIFFUSE_APK_ANALYSIS.md` with usage guide, best practices, and optimization tips
 - **Jetpack Compose previews for UI components** - Added `@Preview` annotations to composables that were missing them for better development experience and visual verification:
   - `TrmnlTitle` component with previews for short text, long text, and dark theme
   - `DeviceDetailContent` internal composables including LowBatteryBanner, CurrentStatusCard, BatteryHistoryChart states, DisclaimerCard, and ManualBatteryRecordingCard with various states and themes
