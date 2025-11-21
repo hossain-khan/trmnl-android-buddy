@@ -41,29 +41,36 @@ When you create a pull request, the Diffuse workflow automatically:
 ### Example Output
 
 ```
-OLD: app-release-base.apk (signature: V2)
-NEW: app-release-pr.apk (signature: V2)
+OLD: base.apk (signature: V2)
+NEW: app-release.apk (signature: V2)
 
-          │          compressed           │          uncompressed
-          ├───────────┬───────────┬───────┼───────────┬───────────┬────────
- APK      │ old       │ new       │ diff  │ old       │ new       │ diff
-──────────┼───────────┼───────────┼───────┼───────────┼───────────┼────────
-      dex │ 664.8 KiB │ 670.2 KiB │ +5.4K │   1.5 MiB │   1.5 MiB │ +12K
-     arsc │ 201.7 KiB │ 201.7 KiB │   0 B │ 201.6 KiB │ 201.6 KiB │    0 B
- manifest │   1.4 KiB │   1.4 KiB │   0 B │   4.2 KiB │   4.2 KiB │    0 B
-      res │ 418.2 KiB │ 418.2 KiB │   0 B │ 488.3 KiB │ 488.3 KiB │    0 B
-    other │  37.1 KiB │  37.1 KiB │   0 B │  36.3 KiB │  36.3 KiB │    0 B
-──────────┼───────────┼───────────┼───────┼───────────┼───────────┼────────
-    total │   1.3 MiB │   1.3 MiB │ +5.4K │   2.2 MiB │   2.2 MiB │ +12K
+          │            compressed             │           uncompressed            
+          ├───────────┬───────────┬───────────┼───────────┬───────────┬───────────
+ APK      │ old       │ new       │ diff      │ old       │ new       │ diff      
+──────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────
+      dex │   4.5 MiB │   4.5 MiB │ +21.3 KiB │   4.5 MiB │   4.5 MiB │ +21.3 KiB 
+     arsc │ 900.6 KiB │ 900.6 KiB │       0 B │ 900.5 KiB │ 900.5 KiB │       0 B 
+ manifest │     3 KiB │     3 KiB │       0 B │  12.5 KiB │  12.5 KiB │       0 B 
+      res │ 334.8 KiB │ 334.8 KiB │       0 B │ 462.2 KiB │ 462.2 KiB │       0 B 
+   native │  60.1 KiB │  60.1 KiB │       0 B │  58.9 KiB │  58.9 KiB │       0 B 
+    asset │  50.2 KiB │  50.2 KiB │     -23 B │ 137.9 KiB │ 137.9 KiB │     -23 B 
+    other │  51.4 KiB │  51.4 KiB │       0 B │ 112.7 KiB │ 112.7 KiB │       0 B 
+──────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────
+    total │   5.9 MiB │   5.9 MiB │ +21.3 KiB │   6.1 MiB │   6.2 MiB │ +21.3 KiB 
 
- DEX     │ old   │ new   │ diff
-─────────┼───────┼───────┼────────────
-   count │     1 │     1 │  0
- strings │ 14220 │ 14225 │ +5 (+8 -3)
-   types │  2258 │  2258 │  0 (+1 -1)
- classes │  1580 │  1582 │ +2 (+2 -0)
- methods │ 11640 │ 11655 │ +15 (+18 -3)
-  fields │  4369 │  4372 │  +3 (+3 -0)
+ DEX     │ old   │ new   │ diff              
+─────────┼───────┼───────┼───────────────────
+   files │     1 │     1 │   0               
+ strings │ 21167 │ 21259 │ +92 (+120 -28)    
+   types │  6942 │  6958 │ +16 (+41 -25)     
+ classes │  5722 │  5734 │ +12 (+20 -8)      
+ methods │ 29532 │ 29599 │ +67 (+2642 -2575) 
+  fields │ 19073 │ 19148 │ +75 (+2562 -2487) 
+
+ ARSC    │ old  │ new  │ diff 
+─────────┼──────┼──────┼──────
+ configs │  133 │  133 │  0   
+ entries │ 1574 │ 1574 │  0
 ```
 
 ## Interpreting Results
