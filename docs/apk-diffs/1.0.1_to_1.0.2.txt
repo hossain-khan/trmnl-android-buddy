@@ -1,0 +1,651 @@
+Diffuse Comparison: 1.0.1 → 1.0.2
+================================================================================
+
+OLD: 1.0.1.apk (signature: V2)
+NEW: 1.0.2.apk (signature: V2)
+
+          │            compressed            │           uncompressed           
+          ├───────────┬───────────┬──────────┼───────────┬───────────┬──────────
+ APK      │ old       │ new       │ diff     │ old       │ new       │ diff     
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+      dex │   3.2 MiB │   3.2 MiB │ +1.4 KiB │   3.2 MiB │   3.2 MiB │ +1.4 KiB 
+     arsc │   469 KiB │   469 KiB │      0 B │ 468.9 KiB │ 468.9 KiB │      0 B 
+ manifest │   2.9 KiB │   2.9 KiB │     -1 B │  12.1 KiB │  12.1 KiB │      0 B 
+      res │   118 KiB │   118 KiB │     +2 B │   141 KiB │   141 KiB │      0 B 
+   native │ 182.2 KiB │ 181.6 KiB │   -608 B │  58.9 KiB │  58.9 KiB │      0 B 
+    asset │  48.6 KiB │  47.4 KiB │ -1.1 KiB │ 136.3 KiB │ 135.2 KiB │ -1.1 KiB 
+    other │    46 KiB │    46 KiB │     -1 B │ 102.7 KiB │ 102.7 KiB │      0 B 
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+    total │   4.1 MiB │   4.1 MiB │   -303 B │   4.1 MiB │   4.1 MiB │   +305 B 
+
+ DEX     │ old   │ new   │ diff            
+─────────┼───────┼───────┼─────────────────
+   files │     1 │     1 │   0             
+ strings │ 15958 │ 15969 │ +11 (+18 -7)    
+   types │  5194 │  5197 │  +3 (+3 -0)     
+ classes │  4212 │  4215 │  +3 (+3 -0)     
+ methods │ 21481 │ 21488 │  +7 (+123 -116) 
+  fields │ 13409 │ 13418 │  +9 (+140 -131) 
+
+ ARSC    │ old │ new │ diff 
+─────────┼─────┼─────┼──────
+ configs │ 108 │ 108 │  0   
+ entries │ 347 │ 347 │  0   
+
+=================
+====   APK   ====
+=================
+
+     compressed      │    uncompressed     │                                              
+──────────┬──────────┼──────────┬──────────┤                                              
+ size     │ diff     │ size     │ diff     │ path                                         
+──────────┼──────────┼──────────┼──────────┼──────────────────────────────────────────────
+  3.2 MiB │ +1.4 KiB │  3.2 MiB │ +1.4 KiB │ ∆ classes.dex                                
+  4.9 KiB │ -1.1 KiB │  4.8 KiB │ -1.1 KiB │ ∆ assets/dexopt/baseline.prof                
+ 14.1 KiB │   -608 B │  9.9 KiB │      0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so 
+    327 B │     +2 B │    225 B │      0 B │ ∆ res/2K.9.png                               
+    271 B │     -1 B │    120 B │      0 B │ ∆ META-INF/version-control-info.textproto    
+    893 B │     +1 B │    755 B │     +1 B │ ∆ assets/dexopt/baseline.profm               
+  2.9 KiB │     -1 B │ 12.1 KiB │      0 B │ ∆ AndroidManifest.xml                        
+──────────┼──────────┼──────────┼──────────┼──────────────────────────────────────────────
+  3.3 MiB │   -303 B │  3.3 MiB │   +305 B │ (total)                                      
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 2                       │ 3                       
+ version name │ 1.0.1                   │ 1.0.2                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="2"
+-    android:versionName="1.0.1"
++    android:versionCode="3"
++    android:versionName="1.0.2"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
+====   DEX   ====
+=================
+
+STRINGS:
+
+   old   │ new   │ diff         
+  ───────┼───────┼──────────────
+   15958 │ 15969 │ +11 (+18 -7) 
+  
+  +  - Not implemented
+  + , isPrivacyEnabled=
+  + 1.0.2
+  + Device clicked: 
+  + Error loading preview for 
+  + Le3/C;
+  + Le3/D;
+  + Le3/E;
+  + Privacy disabled
+  + Privacy enabled
+  + TogglePrivacy
+  + TrmnlDevicesPresenter
+  + VLLLZLZL
+  + VLZLZLLLLI
+  + VLZLZLLLLLI
+  + VZLLLZLLLL
+  + r8-map-id-78bf1c1cdb4b1f9f5e4efd67ff9c3ba8ed9c96c448f485a0c8f4bfd07ba3b2c1
+  + ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"78bf1c1cdb4b1f9f5e4efd67ff9c3ba8ed9c96c448f485a0c8f4bfd07ba3b2c1","r8-mode":"full","version":"8.12.14"}
+  
+  - 1.0.1
+  - VLLLZLL
+  - VLZLLLLLI
+  - VLZLLLLLLI
+  - VZLLLLLLL
+  - r8-map-id-939955a7d4665bd836e4e23829491ff968de8d28c8d1b26e9c3728d4b4c59e93
+  - ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"939955a7d4665bd836e4e23829491ff968de8d28c8d1b26e9c3728d4b4c59e93","r8-mode":"full","version":"8.12.14"}
+  
+
+TYPES:
+
+   old  │ new  │ diff       
+  ──────┼──────┼────────────
+   5194 │ 5197 │ +3 (+3 -0) 
+  
+  + Le3/C;
+  + Le3/D;
+  + Le3/E;
+  
+
+METHODS:
+
+   old   │ new   │ diff           
+  ───────┼───────┼────────────────
+   21481 │ 21488 │ +7 (+123 -116) 
+  
+  + D0.k1 <init>(f, x, x, g, Object, x, f, c)
+  + D0.k1 <init>(f, g, Object, n, f, a, i, c)
+  + M.U0 <init>(u, b, d0, d0, d0, d0, int)
+  + O2.e <init>(boolean, Device, X0, X0)
+  + U1.u Z(a, g, n, f, c) → a
+  + V.i h(a, j, Map, long)
+  + androidx.compose.foundation.MagnifierElement <init>(j0, i0, c0)
+  + c2.e a(j)
+  + e3.A <init>(u, int)
+  + e3.A e(Object, Object, Object) → Object
+  + e3.B <init>(u, int)
+  + e3.C <init>(boolean, String, Device, a, boolean, X0, X0, a, t)
+  + e3.C e(Object, Object, Object) → Object
+  + e3.D <init>(Device, boolean, String, boolean, a, a, a, p, int)
+  + e3.D h(Object, Object) → Object
+  + e3.E <init>(u, Device, int)
+  + e3.E a() → Object
+  + e3.b a(Device, boolean, String, boolean, a, a, a, p, s, int)
+  + e3.f <init>(m)
+  + e3.g <init>(l, c)
+  + e3.g q(Object) → Object
+  + e3.h <init>(l, c)
+  + e3.i <init>(l, c)
+  + e3.j <init>(d0, d0, int)
+  + e3.j l(Object) → Object
+  + e3.k <init>(l, d0, d0, d0, c, int)
+  + e3.k f(Object, c) → c
+  + e3.k h(Object, Object) → Object
+  + e3.k q(Object) → Object
+  + e3.l <init>(c, c, n, b)
+  + e3.l a(int, s) → b
+  + e3.l b(l, List, Map, j, c) → Object
+  + e3.l c(l, List, a, c) → Object
+  + e3.l d(l, c, c, c) → Object
+  + e3.l e(d0, boolean)
+  + e3.m createFromParcel(Parcel) → Object
+  + e3.m newArray(int) → Object[]
+  + e3.n <clinit>()
+  + e3.n equals(Object) → boolean
+  + e3.n hashCode() → int
+  + e3.n toString() → String
+  + e3.o <init>(Device)
+  + e3.p <init>(Device, String)
+  + e3.q <init>(Device)
+  + e3.r <clinit>()
+  + e3.u <init>(List, Map, Map, boolean, String, boolean, c)
+  + e3.w <init>(u, int)
+  + e3.w h(Object, Object) → Object
+  + e3.x <init>(Device, a, boolean)
+  + e3.y <init>(String, Device, a, s, int)
+  + e3.z <init>(boolean)
+  + e3.z h(Object, Object) → Object
+  + g2.b <init>(d, int)
+  + g2.c <init>(i, int)
+  + g2.d <init>(List, List, List, List, List)
+  + g2.e <init>(Drawable)
+  + g2.e a() → int
+  + g2.e b() → int
+  + g2.e c() → boolean
+  + g2.e d(Canvas)
+  + g2.e e() → long
+  + g2.e equals(Object) → boolean
+  + g2.e hashCode() → int
+  + g2.e toString() → String
+  + g2.f <clinit>()
+  + g2.h <init>()
+  + g2.h <init>(i)
+  + g2.i <clinit>()
+  + g2.i <init>(Map)
+  + g2.i equals(Object) → boolean
+  + g2.i hashCode() → int
+  + g2.i toString() → String
+  + g2.j a() → int
+  + g2.j b() → int
+  + g2.j c() → boolean
+  + g2.j d(Canvas)
+  + g2.j e() → long
+  + g2.k <init>(j)
+  + g2.k draw(Canvas)
+  + g2.k getOpacity() → int
+  + g2.k setAlpha(int)
+  + g2.k setColorFilter(ColorFilter)
+  + g2.l <init>(int)
+  + g2.l a() → Object
+  + g2.m <init>(int, Object)
+  + g2.o b(j, Resources) → Drawable
+  + g2.o c(Drawable) → j
+  + g2.q <init>(Context, e, n, n, n, d)
+  + g2.s d(c, a, f)
+  + h2.j e(j, Context, int) → b
+  + h2.p <init>(j)
+  + j2.h <init>(j, boolean)
+  + l2.h <init>(j, boolean, g)
+  + m2.a <init>(j, boolean, g, String)
+  + m2.f a(f, i, d, g, Object, n, f, c) → Object
+  + m2.f b(f, g, Object, n, f, c) → Object
+  + m2.f c(d, g, Object, n, f, c) → Object
+  + m2.i <init>(g, List, int, g, h, f, boolean)
+  + o.Q <init>(j0, i0, c0)
+  + o.Z <init>(int)
+  + o.Z a() → Object
+  + o.b0 <clinit>()
+  + o.d0 <clinit>()
+  + o.d0 <init>(int)
+  + o.d0 a() → boolean
+  + o.d0 b(View, c) → C0
+  + o.e0 w(long, long)
+  + p2.b <init>(j, Map)
+  + p2.c b(g, Object, n, f) → a
+  + p2.e <init>(j, Map, long)
+  + p2.g a(a, j, Map, long)
+  + q.r0 <init>(l0, h, j, V, boolean, i, k0, m)
+  + q2.j <init>(Z)
+  + q2.q <init>(String, String, p, i)
+  + u2.c <init>(j, g, Throwable)
+  + u2.c a() → j
+  + u2.e <init>(o, h, h, h, b, b, b, c, c, c, i, g, d, i)
+  + u2.g <init>(Context, Object, a, Map, o, h, h, h, b, b, b, c, c, c, i, g, d, i, f, e)
+  + u2.j a() → j
+  + u2.n <init>(Context, h, g, d, String, o, b, b, b, i)
+  + u2.p <init>(j, g, g, a, String, boolean, boolean)
+  + u2.p a() → j
+  + w2.a a(j)
+  
+  - D0.k1 <init>(f, x, x, g, Object, x, g, c)
+  - D0.k1 <init>(f, g, Object, n, g, a, i, c)
+  - M.A <init>(Device, boolean, String, a, a, a, p, int)
+  - M.U0 <init>(u, c, d0, d0, d0, d0)
+  - U1.u Z(a, g, n, g, c) → a
+  - V.i h(a, k, Map, long)
+  - androidx.compose.foundation.MagnifierElement <init>(j0, i0, b0)
+  - c2.e a(k)
+  - e3.A <init>(Device, a, boolean)
+  - e3.A h(Object, Object) → Object
+  - e3.B <init>(u, Device, int)
+  - e3.b a(Device, boolean, String, a, a, a, p, s, int)
+  - e3.f <init>(u, d0, m, d0, d0)
+  - e3.f <init>(u, m, d0, d0, d0)
+  - e3.f l(Object) → Object
+  - e3.g <init>(m)
+  - e3.h <init>(m, c)
+  - e3.i <init>(m, c)
+  - e3.j <init>(m, c)
+  - e3.j q(Object) → Object
+  - e3.k <init>(d0, d0, int)
+  - e3.k l(Object) → Object
+  - e3.l <init>(m, d0, d0, d0, c, int)
+  - e3.l f(Object, c) → c
+  - e3.l h(Object, Object) → Object
+  - e3.l q(Object) → Object
+  - e3.m <init>(c, c, n, b)
+  - e3.m a(int, s) → b
+  - e3.m b(m, List, Map, j, c) → Object
+  - e3.m c(m, List, f, c) → Object
+  - e3.m d(m, c, c, c) → Object
+  - e3.m e(d0, boolean)
+  - e3.n createFromParcel(Parcel) → Object
+  - e3.n newArray(int) → Object[]
+  - e3.o <clinit>()
+  - e3.p <init>(Device)
+  - e3.q <init>(Device, String)
+  - e3.r <init>(Device)
+  - e3.u <init>(List, Map, Map, boolean, String, c)
+  - e3.w <init>(String, Device, a, s, int)
+  - e3.w e(Object, Object, Object) → Object
+  - e3.x <init>(boolean)
+  - e3.y <init>(u, int)
+  - e3.z <init>(boolean, String, Device, a, X0, X0, a, t)
+  - e3.z e(Object, Object, Object) → Object
+  - g2.b <init>(e, int)
+  - g2.c <init>(int, Object)
+  - g2.d <init>(i, int)
+  - g2.d a() → Object
+  - g2.e <init>(List, List, List, List, List)
+  - g2.f <init>(Drawable)
+  - g2.f a() → int
+  - g2.f b() → int
+  - g2.f c() → boolean
+  - g2.f d(Canvas)
+  - g2.f e() → long
+  - g2.f equals(Object) → boolean
+  - g2.f hashCode() → int
+  - g2.f toString() → String
+  - g2.h <clinit>()
+  - g2.i <init>()
+  - g2.i <init>(j)
+  - g2.j <clinit>()
+  - g2.j <init>(Map)
+  - g2.j equals(Object) → boolean
+  - g2.j hashCode() → int
+  - g2.j toString() → String
+  - g2.k a() → int
+  - g2.k b() → int
+  - g2.k c() → boolean
+  - g2.k d(Canvas)
+  - g2.k e() → long
+  - g2.l <init>(k)
+  - g2.l draw(Canvas)
+  - g2.l getOpacity() → int
+  - g2.l setAlpha(int)
+  - g2.l setColorFilter(ColorFilter)
+  - g2.m <init>(int)
+  - g2.o b(k, Resources) → Drawable
+  - g2.o c(Drawable) → k
+  - g2.q <init>(Context, e, n, n, n, e)
+  - g2.s d(c, a, g)
+  - h2.j e(k, Context, int) → b
+  - h2.p <init>(k)
+  - j2.h <init>(k, boolean)
+  - l2.h <init>(k, boolean, g)
+  - m2.a <init>(k, boolean, g, String)
+  - m2.f a(f, i, e, g, Object, n, g, c) → Object
+  - m2.f b(f, g, Object, n, g, c) → Object
+  - m2.f c(e, g, Object, n, g, c) → Object
+  - m2.i <init>(g, List, int, g, h, g, boolean)
+  - o.Q <init>(j0, i0, b0)
+  - o.Z <clinit>()
+  - o.b0 a() → boolean
+  - o.b0 b(View, c) → C0
+  - o.c0 <clinit>()
+  - o.c0 <init>(int)
+  - o.d0 w(long, long)
+  - o.e0 <init>(int)
+  - o.e0 a() → Object
+  - p2.b <init>(k, Map)
+  - p2.c b(g, Object, n, g) → a
+  - p2.e <init>(k, Map, long)
+  - p2.g a(a, k, Map, long)
+  - q.r0 <init>(l0, h, j, V, boolean, i, k0, c)
+  - q2.j <init>(e0)
+  - q2.q <init>(String, String, p, j)
+  - u2.c <init>(k, g, Throwable)
+  - u2.c a() → k
+  - u2.e <init>(o, h, h, h, b, b, b, c, c, c, i, g, d, j)
+  - u2.g <init>(Context, Object, a, Map, o, h, h, h, b, b, b, c, c, c, i, g, d, j, f, e)
+  - u2.j a() → k
+  - u2.n <init>(Context, h, g, d, String, o, b, b, b, j)
+  - u2.p <init>(k, g, g, a, String, boolean, boolean)
+  - u2.p a() → k
+  - w2.a a(k)
+  
+
+FIELDS:
+
+   old   │ new   │ diff           
+  ───────┼───────┼────────────────
+   13409 │ 13418 │ +9 (+140 -131) 
+  
+  + M.A d: a
+  + M.A e: p
+  + M.A f: boolean
+  + M.A g: J
+  + M.A h: u
+  + M.A i: q
+  + M.A j: M
+  + O2.e d: int
+  + O2.e e: boolean
+  + O2.e f: Object
+  + O2.e g: Object
+  + O2.e h: Object
+  + androidx.compose.foundation.MagnifierElement d: c0
+  + e3.A d: int
+  + e3.A e: u
+  + e3.C d: boolean
+  + e3.C e: String
+  + e3.C f: Device
+  + e3.C g: a
+  + e3.C h: boolean
+  + e3.C i: X0
+  + e3.C j: X0
+  + e3.C k: a
+  + e3.C l: s
+  + e3.D d: Device
+  + e3.D e: boolean
+  + e3.D f: String
+  + e3.D g: boolean
+  + e3.D h: a
+  + e3.D i: a
+  + e3.D j: a
+  + e3.D k: p
+  + e3.E d: int
+  + e3.E e: u
+  + e3.E f: Device
+  + e3.f a: m
+  + e3.g g: Map
+  + e3.g h: c
+  + e3.g i: Map
+  + e3.g j: Iterator
+  + e3.g k: Map
+  + e3.g l: Device
+  + e3.g m: int
+  + e3.g n: int
+  + e3.g o: int
+  + e3.g p: Object
+  + e3.g q: l
+  + e3.g r: int
+  + e3.h g: c
+  + e3.h h: Map
+  + e3.h i: Iterator
+  + e3.h j: Map
+  + e3.h k: String
+  + e3.h l: int
+  + e3.h o: Object
+  + e3.h p: l
+  + e3.h q: int
+  + e3.i h: c
+  + e3.i i: Object
+  + e3.i j: l
+  + e3.i k: int
+  + e3.j d: int
+  + e3.j e: d0
+  + e3.j f: d0
+  + e3.k h: int
+  + e3.k i: int
+  + e3.k j: l
+  + e3.k k: d0
+  + e3.k l: d0
+  + e3.k m: d0
+  + e3.l a: c
+  + e3.l b: c
+  + e3.l c: n
+  + e3.l d: b
+  + e3.n a: n
+  + e3.o a: Device
+  + e3.p b: String
+  + e3.r a: r
+  + e3.u f: boolean
+  + e3.u g: c
+  + e3.w e: u
+  + e3.x d: Device
+  + e3.x e: a
+  + e3.x f: boolean
+  + e3.y e: String
+  + e3.y f: Device
+  + e3.y g: a
+  + e3.y h: s
+  + g2.b e: d
+  + g2.c e: i
+  + g2.d a: List
+  + g2.d b: List
+  + g2.d c: List
+  + g2.d d: List
+  + g2.d e: List
+  + g2.d f: n
+  + g2.d g: n
+  + g2.e a: Drawable
+  + g2.f a: f
+  + g2.h a: LinkedHashMap
+  + g2.i a: Map
+  + g2.i b: i
+  + g2.k a: j
+  + g2.l d: int
+  + g2.m e: Object
+  + g2.q f: d
+  + g2.r i: f
+  + g2.r j: j
+  + g2.s c: d
+  + h2.p i: j
+  + j2.h a: j
+  + l2.h a: j
+  + m.X g: m
+  + m2.a a: j
+  + m2.b h: d
+  + m2.b l: f
+  + m2.c i: f
+  + m2.d g: d
+  + m2.d k: f
+  + m2.g j: f
+  + m2.i f: f
+  + o.B z: d0
+  + o.C s: d0
+  + o.Q t: c0
+  + o.Z d: int
+  + o.b0 a: D
+  + o.d0 a: int
+  + o.d0 b: d0
+  + o.d0 c: d0
+  + o.f L: d0
+  + o.f M: d0
+  + p2.b a: j
+  + p2.e a: j
+  + q.r0 h: m
+  + q2.q d: i
+  + u2.c a: j
+  + u2.e n: i
+  + u2.g r: i
+  + u2.n j: i
+  + u2.p a: j
+  
+  - M.A d: int
+  - M.A e: boolean
+  - M.A f: a
+  - M.A g: p
+  - M.A h: Object
+  - M.A i: Object
+  - M.A j: Object
+  - M.A k: Object
+  - O2.e d: e
+  - O2.e e: a
+  - O2.e f: boolean
+  - O2.e g: a
+  - androidx.compose.foundation.MagnifierElement d: b0
+  - e3.A d: Device
+  - e3.A e: a
+  - e3.A f: boolean
+  - e3.B f: Device
+  - e3.f d: int
+  - e3.f e: u
+  - e3.f f: d0
+  - e3.f g: m
+  - e3.f h: d0
+  - e3.f i: d0
+  - e3.g a: m
+  - e3.h g: Map
+  - e3.h h: c
+  - e3.h i: Map
+  - e3.h j: Iterator
+  - e3.h k: Map
+  - e3.h l: Device
+  - e3.h o: int
+  - e3.h p: Object
+  - e3.h q: m
+  - e3.h r: int
+  - e3.i h: Map
+  - e3.i i: Iterator
+  - e3.i j: Map
+  - e3.i k: String
+  - e3.i l: int
+  - e3.i m: int
+  - e3.i n: int
+  - e3.i o: Object
+  - e3.i p: m
+  - e3.i q: int
+  - e3.j g: c
+  - e3.j h: c
+  - e3.j i: Object
+  - e3.j j: m
+  - e3.j k: int
+  - e3.k d: int
+  - e3.k e: d0
+  - e3.k f: d0
+  - e3.l h: int
+  - e3.l i: int
+  - e3.l j: m
+  - e3.l k: d0
+  - e3.l l: d0
+  - e3.l m: d0
+  - e3.m a: c
+  - e3.m b: c
+  - e3.m c: n
+  - e3.m d: b
+  - e3.o a: o
+  - e3.q b: String
+  - e3.r a: Device
+  - e3.u f: c
+  - e3.w e: String
+  - e3.w f: Device
+  - e3.w g: a
+  - e3.w h: s
+  - e3.x d: boolean
+  - e3.y e: u
+  - e3.z e: String
+  - e3.z f: Device
+  - e3.z g: a
+  - e3.z h: X0
+  - e3.z i: X0
+  - e3.z j: a
+  - e3.z k: s
+  - g2.b e: e
+  - g2.c e: Object
+  - g2.d d: int
+  - g2.d e: i
+  - g2.e a: List
+  - g2.e b: List
+  - g2.e c: List
+  - g2.e d: List
+  - g2.e e: List
+  - g2.e f: n
+  - g2.e g: n
+  - g2.f a: Drawable
+  - g2.h a: h
+  - g2.i a: LinkedHashMap
+  - g2.j a: Map
+  - g2.j b: j
+  - g2.l a: k
+  - g2.q f: e
+  - g2.r i: g
+  - g2.r j: k
+  - g2.s c: e
+  - h2.p i: k
+  - j2.h a: k
+  - l2.h a: k
+  - m.X g: c
+  - m2.a a: k
+  - m2.b h: e
+  - m2.b l: g
+  - m2.c i: g
+  - m2.d g: e
+  - m2.d k: g
+  - m2.g j: g
+  - m2.i f: g
+  - o.B z: c0
+  - o.C s: c0
+  - o.Q t: b0
+  - o.Z a: D
+  - o.c0 a: int
+  - o.c0 b: c0
+  - o.c0 c: c0
+  - o.e0 d: int
+  - o.f L: c0
+  - o.f M: c0
+  - p2.b a: k
+  - p2.e a: k
+  - q.r0 h: c
+  - q2.q d: j
+  - u2.c a: k
+  - u2.e n: j
+  - u2.g r: j
+  - u2.n j: j
+  - u2.p a: k
+  
+
+
