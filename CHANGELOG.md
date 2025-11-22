@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **APK size trend report** - Added Python script to generate historical APK size analysis across all releases
+  - Downloads Diffuse tool from source and builds it locally
+  - Analyzes 22 releases from 1.0.0 to 2.6.0
+  - Generates comprehensive trend report in `docs/apk-size-trend.md` with size evolution, method counts, and percentage changes
+  - Creates detailed Diffuse comparison reports for each consecutive release pair in `docs/apk-diffs/`
+  - Script located at `scripts/generate_apk_trend_report.py` for regenerating report
+  - Release metadata stored in `scripts/releases.json` for easy updates
 - **APK size analysis with Diffuse** - Integrated Diffuse tool to automatically track APK size, method count, and code complexity changes in pull requests
   - Uses [diffuse-action](https://github.com/usefulness/diffuse-action) for simplified GitHub Actions integration
   - Compares PR APK against latest release APK (production baseline)

@@ -1,0 +1,618 @@
+Diffuse Comparison: 2.2.0 → 2.2.1
+================================================================================
+
+OLD: 2.2.0.apk (signature: V2)
+NEW: 2.2.1.apk (signature: V2)
+
+          │            compressed            │           uncompressed           
+          ├───────────┬───────────┬──────────┼───────────┬───────────┬──────────
+ APK      │ old       │ new       │ diff     │ old       │ new       │ diff     
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+      dex │   4.2 MiB │   4.2 MiB │   +518 B │   4.2 MiB │   4.2 MiB │   +516 B 
+     arsc │ 897.2 KiB │ 897.2 KiB │      0 B │ 897.1 KiB │ 897.1 KiB │      0 B 
+ manifest │     3 KiB │     3 KiB │      0 B │  12.5 KiB │  12.5 KiB │      0 B 
+      res │ 316.3 KiB │ 316.3 KiB │      0 B │   424 KiB │   424 KiB │      0 B 
+   native │ 206.2 KiB │ 202.7 KiB │ -3.6 KiB │  58.9 KiB │  58.9 KiB │      0 B 
+    asset │  48.6 KiB │  49.9 KiB │ +1.3 KiB │ 136.4 KiB │ 137.7 KiB │ +1.3 KiB 
+    other │  51.4 KiB │  51.4 KiB │      0 B │ 112.7 KiB │ 112.7 KiB │      0 B 
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+    total │   5.7 MiB │   5.7 MiB │ -1.8 KiB │   5.8 MiB │   5.8 MiB │ +1.8 KiB 
+
+ DEX     │ old   │ new   │ diff           
+─────────┼───────┼───────┼────────────────
+   files │     1 │     1 │  0             
+ strings │ 20088 │ 20089 │ +1 (+6 -5)     
+   types │  6550 │  6550 │  0 (+0 -0)     
+ classes │  5350 │  5350 │  0 (+0 -0)     
+ methods │ 28064 │ 28063 │ -1 (+131 -132) 
+  fields │ 17672 │ 17672 │  0 (+121 -121) 
+
+ ARSC    │ old  │ new  │ diff 
+─────────┼──────┼──────┼──────
+ configs │  133 │  133 │  0   
+ entries │ 1549 │ 1549 │  0   
+
+=================
+====   APK   ====
+=================
+
+     compressed      │    uncompressed    │                                              
+──────────┬──────────┼─────────┬──────────┤                                              
+ size     │ diff     │ size    │ diff     │ path                                         
+──────────┼──────────┼─────────┼──────────┼──────────────────────────────────────────────
+ 35.1 KiB │ -3.6 KiB │ 9.9 KiB │      0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so 
+  7.3 KiB │ +1.3 KiB │ 7.2 KiB │ +1.3 KiB │ ∆ assets/dexopt/baseline.prof                
+  4.2 MiB │   +518 B │ 4.2 MiB │   +516 B │ ∆ classes.dex                                
+  1,001 B │     -3 B │   869 B │     +3 B │ ∆ assets/dexopt/baseline.profm               
+──────────┼──────────┼─────────┼──────────┼──────────────────────────────────────────────
+  4.2 MiB │ -1.8 KiB │ 4.2 MiB │ +1.8 KiB │ (total)                                      
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 17                      │ 18                      
+ version name │ 2.2.0                   │ 2.2.1                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="17"
+-    android:versionName="2.2.0"
++    android:versionCode="18"
++    android:versionName="2.2.1"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
+====   DEX   ====
+=================
+
+STRINGS:
+
+   old   │ new   │ diff       
+  ───────┼───────┼────────────
+   20088 │ 20089 │ +1 (+6 -5) 
+  
+  + 2.2.1
+  + 2.2.1 (release)
+  + SELECT * FROM blog_posts WHERE isRead = 0 ORDER BY publishedDate DESC
+  + VZLLZLLLLZLLLL
+  + r8-map-id-017d878544e90af4a648e501cbd4ac59d134e5bea2c59ed55e599012e7f9bdad
+  + ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"017d878544e90af4a648e501cbd4ac59d134e5bea2c59ed55e599012e7f9bdad","r8-mode":"full","version":"8.12.14"}
+  
+  - 2.2.0
+  - 2.2.0 (release)
+  - VLZLZLLLLZLLLL
+  - r8-map-id-ee0b81df4b43460529522744e4d416b5f0369ce52e0401b934ff6c47835e2732
+  - ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"ee0b81df4b43460529522744e4d416b5f0369ce52e0401b934ff6c47835e2732","r8-mode":"full","version":"8.12.14"}
+  
+
+METHODS:
+
+   old   │ new   │ diff           
+  ───────┼───────┼────────────────
+   28064 │ 28063 │ -1 (+131 -132) 
+  
+  + D3.n <init>(d, o, b, c, b, g)
+  + G.b <init>(a, r, boolean, H, v, A, q, U, f, int, int)
+  + H.X <init>(e, Map, b)
+  + I3.j <init>(Object, Object, e, String, Object, Object[], int)
+  + I3.m <init>(q, e, String, Object, Object[], boolean)
+  + R0.n0 <init>(f, p0)
+  + Z.H2 <init>(r, H, long, float, q, float, e)
+  + Z.I2 <init>(r, H, long, float, q, l, boolean, a, float, c)
+  + Z.J2 <init>(r, H, long, float, q, boolean, l, boolean, a, float, c)
+  + Z.K2 b(a, r, boolean, H, long, long, float, float, q, l, c, s, int, int)
+  + Z.K2 c(r, H, long, q, float) → r
+  + Z.S1 <init>(Y1, boolean, a, H, r, boolean, N1, q, U, c, c, int)
+  + Z.U1 a(Y1, boolean, a, H, r, boolean, N1, q, U, c, c, s, int)
+  + Z.p0 <init>(int)
+  + Z.p0 j(Object) → Object
+  + Z.q0 <init>(a, N, float, r, H, long, long, j0, c, int, int)
+  + Z.q0 i(Object, Object) → Object
+  + Z.u b(a, r, boolean, H, v, A, q, U, f, s, int, int)
+  + Z.u i(a, r, boolean, H, v, q, U, f, s, int, int)
+  + androidx.compose.material3.internal.ChildSemanticsNodeElement <init>(p0)
+  + b1.D a(Object, i, l) → Object
+  + b1.h a(g, int, int, p0) → List
+  + m4.u <init>(boolean, List, List, boolean, c, a, Map, Map, boolean, c, c, e, c)
+  + m4.w <init>(List, boolean, c, a)
+  + n0.a <init>(i, e, String, Object, Object[])
+  + n0.c <init>(int)
+  + n0.c j(Object) → Object
+  + n0.d <clinit>()
+  + n0.d <init>(Map)
+  + n0.d b(Object)
+  + n0.d c(Object, c, s, int)
+  + n0.f <init>(Map, c)
+  + n0.f a(Object) → boolean
+  + n0.f d() → Map
+  + n0.f e(String) → Object
+  + n0.f f(String, a) → s
+  + n0.g <clinit>()
+  + n0.h <init>(f)
+  + n0.h a(Object) → boolean
+  + n0.h c() → c
+  + n0.h d() → Map
+  + n0.h e(String) → Object
+  + n0.h f(String, a) → s
+  + n0.h g() → w
+  + n0.i a(l, Object) → Object
+  + n0.i b(Object) → Object
+  + n0.k c(Object[], i, a, s, int) → Object
+  + n0.k d(Object[], i, a, s, int, int) → Object
+  + n0.k e(s) → d
+  + x4.l C(byte[], String, c, int) → String
+  + y.A <init>(Context, int)
+  + y.A a(Q0) → EdgeEffect
+  + y.A b() → EdgeEffect
+  + y.A c() → EdgeEffect
+  + y.A d() → EdgeEffect
+  + y.A e() → EdgeEffect
+  + y.A f(EdgeEffect) → boolean
+  + y.A g(EdgeEffect) → boolean
+  + y.B <init>(l, int, s0)
+  + y.B E0()
+  + y.B F(i0)
+  + y.B M()
+  + y.B N0(l, j)
+  + y.B O0() → C
+  + y.B P0(l)
+  + y.B b0(k)
+  + y.B z0() → boolean
+  + y.C <clinit>()
+  + y.C K0(D)
+  + y.C l() → Object
+  + y.D <init>(Context)
+  + y.D onAbsorb(int)
+  + y.D onPull(float)
+  + y.D onPull(float, float)
+  + y.D onRelease()
+  + y.E <init>(E, h, A)
+  + y.E <init>(E, h, A, U)
+  + y.E N0(float, EdgeEffect, Canvas) → boolean
+  + y.E O0(float, long, EdgeEffect, Canvas) → boolean
+  + y.E P0() → RenderNode
+  + y.E k(M)
+  + y.F <clinit>()
+  + y.F <init>(int)
+  + y.F a(long, m, c) → E
+  + y.G <init>(J, c)
+  + y.H <init>(J, c)
+  + y.I <init>(J, d, int)
+  + y.I a(d, Object) → d
+  + y.I i(Object, Object) → Object
+  + y.I q(Object) → Object
+  + y.J D0()
+  + y.J K0(J, c) → Object
+  + y.J L0(J, c) → Object
+  + y.J M0()
+  + y.J g0()
+  + y.J z(l, m, long)
+  + y.n <init>(int)
+  + y.o <init>(boolean, K, long, float, float, long, long, h)
+  + y.o j(Object) → Object
+  + y.p <init>(float, K, H)
+  + y.p b0(k)
+  + y.p f() → boolean
+  + y.p z0() → boolean
+  + y.q <init>(float, K)
+  + y.q equals(Object) → boolean
+  + y.q hashCode() → int
+  + y.q toString() → String
+  + y.r O0() → E
+  + y.r U0(KeyEvent) → boolean
+  + y.r V0(KeyEvent)
+  + y.r g0()
+  + y.r z(l, m, long)
+  + y.t <clinit>()
+  + y.v <init>(w, d)
+  + y.v h(Object, Object, Object) → Object
+  + y.v q(Object) → Object
+  + y.w <init>(l, a)
+  + y.w E0()
+  + y.w N0(k)
+  + y.w O0() → E
+  + y.w T0()
+  + y.w U0(KeyEvent) → boolean
+  + y.w V0(KeyEvent)
+  + y.w X0()
+  + y.x <init>(k)
+  + y.x C0()
+  + y.x k(M)
+  + y.y a(k) → l
+  + y.y equals(Object) → boolean
+  + y.y hashCode() → int
+  + y.z <clinit>()
+  
+  - D3.n <init>(c, o, b, c, b, g)
+  - G.b <init>(a, r, boolean, H, v, A, p, U, f, int, int)
+  - H.X <init>(d, Map, b)
+  - I3.j <init>(Object, Object, d, String, Object, Object[], int)
+  - I3.m <init>(q, d, String, Object, Object[], boolean)
+  - R0.n0 <init>(e, p0)
+  - W3.b a() → h
+  - Z.H2 <init>(r, H, long, float, p, float, e)
+  - Z.I2 <init>(r, H, long, float, p, l, boolean, a, float, c)
+  - Z.J2 <init>(r, H, long, float, p, boolean, l, boolean, a, float, c)
+  - Z.K2 b(a, r, boolean, H, long, long, float, float, p, l, c, s, int, int)
+  - Z.K2 c(r, H, long, p, float) → r
+  - Z.S1 <init>(Y1, boolean, a, H, r, boolean, N1, p, U, c, c, int)
+  - Z.U1 a(Y1, boolean, a, H, r, boolean, N1, p, U, c, c, s, int)
+  - Z.p0 <init>(a, N, float, r, H, long, long, j0, c, int, int)
+  - Z.p0 i(Object, Object) → Object
+  - Z.q0 <init>(int)
+  - Z.q0 j(Object) → Object
+  - Z.u b(a, r, boolean, H, v, A, p, U, f, s, int, int)
+  - Z.u i(a, r, boolean, H, v, p, U, f, s, int, int)
+  - androidx.compose.material3.internal.ChildSemanticsNodeElement <init>(q0)
+  - b1.D a(Object, h, l) → Object
+  - b1.h a(g, int, int, q0) → List
+  - m4.u <init>(List, boolean, List, boolean, c, a, Map, Map, boolean, c, c, e, c)
+  - m4.w <init>(ArrayList, boolean, c, a)
+  - n0.a <init>(h, d, String, Object, Object[])
+  - n0.c <clinit>()
+  - n0.c <init>(Map)
+  - n0.c b(Object)
+  - n0.c c(Object, c, s, int)
+  - n0.d a(Object) → boolean
+  - n0.d d() → Map
+  - n0.d e(String) → Object
+  - n0.d f(String, a) → s
+  - n0.e <init>(Map, c)
+  - n0.f <clinit>()
+  - n0.g <init>(e)
+  - n0.g a(Object) → boolean
+  - n0.g c() → c
+  - n0.g d() → Map
+  - n0.g e(String) → Object
+  - n0.g f(String, a) → s
+  - n0.g g() → w
+  - n0.h a(l, Object) → Object
+  - n0.h b(Object) → Object
+  - n0.i <init>(int)
+  - n0.i j(Object) → Object
+  - n0.k c(Object[], h, a, s, int) → Object
+  - n0.k d(Object[], h, a, s, int, int) → Object
+  - n0.k e(s) → c
+  - x4.l C(byte[], String, i, int) → String
+  - y.A <clinit>()
+  - y.A <init>(l, int, s0)
+  - y.A E0()
+  - y.A F(i0)
+  - y.A M()
+  - y.A N0(l, j)
+  - y.A O0() → B
+  - y.A P0(l)
+  - y.A b0(k)
+  - y.A l() → Object
+  - y.A z0() → boolean
+  - y.B K0(D)
+  - y.C <init>(Context)
+  - y.C onAbsorb(int)
+  - y.C onPull(float)
+  - y.C onPull(float, float)
+  - y.C onRelease()
+  - y.D <init>(E, h, z)
+  - y.D <init>(E, h, z, U)
+  - y.D N0(float, EdgeEffect, Canvas) → boolean
+  - y.D O0(float, long, EdgeEffect, Canvas) → boolean
+  - y.D P0() → RenderNode
+  - y.D k(M)
+  - y.E <clinit>()
+  - y.E <init>(int)
+  - y.E a(long, m, c) → E
+  - y.F <init>(I, c)
+  - y.F q(Object) → Object
+  - y.G <init>(I, c)
+  - y.H <init>(I, d, int)
+  - y.H a(d, Object) → d
+  - y.H i(Object, Object) → Object
+  - y.I D0()
+  - y.I K0(I, c) → Object
+  - y.I L0(I, c) → Object
+  - y.I M0()
+  - y.I g0()
+  - y.I z(l, m, long)
+  - y.J <init>(int)
+  - y.J j(Object) → Object
+  - y.n <init>(boolean, K, long, float, float, long, long, h)
+  - y.o <init>(float, K, H)
+  - y.o b0(k)
+  - y.o f() → boolean
+  - y.o z0() → boolean
+  - y.p <init>(float, K)
+  - y.p equals(Object) → boolean
+  - y.p hashCode() → int
+  - y.p toString() → String
+  - y.q O0() → E
+  - y.q U0(KeyEvent) → boolean
+  - y.q V0(KeyEvent)
+  - y.q g0()
+  - y.q z(l, m, long)
+  - y.r <clinit>()
+  - y.u <init>(v, d)
+  - y.u h(Object, Object, Object) → Object
+  - y.u q(Object) → Object
+  - y.v <init>(l, a)
+  - y.v E0()
+  - y.v N0(k)
+  - y.v O0() → E
+  - y.v T0()
+  - y.v U0(KeyEvent) → boolean
+  - y.v V0(KeyEvent)
+  - y.v X0()
+  - y.w <init>(k)
+  - y.w C0()
+  - y.w k(M)
+  - y.x <clinit>()
+  - y.x a(k) → l
+  - y.x equals(Object) → boolean
+  - y.x hashCode() → int
+  - y.z <init>(Context, int)
+  - y.z a(Q0) → EdgeEffect
+  - y.z b() → EdgeEffect
+  - y.z c() → EdgeEffect
+  - y.z d() → EdgeEffect
+  - y.z e() → EdgeEffect
+  - y.z f(EdgeEffect) → boolean
+  - y.z g(EdgeEffect) → boolean
+  
+
+FIELDS:
+
+   old   │ new   │ diff          
+  ───────┼───────┼───────────────
+   17672 │ 17672 │ 0 (+121 -121) 
+  
+  + D3.X b: f
+  + D3.Z c: e
+  + H.X d: f
+  + I3.j e: e
+  + I3.m e: e
+  + M.g d: n
+  + R0.n0 d: f
+  + Z.H2 h: q
+  + Z.I2 h: q
+  + Z.J2 h: q
+  + Z.S1 k: q
+  + Z.p0 d: int
+  + Z.q0 d: a
+  + Z.q0 e: N
+  + Z.q0 f: float
+  + Z.q0 g: r
+  + Z.q0 h: H
+  + Z.q0 i: long
+  + Z.q0 j: long
+  + Z.q0 k: j0
+  + Z.q0 l: c
+  + Z.q0 m: int
+  + Z.q0 n: int
+  + a0.e r: p0
+  + androidx.compose.material3.internal.ChildSemanticsNodeElement b: p0
+  + m4.u d: boolean
+  + m4.u e: List
+  + n0.a d: i
+  + n0.a e: e
+  + n0.c d: int
+  + n0.d d: Map
+  + n0.d e: E
+  + n0.d f: e
+  + n0.d g: Q0
+  + n0.d h: j
+  + n0.f d: c
+  + n0.f e: E
+  + n0.f f: E
+  + n0.g a: T0
+  + n0.h d: f
+  + n0.h e: e
+  + n0.h f: w
+  + n0.h g: c
+  + o0.m a: c
+  + w.w0 a: c
+  + y.A a: Context
+  + y.A b: int
+  + y.A c: long
+  + y.A d: EdgeEffect
+  + y.A e: EdgeEffect
+  + y.A f: EdgeEffect
+  + y.A g: EdgeEffect
+  + y.A h: EdgeEffect
+  + y.A i: EdgeEffect
+  + y.A j: EdgeEffect
+  + y.A k: EdgeEffect
+  + y.B t: l
+  + y.B u: c
+  + y.B v: d
+  + y.B w: J
+  + y.B x: i0
+  + y.B y: r
+  + y.B z: a0
+  + y.C r: Z
+  + y.C s: a0
+  + y.D a: float
+  + y.D b: float
+  + y.E t: int
+  + y.E u: h
+  + y.E v: A
+  + y.E w: Object
+  + y.F a: int
+  + y.F b: F
+  + y.F c: F
+  + y.G g: h
+  + y.G h: Object
+  + y.G i: J
+  + y.G j: int
+  + y.H g: Object
+  + y.H h: J
+  + y.I h: int
+  + y.I i: int
+  + y.I j: J
+  + y.J r: l
+  + y.J s: h
+  + y.f A: B
+  + y.h c: A
+  + y.n d: int
+  + y.o d: boolean
+  + y.o e: n
+  + y.o f: long
+  + y.o g: float
+  + y.o h: float
+  + y.o i: long
+  + y.o j: long
+  + y.o k: h
+  + y.p t: l
+  + y.p u: float
+  + y.p v: K
+  + y.p w: H
+  + y.p x: b
+  + y.q a: float
+  + y.q b: K
+  + y.r N: t
+  + y.s a: long
+  + y.s b: int
+  + y.t a: float
+  + y.v h: int
+  + y.v i: T0
+  + y.v j: long
+  + y.v k: w
+  + y.w N: x
+  + y.w O: x
+  + y.x r: k
+  + y.x s: boolean
+  + y.x t: boolean
+  + y.x u: boolean
+  + y.y a: y
+  + y.z a: float
+  + y.z b: double
+  + y.z c: double
+  
+  - D3.X b: e
+  - D3.Z c: d
+  - H.X d: e
+  - I3.j e: d
+  - I3.m e: d
+  - M.g d: J
+  - R0.n0 d: e
+  - Z.H2 h: p
+  - Z.I2 h: p
+  - Z.J2 h: p
+  - Z.S1 k: p
+  - Z.p0 d: a
+  - Z.p0 e: N
+  - Z.p0 f: float
+  - Z.p0 g: r
+  - Z.p0 h: H
+  - Z.p0 i: long
+  - Z.p0 j: long
+  - Z.p0 k: j0
+  - Z.p0 l: c
+  - Z.p0 m: int
+  - Z.p0 n: int
+  - Z.q0 d: int
+  - a0.e r: q0
+  - androidx.compose.material3.internal.ChildSemanticsNodeElement b: q0
+  - m4.u d: List
+  - m4.u e: boolean
+  - n0.a d: h
+  - n0.a e: d
+  - n0.c d: Map
+  - n0.c e: E
+  - n0.c f: d
+  - n0.c g: Q0
+  - n0.c h: j
+  - n0.e d: c
+  - n0.e e: E
+  - n0.e f: E
+  - n0.f a: T0
+  - n0.g d: e
+  - n0.g e: e
+  - n0.g f: w
+  - n0.g g: c
+  - n0.i d: int
+  - o0.m a: i
+  - w.w0 a: i
+  - y.A t: l
+  - y.A u: c
+  - y.A v: d
+  - y.A w: J
+  - y.A x: i0
+  - y.A y: r
+  - y.A z: a0
+  - y.B r: Z
+  - y.B s: a0
+  - y.C a: float
+  - y.C b: float
+  - y.D t: int
+  - y.D u: h
+  - y.D v: z
+  - y.D w: Object
+  - y.E a: int
+  - y.E b: E
+  - y.E c: E
+  - y.F g: h
+  - y.F h: Object
+  - y.F i: I
+  - y.F j: int
+  - y.G g: Object
+  - y.G h: I
+  - y.G i: int
+  - y.H h: int
+  - y.H j: I
+  - y.I r: l
+  - y.I s: h
+  - y.J d: int
+  - y.f A: A
+  - y.h c: z
+  - y.n d: boolean
+  - y.n e: n
+  - y.n f: long
+  - y.n g: float
+  - y.n h: float
+  - y.n i: long
+  - y.n j: long
+  - y.n k: h
+  - y.o t: l
+  - y.o u: float
+  - y.o v: K
+  - y.o w: H
+  - y.o x: b
+  - y.p a: float
+  - y.p b: K
+  - y.q N: t
+  - y.r a: long
+  - y.r b: int
+  - y.s a: float
+  - y.u h: int
+  - y.u i: T0
+  - y.u j: long
+  - y.u k: v
+  - y.v N: x
+  - y.v O: x
+  - y.w r: k
+  - y.w s: boolean
+  - y.w t: boolean
+  - y.w u: boolean
+  - y.x a: x
+  - y.y a: float
+  - y.y b: double
+  - y.y c: double
+  - y.z a: Context
+  - y.z b: int
+  - y.z c: long
+  - y.z d: EdgeEffect
+  - y.z e: EdgeEffect
+  - y.z f: EdgeEffect
+  - y.z g: EdgeEffect
+  - y.z h: EdgeEffect
+  - y.z i: EdgeEffect
+  - y.z j: EdgeEffect
+  - y.z k: EdgeEffect
+  
+
+

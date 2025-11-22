@@ -1,0 +1,142 @@
+Diffuse Comparison: 1.0.0 → 1.0.1
+================================================================================
+
+OLD: 1.0.0.apk (signature: V2)
+NEW: 1.0.1.apk (signature: V2)
+
+          │            compressed            │           uncompressed            
+          ├───────────┬───────────┬──────────┼───────────┬───────────┬───────────
+ APK      │ old       │ new       │ diff     │ old       │ new       │ diff      
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼───────────
+      dex │   3.2 MiB │   3.2 MiB │   +912 B │   3.2 MiB │   3.2 MiB │    +912 B 
+     arsc │ 467.8 KiB │   469 KiB │ +1.2 KiB │ 467.7 KiB │ 468.9 KiB │  +1.2 KiB 
+ manifest │   2.9 KiB │   2.9 KiB │     +1 B │  12.1 KiB │  12.1 KiB │       0 B 
+      res │ 110.3 KiB │   118 KiB │ +7.7 KiB │ 128.5 KiB │   141 KiB │ +12.5 KiB 
+   native │   184 KiB │ 182.2 KiB │ -1.8 KiB │  58.9 KiB │  58.9 KiB │       0 B 
+    asset │  48.6 KiB │  48.6 KiB │     +7 B │ 136.3 KiB │ 136.3 KiB │      +1 B 
+    other │    46 KiB │    46 KiB │      0 B │ 102.7 KiB │ 102.7 KiB │       0 B 
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼───────────
+    total │   4.1 MiB │   4.1 MiB │   +8 KiB │   4.1 MiB │   4.1 MiB │ +14.6 KiB 
+
+ DEX     │ old   │ new   │ diff       
+─────────┼───────┼───────┼────────────
+   files │     1 │     1 │  0         
+ strings │ 15957 │ 15958 │ +1 (+4 -3) 
+   types │  5194 │  5194 │  0 (+0 -0) 
+ classes │  4212 │  4212 │  0 (+0 -0) 
+ methods │ 21481 │ 21481 │  0 (+0 -0) 
+  fields │ 13409 │ 13409 │  0 (+0 -0) 
+
+ ARSC    │ old │ new │ diff         
+─────────┼─────┼─────┼──────────────
+ configs │ 108 │ 108 │   0          
+ entries │ 333 │ 347 │ +14 (+14 -0) 
+
+=================
+====   APK   ====
+=================
+
+     compressed      │     uncompressed      │                                              
+──────────┬──────────┼───────────┬───────────┤                                              
+ size     │ diff     │ size      │ diff      │ path                                         
+──────────┼──────────┼───────────┼───────────┼──────────────────────────────────────────────
+ 14.7 KiB │ -1.8 KiB │   9.9 KiB │       0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so 
+  469 KiB │ +1.2 KiB │ 468.9 KiB │  +1.2 KiB │ ∆ resources.arsc                             
+  3.2 MiB │   +912 B │   3.2 MiB │    +912 B │ ∆ classes.dex                                
+    656 B │   +656 B │   1.2 KiB │  +1.2 KiB │ + res/pG.xml                                 
+    594 B │   +594 B │     976 B │    +976 B │ + res/oj.xml                                 
+    593 B │   +593 B │     976 B │    +976 B │ + res/Q4.xml                                 
+    593 B │   +593 B │     976 B │    +976 B │ + res/bv.xml                                 
+    592 B │   +592 B │     976 B │    +976 B │ + res/An.xml                                 
+    592 B │   +592 B │     976 B │    +976 B │ + res/Gj.xml                                 
+    592 B │   +592 B │     976 B │    +976 B │ + res/XZ.xml                                 
+    555 B │   +555 B │     836 B │    +836 B │ + res/H5.xml                                 
+    555 B │   +555 B │     836 B │    +836 B │ + res/aA.xml                                 
+    555 B │   +555 B │     836 B │    +836 B │ + res/g9.xml                                 
+    547 B │   +547 B │     860 B │    +860 B │ + res/hP.xml                                 
+    492 B │   +492 B │     868 B │    +868 B │ + res/DJ.xml                                 
+    464 B │   +464 B │     676 B │    +676 B │ + res/Kl.xml                                 
+    431 B │   +431 B │     604 B │    +604 B │ + res/tw1.xml                                
+    515 B │    +86 B │     860 B │    +256 B │ ∆ res/tw.xml                                 
+    892 B │     +6 B │     754 B │       0 B │ ∆ assets/dexopt/baseline.profm               
+  5.2 KiB │     -6 B │   5.1 KiB │       0 B │ ∆ res/as.png                                 
+    207 B │     +4 B │     107 B │       0 B │ ∆ res/pY.png                                 
+    325 B │     -2 B │     225 B │       0 B │ ∆ res/2K.9.png                               
+    220 B │     +2 B │     120 B │       0 B │ ∆ res/I2.png                                 
+  1.7 KiB │     -2 B │   1.6 KiB │       0 B │ ∆ res/QZ.png                                 
+    295 B │     -2 B │     197 B │       0 B │ ∆ res/cV.png                                 
+    321 B │     +2 B │     215 B │       0 B │ ∆ res/gK.9.png                               
+    314 B │     +2 B │     212 B │       0 B │ ∆ res/je.9.png                               
+  6.1 KiB │     +1 B │   5.9 KiB │      +1 B │ ∆ assets/dexopt/baseline.prof                
+  2.9 KiB │     +1 B │  12.1 KiB │       0 B │ ∆ AndroidManifest.xml                        
+──────────┼──────────┼───────────┼───────────┼──────────────────────────────────────────────
+  3.7 MiB │   +8 KiB │   3.7 MiB │ +14.6 KiB │ (total)                                      
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 1                       │ 2                       
+ version name │ 1.0.0                   │ 1.0.1                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="1"
+-    android:versionName="1.0.0"
++    android:versionCode="2"
++    android:versionName="1.0.1"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
+====   DEX   ====
+=================
+
+STRINGS:
+
+   old   │ new   │ diff       
+  ───────┼───────┼────────────
+   15957 │ 15958 │ +1 (+4 -3) 
+  
+  + 1.0.1
+  + MAC Address
+  + r8-map-id-939955a7d4665bd836e4e23829491ff968de8d28c8d1b26e9c3728d4b4c59e93
+  + ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"939955a7d4665bd836e4e23829491ff968de8d28c8d1b26e9c3728d4b4c59e93","r8-mode":"full","version":"8.12.14"}
+  
+  - 1.0.0
+  - r8-map-id-f84f142c96ad75f1842738039691a0614ad8eef3bdb3a45a6b71faae49a8a938
+  - ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"f84f142c96ad75f1842738039691a0614ad8eef3bdb3a45a6b71faae49a8a938","r8-mode":"full","version":"8.12.14"}
+  
+
+
+==================
+====   ARSC   ====
+==================
+
+ENTRIES:
+
+   old │ new │ diff         
+  ─────┼─────┼──────────────
+   333 │ 347 │ +14 (+14 -0) 
+  + drawable/outline_barcode_24
+  + drawable/outline_battery_android_0_24
+  + drawable/outline_battery_android_1_24
+  + drawable/outline_battery_android_2_24
+  + drawable/outline_battery_android_3_24
+  + drawable/outline_battery_android_4_24
+  + drawable/outline_battery_android_5_24
+  + drawable/outline_battery_android_6_24
+  + drawable/outline_battery_android_full_24
+  + drawable/outline_network_wifi_1_bar_24
+  + drawable/outline_network_wifi_2_bar_24
+  + drawable/outline_network_wifi_3_bar_24
+  + drawable/outline_signal_wifi_4_bar_24
+  + drawable/outline_tag_24
+  
+
+

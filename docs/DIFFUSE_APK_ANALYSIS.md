@@ -270,6 +270,7 @@ If Diffuse reveals size issues, consider:
 
 ## References
 
+- [APK Size Trend Report](apk-size-trend.md) - Historical APK size analysis across all releases
 - [Diffuse Repository](https://github.com/JakeWharton/diffuse)
 - [diffuse-action Repository](https://github.com/usefulness/diffuse-action)
 - [Diffuse Releases](https://github.com/JakeWharton/diffuse/releases/latest)
@@ -277,6 +278,22 @@ If Diffuse reveals size issues, consider:
 - [R8 Optimization](https://developer.android.com/build/shrink-code)
 
 ## Maintenance
+
+### Historical APK Size Trend
+
+For a comprehensive view of APK size evolution across all releases, see the [APK Size Trend Report](apk-size-trend.md). This report shows:
+- Size changes for all 22 releases from 1.0.0 to current
+- Method and class count evolution
+- Detailed comparisons between consecutive releases
+- Links to individual Diffuse reports for each release pair
+
+To regenerate the trend report with updated releases:
+
+```bash
+# Update scripts/releases.json with new release information
+# Then run:
+python3 scripts/generate_apk_trend_report.py
+```
 
 ### Updating Diffuse Version
 
