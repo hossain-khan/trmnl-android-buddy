@@ -3,8 +3,8 @@
 Generate APK size trend report using Diffuse.
 
 This script:
-1. Downloads Diffuse binary from GitHub releases
-2. Fetches all APK releases from the repository
+1. Clones and builds Diffuse from GitHub source
+2. Loads release metadata from releases.json
 3. Downloads APKs for each release
 4. Runs Diffuse comparisons between consecutive releases
 5. Generates an aggregated trend report with visualizations
@@ -110,6 +110,12 @@ def build_diffuse(work_dir: Path) -> Path:
         log_info(f"Diffuse already built: {diffuse_bin}")
         return diffuse_bin
     
+    # Check if directory exists and clean it if needed
+    if DIFFUSE_BUILD_DIR.exists():
+        log_info("Removing existing Diffuse build directory...")
+        import shutil
+        shutil.rmtree(DIFFUSE_BUILD_DIR)
+    
     log_info("Cloning Diffuse repository...")
     try:
         # Clone the Diffuse repository
@@ -194,17 +200,21 @@ def parse_diffuse_output(output: str) -> Dict:
         'class_count_diff': None
     }
     
-    # Extract total size diff (last line of APK table)
+    # Regex pattern to match the total size difference in the APK table
+    # Format: "total │ <size> │ <size> │ <diff> │ ..."
+    # Example: "total │ 5.9 MiB │ 6.0 MiB │ +21.3 KiB │ ..."
     total_match = re.search(r'total\s+│[^│]+│[^│]+│\s*([+-]?[\d.]+\s*[KMGT]?i?B)', output)
     if total_match:
         metrics['apk_size_compressed_diff'] = total_match.group(1).strip()
     
-    # Extract method count diff
+    # Regex pattern to match method count changes
+    # Format: "methods │ <old> │ <new> │ <diff>"
     method_match = re.search(r'methods\s+│\s*\d+\s+│\s*\d+\s+│\s*([+-]?\d+)', output)
     if method_match:
         metrics['method_count_diff'] = method_match.group(1).strip()
     
-    # Extract class count diff
+    # Regex pattern to match class count changes
+    # Format: "classes │ <old> │ <new> │ <diff>"
     class_match = re.search(r'classes\s+│\s*\d+\s+│\s*\d+\s+│\s*([+-]?\d+)', output)
     if class_match:
         metrics['class_count_diff'] = class_match.group(1).strip()
