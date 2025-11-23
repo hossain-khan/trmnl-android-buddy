@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRMNL Android Buddy - APK Metrics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .chart-container {
+            margin-bottom: 50px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+        
+        .chart-wrapper.tall {
+            height: 500px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            color: #666;
+        }
+        
+        .source-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 TRMNL Android Buddy</h1>
+            <p class="subtitle">APK Metrics Dashboard - Build History Analysis</p>
+        </header>
+
+        <div class="source-info">
+            <strong>📝 Data Source:</strong> Diffuse reports from <code>docs/apk-diffs/*-slim.txt</code> 
+            | <strong>Versions:</strong> 1.0.0 → 2.6.0 (21 releases) 
+            | <strong>Generated:</strong> <span id="generated-date"></span>
+        </div>
+
+        <div class="stats-grid" id="summary-stats">
+            <!-- Stats will be populated by JavaScript -->
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">Total APK Size Over Time</h2>
+            <div class="chart-wrapper">
+                <canvas id="apkSizeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">APK Size Breakdown by Component</h2>
+            <div class="chart-wrapper tall">
+                <canvas id="componentBreakdownChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">Size Changes Between Versions</h2>
+            <div class="chart-wrapper">
+                <canvas id="sizeChangesChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">DEX Metrics Evolution</h2>
+            <div class="chart-wrapper tall">
+                <canvas id="dexMetricsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">Methods and Fields Count</h2>
+            <div class="chart-wrapper">
+                <canvas id="methodsFieldsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">Resource Entries Over Time</h2>
+            <div class="chart-wrapper">
+                <canvas id="resourcesChart"></canvas>
+            </div>
+        </div>
+
+        <footer>
+            <p>Generated using <a href="https://github.com/JakeWharton/diffuse" target="_blank">Diffuse</a> by Jake Wharton</p>
+            <p>TRMNL Android Buddy © 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Set generated date
+        document.getElementById('generated-date').textContent = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Parse size string to bytes (handles MiB, KiB, B)
+        function parseSize(sizeStr) {
+            if (!sizeStr) return 0;
+            const match = sizeStr.trim().match(/^([\d.]+)\s*(MiB|KiB|B)$/);
+            if (!match) return 0;
+            const value = parseFloat(match[1]);
+            const unit = match[2];
+            if (unit === 'MiB') return value * 1024 * 1024;
+            if (unit === 'KiB') return value * 1024;
+            return value;
+        }
+
+        // Format bytes to human readable
+        function formatBytes(bytes) {
+            if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MiB';
+            if (bytes >= 1024) return (bytes / 1024).toFixed(2) + ' KiB';
+            return bytes + ' B';
+        }
+
+        // Parse number with K suffix
+        function parseNumber(str) {
+            if (!str) return 0;
+            str = str.trim().replace(/,/g, '');
+            if (str.endsWith('K')) return parseFloat(str) * 1000;
+            return parseInt(str) || 0;
+        }
+
+        // Diffuse report data (extracted from slim files)
+        const diffuseData = [
+            {
+                version: "1.0.0", versionCode: 1,
+                compressed: { total: 4.1, dex: 3.2, arsc: 467.8, manifest: 2.9, res: 110.3, native: 184, asset: 48.6, other: 46 },
+                uncompressed: { total: 4.1, dex: 3.2, arsc: 467.7, manifest: 12.1, res: 128.5, native: 58.9, asset: 136.3, other: 102.7 },
+                dex: { files: 1, strings: 15957, types: 5194, classes: 4212, methods: 21481, fields: 13409 },
+                arsc: { configs: 108, entries: 333 }
+            },
+            {
+                version: "1.0.1", versionCode: 2,
+                compressed: { total: 4.108, dex: 3.2009, arsc: 469, manifest: 2.9001, res: 117.7, native: 182.2, asset: 48.607, other: 46 },
+                uncompressed: { total: 4.1146, dex: 3.2009, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 136.301, other: 102.7 },
+                dex: { files: 1, strings: 15958, types: 5194, classes: 4212, methods: 21481, fields: 13409 },
+                arsc: { configs: 108, entries: 347 }
+            },
+            {
+                version: "1.0.2", versionCode: 3,
+                compressed: { total: 4.1077, dex: 3.2023, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
+                uncompressed: { total: 4.1149, dex: 3.2023, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 15969, types: 5197, classes: 4215, methods: 21488, fields: 13418 },
+                arsc: { configs: 108, entries: 347 }
+            },
+            {
+                version: "1.0.3", versionCode: 4,
+                compressed: { total: 4.114, dex: 3.2089, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
+                uncompressed: { total: 4.1213, dex: 3.2089, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 15995, types: 5207, classes: 4223, methods: 21530, fields: 13431 },
+                arsc: { configs: 108, entries: 347 }
+            },
+            {
+                version: "1.0.4", versionCode: 5,
+                compressed: { total: 4.176, dex: 3.271, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
+                uncompressed: { total: 4.183, dex: 3.271, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 16288, types: 5318, classes: 4329, methods: 22061, fields: 13640 },
+                arsc: { configs: 108, entries: 347 }
+            },
+            {
+                version: "1.0.5", versionCode: 6,
+                compressed: { total: 4.191, dex: 3.286, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
+                uncompressed: { total: 4.198, dex: 3.286, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 16379, types: 5337, classes: 4346, methods: 22208, fields: 13701 },
+                arsc: { configs: 108, entries: 347 }
+            },
+            {
+                version: "1.0.6", versionCode: 7,
+                compressed: { total: 4.228, dex: 3.323, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
+                uncompressed: { total: 4.235, dex: 3.323, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 16626, types: 5416, classes: 4420, methods: 22676, fields: 13884 },
+                arsc: { configs: 108, entries: 347 }
+            },
+            {
+                version: "1.1.0", versionCode: 8,
+                compressed: { total: 4.341, dex: 3.435, arsc: 469.6, manifest: 2.9, res: 118.3, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 4.349, dex: 3.435, arsc: 469.5, manifest: 12.1, res: 141.5, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 17153, types: 5599, classes: 4580, methods: 23684, fields: 14381 },
+                arsc: { configs: 108, entries: 355 }
+            },
+            {
+                version: "1.2.0", versionCode: 9,
+                compressed: { total: 4.452, dex: 3.544, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 4.460, dex: 3.544, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 17708, types: 5770, classes: 4726, methods: 24713, fields: 14934 },
+                arsc: { configs: 108, entries: 368 }
+            },
+            {
+                version: "1.3.0", versionCode: 10,
+                compressed: { total: 4.456, dex: 3.548, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 4.464, dex: 3.548, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 17735, types: 5774, classes: 4729, methods: 24758, fields: 14953 },
+                arsc: { configs: 108, entries: 368 }
+            },
+            {
+                version: "1.4.0", versionCode: 11,
+                compressed: { total: 4.460, dex: 3.552, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 4.468, dex: 3.552, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 17767, types: 5780, classes: 4734, methods: 24810, fields: 14974 },
+                arsc: { configs: 108, entries: 368 }
+            },
+            {
+                version: "1.5.0", versionCode: 12,
+                compressed: { total: 4.471, dex: 3.563, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 4.479, dex: 3.563, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 17868, types: 5808, classes: 4759, methods: 24985, fields: 15055 },
+                arsc: { configs: 108, entries: 368 }
+            },
+            {
+                version: "1.6.0", versionCode: 13,
+                compressed: { total: 4.508, dex: 3.600, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 4.516, dex: 3.600, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 18128, types: 5871, classes: 4810, methods: 25452, fields: 15263 },
+                arsc: { configs: 108, entries: 368 }
+            },
+            {
+                version: "1.7.0", versionCode: 14,
+                compressed: { total: 4.528, dex: 3.620, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 4.536, dex: 3.620, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 18268, types: 5906, classes: 4840, methods: 25717, fields: 15389 },
+                arsc: { configs: 108, entries: 368 }
+            },
+            {
+                version: "2.0.0", versionCode: 15,
+                compressed: { total: 5.380, dex: 4.463, arsc: 481.2, manifest: 2.9, res: 119.2, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 5.388, dex: 4.463, arsc: 481.1, manifest: 12.1, res: 142.4, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 19435, types: 6441, classes: 5298, methods: 28468, fields: 17265 },
+                arsc: { configs: 108, entries: 377 }
+            },
+            {
+                version: "2.1.0", versionCode: 16,
+                compressed: { total: 5.583, dex: 4.661, arsc: 486, manifest: 2.9, res: 119.6, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 5.591, dex: 4.661, arsc: 485.9, manifest: 12.1, res: 142.8, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 19953, types: 6604, classes: 5438, methods: 29392, fields: 17813 },
+                arsc: { configs: 108, entries: 388 }
+            },
+            {
+                version: "2.2.0", versionCode: 17,
+                compressed: { total: 5.640, dex: 4.717, arsc: 487.3, manifest: 2.9, res: 119.8, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 5.648, dex: 4.717, arsc: 487.2, manifest: 12.1, res: 143, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 20176, types: 6675, classes: 5497, methods: 29862, fields: 18091 },
+                arsc: { configs: 108, entries: 393 }
+            },
+            {
+                version: "2.2.1", versionCode: 18,
+                compressed: { total: 5.676, dex: 4.753, arsc: 487.3, manifest: 2.9, res: 119.8, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 5.684, dex: 4.753, arsc: 487.2, manifest: 12.1, res: 143, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 20358, types: 6725, classes: 5542, methods: 30183, fields: 18266 },
+                arsc: { configs: 108, entries: 393 }
+            },
+            {
+                version: "2.3.0", versionCode: 19,
+                compressed: { total: 5.911, dex: 4.984, arsc: 491.3, manifest: 2.9, res: 120.1, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 5.919, dex: 4.984, arsc: 491.2, manifest: 12.1, res: 143.3, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 20639, types: 6823, classes: 5621, methods: 30759, fields: 18575 },
+                arsc: { configs: 108, entries: 402 }
+            },
+            {
+                version: "2.4.0", versionCode: 20,
+                compressed: { total: 5.958, dex: 5.031, arsc: 491.3, manifest: 3.0, res: 120.1, native: 181.6, asset: 47.5, other: 46 },
+                uncompressed: { total: 5.967, dex: 5.031, arsc: 491.2, manifest: 12.5, res: 143.3, native: 58.9, asset: 135.2, other: 102.7 },
+                dex: { files: 1, strings: 20842, types: 6897, classes: 5686, methods: 31204, fields: 18807 },
+                arsc: { configs: 108, entries: 402 }
+            },
+            {
+                version: "2.5.0", versionCode: 21,
+                compressed: { total: 6.000, dex: 4.5, arsc: 900.6, manifest: 3.0, res: 335.3, native: 201, asset: 50.2, other: 51.4 },
+                uncompressed: { total: 6.1, dex: 4.5, arsc: 900.5, manifest: 12.5, res: 462.2, native: 58.9, asset: 138, other: 112.7 },
+                dex: { files: 1, strings: 21127, types: 6935, classes: 5716, methods: 29506, fields: 19034 },
+                arsc: { configs: 133, entries: 1574 }
+            },
+            {
+                version: "2.6.0", versionCode: 22,
+                compressed: { total: 5.989, dex: 4.511, arsc: 900.6, manifest: 3.002, res: 335.296, native: 178.5, asset: 50.173, other: 51.4 },
+                uncompressed: { total: 6.111, dex: 4.511, arsc: 900.5, manifest: 12.5, res: 462.2, native: 58.9, asset: 137.975, other: 112.7 },
+                dex: { files: 1, strings: 21167, types: 6942, classes: 5722, methods: 29532, fields: 19073 },
+                arsc: { configs: 133, entries: 1574 }
+            }
+        ];
+
+        // Convert MiB to bytes for all data
+        const processedData = diffuseData.map(d => ({
+            ...d,
+            compressed: Object.fromEntries(Object.entries(d.compressed).map(([k, v]) => [k, v * 1024 * 1024])),
+            uncompressed: Object.fromEntries(Object.entries(d.uncompressed).map(([k, v]) => [k, v * 1024 * 1024]))
+        }));
+
+        // Extract versions
+        const versions = processedData.map(d => d.version);
+
+        // Calculate summary statistics
+        const firstVersion = processedData[0];
+        const lastVersion = processedData[processedData.length - 1];
+        const totalSizeGrowth = lastVersion.compressed.total - firstVersion.compressed.total;
+        const methodsGrowth = lastVersion.dex.methods - firstVersion.dex.methods;
+        const classesGrowth = lastVersion.dex.classes - firstVersion.dex.classes;
+
+        // Populate summary stats
+        const summaryStats = document.getElementById('summary-stats');
+        summaryStats.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-label">Total Releases</div>
+                <div class="stat-value">${processedData.length}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Current APK Size</div>
+                <div class="stat-value">${formatBytes(lastVersion.compressed.total)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Size Growth</div>
+                <div class="stat-value">${totalSizeGrowth > 0 ? '+' : ''}${formatBytes(totalSizeGrowth)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Method Count</div>
+                <div class="stat-value">${lastVersion.dex.methods.toLocaleString()}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Methods Added</div>
+                <div class="stat-value">+${methodsGrowth.toLocaleString()}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Classes Added</div>
+                <div class="stat-value">+${classesGrowth.toLocaleString()}</div>
+            </div>
+        `;
+
+        // Chart.js default configuration
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+        Chart.defaults.color = '#666';
+
+        // 1. Total APK Size Over Time
+        new Chart(document.getElementById('apkSizeChart'), {
+            type: 'line',
+            data: {
+                labels: versions,
+                datasets: [{
+                    label: 'Compressed APK Size',
+                    data: processedData.map(d => d.compressed.total / (1024 * 1024)),
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(2)} MiB`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: { display: true, text: 'Size (MiB)' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Version' }
+                    }
+                }
+            }
+        });
+
+        // 2. APK Size Breakdown by Component (Stacked Area)
+        new Chart(document.getElementById('componentBreakdownChart'), {
+            type: 'line',
+            data: {
+                labels: versions,
+                datasets: [
+                    {
+                        label: 'DEX',
+                        data: processedData.map(d => d.compressed.dex / (1024 * 1024)),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                        fill: true
+                    },
+                    {
+                        label: 'Resources (ARSC)',
+                        data: processedData.map(d => d.compressed.arsc / (1024 * 1024)),
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118, 75, 162, 0.7)',
+                        fill: true
+                    },
+                    {
+                        label: 'Res Files',
+                        data: processedData.map(d => d.compressed.res / (1024 * 1024)),
+                        borderColor: '#f093fb',
+                        backgroundColor: 'rgba(240, 147, 251, 0.7)',
+                        fill: true
+                    },
+                    {
+                        label: 'Native Libs',
+                        data: processedData.map(d => d.compressed.native / (1024 * 1024)),
+                        borderColor: '#4facfe',
+                        backgroundColor: 'rgba(79, 172, 254, 0.7)',
+                        fill: true
+                    },
+                    {
+                        label: 'Assets',
+                        data: processedData.map(d => d.compressed.asset / (1024 * 1024)),
+                        borderColor: '#43e97b',
+                        backgroundColor: 'rgba(67, 233, 123, 0.7)',
+                        fill: true
+                    },
+                    {
+                        label: 'Other',
+                        data: processedData.map(d => d.compressed.other / (1024 * 1024)),
+                        borderColor: '#fa709a',
+                        backgroundColor: 'rgba(250, 112, 154, 0.7)',
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'bottom' },
+                    tooltip: {
+                        mode: 'index',
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(2)} MiB`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        stacked: true,
+                        title: { display: true, text: 'Size (MiB)' }
+                    },
+                    x: {
+                        stacked: true,
+                        title: { display: true, text: 'Version' }
+                    }
+                }
+            }
+        });
+
+        // 3. Size Changes Between Versions
+        const sizeChanges = processedData.slice(1).map((d, i) => 
+            (d.compressed.total - processedData[i].compressed.total) / 1024
+        );
+        const versionTransitions = processedData.slice(1).map((d, i) => 
+            `${processedData[i].version} → ${d.version}`
+        );
+
+        new Chart(document.getElementById('sizeChangesChart'), {
+            type: 'bar',
+            data: {
+                labels: versionTransitions,
+                datasets: [{
+                    label: 'Size Change',
+                    data: sizeChanges,
+                    backgroundColor: sizeChanges.map(v => v >= 0 ? 'rgba(244, 67, 54, 0.7)' : 'rgba(76, 175, 80, 0.7)'),
+                    borderColor: sizeChanges.map(v => v >= 0 ? '#f44336' : '#4caf50'),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const val = context.parsed.y;
+                                return `${val >= 0 ? '+' : ''}${val.toFixed(2)} KiB`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Size Change (KiB)' },
+                        grid: { color: (context) => context.tick.value === 0 ? '#333' : 'rgba(0, 0, 0, 0.1)' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Version Transition' },
+                        ticks: { maxRotation: 90, minRotation: 45 }
+                    }
+                }
+            }
+        });
+
+        // 4. DEX Metrics Evolution
+        new Chart(document.getElementById('dexMetricsChart'), {
+            type: 'line',
+            data: {
+                labels: versions,
+                datasets: [
+                    {
+                        label: 'Strings',
+                        data: processedData.map(d => d.dex.strings),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Types',
+                        data: processedData.map(d => d.dex.types),
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Classes',
+                        data: processedData.map(d => d.dex.classes),
+                        borderColor: '#f093fb',
+                        backgroundColor: 'rgba(240, 147, 251, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        yAxisID: 'y'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'bottom' }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Count' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Version' }
+                    }
+                }
+            }
+        });
+
+        // 5. Methods and Fields Count
+        new Chart(document.getElementById('methodsFieldsChart'), {
+            type: 'line',
+            data: {
+                labels: versions,
+                datasets: [
+                    {
+                        label: 'Methods',
+                        data: processedData.map(d => d.dex.methods),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Fields',
+                        data: processedData.map(d => d.dex.fields),
+                        borderColor: '#43e97b',
+                        backgroundColor: 'rgba(67, 233, 123, 0.2)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: ${context.parsed.y.toLocaleString()}`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Count' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Version' }
+                    }
+                }
+            }
+        });
+
+        // 6. Resource Entries Over Time
+        new Chart(document.getElementById('resourcesChart'), {
+            type: 'bar',
+            data: {
+                labels: versions,
+                datasets: [{
+                    label: 'ARSC Entries',
+                    data: processedData.map(d => d.arsc.entries),
+                    backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                    borderColor: '#667eea',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Number of Entries' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Version' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
