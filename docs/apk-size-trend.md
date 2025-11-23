@@ -2,7 +2,7 @@
 
 This report shows the APK size evolution across releases using [Diffuse](https://github.com/JakeWharton/diffuse).
 
-**Generated**: 2025-11-22 02:47:53
+**Generated**: 2025-11-22 21:27:48
 
 **Repository**: `hossain-khan/trmnl-android-buddy`
 
