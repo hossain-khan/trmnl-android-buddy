@@ -222,6 +222,27 @@ def parse_diffuse_output(output: str) -> Dict:
     return metrics
 
 
+def generate_slim_report(full_report_content: str) -> str:
+    """
+    Generate slim version of diffuse report by removing DEX section.
+    
+    Keeps everything before the DEX section, which includes:
+    - APK size summary table
+    - ARSC metrics
+    - Manifest changes
+    """
+    lines = full_report_content.split('\n')
+    slim_lines = []
+    
+    for line in lines:
+        # Stop when we hit the DEX section header
+        if line.strip().startswith('====   DEX   ===='):
+            break
+        slim_lines.append(line)
+    
+    return '\n'.join(slim_lines)
+
+
 def generate_trend_report(releases: List[Dict], comparisons: List[Tuple[Dict, Dict, str, Dict]]):
     """Generate the aggregated trend report."""
     log_info("Generating trend report...")
@@ -229,14 +250,23 @@ def generate_trend_report(releases: List[Dict], comparisons: List[Tuple[Dict, Di
     # Create output directory
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     
-    # Save individual comparison reports
+    # Save individual comparison reports (full and slim versions)
     for old_release, new_release, diff_output, metrics in comparisons:
+        # Save full report
         report_file = OUTPUT_DIR / f"{old_release['tag']}_to_{new_release['tag']}.txt"
         with open(report_file, 'w') as f:
             f.write(f"Diffuse Comparison: {old_release['tag']} → {new_release['tag']}\n")
             f.write(f"{'=' * 80}\n\n")
             f.write(diff_output)
         log_success(f"Saved comparison: {report_file.name}")
+        
+        # Save slim report (without DEX section)
+        slim_report_file = OUTPUT_DIR / f"{old_release['tag']}_to_{new_release['tag']}-slim.txt"
+        full_report = f"Diffuse Comparison: {old_release['tag']} → {new_release['tag']}\n{'=' * 80}\n\n{diff_output}"
+        slim_content = generate_slim_report(full_report)
+        with open(slim_report_file, 'w') as f:
+            f.write(slim_content)
+        log_success(f"Saved slim version: {slim_report_file.name}")
     
     # Generate markdown report
     with open(REPORT_PATH, 'w') as f:
