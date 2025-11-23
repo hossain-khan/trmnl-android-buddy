@@ -1,0 +1,154 @@
+Diffuse Comparison: 2.0.0 → 2.1.0
+================================================================================
+
+OLD: 2.0.0.apk (signature: V2)
+NEW: 2.1.0.apk (signature: V2)
+
+          │             compressed             │            uncompressed            
+          ├───────────┬───────────┬────────────┼───────────┬───────────┬────────────
+ APK      │ old       │ new       │ diff       │ old       │ new       │ diff       
+──────────┼───────────┼───────────┼────────────┼───────────┼───────────┼────────────
+      dex │     4 MiB │   4.2 MiB │ +205.3 KiB │     4 MiB │   4.2 MiB │ +205.3 KiB 
+     arsc │ 686.7 KiB │ 897.2 KiB │ +210.5 KiB │ 686.6 KiB │ 897.1 KiB │ +210.5 KiB 
+ manifest │   2.9 KiB │     3 KiB │      +59 B │  12.2 KiB │  12.5 KiB │     +308 B 
+      res │ 299.5 KiB │ 316.3 KiB │  +16.8 KiB │ 397.1 KiB │   424 KiB │    +27 KiB 
+   native │ 180.8 KiB │ 185.3 KiB │   +4.5 KiB │  58.9 KiB │  58.9 KiB │        0 B 
+    asset │  49.5 KiB │    50 KiB │     +462 B │ 137.2 KiB │ 137.7 KiB │     +462 B 
+    other │  51.2 KiB │  51.4 KiB │     +182 B │ 112.7 KiB │ 112.7 KiB │      +14 B 
+──────────┼───────────┼───────────┼────────────┼───────────┼───────────┼────────────
+    total │   5.2 MiB │   5.6 MiB │ +437.8 KiB │   5.3 MiB │   5.8 MiB │ +443.5 KiB 
+
+ DEX     │ old   │ new   │ diff                  
+─────────┼───────┼───────┼───────────────────────
+   files │     1 │     1 │     0                 
+ strings │ 19025 │ 20055 │ +1030 (+4094 -3064)   
+   types │  6266 │  6545 │  +279 (+3330 -3051)   
+ classes │  5145 │  5345 │  +200 (+3029 -2829)   
+ methods │ 26257 │ 28046 │ +1789 (+22723 -20934) 
+  fields │ 16894 │ 17647 │  +753 (+16658 -15905) 
+
+ ARSC    │ old  │ new  │ diff         
+─────────┼──────┼──────┼──────────────
+ configs │  131 │  133 │  +2 (+2 -0)  
+ entries │ 1497 │ 1549 │ +52 (+52 -0) 
+
+=================
+====   APK   ====
+=================
+
+       compressed       │      uncompressed      │                                                    
+───────────┬────────────┼───────────┬────────────┤                                                    
+ size      │ diff       │ size      │ diff       │ path                                               
+───────────┼────────────┼───────────┼────────────┼────────────────────────────────────────────────────
+ 897.2 KiB │ +210.5 KiB │ 897.1 KiB │ +210.5 KiB │ ∆ resources.arsc                                   
+   4.2 MiB │ +205.3 KiB │   4.2 MiB │ +205.3 KiB │ ∆ classes.dex                                      
+  17.8 KiB │   +4.5 KiB │   9.9 KiB │        0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so       
+     2 KiB │     +2 KiB │   1.9 KiB │   +1.9 KiB │ + res/vK.png                                       
+   1.5 KiB │   +1.5 KiB │   1.4 KiB │   +1.4 KiB │ + res/4q.png                                       
+   1.3 KiB │   +1.3 KiB │   3.5 KiB │   +3.5 KiB │ + res/Kh.xml                                       
+   1.3 KiB │   +1.3 KiB │   2.6 KiB │   +2.6 KiB │ + res/ex.xml                                       
+   1.2 KiB │   +1.2 KiB │   1.1 KiB │   +1.1 KiB │ + res/R-.png                                       
+   1.1 KiB │   +1.1 KiB │   2.6 KiB │   +2.6 KiB │ + res/ak.xml                                       
+   1,002 B │   +1,002 B │     900 B │     +900 B │ + res/IO.png                                       
+     824 B │     +824 B │   1.9 KiB │   +1.9 KiB │ + res/IN.xml                                       
+     786 B │     +786 B │   1.7 KiB │   +1.7 KiB │ + res/5x.xml                                       
+     746 B │     +746 B │   1.1 KiB │   +1.1 KiB │ + res/--.xml                                       
+     664 B │     +664 B │   1.4 KiB │   +1.4 KiB │ + res/Bn.xml                                       
+     661 B │     +661 B │     565 B │     +565 B │ + res/h7.png                                       
+     644 B │     +644 B │   1.3 KiB │   +1.3 KiB │ + res/uw.xml                                       
+     626 B │     +626 B │   1.3 KiB │   +1.3 KiB │ + res/Mx.xml                                       
+     610 B │     +610 B │     1 KiB │     +1 KiB │ + res/N5.xml                                       
+     545 B │     +545 B │     816 B │     +816 B │ + res/v2.xml                                       
+     541 B │     +541 B │     820 B │     +820 B │ + res/Jw.xml                                       
+     533 B │     +533 B │     431 B │     +431 B │ + res/QW.png                                       
+   7.3 KiB │     +456 B │   7.2 KiB │     +456 B │ ∆ assets/dexopt/baseline.prof                      
+     380 B │     +380 B │     464 B │     +464 B │ + res/color-v26/biometric_error_color.xml          
+     182 B │     +182 B │      14 B │      +14 B │ + META-INF/androidx.biometric_biometric.version    
+     127 B │     +127 B │       5 B │       +5 B │ + META-INF/services/Y2.c                           
+     127 B │     +127 B │       5 B │       +5 B │ + META-INF/services/e5.x                           
+     127 B │     +127 B │       5 B │       +5 B │ + META-INF/services/f5.a                           
+           │     -127 B │           │       -5 B │ - META-INF/services/P2.c                           
+           │     -127 B │           │       -5 B │ - META-INF/services/T4.x                           
+           │     -127 B │           │       -5 B │ - META-INF/services/U4.a                           
+     3 KiB │      +59 B │  12.5 KiB │     +308 B │ ∆ AndroidManifest.xml                              
+   1,006 B │       +6 B │     872 B │       +6 B │ ∆ assets/dexopt/baseline.profm                     
+  11.4 KiB │       +6 B │  11.3 KiB │        0 B │ ∆ res/RJ.png                                       
+     287 B │       +6 B │     181 B │        0 B │ ∆ res/vz.9.png                                     
+     376 B │       +4 B │     272 B │        0 B │ ∆ res/5D.9.png                                     
+     316 B │       +4 B │     210 B │        0 B │ ∆ res/62.9.png                                     
+   1.7 KiB │       -4 B │   1.6 KiB │        0 B │ ∆ res/QZ.png                                       
+     808 B │       -3 B │   1.8 KiB │        0 B │ ∆ res/eA.xml                                       
+     436 B │       -3 B │     816 B │        0 B │ ∆ res/oP.xml                                       
+     647 B │       +2 B │     541 B │        0 B │ ∆ res/33.9.png                                     
+     238 B │       +2 B │     140 B │        0 B │ ∆ res/6h.png                                       
+     451 B │       +2 B │     345 B │        0 B │ ∆ res/7I.9.png                                     
+     296 B │       -2 B │     192 B │        0 B │ ∆ res/9X.9.png                                     
+     294 B │       +2 B │     190 B │        0 B │ ∆ res/BG.9.png                                     
+     350 B │       +2 B │     244 B │        0 B │ ∆ res/CK.9.png                                     
+   1.6 KiB │       +2 B │   1.5 KiB │        0 B │ ∆ res/IX.9.png                                     
+     718 B │       -2 B │     618 B │        0 B │ ∆ res/KH.9.png                                     
+   4.6 KiB │       -2 B │   4.5 KiB │        0 B │ ∆ res/Lf.png                                       
+     286 B │       -2 B │     182 B │        0 B │ ∆ res/NZ.9.png                                     
+     489 B │       +2 B │     391 B │        0 B │ ∆ res/ar.png                                       
+     430 B │       -2 B │     564 B │        0 B │ ∆ res/color/abc_hint_foreground_material_light.xml 
+     454 B │       -2 B │     356 B │        0 B │ ∆ res/eR.png                                       
+     931 B │       +2 B │     825 B │        0 B │ ∆ res/fM.9.png                                     
+     586 B │       +2 B │     484 B │        0 B │ ∆ res/iR.9.png                                     
+     324 B │       +2 B │     224 B │        0 B │ ∆ res/kp.png                                       
+  14.8 KiB │       +2 B │  14.7 KiB │        0 B │ ∆ res/o-.png                                       
+     356 B │       -2 B │     252 B │        0 B │ ∆ res/o_.9.png                                     
+     310 B │       -2 B │     208 B │        0 B │ ∆ res/v4.9.png                                     
+     694 B │       +2 B │   1.4 KiB │        0 B │ ∆ res/vG.xml                                       
+     296 B │       +2 B │     194 B │        0 B │ ∆ res/xR.9.png                                     
+     903 B │       -1 B │     2 KiB │        0 B │ ∆ res/2j.xml                                       
+     396 B │       -1 B │     688 B │        0 B │ ∆ res/6Q.xml                                       
+     619 B │       -1 B │   1.1 KiB │        0 B │ ∆ res/7G.xml                                       
+     741 B │       +1 B │   1.5 KiB │        0 B │ ∆ res/9V.xml                                       
+     396 B │       -1 B │     680 B │        0 B │ ∆ res/A4.xml                                       
+     930 B │       -1 B │   2.6 KiB │        0 B │ ∆ res/Be.xml                                       
+     318 B │       +1 B │     484 B │        0 B │ ∆ res/NM.xml                                       
+     357 B │       -1 B │     440 B │        0 B │ ∆ res/cV.xml                                       
+     789 B │       -1 B │   1.6 KiB │        0 B │ ∆ res/ce.xml                                       
+     430 B │       +1 B │     564 B │        0 B │ ∆ res/color/abc_hint_foreground_material_dark.xml  
+     394 B │       +1 B │     464 B │        0 B │ ∆ res/color/abc_primary_text_material_light.xml    
+     386 B │       -1 B │     464 B │        0 B │ ∆ res/color/switch_thumb_material_light.xml        
+     708 B │       -1 B │   1.5 KiB │        0 B │ ∆ res/hP1.xml                                      
+     513 B │       -1 B │     988 B │        0 B │ ∆ res/iQ.xml                                       
+     433 B │       -1 B │     816 B │        0 B │ ∆ res/kn.xml                                       
+     349 B │       -1 B │     532 B │        0 B │ ∆ res/nz.xml                                       
+     635 B │       +1 B │   1,020 B │        0 B │ ∆ res/vq.xml                                       
+     883 B │       -1 B │   2.4 KiB │        0 B │ ∆ res/xN.xml                                       
+───────────┼────────────┼───────────┼────────────┼────────────────────────────────────────────────────
+   5.1 MiB │ +437.8 KiB │   5.2 MiB │ +443.5 KiB │ (total)                                            
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 15                      │ 16                      
+ version name │ 2.0.0                   │ 2.1.0                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="15"
+-    android:versionName="2.0.0"
++    android:versionCode="16"
++    android:versionName="2.1.0"
+     package="ink.trmnl.android.buddy"
+@@ -21,2 +21,8 @@
+   <uses-permission
++      android:name="android.permission.USE_BIOMETRIC"
++      />
++  <uses-permission
++      android:name="android.permission.USE_FINGERPRINT"
++      />
++  <uses-permission
+       android:name="android.permission.WAKE_LOCK"
+
+
+
+=================

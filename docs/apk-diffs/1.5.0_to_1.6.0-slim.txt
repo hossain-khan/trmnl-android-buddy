@@ -1,0 +1,78 @@
+Diffuse Comparison: 1.5.0 → 1.6.0
+================================================================================
+
+OLD: 1.5.0.apk (signature: V2)
+NEW: 1.6.0.apk (signature: V2)
+
+          │            compressed             │           uncompressed            
+          ├───────────┬───────────┬───────────┼───────────┬───────────┬───────────
+ APK      │ old       │ new       │ diff      │ old       │ new       │ diff      
+──────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────
+      dex │   1.8 MiB │   1.8 MiB │  +5.8 KiB │   3.7 MiB │   3.7 MiB │ +13.5 KiB 
+     arsc │ 664.3 KiB │ 664.3 KiB │       0 B │ 664.2 KiB │ 664.2 KiB │       0 B 
+ manifest │   2.9 KiB │   2.9 KiB │       0 B │  12.2 KiB │  12.2 KiB │       0 B 
+      res │ 285.9 KiB │ 285.9 KiB │       0 B │ 374.3 KiB │ 374.3 KiB │       0 B 
+   native │   196 KiB │ 184.5 KiB │ -11.5 KiB │  58.9 KiB │  58.9 KiB │       0 B 
+    asset │  49.3 KiB │  49.3 KiB │     -11 B │ 137.1 KiB │   137 KiB │      -9 B 
+    other │  51.1 KiB │  51.1 KiB │     -31 B │ 112.7 KiB │ 112.7 KiB │     -32 B 
+──────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────
+    total │     3 MiB │     3 MiB │  -5.8 KiB │     5 MiB │     5 MiB │ +13.5 KiB 
+
+ DEX     │ old   │ new   │ diff               
+─────────┼───────┼───────┼────────────────────
+   files │     1 │     1 │    0               
+ strings │ 18076 │ 18101 │  +25 (+213 -188)   
+   types │  5809 │  5828 │  +19 (+119 -100)   
+ classes │  4712 │  4731 │  +19 (+85 -66)     
+ methods │ 24757 │ 24862 │ +105 (+5134 -5029) 
+  fields │ 15350 │ 15445 │  +95 (+3001 -2906) 
+
+ ARSC    │ old  │ new  │ diff 
+─────────┼──────┼──────┼──────
+ configs │  132 │  132 │  0   
+ entries │ 1457 │ 1457 │  0   
+
+=================
+====   APK   ====
+=================
+
+     compressed      │    uncompressed     │                                                     
+─────────┬───────────┼─────────┬───────────┤                                                     
+ size    │ diff      │ size    │ diff      │ path                                                
+─────────┼───────────┼─────────┼───────────┼─────────────────────────────────────────────────────
+  17 KiB │ -11.5 KiB │ 9.9 KiB │       0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so        
+ 1.8 MiB │  +5.8 KiB │ 3.7 MiB │ +13.5 KiB │ ∆ classes.dex                                       
+   127 B │    +127 B │     5 B │      +5 B │ + META-INF/services/C4.v                            
+         │    -127 B │         │      -5 B │ - META-INF/services/C4.u                            
+   958 B │     -17 B │   820 B │     -17 B │ ∆ assets/dexopt/baseline.profm                      
+   162 B │      -8 B │     6 B │      -8 B │ ∆ META-INF/androidx.room_room-ktx.version           
+   170 B │      -8 B │     6 B │      -8 B │ ∆ META-INF/androidx.room_room-runtime.version       
+   182 B │      -8 B │     6 B │      -8 B │ ∆ META-INF/androidx.sqlite_sqlite-framework.version 
+   162 B │      -8 B │     6 B │      -8 B │ ∆ META-INF/androidx.sqlite_sqlite.version           
+ 6.7 KiB │      +6 B │ 6.6 KiB │      +8 B │ ∆ assets/dexopt/baseline.prof                       
+   272 B │      +1 B │   120 B │       0 B │ ∆ META-INF/version-control-info.textproto           
+─────────┼───────────┼─────────┼───────────┼─────────────────────────────────────────────────────
+ 1.8 MiB │  -5.8 KiB │ 3.7 MiB │ +13.5 KiB │ (total)                                             
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 12                      │ 13                      
+ version name │ 1.5.0                   │ 1.6.0                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="12"
+-    android:versionName="1.5.0"
++    android:versionCode="13"
++    android:versionName="1.6.0"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================

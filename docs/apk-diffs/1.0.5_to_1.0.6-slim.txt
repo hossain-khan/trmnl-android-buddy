@@ -1,0 +1,430 @@
+Diffuse Comparison: 1.0.5 → 1.0.6
+================================================================================
+
+OLD: 1.0.5.apk (signature: V2)
+NEW: 1.0.6.apk (signature: V2)
+
+          │             compressed             │            uncompressed            
+          ├───────────┬───────────┬────────────┼───────────┬───────────┬────────────
+ APK      │ old       │ new       │ diff       │ old       │ new       │ diff       
+──────────┼───────────┼───────────┼────────────┼───────────┼───────────┼────────────
+      dex │   3.2 MiB │   3.6 MiB │ +371.9 KiB │   3.2 MiB │   3.6 MiB │ +371.9 KiB 
+     arsc │ 469.6 KiB │ 661.4 KiB │ +191.9 KiB │ 469.5 KiB │ 661.3 KiB │ +191.9 KiB 
+ manifest │   2.9 KiB │   2.9 KiB │        0 B │  12.1 KiB │  12.1 KiB │        0 B 
+      res │ 119.1 KiB │ 274.3 KiB │ +155.2 KiB │ 142.6 KiB │ 345.7 KiB │ +203.1 KiB 
+   native │ 208.3 KiB │ 199.5 KiB │   -8.8 KiB │  58.9 KiB │  58.9 KiB │        0 B 
+    asset │  48.6 KiB │  49.1 KiB │     +556 B │ 136.3 KiB │ 136.9 KiB │     +552 B 
+    other │    46 KiB │  51.1 KiB │   +5.1 KiB │ 102.7 KiB │ 112.7 KiB │    +10 KiB 
+──────────┼───────────┼───────────┼────────────┼───────────┼───────────┼────────────
+    total │   4.1 MiB │   4.8 MiB │ +715.8 KiB │   4.1 MiB │   4.9 MiB │ +777.4 KiB 
+
+ DEX     │ old   │ new   │ diff                  
+─────────┼───────┼───────┼───────────────────────
+   files │     1 │     1 │     0                 
+ strings │ 15826 │ 17452 │ +1626 (+4337 -2711)   
+   types │  5126 │  5648 │  +522 (+3142 -2620)   
+ classes │  4148 │  4573 │  +425 (+2858 -2433)   
+ methods │ 21247 │ 24092 │ +2845 (+20173 -17328) 
+  fields │ 13286 │ 14932 │ +1646 (+14306 -12660) 
+
+ ARSC    │ old │ new  │ diff             
+─────────┼─────┼──────┼──────────────────
+ configs │ 109 │  130 │   +21 (+21 -0)   
+ entries │ 353 │ 1448 │ +1095 (+1095 -0) 
+
+=================
+====   APK   ====
+=================
+
+       compressed       │      uncompressed      │                                                                   
+───────────┬────────────┼───────────┬────────────┤                                                                   
+ size      │ diff       │ size      │ diff       │ path                                                              
+───────────┼────────────┼───────────┼────────────┼───────────────────────────────────────────────────────────────────
+   3.6 MiB │ +371.9 KiB │   3.6 MiB │ +371.9 KiB │ ∆ classes.dex                                                     
+ 661.4 KiB │ +191.9 KiB │ 661.3 KiB │ +191.9 KiB │ ∆ resources.arsc                                                  
+    32 KiB │   -8.8 KiB │   9.9 KiB │        0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so                      
+   3.6 KiB │   +3.6 KiB │   9.9 KiB │   +9.9 KiB │ + META-INF/androidx/room/room-common/LICENSE.txt                  
+   2.9 KiB │   +2.9 KiB │   2.8 KiB │   +2.8 KiB │ + res/qD.9.png                                                    
+   2.9 KiB │   +2.9 KiB │   2.8 KiB │   +2.8 KiB │ + res/MF.9.png                                                    
+   2.5 KiB │   +2.5 KiB │   2.4 KiB │   +2.4 KiB │ + res/NA.9.png                                                    
+   2.5 KiB │   +2.5 KiB │   2.4 KiB │   +2.4 KiB │ + res/zV.9.png                                                    
+   2.4 KiB │   +2.4 KiB │   2.3 KiB │   +2.3 KiB │ + res/1I.9.png                                                    
+   1.8 KiB │   +1.8 KiB │   1.7 KiB │   +1.7 KiB │ + res/Li.9.png                                                    
+   1.8 KiB │   +1.8 KiB │   1.7 KiB │   +1.7 KiB │ + res/1J.9.png                                                    
+   1.6 KiB │   +1.6 KiB │   1.5 KiB │   +1.5 KiB │ + res/IX.9.png                                                    
+   1.6 KiB │   +1.6 KiB │   1.5 KiB │   +1.5 KiB │ + res/io.9.png                                                    
+   1.3 KiB │   +1.3 KiB │   1.2 KiB │   +1.2 KiB │ + res/G2.9.png                                                    
+   1.3 KiB │   +1.3 KiB │   1.2 KiB │   +1.2 KiB │ + res/nf.png                                                      
+   1.2 KiB │   +1.2 KiB │   2.3 KiB │   +2.3 KiB │ + res/_C.xml                                                      
+   1.2 KiB │   +1.2 KiB │   1.1 KiB │   +1.1 KiB │ + res/rj.9.png                                                    
+   1.2 KiB │   +1.2 KiB │   3.4 KiB │   +3.4 KiB │ + res/dO.xml                                                      
+   1.2 KiB │   +1.2 KiB │   1.1 KiB │   +1.1 KiB │ + res/h7.9.png                                                    
+   1.1 KiB │   +1.1 KiB │     984 B │     +984 B │ + res/Gf.png                                                      
+     1 KiB │     +1 KiB │     966 B │     +966 B │ + res/uL.9.png                                                    
+     1 KiB │     +1 KiB │     946 B │     +946 B │ + res/8h.png                                                      
+     955 B │     +955 B │     851 B │     +851 B │ + res/d5.9.png                                                    
+     937 B │     +937 B │   2.6 KiB │   +2.6 KiB │ + res/80.xml                                                      
+     931 B │     +931 B │   2.6 KiB │   +2.6 KiB │ + res/Be.xml                                                      
+     929 B │     +929 B │     825 B │     +825 B │ + res/fM.9.png                                                    
+     927 B │     +927 B │   2.6 KiB │   +2.6 KiB │ + res/U8.xml                                                      
+     913 B │     +913 B │     813 B │     +813 B │ + res/7_.9.png                                                    
+     902 B │     +902 B │     2 KiB │     +2 KiB │ + res/2j.xml                                                      
+     885 B │     +885 B │     785 B │     +785 B │ + res/Th.png                                                      
+     881 B │     +881 B │     785 B │     +785 B │ + res/j4.png                                                      
+     876 B │     +876 B │     776 B │     +776 B │ + res/Nk.9.png                                                    
+     858 B │     +858 B │     754 B │     +754 B │ + res/ut.9.png                                                    
+     851 B │     +851 B │     753 B │     +753 B │ + res/jW.png                                                      
+     842 B │     +842 B │     738 B │     +738 B │ + res/Pa.9.png                                                    
+     838 B │     +838 B │   2.7 KiB │   +2.7 KiB │ + res/qx.xml                                                      
+     827 B │     +827 B │   2.5 KiB │   +2.5 KiB │ + res/kj.xml                                                      
+     808 B │     +808 B │   1.8 KiB │   +1.8 KiB │ + res/eA.xml                                                      
+     799 B │     +799 B │   1.7 KiB │   +1.7 KiB │ + res/Nu.xml                                                      
+     774 B │     +774 B │   1.6 KiB │   +1.6 KiB │ + res/Ol.xml                                                      
+     766 B │     +766 B │   1.3 KiB │   +1.3 KiB │ + res/1S.xml                                                      
+     756 B │     +756 B │   2.3 KiB │   +2.3 KiB │ + res/Ke.xml                                                      
+     747 B │     +747 B │     651 B │     +651 B │ + res/o_.png                                                      
+     745 B │     +745 B │   1.5 KiB │   +1.5 KiB │ + res/k8.xml                                                      
+     739 B │     +739 B │   1.5 KiB │   +1.5 KiB │ + res/9V.xml                                                      
+     737 B │     +737 B │   2.1 KiB │   +2.1 KiB │ + res/h4.xml                                                      
+     731 B │     +731 B │     631 B │     +631 B │ + res/Pb.png                                                      
+     718 B │     +718 B │     618 B │     +618 B │ + res/KH.9.png                                                    
+     709 B │     +709 B │   1.5 KiB │   +1.5 KiB │ + res/hP1.xml                                                     
+     695 B │     +695 B │     593 B │     +593 B │ + res/9z.png                                                      
+     693 B │     +693 B │     595 B │     +595 B │ + res/49.png                                                      
+     693 B │     +693 B │   1.4 KiB │   +1.4 KiB │ + res/vG.xml                                                      
+     692 B │     +692 B │   1.6 KiB │   +1.6 KiB │ + res/F8.xml                                                      
+     687 B │     +687 B │     585 B │     +585 B │ + res/g-.png                                                      
+     659 B │     +659 B │     563 B │     +563 B │ + res/RV.png                                                      
+     650 B │     +650 B │   1.1 KiB │   +1.1 KiB │ + res/GD.xml                                                      
+     647 B │     +647 B │   1.7 KiB │   +1.7 KiB │ + res/Eg.xml                                                      
+     645 B │     +645 B │   1.3 KiB │   +1.3 KiB │ + res/Fu.xml                                                      
+     641 B │     +641 B │     541 B │     +541 B │ + res/33.9.png                                                    
+     634 B │     +634 B │   1,020 B │   +1,020 B │ + res/vq.xml                                                      
+     629 B │     +629 B │     525 B │     +525 B │ + res/7o.9.png                                                    
+     628 B │     +628 B │     524 B │     +524 B │ + res/gZ.9.png                                                    
+     620 B │     +620 B │   1.1 KiB │   +1.1 KiB │ + res/7G.xml                                                      
+     611 B │     +611 B │     513 B │     +513 B │ + res/MQ.png                                                      
+     610 B │     +610 B │     980 B │     +980 B │ + res/Qt.xml                                                      
+     609 B │     +609 B │     513 B │     +513 B │ + res/u3.png                                                      
+     593 B │     +593 B │     1 KiB │     +1 KiB │ + res/3A.xml                                                      
+     588 B │     +588 B │   1,000 B │   +1,000 B │ + res/ZN.xml                                                      
+     586 B │     +586 B │     484 B │     +484 B │ + res/iR.9.png                                                    
+     574 B │     +574 B │     476 B │     +476 B │ + res/tG.png                                                      
+     567 B │     +567 B │   1.2 KiB │   +1.2 KiB │ + res/GR.xml                                                      
+     567 B │     +567 B │     920 B │     +920 B │ + res/cm.xml                                                      
+     566 B │     +566 B │     464 B │     +464 B │ + res/7i.png                                                      
+     565 B │     +565 B │   1.2 KiB │   +1.2 KiB │ + res/XY.xml                                                      
+     557 B │     +557 B │   1.1 KiB │   +1.1 KiB │ + res/GK.xml                                                      
+     551 B │     +551 B │     828 B │     +828 B │ + res/GC.xml                                                      
+     549 B │     +549 B │     860 B │     +860 B │ + res/hP2.xml                                                     
+     548 B │     +548 B │     448 B │     +448 B │ + res/aU.9.png                                                    
+     547 B │     +547 B │     812 B │     +812 B │ + res/D5.xml                                                      
+     539 B │     +539 B │     437 B │     +437 B │ + res/wL.9.png                                                    
+     538 B │     +538 B │     864 B │     +864 B │ + res/V1.xml                                                      
+     536 B │     +536 B │     430 B │     +430 B │ + res/7C.9.png                                                    
+     531 B │     +531 B │     796 B │     +796 B │ + res/Qd.xml                                                      
+     529 B │     +529 B │   1.6 KiB │   +1.6 KiB │ + res/K5.xml                                                      
+     528 B │     +528 B │     432 B │     +432 B │ + res/d3.png                                                      
+     528 B │     +528 B │     848 B │     +848 B │ + res/uJ.xml                                                      
+     527 B │     +527 B │     968 B │     +968 B │ + res/o5.xml                                                      
+     526 B │     +526 B │   1.6 KiB │   +1.6 KiB │ + res/9T1.xml                                                     
+     526 B │     +526 B │   1.6 KiB │   +1.6 KiB │ + res/qz.xml                                                      
+     521 B │     +521 B │     956 B │     +956 B │ + res/2f1.xml                                                     
+     520 B │     +520 B │     420 B │     +420 B │ + res/Z8.png                                                      
+     520 B │     +520 B │     840 B │     +840 B │ + res/bt.xml                                                      
+     519 B │     +519 B │   1.4 KiB │   +1.4 KiB │ + res/bL.xml                                                      
+     519 B │     +519 B │     417 B │     +417 B │ + res/z9.9.png                                                    
+     518 B │     +518 B │     422 B │     +422 B │ + res/UR.png                                                      
+     517 B │     +517 B │   1.6 KiB │   +1.6 KiB │ + res/Lf.xml                                                      
+     515 B │     +515 B │     415 B │     +415 B │ + res/KM.png                                                      
+     514 B │     +514 B │   1.1 KiB │   +1.1 KiB │ + res/color-v23/abc_tint_default.xml                              
+     505 B │     +505 B │   1.1 KiB │   +1.1 KiB │ + res/nT.xml                                                      
+     502 B │     +502 B │     404 B │     +404 B │ + res/dY.png                                                      
+     501 B │     +501 B │     756 B │     +756 B │ + res/ZL.xml                                                      
+     499 B │     +499 B │     403 B │     +403 B │ + res/s0.png                                                      
+     498 B │     +498 B │     396 B │     +396 B │ + res/5U.png                                                      
+     498 B │     +498 B │     748 B │     +748 B │ + res/hW.xml                                                      
+     495 B │     +495 B │     395 B │     +395 B │ + res/yg.9.png                                                    
+   6.6 KiB │     +494 B │   6.4 KiB │     +494 B │ ∆ assets/dexopt/baseline.prof                                     
+     493 B │     +493 B │   1.2 KiB │   +1.2 KiB │ + res/M7.xml                                                      
+     493 B │     +493 B │   1.2 KiB │   +1.2 KiB │ + res/u0.xml                                                      
+     491 B │     +491 B │   1.1 KiB │   +1.1 KiB │ + res/5z.xml                                                      
+     491 B │     +491 B │   1.1 KiB │   +1.1 KiB │ + res/q6.xml                                                      
+     490 B │     +490 B │     932 B │     +932 B │ + res/9T.xml                                                      
+     490 B │     +490 B │   1.1 KiB │   +1.1 KiB │ + res/BJ1.xml                                                     
+     490 B │     +490 B │     832 B │     +832 B │ + res/RH.xml                                                      
+     490 B │     +490 B │     768 B │     +768 B │ + res/Tn.xml                                                      
+     487 B │     +487 B │     391 B │     +391 B │ + res/ar.png                                                      
+     484 B │     +484 B │     792 B │     +792 B │ + res/DV.xml                                                      
+     484 B │     +484 B │     708 B │     +708 B │ + res/FT1.xml                                                     
+     484 B │     +484 B │   1.1 KiB │   +1.1 KiB │ + res/Sc.xml                                                      
+     483 B │     +483 B │     872 B │     +872 B │ + res/A1.xml                                                      
+     478 B │     +478 B │     692 B │     +692 B │ + res/4_.xml                                                      
+     477 B │     +477 B │     780 B │     +780 B │ + res/46.xml                                                      
+     476 B │     +476 B │     1 KiB │     +1 KiB │ + res/Zg.xml                                                      
+     473 B │     +473 B │     852 B │     +852 B │ + res/5T.xml                                                      
+     472 B │     +472 B │     792 B │     +792 B │ + res/Mp.xml                                                      
+     472 B │     +472 B │     852 B │     +852 B │ + res/aM.xml                                                      
+     471 B │     +471 B │     1 KiB │     +1 KiB │ + res/9T2.xml                                                     
+     457 B │     +457 B │     640 B │     +640 B │ + res/cL.xml                                                      
+     455 B │     +455 B │     684 B │     +684 B │ + res/VN.xml                                                      
+     454 B │     +454 B │     356 B │     +356 B │ + res/eR.png                                                      
+     451 B │     +451 B │     345 B │     +345 B │ + res/mm.9.png                                                    
+     450 B │     +450 B │   1.1 KiB │   +1.1 KiB │ + res/j3.xml                                                      
+     449 B │     +449 B │     345 B │     +345 B │ + res/7I.9.png                                                    
+     446 B │     +446 B │     640 B │     +640 B │ + res/VT.xml                                                      
+     440 B │     +440 B │     816 B │     +816 B │ + res/oP.xml                                                      
+     437 B │     +437 B │     816 B │     +816 B │ + res/kn.xml                                                      
+     435 B │     +435 B │     640 B │     +640 B │ + res/BJ.xml                                                      
+     435 B │     +435 B │     664 B │     +664 B │ + res/color-v23/abc_tint_switch_track.xml                         
+     434 B │     +434 B │     1 KiB │     +1 KiB │ + res/0M.xml                                                      
+     434 B │     +434 B │     1 KiB │     +1 KiB │ + res/L_.xml                                                      
+     434 B │     +434 B │     500 B │     +500 B │ + res/color-v23/abc_btn_colored_borderless_text_material.xml      
+     433 B │     +433 B │     335 B │     +335 B │ + res/Wr.png                                                      
+     433 B │     +433 B │     468 B │     +468 B │ + res/color/abc_background_cache_hint_selector_material_light.xml 
+     431 B │     +431 B │     468 B │     +468 B │ + res/color/abc_background_cache_hint_selector_material_dark.xml  
+     431 B │     +431 B │     564 B │     +564 B │ + res/color/abc_hint_foreground_material_light.xml                
+     430 B │     +430 B │     564 B │     +564 B │ + res/color/abc_hint_foreground_material_dark.xml                 
+     429 B │     +429 B │     327 B │     +327 B │ + res/Tj.9.png                                                    
+     429 B │     +429 B │     624 B │     +624 B │ + res/color-v23/abc_tint_btn_checkable.xml                        
+     429 B │     +429 B │     668 B │     +668 B │ + res/color-v23/abc_tint_edittext.xml                             
+     427 B │     +427 B │     600 B │     +600 B │ + res/9P.xml                                                      
+     427 B │     +427 B │     668 B │     +668 B │ + res/color-v23/abc_tint_spinner.xml                              
+     426 B │     +426 B │     544 B │     +544 B │ + res/color-v23/abc_color_highlight_material.xml                  
+     426 B │     +426 B │     324 B │     +324 B │ + res/zE.png                                                      
+     422 B │     +422 B │     318 B │     +318 B │ + res/eT.9.png                                                    
+     420 B │     +420 B │     318 B │     +318 B │ + res/-N.png                                                      
+     420 B │     +420 B │     322 B │     +322 B │ + res/NG.png                                                      
+     420 B │     +420 B │     464 B │     +464 B │ + res/color/abc_primary_text_disable_only_material_light.xml      
+     420 B │     +420 B │     716 B │     +716 B │ + res/tL.xml                                                      
+     418 B │     +418 B │     464 B │     +464 B │ + res/color/abc_primary_text_disable_only_material_dark.xml       
+     417 B │     +417 B │     321 B │     +321 B │ + res/tS.png                                                      
+     415 B │     +415 B │   1,012 B │   +1,012 B │ + res/Gt.xml                                                      
+     415 B │     +415 B │   1,012 B │   +1,012 B │ + res/t8.xml                                                      
+     412 B │     +412 B │     500 B │     +500 B │ + res/color-v23/abc_btn_colored_text_material.xml                 
+     406 B │     +406 B │     310 B │     +310 B │ + res/EP.png                                                      
+     403 B │     +403 B │     307 B │     +307 B │ + res/FW.png                                                      
+     401 B │     +401 B │     688 B │     +688 B │ + res/rW.xml                                                      
+     399 B │     +399 B │     464 B │     +464 B │ + res/color/abc_secondary_text_material_light.xml                 
+     397 B │     +397 B │     688 B │     +688 B │ + res/6Q.xml                                                      
+     397 B │     +397 B │     680 B │     +680 B │ + res/A4.xml                                                      
+     397 B │     +397 B │     464 B │     +464 B │ + res/color/abc_secondary_text_material_dark.xml                  
+     397 B │     +397 B │     680 B │     +680 B │ + res/rx.xml                                                      
+     394 B │     +394 B │     464 B │     +464 B │ + res/color/abc_primary_text_material_light.xml                   
+     393 B │     +393 B │     464 B │     +464 B │ + res/color/abc_primary_text_material_dark.xml                    
+     393 B │     +393 B │     548 B │     +548 B │ + res/rY.xml                                                      
+     392 B │     +392 B │     500 B │     +500 B │ + res/color-v23/abc_tint_seek_thumb.xml                           
+     392 B │     +392 B │     588 B │     +588 B │ + res/color/abc_search_url_text.xml                               
+     391 B │     +391 B │     576 B │     +576 B │ + res/yV.xml                                                      
+     388 B │     +388 B │     286 B │     +286 B │ + res/op.9.png                                                    
+     387 B │     +387 B │     756 B │     +756 B │ + res/4u.xml                                                      
+     386 B │     +386 B │     280 B │     +280 B │ + res/JJ.9.png                                                    
+     386 B │     +386 B │     464 B │     +464 B │ + res/color/switch_thumb_material_light.xml                       
+     385 B │     +385 B │     464 B │     +464 B │ + res/color/switch_thumb_material_dark.xml                        
+     382 B │     +382 B │     532 B │     +532 B │ + res/aG.xml                                                      
+     378 B │     +378 B │     278 B │     +278 B │ + res/te.png                                                      
+     378 B │     +378 B │     528 B │     +528 B │ + res/vJ.xml                                                      
+     377 B │     +377 B │     281 B │     +281 B │ + res/-B.png                                                      
+     373 B │     +373 B │     275 B │     +275 B │ + res/pk.png                                                      
+     372 B │     +372 B │     272 B │     +272 B │ + res/5D.9.png                                                    
+     372 B │     +372 B │     272 B │     +272 B │ + res/ly.png                                                      
+     369 B │     +369 B │     267 B │     +267 B │ + res/0c.9.png                                                    
+     365 B │     +365 B │     464 B │     +464 B │ + res/Hd.xml                                                      
+     365 B │     +365 B │     267 B │     +267 B │ + res/dW.png                                                      
+     364 B │     +364 B │     262 B │     +262 B │ + res/2P.png                                                      
+     364 B │     +364 B │     464 B │     +464 B │ + res/zq.xml                                                      
+     363 B │     +363 B │     267 B │     +267 B │ + res/m0.png                                                      
+     362 B │     +362 B │     260 B │     +260 B │ + res/o9.9.png                                                    
+     361 B │     +361 B │     452 B │     +452 B │ + res/4B.xml                                                      
+     361 B │     +361 B │     452 B │     +452 B │ + res/qA.xml                                                      
+     360 B │     +360 B │     258 B │     +258 B │ + res/3u.9.png                                                    
+     355 B │     +355 B │     508 B │     +508 B │ + res/UX.xml                                                      
+     354 B │     +354 B │     508 B │     +508 B │ + res/k_.xml                                                      
+     351 B │     +351 B │     245 B │     +245 B │ + res/s3.9.png                                                    
+     350 B │     +350 B │     244 B │     +244 B │ + res/CK.9.png                                                    
+     348 B │     +348 B │     588 B │     +588 B │ + res/xj.xml                                                      
+     347 B │     +347 B │     440 B │     +440 B │ + res/GF.xml                                                      
+     344 B │     +344 B │     244 B │     +244 B │ + res/bX.9.png                                                    
+     342 B │     +342 B │     516 B │     +516 B │ + res/bb.xml                                                      
+     341 B │     +341 B │     237 B │     +237 B │ + res/gj.9.png                                                    
+     340 B │     +340 B │     516 B │     +516 B │ + res/Xx.xml                                                      
+     337 B │     +337 B │     516 B │     +516 B │ + res/XK.xml                                                      
+     336 B │     +336 B │     236 B │     +236 B │ + res/jS.9.png                                                    
+     335 B │     +335 B │     235 B │     +235 B │ + res/65.9.png                                                    
+     334 B │     +334 B │     228 B │     +228 B │ + res/ev.9.png                                                    
+     332 B │     +332 B │     226 B │     +226 B │ + res/sg.9.png                                                    
+     331 B │     +331 B │     229 B │     +229 B │ + res/ZN.9.png                                                    
+     329 B │     +329 B │     229 B │     +229 B │ + res/BL.9.png                                                    
+     328 B │     +328 B │     388 B │     +388 B │ + res/9z.xml                                                      
+     328 B │     +328 B │     468 B │     +468 B │ + res/In.xml                                                      
+     328 B │     +328 B │     228 B │     +228 B │ + res/iO.png                                                      
+     326 B │     +326 B │     464 B │     +464 B │ + res/7H.xml                                                      
+     326 B │     +326 B │     464 B │     +464 B │ + res/Jl.xml                                                      
+     326 B │     +326 B │     464 B │     +464 B │ + res/sA.xml                                                      
+     325 B │     +325 B │     221 B │     +221 B │ + res/X3.9.png                                                    
+     325 B │     +325 B │     396 B │     +396 B │ + res/rz.xml                                                      
+     324 B │     +324 B │     396 B │     +396 B │ + res/EZ.xml                                                      
+     324 B │     +324 B │     224 B │     +224 B │ + res/kp.png                                                      
+     324 B │     +324 B │     396 B │     +396 B │ + res/y-.xml                                                      
+     323 B │     +323 B │     227 B │     +227 B │ + res/6t.png                                                      
+     323 B │     +323 B │     396 B │     +396 B │ + res/RD.xml                                                      
+     322 B │     +322 B │     216 B │     +216 B │ + res/K_.9.png                                                    
+     322 B │     +322 B │     222 B │     +222 B │ + res/UE.9.png                                                    
+     319 B │     +319 B │     484 B │     +484 B │ + res/NM.xml                                                      
+     319 B │     +319 B │     484 B │     +484 B │ + res/_G.xml                                                      
+     319 B │     +319 B │     217 B │     +217 B │ + res/py.9.png                                                    
+     318 B │     +318 B │     214 B │     +214 B │ + res/42.9.png                                                    
+     318 B │     +318 B │     212 B │     +212 B │ + res/hh.9.png                                                    
+     317 B │     +317 B │     211 B │     +211 B │ + res/SV.9.png                                                    
+     317 B │     +317 B │     217 B │     +217 B │ + res/W4.9.png                                                    
+     316 B │     +316 B │     214 B │     +214 B │ + res/w_.png                                                      
+     315 B │     +315 B │     209 B │     +209 B │ + res/0x.9.png                                                    
+     315 B │     +315 B │     209 B │     +209 B │ + res/Yt.9.png                                                    
+     314 B │     +314 B │     388 B │     +388 B │ + res/Bd.xml                                                      
+     314 B │     +314 B │     388 B │     +388 B │ + res/gR.xml                                                      
+     314 B │     +314 B │     364 B │     +364 B │ + res/pU.xml                                                      
+     314 B │     +314 B │     448 B │     +448 B │ + res/zp.xml                                                      
+     313 B │     +313 B │     207 B │     +207 B │ + res/Pg.9.png                                                    
+     313 B │     +313 B │     388 B │     +388 B │ + res/vZ.xml                                                      
+     312 B │     +312 B │     210 B │     +210 B │ + res/62.9.png                                                    
+     312 B │     +312 B │     212 B │     +212 B │ + res/Y7.9.png                                                    
+     312 B │     +312 B │     208 B │     +208 B │ + res/kJ.9.png                                                    
+     312 B │     +312 B │     208 B │     +208 B │ + res/v4.9.png                                                    
+     312 B │     +312 B │     212 B │     +212 B │ + res/x3.9.png                                                    
+     312 B │     +312 B │     388 B │     +388 B │ + res/y4.xml                                                      
+     310 B │     +310 B │     400 B │     +400 B │ + res/sn.xml                                                      
+     310 B │     +310 B │     208 B │     +208 B │ + res/tU.9.png                                                    
+     309 B │     +309 B │     207 B │     +207 B │ + res/nI.9.png                                                    
+     307 B │     +307 B │     207 B │     +207 B │ + res/8h.9.png                                                    
+     307 B │     +307 B │     203 B │     +203 B │ + res/YG.9.png                                                    
+     307 B │     +307 B │     205 B │     +205 B │ + res/gt.9.png                                                    
+     306 B │     +306 B │     202 B │     +202 B │ + res/Gt.9.png                                                    
+     304 B │     +304 B │     204 B │     +204 B │ + res/uu.9.png                                                    
+     303 B │     +303 B │     201 B │     +201 B │ + res/4k.png                                                      
+     303 B │     +303 B │     199 B │     +199 B │ + res/No.9.png                                                    
+     302 B │     +302 B │     198 B │     +198 B │ + res/tZ.9.png                                                    
+     302 B │     +302 B │     196 B │     +196 B │ + res/uj.9.png                                                    
+     301 B │     +301 B │     203 B │     +203 B │ + res/H-.png                                                      
+     300 B │     +300 B │     200 B │     +200 B │ + res/EA.9.png                                                    
+     298 B │     +298 B │     196 B │     +196 B │ + res/Wz.png                                                      
+     298 B │     +298 B │     194 B │     +194 B │ + res/xR.9.png                                                    
+     297 B │     +297 B │     197 B │     +197 B │ + res/qp.png                                                      
+     295 B │     +295 B │     424 B │     +424 B │ + res/Cg.xml                                                      
+     295 B │     +295 B │     424 B │     +424 B │ + res/MO.xml                                                      
+     294 B │     +294 B │     194 B │     +194 B │ + res/lP.9.png                                                    
+     293 B │     +293 B │     189 B │     +189 B │ + res/QJ.9.png                                                    
+     292 B │     +292 B │     192 B │     +192 B │ + res/9X.9.png                                                    
+     292 B │     +292 B │     190 B │     +190 B │ + res/BG.9.png                                                    
+     292 B │     +292 B │     186 B │     +186 B │ + res/yY.9.png                                                    
+     289 B │     +289 B │     187 B │     +187 B │ + res/X4.9.png                                                    
+     288 B │     +288 B │     186 B │     +186 B │ + res/i6.9.png                                                    
+     287 B │     +287 B │     187 B │     +187 B │ + res/9N.9.png                                                    
+     286 B │     +286 B │     320 B │     +320 B │ + res/DZ.xml                                                      
+     286 B │     +286 B │     328 B │     +328 B │ + res/NF.xml                                                      
+     286 B │     +286 B │     328 B │     +328 B │ + res/VM.xml                                                      
+     286 B │     +286 B │     186 B │     +186 B │ + res/Yw.9.png                                                    
+     286 B │     +286 B │     320 B │     +320 B │ + res/lN.xml                                                      
+     286 B │     +286 B │     186 B │     +186 B │ + res/xH.png                                                      
+     286 B │     +286 B │     184 B │     +184 B │ + res/yH.9.png                                                    
+     284 B │     +284 B │     182 B │     +182 B │ + res/NZ.9.png                                                    
+     284 B │     +284 B │     178 B │     +178 B │ + res/Su.9.png                                                    
+     284 B │     +284 B │     178 B │     +178 B │ + res/ps.9.png                                                    
+     283 B │     +283 B │     316 B │     +316 B │ + res/_o.xml                                                      
+     283 B │     +283 B │     316 B │     +316 B │ + res/c5.xml                                                      
+     282 B │     +282 B │     178 B │     +178 B │ + res/D_.9.png                                                    
+     281 B │     +281 B │     372 B │     +372 B │ + res/7N.xml                                                      
+     281 B │     +281 B │     372 B │     +372 B │ + res/YW.xml                                                      
+     281 B │     +281 B │     181 B │     +181 B │ + res/vz.9.png                                                    
+     280 B │     +280 B │     178 B │     +178 B │ + res/9n.9.png                                                    
+     280 B │     +280 B │     178 B │     +178 B │ + res/DL.9.png                                                    
+     275 B │     +275 B │     171 B │     +171 B │ + res/1e.9.png                                                    
+     271 B │     +271 B │     171 B │     +171 B │ + res/Wh.png                                                      
+     271 B │     +271 B │     173 B │     +173 B │ + res/_q1.png                                                     
+     271 B │     +271 B │     167 B │     +167 B │ + res/hZ.9.png                                                    
+     271 B │     +271 B │     167 B │     +167 B │ + res/jS1.9.png                                                   
+     270 B │     +270 B │     336 B │     +336 B │ + res/27.xml                                                      
+     270 B │     +270 B │     304 B │     +304 B │ + res/V7.xml                                                      
+     267 B │     +267 B │     167 B │     +167 B │ + res/ej.9.png                                                    
+     261 B │     +261 B │     159 B │     +159 B │ + res/BM.png                                                      
+     250 B │     +250 B │     264 B │     +264 B │ + res/XY1.xml                                                     
+     245 B │     +245 B │     145 B │     +145 B │ + res/2d.png                                                      
+     764 B │     +245 B │   1.9 KiB │     +960 B │ ∆ res/2f.xml                                                      
+     190 B │     +190 B │       6 B │       +6 B │ + META-INF/androidx.cursoradapter_cursoradapter.version           
+     188 B │     +188 B │       6 B │       +6 B │ + META-INF/androidx.emoji2_emoji2-views-helper.version            
+     186 B │     +186 B │       6 B │       +6 B │ + META-INF/androidx.drawerlayout_drawerlayout.version             
+     662 B │     +180 B │   1.3 KiB │     +596 B │ ∆ res/FT.xml                                                      
+     178 B │     +178 B │       6 B │       +6 B │ + META-INF/androidx.customview_customview.version                 
+     174 B │     +174 B │       6 B │       +6 B │ + META-INF/androidx.appcompat_appcompat.version                   
+     174 B │     +174 B │       6 B │       +6 B │ + META-INF/androidx.viewpager_viewpager.version                   
+     170 B │     +170 B │       6 B │       +6 B │ + META-INF/androidx.fragment_fragment.version                     
+     164 B │     +164 B │     124 B │     +124 B │ + res/QZ.xml                                                      
+     164 B │     +164 B │     124 B │     +124 B │ + res/XW.xml                                                      
+     164 B │     +164 B │     124 B │     +124 B │ + res/aW.xml                                                      
+     162 B │     +162 B │       6 B │       +6 B │ + META-INF/androidx.loader_loader.version                         
+     127 B │     +127 B │       5 B │       +5 B │ + META-INF/services/I2.c                                          
+     127 B │     +127 B │       5 B │       +5 B │ + META-INF/services/u4.t                                          
+     127 B │     +127 B │       5 B │       +5 B │ + META-INF/services/v4.a                                          
+           │     -127 B │           │       -5 B │ - META-INF/services/N3.s                                          
+           │     -127 B │           │       -5 B │ - META-INF/services/O3.a                                          
+           │     -127 B │           │       -5 B │ - META-INF/services/t2.c                                          
+     947 B │      +62 B │     811 B │      +58 B │ ∆ assets/dexopt/baseline.profm                                    
+     538 B │       -9 B │     864 B │       +4 B │ ∆ res/hP.xml                                                      
+     170 B │       +8 B │      14 B │       +8 B │ ∆ META-INF/androidx.room_room-ktx.version                         
+     178 B │       +8 B │      14 B │       +8 B │ ∆ META-INF/androidx.room_room-runtime.version                     
+     190 B │       +8 B │      14 B │       +8 B │ ∆ META-INF/androidx.sqlite_sqlite-framework.version               
+     170 B │       +8 B │      14 B │       +8 B │ ∆ META-INF/androidx.sqlite_sqlite.version                         
+     234 B │       -6 B │     138 B │        0 B │ ∆ res/5c.png                                                      
+   1.7 KiB │       +6 B │   1.6 KiB │        0 B │ ∆ res/QZ.png                                                      
+     236 B │       -4 B │     140 B │        0 B │ ∆ res/6h.png                                                      
+   2.8 KiB │       -4 B │   2.8 KiB │        0 B │ ∆ res/Em.png                                                      
+     349 B │       -4 B │     247 B │        0 B │ ∆ res/Ma.9.png                                                    
+  11.4 KiB │       -4 B │  11.3 KiB │        0 B │ ∆ res/RJ.png                                                      
+     356 B │       +4 B │     252 B │        0 B │ ∆ res/o_.9.png                                                    
+     203 B │       -4 B │     107 B │        0 B │ ∆ res/pY.png                                                      
+     327 B │       -4 B │     225 B │        0 B │ ∆ res/wN.9.png                                                    
+     5 KiB │       -4 B │     5 KiB │        0 B │ ∆ res/yn.png                                                      
+     566 B │       +3 B │   1.2 KiB │        0 B │ ∆ res/Ws.xml                                                      
+     359 B │       +3 B │     440 B │        0 B │ ∆ res/cV.xml                                                      
+     327 B │       +2 B │     225 B │        0 B │ ∆ res/2K.9.png                                                    
+   2.9 KiB │       -2 B │   2.8 KiB │        0 B │ ∆ res/9w.png                                                      
+     377 B │       +2 B │     275 B │        0 B │ ∆ res/Gx.png                                                      
+     218 B │       -2 B │     120 B │        0 B │ ∆ res/I2.png                                                      
+   4.6 KiB │       +2 B │   4.5 KiB │        0 B │ ∆ res/Lf.png                                                      
+   2.6 KiB │       +2 B │   2.5 KiB │        0 B │ ∆ res/Yt.png                                                      
+     631 B │       -2 B │   1.2 KiB │        0 B │ ∆ res/a0.xml                                                      
+   5.2 KiB │       +2 B │   5.1 KiB │        0 B │ ∆ res/as.png                                                      
+     319 B │       -2 B │     215 B │        0 B │ ∆ res/gK.9.png                                                    
+   4.6 KiB │       -2 B │   4.5 KiB │        0 B │ ∆ res/mU.png                                                      
+  14.8 KiB │       -2 B │  14.7 KiB │        0 B │ ∆ res/o-.png                                                      
+   1,009 B │       +2 B │     909 B │        0 B │ ∆ res/pu.png                                                      
+     321 B │       -2 B │     221 B │        0 B │ ∆ res/xa.9.png                                                    
+     580 B │       -1 B │     1 KiB │        0 B │ ∆ res/S8.xml                                                      
+     281 B │       +1 B │     372 B │        0 B │ ∆ res/c6.xml                                                      
+     347 B │       -1 B │     532 B │        0 B │ ∆ res/df.xml                                                      
+     513 B │       -1 B │     988 B │        0 B │ ∆ res/iQ.xml                                                      
+     356 B │       +1 B │     440 B │        0 B │ ∆ res/lR.xml                                                      
+───────────┼────────────┼───────────┼────────────┼───────────────────────────────────────────────────────────────────
+   4.5 MiB │ +715.8 KiB │   4.5 MiB │ +777.4 KiB │ (total)                                                           
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 6                       │ 7                       
+ version name │ 1.0.5                   │ 1.0.6                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="6"
+-    android:versionName="1.0.5"
++    android:versionCode="7"
++    android:versionName="1.0.6"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
