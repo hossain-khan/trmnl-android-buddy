@@ -29,9 +29,8 @@ from datetime import datetime
 
 # Configuration
 GITHUB_REPO = "hossain-khan/trmnl-android-buddy"
-DIFFUSE_REPO = "https://github.com/JakeWharton/diffuse.git"
 WORK_DIR = Path("build/apk-trend-analysis")
-DIFFUSE_BUILD_DIR = WORK_DIR / "diffuse"
+DIFFUSE_BIN = Path("scripts/diffuse/bin/diffuse")  # Pre-built binary committed to repo
 OUTPUT_DIR = Path("docs/apk-diffs")
 REPORT_PATH = Path("docs/apk-size-trend.md")
 
@@ -102,47 +101,18 @@ def get_releases() -> List[Dict]:
         return []
 
 
-def build_diffuse(work_dir: Path) -> Path:
-    """Build Diffuse from source."""
-    diffuse_bin = DIFFUSE_BUILD_DIR / "diffuse" / "build" / "install" / "diffuse" / "bin" / "diffuse"
+def setup_diffuse() -> Path:
+    """
+    Verify Diffuse binary is available.
     
-    if diffuse_bin.exists():
-        log_info(f"Diffuse already built: {diffuse_bin}")
-        return diffuse_bin
+    Uses pre-built Diffuse binary committed to scripts/diffuse/bin/
+    No download or build step needed.
+    """
+    if not DIFFUSE_BIN.exists():
+        raise Exception(f"Diffuse binary not found at {DIFFUSE_BIN}. Please ensure scripts/diffuse/ is committed to the repository.")
     
-    # Check if directory exists and clean it if needed
-    if DIFFUSE_BUILD_DIR.exists():
-        log_info("Removing existing Diffuse build directory...")
-        import shutil
-        shutil.rmtree(DIFFUSE_BUILD_DIR)
-    
-    log_info("Cloning Diffuse repository...")
-    try:
-        # Clone the Diffuse repository
-        subprocess.run(
-            ['git', 'clone', '--depth', '1', DIFFUSE_REPO, str(DIFFUSE_BUILD_DIR)],
-            check=True,
-            capture_output=True
-        )
-        log_success("Diffuse repository cloned")
-    except subprocess.CalledProcessError as e:
-        log_error(f"Failed to clone Diffuse: {e}")
-        raise Exception("Failed to clone Diffuse")
-    
-    log_info("Building Diffuse...")
-    try:
-        # Build Diffuse
-        subprocess.run(
-            ['./gradlew', 'installDist'],
-            cwd=str(DIFFUSE_BUILD_DIR),
-            check=True,
-            capture_output=True
-        )
-        log_success("Diffuse built successfully")
-        return diffuse_bin
-    except subprocess.CalledProcessError as e:
-        log_error(f"Failed to build Diffuse: {e}")
-        raise Exception("Failed to build Diffuse")
+    log_info(f"Using Diffuse binary: {DIFFUSE_BIN}")
+    return DIFFUSE_BIN
 
 
 def download_apk(release: Dict, work_dir: Path) -> Path:
@@ -334,9 +304,9 @@ def main():
     WORK_DIR.mkdir(parents=True, exist_ok=True)
     log_success(f"Work directory: {WORK_DIR}")
     
-    # Build Diffuse
+    # Setup Diffuse
     try:
-        diffuse_bin = build_diffuse(WORK_DIR)
+        diffuse_bin = setup_diffuse()
     except Exception as e:
         log_error(f"Failed to setup Diffuse: {e}")
         return 1
