@@ -1,0 +1,185 @@
+Diffuse Comparison: 1.7.0 → 2.0.0
+================================================================================
+
+OLD: 1.7.0.apk (signature: V2)
+NEW: 2.0.0.apk (signature: V2)
+
+          │            compressed             │            uncompressed            
+          ├───────────┬───────────┬───────────┼───────────┬───────────┬────────────
+ APK      │ old       │ new       │ diff      │ old       │ new       │ diff       
+──────────┼───────────┼───────────┼───────────┼───────────┼───────────┼────────────
+      dex │   1.8 MiB │     4 MiB │  +2.2 MiB │   3.7 MiB │     4 MiB │ +307.6 KiB 
+     arsc │ 664.3 KiB │ 686.7 KiB │ +22.4 KiB │ 664.2 KiB │ 686.6 KiB │  +22.4 KiB 
+ manifest │   2.9 KiB │   2.9 KiB │      -1 B │  12.2 KiB │  12.2 KiB │        0 B 
+      res │ 285.9 KiB │ 299.5 KiB │ +13.7 KiB │ 374.3 KiB │ 397.1 KiB │  +22.8 KiB 
+   native │   180 KiB │ 180.8 KiB │    +802 B │  58.9 KiB │  58.9 KiB │        0 B 
+    asset │  49.3 KiB │  49.5 KiB │    +197 B │   137 KiB │ 137.2 KiB │     +199 B 
+    other │  51.1 KiB │  51.2 KiB │    +167 B │ 112.7 KiB │ 112.7 KiB │       +6 B 
+──────────┼───────────┼───────────┼───────────┼───────────┼───────────┼────────────
+    total │     3 MiB │   5.2 MiB │  +2.2 MiB │     5 MiB │   5.3 MiB │   +353 KiB 
+
+ DEX     │ old   │ new   │ diff                  
+─────────┼───────┼───────┼───────────────────────
+   files │     1 │     1 │     0                 
+ strings │ 18128 │ 19025 │  +897 (+4034 -3137)   
+   types │  5835 │  6266 │  +431 (+3330 -2899)   
+ classes │  4738 │  5145 │  +407 (+3101 -2694)   
+ methods │ 24890 │ 26257 │ +1367 (+20876 -19509) 
+  fields │ 15457 │ 16894 │ +1437 (+15816 -14379) 
+
+ ARSC    │ old  │ new  │ diff         
+─────────┼──────┼──────┼──────────────
+ configs │  132 │  131 │  -1 (+0 -1)  
+ entries │ 1457 │ 1497 │ +40 (+40 -0) 
+
+=================
+====   APK   ====
+=================
+
+      compressed       │      uncompressed      │                                                    
+───────────┬───────────┼───────────┬────────────┤                                                    
+ size      │ diff      │ size      │ diff       │ path                                               
+───────────┼───────────┼───────────┼────────────┼────────────────────────────────────────────────────
+     4 MiB │  +2.2 MiB │     4 MiB │ +307.6 KiB │ ∆ classes.dex                                      
+ 686.7 KiB │ +22.4 KiB │ 686.6 KiB │  +22.4 KiB │ ∆ resources.arsc                                   
+     929 B │    +929 B │   2.9 KiB │   +2.9 KiB │ + res/iG.xml                                       
+  13.3 KiB │    +802 B │   9.9 KiB │        0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so       
+     790 B │    +790 B │   1.6 KiB │   +1.6 KiB │ + res/ce.xml                                       
+     677 B │    +677 B │   1,008 B │   +1,008 B │ + res/4h.xml                                       
+     665 B │    +665 B │   1,008 B │   +1,008 B │ + res/_g.xml                                       
+     652 B │    +652 B │     964 B │     +964 B │ + res/6c.xml                                       
+     650 B │    +650 B │   1.2 KiB │   +1.2 KiB │ + res/uK.xml                                       
+     649 B │    +649 B │   1,000 B │   +1,000 B │ + res/1m.xml                                       
+     613 B │    +613 B │   1,004 B │   +1,004 B │ + res/O-.xml                                       
+     606 B │    +606 B │     992 B │     +992 B │ + res/de.xml                                       
+     592 B │    +592 B │     884 B │     +884 B │ + res/RL.xml                                       
+     577 B │    +577 B │     920 B │     +920 B │ + res/Iy.xml                                       
+     572 B │    +572 B │     880 B │     +880 B │ + res/1i.xml                                       
+     534 B │    +534 B │     756 B │     +756 B │ + res/nl.xml                                       
+     522 B │    +522 B │     816 B │     +816 B │ + res/yg.xml                                       
+     519 B │    +519 B │     764 B │     +764 B │ + res/kx.xml                                       
+     516 B │    +516 B │     820 B │     +820 B │ + res/Zw.xml                                       
+     508 B │    +508 B │     772 B │     +772 B │ + res/He.xml                                       
+     498 B │    +498 B │     756 B │     +756 B │ + res/0n.xml                                       
+     476 B │    +476 B │     692 B │     +692 B │ + res/jA.xml                                       
+     465 B │    +465 B │     664 B │     +664 B │ + res/YS.xml                                       
+     439 B │    +439 B │     624 B │     +624 B │ + res/Fa.xml                                       
+     429 B │    +429 B │     624 B │     +624 B │ + res/B7.xml                                       
+     428 B │    +428 B │     608 B │     +608 B │ + res/BX.xml                                       
+     428 B │    +428 B │     604 B │     +604 B │ + res/lW.xml                                       
+     259 B │    +259 B │     308 B │     +308 B │ + res/zn.xml                                       
+     166 B │    +166 B │       6 B │       +6 B │ + META-INF/androidx.browser_browser.version        
+   6.9 KiB │    +146 B │   6.8 KiB │     +148 B │ ∆ assets/dexopt/baseline.prof                      
+     127 B │    +127 B │       5 B │       +5 B │ + META-INF/services/P2.c                           
+     127 B │    +127 B │       5 B │       +5 B │ + META-INF/services/T4.x                           
+     127 B │    +127 B │       5 B │       +5 B │ + META-INF/services/U4.a                           
+           │    -127 B │           │       -5 B │ - META-INF/services/C4.v                           
+           │    -127 B │           │       -5 B │ - META-INF/services/D4.a                           
+           │    -127 B │           │       -5 B │ - META-INF/services/M2.c                           
+   1,000 B │     +51 B │     866 B │      +51 B │ ∆ assets/dexopt/baseline.profm                     
+     358 B │      -6 B │     258 B │        0 B │ ∆ res/3u.9.png                                     
+     298 B │      +6 B │     192 B │        0 B │ ∆ res/9X.9.png                                     
+     409 B │      +6 B │     307 B │        0 B │ ∆ res/FW.png                                       
+   2.6 KiB │      -6 B │   2.5 KiB │        0 B │ ∆ res/zr.png                                       
+     383 B │      +4 B │     281 B │        0 B │ ∆ res/-B.png                                       
+     311 B │      -4 B │     209 B │        0 B │ ∆ res/0x.9.png                                     
+     645 B │      +4 B │     541 B │        0 B │ ∆ res/33.9.png                                     
+     278 B │      -4 B │     178 B │        0 B │ ∆ res/9n.9.png                                     
+     288 B │      +4 B │     182 B │        0 B │ ∆ res/NZ.9.png                                     
+     548 B │      -4 B │     448 B │        0 B │ ∆ res/aU.9.png                                     
+     369 B │      +4 B │     267 B │        0 B │ ∆ res/dW.png                                       
+     456 B │      +4 B │     356 B │        0 B │ ∆ res/eR.png                                       
+     322 B │      -4 B │     224 B │        0 B │ ∆ res/kp.png                                       
+     1 KiB │      +4 B │     966 B │        0 B │ ∆ res/uL.9.png                                     
+     294 B │      -4 B │     194 B │        0 B │ ∆ res/xR.9.png                                     
+     5 KiB │      +4 B │     5 KiB │        0 B │ ∆ res/yn.png                                       
+     811 B │      +3 B │   1.8 KiB │        0 B │ ∆ res/eA.xml                                       
+     325 B │      -2 B │     225 B │        0 B │ ∆ res/2K.9.png                                     
+     301 B │      -2 B │     201 B │        0 B │ ∆ res/4k.png                                       
+     270 B │      +2 B │     304 B │        0 B │ ∆ res/9m.xml                                       
+     348 B │      +2 B │     244 B │        0 B │ ∆ res/CK.9.png                                     
+   1.1 KiB │      -2 B │     984 B │        0 B │ ∆ res/Gf.png                                       
+     384 B │      -2 B │     280 B │        0 B │ ∆ res/JJ.9.png                                     
+     317 B │      -2 B │     484 B │        0 B │ ∆ res/NM.xml                                       
+     840 B │      -2 B │     738 B │        0 B │ ∆ res/Pa.9.png                                     
+     313 B │      -2 B │     209 B │        0 B │ ∆ res/Yt.9.png                                     
+     297 B │      +2 B │     197 B │        0 B │ ∆ res/cV.png                                       
+     391 B │      -2 B │     464 B │        0 B │ ∆ res/color/abc_primary_text_material_dark.xml     
+     528 B │      -2 B │     432 B │        0 B │ ∆ res/d3.png                                       
+   1.2 KiB │      +2 B │   3.4 KiB │        0 B │ ∆ res/dO.xml                                       
+     326 B │      -2 B │     228 B │        0 B │ ∆ res/iO.png                                       
+     584 B │      -2 B │     484 B │        0 B │ ∆ res/iR.9.png                                     
+     434 B │      -2 B │     816 B │        0 B │ ∆ res/kn.xml                                       
+     296 B │      +2 B │     194 B │        0 B │ ∆ res/lP.9.png                                     
+     372 B │      +2 B │     272 B │        0 B │ ∆ res/ly.png                                       
+     350 B │      +2 B │     532 B │        0 B │ ∆ res/nz.xml                                       
+     501 B │      +2 B │     403 B │        0 B │ ∆ res/s0.png                                       
+     380 B │      +2 B │     528 B │        0 B │ ∆ res/vJ.xml                                       
+     327 B │      -2 B │     223 B │        0 B │ ∆ res/vL.9.png                                     
+     884 B │      +2 B │   2.4 KiB │        0 B │ ∆ res/xN.xml                                       
+     272 B │      +1 B │     120 B │        0 B │ ∆ META-INF/version-control-info.textproto          
+   2.9 KiB │      -1 B │  12.2 KiB │        0 B │ ∆ AndroidManifest.xml                              
+     764 B │      +1 B │   1.9 KiB │        0 B │ ∆ res/2f.xml                                       
+     904 B │      +1 B │     2 KiB │        0 B │ ∆ res/2j.xml                                       
+     593 B │      -1 B │     1 KiB │        0 B │ ∆ res/3A.xml                                       
+     740 B │      +1 B │   1.5 KiB │        0 B │ ∆ res/9V.xml                                       
+     327 B │      -1 B │     388 B │        0 B │ ∆ res/9z.xml                                       
+     931 B │      -1 B │   2.6 KiB │        0 B │ ∆ res/Be.xml                                       
+     663 B │      +1 B │   1.3 KiB │        0 B │ ∆ res/FT.xml                                       
+     646 B │      +1 B │   1.3 KiB │        0 B │ ∆ res/Fu.xml                                       
+     567 B │      +1 B │   1.2 KiB │        0 B │ ∆ res/GR.xml                                       
+     318 B │      -1 B │     484 B │        0 B │ ∆ res/_G.xml                                       
+     407 B │      +1 B │     612 B │        0 B │ ∆ res/_y.xml                                       
+     632 B │      +1 B │   1.2 KiB │        0 B │ ∆ res/a0.xml                                       
+     280 B │      -1 B │     372 B │        0 B │ ∆ res/c6.xml                                       
+     425 B │      -1 B │     544 B │        0 B │ ∆ res/color-v23/abc_color_highlight_material.xml   
+     429 B │      -1 B │     564 B │        0 B │ ∆ res/color/abc_hint_foreground_material_dark.xml  
+     432 B │      +1 B │     564 B │        0 B │ ∆ res/color/abc_hint_foreground_material_light.xml 
+     393 B │      -1 B │     464 B │        0 B │ ∆ res/color/abc_primary_text_material_light.xml    
+     396 B │      -1 B │     464 B │        0 B │ ∆ res/color/abc_secondary_text_material_dark.xml   
+     398 B │      -1 B │     464 B │        0 B │ ∆ res/color/abc_secondary_text_material_light.xml  
+     387 B │      +1 B │     464 B │        0 B │ ∆ res/color/switch_thumb_material_light.xml        
+     349 B │      +1 B │     532 B │        0 B │ ∆ res/df.xml                                       
+     514 B │      +1 B │     988 B │        0 B │ ∆ res/iQ.xml                                       
+     356 B │      -1 B │     440 B │        0 B │ ∆ res/lR.xml                                       
+     396 B │      -1 B │     680 B │        0 B │ ∆ res/rx.xml                                       
+     692 B │      -1 B │   1.4 KiB │        0 B │ ∆ res/vG.xml                                       
+───────────┼───────────┼───────────┼────────────┼────────────────────────────────────────────────────
+   4.7 MiB │  +2.2 MiB │   4.7 MiB │   +353 KiB │ (total)                                            
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 14                      │ 15                      
+ version name │ 1.7.0                   │ 2.0.0                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="14"
+-    android:versionName="1.7.0"
++    android:versionCode="15"
++    android:versionName="2.0.0"
+     package="ink.trmnl.android.buddy"
+@@ -11,3 +11,3 @@
+   <uses-sdk
+-      android:minSdkVersion="26"
++      android:minSdkVersion="28"
+       android:targetSdkVersion="36"
+@@ -15,6 +15,6 @@
+   <uses-permission
+-      android:name="android.permission.POST_NOTIFICATIONS"
++      android:name="android.permission.INTERNET"
+       />
+   <uses-permission
+-      android:name="android.permission.INTERNET"
++      android:name="android.permission.POST_NOTIFICATIONS"
+       />
+
+
+
+=================

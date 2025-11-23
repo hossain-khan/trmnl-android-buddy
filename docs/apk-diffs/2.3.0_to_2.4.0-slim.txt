@@ -1,0 +1,132 @@
+Diffuse Comparison: 2.3.0 → 2.4.0
+================================================================================
+
+OLD: 2.3.0.apk (signature: V2)
+NEW: 2.4.0.apk (signature: V2)
+
+          │             compressed             │            uncompressed            
+          ├───────────┬───────────┬────────────┼───────────┬───────────┬────────────
+ APK      │ old       │ new       │ diff       │ old       │ new       │ diff       
+──────────┼───────────┼───────────┼────────────┼───────────┼───────────┼────────────
+      dex │   4.2 MiB │   4.5 MiB │ +289.8 KiB │   4.2 MiB │   4.5 MiB │ +289.8 KiB 
+     arsc │ 897.2 KiB │ 900.6 KiB │   +3.3 KiB │ 897.1 KiB │ 900.5 KiB │   +3.3 KiB 
+ manifest │     3 KiB │     3 KiB │        0 B │  12.5 KiB │  12.5 KiB │        0 B 
+      res │ 316.3 KiB │ 335.3 KiB │    +19 KiB │   424 KiB │ 462.2 KiB │  +38.2 KiB 
+   native │   185 KiB │ 178.2 KiB │   -6.7 KiB │  58.9 KiB │  58.9 KiB │        0 B 
+    asset │  48.7 KiB │  50.2 KiB │   +1.5 KiB │ 136.4 KiB │ 137.9 KiB │   +1.6 KiB 
+    other │  51.4 KiB │  51.4 KiB │        0 B │ 112.7 KiB │ 112.7 KiB │        0 B 
+──────────┼───────────┼───────────┼────────────┼───────────┼───────────┼────────────
+    total │   5.7 MiB │     6 MiB │ +306.9 KiB │   5.8 MiB │   6.1 MiB │ +332.9 KiB 
+
+ DEX     │ old   │ new   │ diff                  
+─────────┼───────┼───────┼───────────────────────
+   files │     1 │     1 │     0                 
+ strings │ 20117 │ 21121 │ +1004 (+2207 -1203)   
+   types │  6561 │  6932 │  +371 (+1555 -1184)   
+ classes │  5360 │  5713 │  +353 (+1402 -1049)   
+ methods │ 28104 │ 29495 │ +1391 (+15458 -14067) 
+  fields │ 17714 │ 19023 │ +1309 (+13907 -12598) 
+
+ ARSC    │ old  │ new  │ diff         
+─────────┼──────┼──────┼──────────────
+ configs │  133 │  133 │   0          
+ entries │ 1549 │ 1574 │ +25 (+25 -0) 
+
+=================
+====   APK   ====
+=================
+
+       compressed       │      uncompressed      │                                                                   
+───────────┬────────────┼───────────┬────────────┤                                                                   
+ size      │ diff       │ size      │ diff       │ path                                                              
+───────────┼────────────┼───────────┼────────────┼───────────────────────────────────────────────────────────────────
+   4.5 MiB │ +289.8 KiB │   4.5 MiB │ +289.8 KiB │ ∆ classes.dex                                                     
+  10.7 KiB │   -6.7 KiB │   9.9 KiB │        0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so                      
+ 900.6 KiB │   +3.3 KiB │ 900.5 KiB │   +3.3 KiB │ ∆ resources.arsc                                                  
+   3.1 KiB │   +3.1 KiB │   7.9 KiB │   +7.9 KiB │ + res/dA.xml                                                      
+   2.7 KiB │   +2.7 KiB │     7 KiB │     +7 KiB │ + res/ZA.xml                                                      
+   7.6 KiB │   +1.5 KiB │   7.5 KiB │   +1.5 KiB │ ∆ assets/dexopt/baseline.prof                                     
+   1.2 KiB │   +1.2 KiB │   3.2 KiB │   +3.2 KiB │ + res/My.xml                                                      
+     1 KiB │     +1 KiB │   2.4 KiB │   +2.4 KiB │ + res/x7.xml                                                      
+     752 B │     +752 B │   1.5 KiB │   +1.5 KiB │ + res/Fo.xml                                                      
+     709 B │     +709 B │   1.1 KiB │   +1.1 KiB │ + res/vD.xml                                                      
+     676 B │     +676 B │   1.2 KiB │   +1.2 KiB │ + res/Xc.xml                                                      
+     647 B │     +647 B │     980 B │     +980 B │ + res/zY.xml                                                      
+     619 B │     +619 B │     952 B │     +952 B │ + res/iM.xml                                                      
+     613 B │     +613 B │     984 B │     +984 B │ + res/8D.xml                                                      
+     611 B │     +611 B │     936 B │     +936 B │ + res/I3.xml                                                      
+     604 B │     +604 B │   1.1 KiB │   +1.1 KiB │ + res/9m1.xml                                                     
+     585 B │     +585 B │     900 B │     +900 B │ + res/ny.xml                                                      
+     576 B │     +576 B │     880 B │     +880 B │ + res/j1.xml                                                      
+     561 B │     +561 B │   1,008 B │   +1,008 B │ + res/sm.xml                                                      
+     558 B │     +558 B │     840 B │     +840 B │ + res/5t.xml                                                      
+     531 B │     +531 B │     780 B │     +780 B │ + res/Yg.xml                                                      
+     528 B │     +528 B │   1.6 KiB │   +1.6 KiB │ + res/qz1.xml                                                     
+     525 B │     +525 B │     852 B │     +852 B │ + res/9u.xml                                                      
+     510 B │     +510 B │     724 B │     +724 B │ + res/iu.xml                                                      
+     505 B │     +505 B │     752 B │     +752 B │ + res/uA.xml                                                      
+     500 B │     +500 B │     828 B │     +828 B │ + res/sx.xml                                                      
+     488 B │     +488 B │     720 B │     +720 B │ + res/Hu.xml                                                      
+     127 B │     +127 B │       5 B │       +5 B │ + META-INF/services/i5.x                                          
+     127 B │     +127 B │       5 B │       +5 B │ + META-INF/services/j5.a                                          
+           │     -127 B │           │       -5 B │ - META-INF/services/d5.x                                          
+           │     -127 B │           │       -5 B │ - META-INF/services/e5.a                                          
+     618 B │      +92 B │     964 B │     -692 B │ ∆ res/qz.xml                                                      
+     313 B │       +6 B │     207 B │        0 B │ ∆ res/8h.9.png                                                    
+     996 B │       -6 B │     900 B │        0 B │ ∆ res/IO.png                                                      
+   2.5 KiB │       -6 B │   2.4 KiB │        0 B │ ∆ res/NA.9.png                                                    
+     534 B │       +6 B │     432 B │        0 B │ ∆ res/d3.png                                                      
+   1,009 B │       +5 B │     877 B │       +9 B │ ∆ assets/dexopt/baseline.profm                                    
+     312 B │       -4 B │     210 B │        0 B │ ∆ res/62.9.png                                                    
+     885 B │       +4 B │     785 B │        0 B │ ∆ res/j4.png                                                      
+   1.2 KiB │       -4 B │   1.1 KiB │        0 B │ ∆ res/rj.9.png                                                    
+     282 B │       -4 B │     186 B │        0 B │ ∆ res/xH.png                                                      
+     280 B │       +2 B │     178 B │        0 B │ ∆ res/9n.9.png                                                    
+   2.9 KiB │       -2 B │   2.8 KiB │        0 B │ ∆ res/9w.png                                                      
+     296 B │       -2 B │     196 B │        0 B │ ∆ res/Wz.png                                                      
+     315 B │       +2 B │     209 B │        0 B │ ∆ res/Yt.9.png                                                    
+     295 B │       -2 B │     197 B │        0 B │ ∆ res/cV.png                                                      
+     367 B │       -2 B │     267 B │        0 B │ ∆ res/dW.png                                                      
+     328 B │       +2 B │     228 B │        0 B │ ∆ res/iO.png                                                      
+  14.8 KiB │       -2 B │  14.7 KiB │        0 B │ ∆ res/o-.png                                                      
+     358 B │       +2 B │     252 B │        0 B │ ∆ res/o_.9.png                                                    
+     572 B │       -2 B │     476 B │        0 B │ ∆ res/tG.png                                                      
+     1 KiB │       -2 B │     966 B │        0 B │ ∆ res/uL.9.png                                                    
+     2 KiB │       -2 B │   1.9 KiB │        0 B │ ∆ res/vK.png                                                      
+   2.6 KiB │       +2 B │   2.5 KiB │        0 B │ ∆ res/zr.png                                                      
+     567 B │       +1 B │   1.2 KiB │        0 B │ ∆ res/Ws.xml                                                      
+     281 B │       +1 B │     372 B │        0 B │ ∆ res/c6.xml                                                      
+     790 B │       +1 B │   1.6 KiB │        0 B │ ∆ res/ce.xml                                                      
+     432 B │       -1 B │     468 B │        0 B │ ∆ res/color/abc_background_cache_hint_selector_material_light.xml 
+     429 B │       -1 B │     564 B │        0 B │ ∆ res/color/abc_hint_foreground_material_dark.xml                 
+     392 B │       +1 B │     464 B │        0 B │ ∆ res/color/abc_primary_text_material_dark.xml                    
+     397 B │       +1 B │     464 B │        0 B │ ∆ res/color/abc_secondary_text_material_dark.xml                  
+     399 B │       +1 B │     464 B │        0 B │ ∆ res/color/abc_secondary_text_material_light.xml                 
+     384 B │       -1 B │     464 B │        0 B │ ∆ res/color/switch_thumb_material_dark.xml                        
+     435 B │       -1 B │     816 B │        0 B │ ∆ res/oP.xml                                                      
+     400 B │       -1 B │     688 B │        0 B │ ∆ res/rW.xml                                                      
+───────────┼────────────┼───────────┼────────────┼───────────────────────────────────────────────────────────────────
+   5.4 MiB │ +306.9 KiB │   5.4 MiB │ +332.9 KiB │ (total)                                                           
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 19                      │ 20                      
+ version name │ 2.3.0                   │ 2.4.0                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="19"
+-    android:versionName="2.3.0"
++    android:versionCode="20"
++    android:versionName="2.4.0"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
