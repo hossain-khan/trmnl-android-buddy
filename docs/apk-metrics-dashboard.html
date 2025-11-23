@@ -112,6 +112,15 @@
             margin-bottom: 30px;
             border-left: 4px solid #2196f3;
         }
+        
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -123,8 +132,8 @@
 
         <div class="source-info">
             <strong>📝 Data Source:</strong> Diffuse reports from <code>docs/apk-diffs/*-slim.txt</code> 
-            | <strong>Versions:</strong> 1.0.0 → 2.6.0 (21 releases) 
-            | <strong>Generated:</strong> <span id="generated-date"></span>
+            | <strong>Versions:</strong> <span id="version-range"></span>
+            | <strong>Generated:</strong> November 22, 2025
         </div>
 
         <div class="stats-grid" id="summary-stats">
@@ -175,230 +184,841 @@
 
         <footer>
             <p>Generated using <a href="https://github.com/JakeWharton/diffuse" target="_blank">Diffuse</a> by Jake Wharton</p>
+            <p>Regenerate: <code>python3 scripts/generate_apk_metrics_dashboard.py</code></p>
             <p>TRMNL Android Buddy © 2025</p>
         </footer>
     </div>
 
     <script>
-        // Set generated date
-        document.getElementById('generated-date').textContent = new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        // Data extracted from diffuse slim reports
+        const diffuseData = [
+            {
+                        "version": "1.0.0",
+                        "versionCode": 1,
+                        "compressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.4580078125,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.115234375,
+                                    "native": 0.1779296875,
+                                    "asset": 0.0474609375,
+                                    "other": 0.044921875,
+                                    "total": 4.1
+                        },
+                        "uncompressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.45791015625,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.1376953125,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13310546875,
+                                    "other": 0.10029296875,
+                                    "total": 4.1
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 15958,
+                                    "types": 5194,
+                                    "classes": 4212,
+                                    "methods": 21481,
+                                    "fields": 13409
+                        },
+                        "arsc": {
+                                    "configs": 108,
+                                    "entries": 347
+                        }
+            },
+            {
+                        "version": "1.0.1",
+                        "versionCode": 2,
+                        "compressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.4580078125,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.115234375,
+                                    "native": 0.1779296875,
+                                    "asset": 0.0474609375,
+                                    "other": 0.044921875,
+                                    "total": 4.1
+                        },
+                        "uncompressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.45791015625,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.1376953125,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13310546875,
+                                    "other": 0.10029296875,
+                                    "total": 4.1
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 15958,
+                                    "types": 5194,
+                                    "classes": 4212,
+                                    "methods": 21481,
+                                    "fields": 13409
+                        },
+                        "arsc": {
+                                    "configs": 108,
+                                    "entries": 347
+                        }
+            },
+            {
+                        "version": "1.0.2",
+                        "versionCode": 3,
+                        "compressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.4580078125,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.115234375,
+                                    "native": 0.17734375,
+                                    "asset": 0.0462890625,
+                                    "other": 0.044921875,
+                                    "total": 4.1
+                        },
+                        "uncompressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.45791015625,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.1376953125,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13203125,
+                                    "other": 0.10029296875,
+                                    "total": 4.1
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 15969,
+                                    "types": 5197,
+                                    "classes": 4215,
+                                    "methods": 21488,
+                                    "fields": 13418
+                        },
+                        "arsc": {
+                                    "configs": 108,
+                                    "entries": 347
+                        }
+            },
+            {
+                        "version": "1.0.3",
+                        "versionCode": 4,
+                        "compressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.45849609375,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.1158203125,
+                                    "native": 0.17685546875,
+                                    "asset": 0.04736328125,
+                                    "other": 0.044921875,
+                                    "total": 4.0
+                        },
+                        "uncompressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.4583984375,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.1384765625,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13310546875,
+                                    "other": 0.10029296875,
+                                    "total": 4.1
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 15716,
+                                    "types": 5079,
+                                    "classes": 4102,
+                                    "methods": 21109,
+                                    "fields": 13055
+                        },
+                        "arsc": {
+                                    "configs": 109,
+                                    "entries": 352
+                        }
+            },
+            {
+                        "version": "1.0.4",
+                        "versionCode": 5,
+                        "compressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.45849609375,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.1158203125,
+                                    "native": 0.1802734375,
+                                    "asset": 0.04736328125,
+                                    "other": 0.044921875,
+                                    "total": 4.0
+                        },
+                        "uncompressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.4583984375,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.1384765625,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13310546875,
+                                    "other": 0.10029296875,
+                                    "total": 4.1
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 15755,
+                                    "types": 5092,
+                                    "classes": 4116,
+                                    "methods": 21161,
+                                    "fields": 13143
+                        },
+                        "arsc": {
+                                    "configs": 109,
+                                    "entries": 352
+                        }
+            },
+            {
+                        "version": "1.0.5",
+                        "versionCode": 6,
+                        "compressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.45859375,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.11630859375,
+                                    "native": 0.20341796875,
+                                    "asset": 0.0474609375,
+                                    "other": 0.044921875,
+                                    "total": 4.1
+                        },
+                        "uncompressed": {
+                                    "dex": 3.2,
+                                    "arsc": 0.45849609375,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.1392578125,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13310546875,
+                                    "other": 0.10029296875,
+                                    "total": 4.1
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 15826,
+                                    "types": 5126,
+                                    "classes": 4148,
+                                    "methods": 21247,
+                                    "fields": 13286
+                        },
+                        "arsc": {
+                                    "configs": 109,
+                                    "entries": 353
+                        }
+            },
+            {
+                        "version": "1.0.6",
+                        "versionCode": 7,
+                        "compressed": {
+                                    "dex": 3.6,
+                                    "arsc": 0.6458984375,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.26787109375,
+                                    "native": 0.19482421875,
+                                    "asset": 0.04794921875,
+                                    "other": 0.04990234375,
+                                    "total": 4.8
+                        },
+                        "uncompressed": {
+                                    "dex": 3.6,
+                                    "arsc": 0.64580078125,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.33759765625,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13369140625,
+                                    "other": 0.11005859375,
+                                    "total": 4.9
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 17452,
+                                    "types": 5648,
+                                    "classes": 4573,
+                                    "methods": 24092,
+                                    "fields": 14932
+                        },
+                        "arsc": {
+                                    "configs": 130,
+                                    "entries": 1448
+                        }
+            },
+            {
+                        "version": "1.1.0",
+                        "versionCode": 8,
+                        "compressed": {
+                                    "dex": 3.6,
+                                    "arsc": 0.6458984375,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.26787109375,
+                                    "native": 0.19482421875,
+                                    "asset": 0.04794921875,
+                                    "other": 0.04990234375,
+                                    "total": 4.8
+                        },
+                        "uncompressed": {
+                                    "dex": 3.6,
+                                    "arsc": 0.64580078125,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.33759765625,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13369140625,
+                                    "other": 0.11005859375,
+                                    "total": 4.9
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 17452,
+                                    "types": 5648,
+                                    "classes": 4573,
+                                    "methods": 24092,
+                                    "fields": 14932
+                        },
+                        "arsc": {
+                                    "configs": 130,
+                                    "entries": 1448
+                        }
+            },
+            {
+                        "version": "1.2.0",
+                        "versionCode": 9,
+                        "compressed": {
+                                    "dex": 3.6,
+                                    "arsc": 0.6462890625,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.275390625,
+                                    "native": 0.19443359375,
+                                    "asset": 0.048046875,
+                                    "other": 0.04990234375,
+                                    "total": 4.8
+                        },
+                        "uncompressed": {
+                                    "dex": 3.6,
+                                    "arsc": 0.64619140625,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.35849609375,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13369140625,
+                                    "other": 0.11005859375,
+                                    "total": 4.9
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 17456,
+                                    "types": 5650,
+                                    "classes": 4575,
+                                    "methods": 24095,
+                                    "fields": 14938
+                        },
+                        "arsc": {
+                                    "configs": 131,
+                                    "entries": 1451
+                        }
+            },
+            {
+                        "version": "1.3.0",
+                        "versionCode": 10,
+                        "compressed": {
+                                    "dex": 1.7,
+                                    "arsc": 0.6482421875,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.2765625,
+                                    "native": 0.19619140625,
+                                    "asset": 0.048046875,
+                                    "other": 0.04990234375,
+                                    "total": 3.0
+                        },
+                        "uncompressed": {
+                                    "dex": 3.6,
+                                    "arsc": 0.64814453125,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.360546875,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13369140625,
+                                    "other": 0.11005859375,
+                                    "total": 4.9
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 17642,
+                                    "types": 5674,
+                                    "classes": 4594,
+                                    "methods": 24315,
+                                    "fields": 14979
+                        },
+                        "arsc": {
+                                    "configs": 132,
+                                    "entries": 1453
+                        }
+            },
+            {
+                        "version": "1.4.0",
+                        "versionCode": 11,
+                        "compressed": {
+                                    "dex": 1.7,
+                                    "arsc": 0.6482421875,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.2765625,
+                                    "native": 0.2,
+                                    "asset": 0.046875,
+                                    "other": 0.04990234375,
+                                    "total": 3.0
+                        },
+                        "uncompressed": {
+                                    "dex": 3.6,
+                                    "arsc": 0.64814453125,
+                                    "manifest": 0.01181640625,
+                                    "res": 0.360546875,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13251953125,
+                                    "other": 0.11005859375,
+                                    "total": 4.9
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 17631,
+                                    "types": 5670,
+                                    "classes": 4592,
+                                    "methods": 24304,
+                                    "fields": 14970
+                        },
+                        "arsc": {
+                                    "configs": 132,
+                                    "entries": 1453
+                        }
+            },
+            {
+                        "version": "1.5.0",
+                        "versionCode": 12,
+                        "compressed": {
+                                    "dex": 1.8,
+                                    "arsc": 0.64873046875,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.27919921875,
+                                    "native": 0.19140625,
+                                    "asset": 0.04814453125,
+                                    "other": 0.04990234375,
+                                    "total": 3.0
+                        },
+                        "uncompressed": {
+                                    "dex": 3.7,
+                                    "arsc": 0.6486328125,
+                                    "manifest": 0.0119140625,
+                                    "res": 0.36552734375,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13388671875,
+                                    "other": 0.11005859375,
+                                    "total": 5.0
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 18076,
+                                    "types": 5809,
+                                    "classes": 4712,
+                                    "methods": 24757,
+                                    "fields": 15350
+                        },
+                        "arsc": {
+                                    "configs": 132,
+                                    "entries": 1457
+                        }
+            },
+            {
+                        "version": "1.6.0",
+                        "versionCode": 13,
+                        "compressed": {
+                                    "dex": 1.8,
+                                    "arsc": 0.64873046875,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.27919921875,
+                                    "native": 0.18017578125,
+                                    "asset": 0.04814453125,
+                                    "other": 0.04990234375,
+                                    "total": 3.0
+                        },
+                        "uncompressed": {
+                                    "dex": 3.7,
+                                    "arsc": 0.6486328125,
+                                    "manifest": 0.0119140625,
+                                    "res": 0.36552734375,
+                                    "native": 0.05751953125,
+                                    "asset": 0.1337890625,
+                                    "other": 0.11005859375,
+                                    "total": 5.0
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 18101,
+                                    "types": 5828,
+                                    "classes": 4731,
+                                    "methods": 24862,
+                                    "fields": 15445
+                        },
+                        "arsc": {
+                                    "configs": 132,
+                                    "entries": 1457
+                        }
+            },
+            {
+                        "version": "1.7.0",
+                        "versionCode": 14,
+                        "compressed": {
+                                    "dex": 1.8,
+                                    "arsc": 0.64873046875,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.27919921875,
+                                    "native": 0.17578125,
+                                    "asset": 0.04814453125,
+                                    "other": 0.04990234375,
+                                    "total": 3.0
+                        },
+                        "uncompressed": {
+                                    "dex": 3.7,
+                                    "arsc": 0.6486328125,
+                                    "manifest": 0.0119140625,
+                                    "res": 0.36552734375,
+                                    "native": 0.05751953125,
+                                    "asset": 0.1337890625,
+                                    "other": 0.11005859375,
+                                    "total": 5.0
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 18128,
+                                    "types": 5835,
+                                    "classes": 4738,
+                                    "methods": 24890,
+                                    "fields": 15457
+                        },
+                        "arsc": {
+                                    "configs": 132,
+                                    "entries": 1457
+                        }
+            },
+            {
+                        "version": "2.0.0",
+                        "versionCode": 15,
+                        "compressed": {
+                                    "dex": 4.0,
+                                    "arsc": 0.67060546875,
+                                    "manifest": 0.00283203125,
+                                    "res": 0.29248046875,
+                                    "native": 0.1765625,
+                                    "asset": 0.04833984375,
+                                    "other": 0.05,
+                                    "total": 5.2
+                        },
+                        "uncompressed": {
+                                    "dex": 4.0,
+                                    "arsc": 0.6705078125,
+                                    "manifest": 0.0119140625,
+                                    "res": 0.38779296875,
+                                    "native": 0.05751953125,
+                                    "asset": 0.133984375,
+                                    "other": 0.11005859375,
+                                    "total": 5.3
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 19025,
+                                    "types": 6266,
+                                    "classes": 5145,
+                                    "methods": 26257,
+                                    "fields": 16894
+                        },
+                        "arsc": {
+                                    "configs": 131,
+                                    "entries": 1497
+                        }
+            },
+            {
+                        "version": "2.1.0",
+                        "versionCode": 16,
+                        "compressed": {
+                                    "dex": 4.2,
+                                    "arsc": 0.876171875,
+                                    "manifest": 0.0029296875,
+                                    "res": 0.30888671875,
+                                    "native": 0.18095703125,
+                                    "asset": 0.048828125,
+                                    "other": 0.0501953125,
+                                    "total": 5.6
+                        },
+                        "uncompressed": {
+                                    "dex": 4.2,
+                                    "arsc": 0.87607421875,
+                                    "manifest": 0.01220703125,
+                                    "res": 0.4140625,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13447265625,
+                                    "other": 0.11005859375,
+                                    "total": 5.8
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 20055,
+                                    "types": 6545,
+                                    "classes": 5345,
+                                    "methods": 28046,
+                                    "fields": 17647
+                        },
+                        "arsc": {
+                                    "configs": 133,
+                                    "entries": 1549
+                        }
+            },
+            {
+                        "version": "2.2.0",
+                        "versionCode": 17,
+                        "compressed": {
+                                    "dex": 4.2,
+                                    "arsc": 0.876171875,
+                                    "manifest": 0.0029296875,
+                                    "res": 0.30888671875,
+                                    "native": 0.2013671875,
+                                    "asset": 0.0474609375,
+                                    "other": 0.0501953125,
+                                    "total": 5.7
+                        },
+                        "uncompressed": {
+                                    "dex": 4.2,
+                                    "arsc": 0.87607421875,
+                                    "manifest": 0.01220703125,
+                                    "res": 0.4140625,
+                                    "native": 0.05751953125,
+                                    "asset": 0.133203125,
+                                    "other": 0.11005859375,
+                                    "total": 5.8
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 20088,
+                                    "types": 6550,
+                                    "classes": 5350,
+                                    "methods": 28064,
+                                    "fields": 17672
+                        },
+                        "arsc": {
+                                    "configs": 133,
+                                    "entries": 1549
+                        }
+            },
+            {
+                        "version": "2.2.1",
+                        "versionCode": 18,
+                        "compressed": {
+                                    "dex": 4.2,
+                                    "arsc": 0.876171875,
+                                    "manifest": 0.0029296875,
+                                    "res": 0.30888671875,
+                                    "native": 0.19794921875,
+                                    "asset": 0.04873046875,
+                                    "other": 0.0501953125,
+                                    "total": 5.7
+                        },
+                        "uncompressed": {
+                                    "dex": 4.2,
+                                    "arsc": 0.87607421875,
+                                    "manifest": 0.01220703125,
+                                    "res": 0.4140625,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13447265625,
+                                    "other": 0.11005859375,
+                                    "total": 5.8
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 20089,
+                                    "types": 6550,
+                                    "classes": 5350,
+                                    "methods": 28063,
+                                    "fields": 17672
+                        },
+                        "arsc": {
+                                    "configs": 133,
+                                    "entries": 1549
+                        }
+            },
+            {
+                        "version": "2.3.0",
+                        "versionCode": 19,
+                        "compressed": {
+                                    "dex": 4.2,
+                                    "arsc": 0.876171875,
+                                    "manifest": 0.0029296875,
+                                    "res": 0.30888671875,
+                                    "native": 0.1806640625,
+                                    "asset": 0.04755859375,
+                                    "other": 0.0501953125,
+                                    "total": 5.7
+                        },
+                        "uncompressed": {
+                                    "dex": 4.2,
+                                    "arsc": 0.87607421875,
+                                    "manifest": 0.01220703125,
+                                    "res": 0.4140625,
+                                    "native": 0.05751953125,
+                                    "asset": 0.133203125,
+                                    "other": 0.11005859375,
+                                    "total": 5.8
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 20117,
+                                    "types": 6561,
+                                    "classes": 5360,
+                                    "methods": 28104,
+                                    "fields": 17714
+                        },
+                        "arsc": {
+                                    "configs": 133,
+                                    "entries": 1549
+                        }
+            },
+            {
+                        "version": "2.4.0",
+                        "versionCode": 20,
+                        "compressed": {
+                                    "dex": 4.5,
+                                    "arsc": 0.8794921875,
+                                    "manifest": 0.0029296875,
+                                    "res": 0.32744140625,
+                                    "native": 0.1740234375,
+                                    "asset": 0.0490234375,
+                                    "other": 0.0501953125,
+                                    "total": 6.0
+                        },
+                        "uncompressed": {
+                                    "dex": 4.5,
+                                    "arsc": 0.87939453125,
+                                    "manifest": 0.01220703125,
+                                    "res": 0.4513671875,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13466796875,
+                                    "other": 0.11005859375,
+                                    "total": 6.1
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 21121,
+                                    "types": 6932,
+                                    "classes": 5713,
+                                    "methods": 29495,
+                                    "fields": 19023
+                        },
+                        "arsc": {
+                                    "configs": 133,
+                                    "entries": 1574
+                        }
+            },
+            {
+                        "version": "2.5.0",
+                        "versionCode": 21,
+                        "compressed": {
+                                    "dex": 4.5,
+                                    "arsc": 0.8794921875,
+                                    "manifest": 0.0029296875,
+                                    "res": 0.32744140625,
+                                    "native": 0.1962890625,
+                                    "asset": 0.0490234375,
+                                    "other": 0.0501953125,
+                                    "total": 6.0
+                        },
+                        "uncompressed": {
+                                    "dex": 4.5,
+                                    "arsc": 0.87939453125,
+                                    "manifest": 0.01220703125,
+                                    "res": 0.4513671875,
+                                    "native": 0.05751953125,
+                                    "asset": 0.134765625,
+                                    "other": 0.11005859375,
+                                    "total": 6.1
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 21127,
+                                    "types": 6935,
+                                    "classes": 5716,
+                                    "methods": 29506,
+                                    "fields": 19034
+                        },
+                        "arsc": {
+                                    "configs": 133,
+                                    "entries": 1574
+                        }
+            },
+            {
+                        "version": "2.6.0",
+                        "versionCode": 22,
+                        "compressed": {
+                                    "dex": 4.5,
+                                    "arsc": 0.8794921875,
+                                    "manifest": 0.0029296875,
+                                    "res": 0.32744140625,
+                                    "native": 0.17421875,
+                                    "asset": 0.0490234375,
+                                    "other": 0.0501953125,
+                                    "total": 6.0
+                        },
+                        "uncompressed": {
+                                    "dex": 4.5,
+                                    "arsc": 0.87939453125,
+                                    "manifest": 0.01220703125,
+                                    "res": 0.4513671875,
+                                    "native": 0.05751953125,
+                                    "asset": 0.13466796875,
+                                    "other": 0.11005859375,
+                                    "total": 6.1
+                        },
+                        "dex": {
+                                    "files": 1,
+                                    "strings": 21167,
+                                    "types": 6942,
+                                    "classes": 5722,
+                                    "methods": 29532,
+                                    "fields": 19073
+                        },
+                        "arsc": {
+                                    "configs": 133,
+                                    "entries": 1574
+                        }
+            }
+];
 
-        // Parse size string to bytes (handles MiB, KiB, B)
-        function parseSize(sizeStr) {
-            if (!sizeStr) return 0;
-            const match = sizeStr.trim().match(/^([\d.]+)\s*(MiB|KiB|B)$/);
-            if (!match) return 0;
-            const value = parseFloat(match[1]);
-            const unit = match[2];
-            if (unit === 'MiB') return value * 1024 * 1024;
-            if (unit === 'KiB') return value * 1024;
-            return value;
+        // Extract versions
+        const versions = diffuseData.map(d => d.version);
+        
+        // Update version range
+        if (versions.length > 0) {
+            document.getElementById('version-range').textContent = 
+                `${versions[0]} → ${versions[versions.length - 1]} (${versions.length} releases)`;
         }
+
+        // Calculate summary statistics
+        const firstVersion = diffuseData[0];
+        const lastVersion = diffuseData[diffuseData.length - 1];
+        const totalSizeGrowth = (lastVersion.compressed.total - firstVersion.compressed.total) * 1024 * 1024;
+        const methodsGrowth = lastVersion.dex.methods - firstVersion.dex.methods;
+        const classesGrowth = lastVersion.dex.classes - firstVersion.dex.classes;
 
         // Format bytes to human readable
         function formatBytes(bytes) {
             if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MiB';
             if (bytes >= 1024) return (bytes / 1024).toFixed(2) + ' KiB';
-            return bytes + ' B';
+            return bytes.toFixed(0) + ' B';
         }
-
-        // Parse number with K suffix
-        function parseNumber(str) {
-            if (!str) return 0;
-            str = str.trim().replace(/,/g, '');
-            if (str.endsWith('K')) return parseFloat(str) * 1000;
-            return parseInt(str) || 0;
-        }
-
-        // Diffuse report data (extracted from slim files)
-        const diffuseData = [
-            {
-                version: "1.0.0", versionCode: 1,
-                compressed: { total: 4.1, dex: 3.2, arsc: 467.8, manifest: 2.9, res: 110.3, native: 184, asset: 48.6, other: 46 },
-                uncompressed: { total: 4.1, dex: 3.2, arsc: 467.7, manifest: 12.1, res: 128.5, native: 58.9, asset: 136.3, other: 102.7 },
-                dex: { files: 1, strings: 15957, types: 5194, classes: 4212, methods: 21481, fields: 13409 },
-                arsc: { configs: 108, entries: 333 }
-            },
-            {
-                version: "1.0.1", versionCode: 2,
-                compressed: { total: 4.108, dex: 3.2009, arsc: 469, manifest: 2.9001, res: 117.7, native: 182.2, asset: 48.607, other: 46 },
-                uncompressed: { total: 4.1146, dex: 3.2009, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 136.301, other: 102.7 },
-                dex: { files: 1, strings: 15958, types: 5194, classes: 4212, methods: 21481, fields: 13409 },
-                arsc: { configs: 108, entries: 347 }
-            },
-            {
-                version: "1.0.2", versionCode: 3,
-                compressed: { total: 4.1077, dex: 3.2023, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
-                uncompressed: { total: 4.1149, dex: 3.2023, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 15969, types: 5197, classes: 4215, methods: 21488, fields: 13418 },
-                arsc: { configs: 108, entries: 347 }
-            },
-            {
-                version: "1.0.3", versionCode: 4,
-                compressed: { total: 4.114, dex: 3.2089, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
-                uncompressed: { total: 4.1213, dex: 3.2089, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 15995, types: 5207, classes: 4223, methods: 21530, fields: 13431 },
-                arsc: { configs: 108, entries: 347 }
-            },
-            {
-                version: "1.0.4", versionCode: 5,
-                compressed: { total: 4.176, dex: 3.271, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
-                uncompressed: { total: 4.183, dex: 3.271, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 16288, types: 5318, classes: 4329, methods: 22061, fields: 13640 },
-                arsc: { configs: 108, entries: 347 }
-            },
-            {
-                version: "1.0.5", versionCode: 6,
-                compressed: { total: 4.191, dex: 3.286, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
-                uncompressed: { total: 4.198, dex: 3.286, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 16379, types: 5337, classes: 4346, methods: 22208, fields: 13701 },
-                arsc: { configs: 108, entries: 347 }
-            },
-            {
-                version: "1.0.6", versionCode: 7,
-                compressed: { total: 4.228, dex: 3.323, arsc: 469, manifest: 2.8991, res: 117.702, native: 181.592, asset: 47.5, other: 45.999 },
-                uncompressed: { total: 4.235, dex: 3.323, arsc: 468.9, manifest: 12.1, res: 141, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 16626, types: 5416, classes: 4420, methods: 22676, fields: 13884 },
-                arsc: { configs: 108, entries: 347 }
-            },
-            {
-                version: "1.1.0", versionCode: 8,
-                compressed: { total: 4.341, dex: 3.435, arsc: 469.6, manifest: 2.9, res: 118.3, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 4.349, dex: 3.435, arsc: 469.5, manifest: 12.1, res: 141.5, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 17153, types: 5599, classes: 4580, methods: 23684, fields: 14381 },
-                arsc: { configs: 108, entries: 355 }
-            },
-            {
-                version: "1.2.0", versionCode: 9,
-                compressed: { total: 4.452, dex: 3.544, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 4.460, dex: 3.544, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 17708, types: 5770, classes: 4726, methods: 24713, fields: 14934 },
-                arsc: { configs: 108, entries: 368 }
-            },
-            {
-                version: "1.3.0", versionCode: 10,
-                compressed: { total: 4.456, dex: 3.548, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 4.464, dex: 3.548, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 17735, types: 5774, classes: 4729, methods: 24758, fields: 14953 },
-                arsc: { configs: 108, entries: 368 }
-            },
-            {
-                version: "1.4.0", versionCode: 11,
-                compressed: { total: 4.460, dex: 3.552, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 4.468, dex: 3.552, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 17767, types: 5780, classes: 4734, methods: 24810, fields: 14974 },
-                arsc: { configs: 108, entries: 368 }
-            },
-            {
-                version: "1.5.0", versionCode: 12,
-                compressed: { total: 4.471, dex: 3.563, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 4.479, dex: 3.563, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 17868, types: 5808, classes: 4759, methods: 24985, fields: 15055 },
-                arsc: { configs: 108, entries: 368 }
-            },
-            {
-                version: "1.6.0", versionCode: 13,
-                compressed: { total: 4.508, dex: 3.600, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 4.516, dex: 3.600, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 18128, types: 5871, classes: 4810, methods: 25452, fields: 15263 },
-                arsc: { configs: 108, entries: 368 }
-            },
-            {
-                version: "1.7.0", versionCode: 14,
-                compressed: { total: 4.528, dex: 3.620, arsc: 471.7, manifest: 2.9, res: 118.9, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 4.536, dex: 3.620, arsc: 471.6, manifest: 12.1, res: 142.1, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 18268, types: 5906, classes: 4840, methods: 25717, fields: 15389 },
-                arsc: { configs: 108, entries: 368 }
-            },
-            {
-                version: "2.0.0", versionCode: 15,
-                compressed: { total: 5.380, dex: 4.463, arsc: 481.2, manifest: 2.9, res: 119.2, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 5.388, dex: 4.463, arsc: 481.1, manifest: 12.1, res: 142.4, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 19435, types: 6441, classes: 5298, methods: 28468, fields: 17265 },
-                arsc: { configs: 108, entries: 377 }
-            },
-            {
-                version: "2.1.0", versionCode: 16,
-                compressed: { total: 5.583, dex: 4.661, arsc: 486, manifest: 2.9, res: 119.6, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 5.591, dex: 4.661, arsc: 485.9, manifest: 12.1, res: 142.8, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 19953, types: 6604, classes: 5438, methods: 29392, fields: 17813 },
-                arsc: { configs: 108, entries: 388 }
-            },
-            {
-                version: "2.2.0", versionCode: 17,
-                compressed: { total: 5.640, dex: 4.717, arsc: 487.3, manifest: 2.9, res: 119.8, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 5.648, dex: 4.717, arsc: 487.2, manifest: 12.1, res: 143, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 20176, types: 6675, classes: 5497, methods: 29862, fields: 18091 },
-                arsc: { configs: 108, entries: 393 }
-            },
-            {
-                version: "2.2.1", versionCode: 18,
-                compressed: { total: 5.676, dex: 4.753, arsc: 487.3, manifest: 2.9, res: 119.8, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 5.684, dex: 4.753, arsc: 487.2, manifest: 12.1, res: 143, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 20358, types: 6725, classes: 5542, methods: 30183, fields: 18266 },
-                arsc: { configs: 108, entries: 393 }
-            },
-            {
-                version: "2.3.0", versionCode: 19,
-                compressed: { total: 5.911, dex: 4.984, arsc: 491.3, manifest: 2.9, res: 120.1, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 5.919, dex: 4.984, arsc: 491.2, manifest: 12.1, res: 143.3, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 20639, types: 6823, classes: 5621, methods: 30759, fields: 18575 },
-                arsc: { configs: 108, entries: 402 }
-            },
-            {
-                version: "2.4.0", versionCode: 20,
-                compressed: { total: 5.958, dex: 5.031, arsc: 491.3, manifest: 3.0, res: 120.1, native: 181.6, asset: 47.5, other: 46 },
-                uncompressed: { total: 5.967, dex: 5.031, arsc: 491.2, manifest: 12.5, res: 143.3, native: 58.9, asset: 135.2, other: 102.7 },
-                dex: { files: 1, strings: 20842, types: 6897, classes: 5686, methods: 31204, fields: 18807 },
-                arsc: { configs: 108, entries: 402 }
-            },
-            {
-                version: "2.5.0", versionCode: 21,
-                compressed: { total: 6.000, dex: 4.5, arsc: 900.6, manifest: 3.0, res: 335.3, native: 201, asset: 50.2, other: 51.4 },
-                uncompressed: { total: 6.1, dex: 4.5, arsc: 900.5, manifest: 12.5, res: 462.2, native: 58.9, asset: 138, other: 112.7 },
-                dex: { files: 1, strings: 21127, types: 6935, classes: 5716, methods: 29506, fields: 19034 },
-                arsc: { configs: 133, entries: 1574 }
-            },
-            {
-                version: "2.6.0", versionCode: 22,
-                compressed: { total: 5.989, dex: 4.511, arsc: 900.6, manifest: 3.002, res: 335.296, native: 178.5, asset: 50.173, other: 51.4 },
-                uncompressed: { total: 6.111, dex: 4.511, arsc: 900.5, manifest: 12.5, res: 462.2, native: 58.9, asset: 137.975, other: 112.7 },
-                dex: { files: 1, strings: 21167, types: 6942, classes: 5722, methods: 29532, fields: 19073 },
-                arsc: { configs: 133, entries: 1574 }
-            }
-        ];
-
-        // Convert MiB to bytes for all data
-        const processedData = diffuseData.map(d => ({
-            ...d,
-            compressed: Object.fromEntries(Object.entries(d.compressed).map(([k, v]) => [k, v * 1024 * 1024])),
-            uncompressed: Object.fromEntries(Object.entries(d.uncompressed).map(([k, v]) => [k, v * 1024 * 1024]))
-        }));
-
-        // Extract versions
-        const versions = processedData.map(d => d.version);
-
-        // Calculate summary statistics
-        const firstVersion = processedData[0];
-        const lastVersion = processedData[processedData.length - 1];
-        const totalSizeGrowth = lastVersion.compressed.total - firstVersion.compressed.total;
-        const methodsGrowth = lastVersion.dex.methods - firstVersion.dex.methods;
-        const classesGrowth = lastVersion.dex.classes - firstVersion.dex.classes;
 
         // Populate summary stats
         const summaryStats = document.getElementById('summary-stats');
         summaryStats.innerHTML = `
             <div class="stat-card">
                 <div class="stat-label">Total Releases</div>
-                <div class="stat-value">${processedData.length}</div>
+                <div class="stat-value">${diffuseData.length}</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Current APK Size</div>
-                <div class="stat-value">${formatBytes(lastVersion.compressed.total)}</div>
+                <div class="stat-value">${lastVersion.compressed.total.toFixed(2)} MiB</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Size Growth</div>
@@ -429,7 +1049,7 @@
                 labels: versions,
                 datasets: [{
                     label: 'Compressed APK Size',
-                    data: processedData.map(d => d.compressed.total / (1024 * 1024)),
+                    data: diffuseData.map(d => d.compressed.total),
                     borderColor: '#667eea',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
                     borderWidth: 3,
@@ -470,42 +1090,42 @@
                 datasets: [
                     {
                         label: 'DEX',
-                        data: processedData.map(d => d.compressed.dex / (1024 * 1024)),
+                        data: diffuseData.map(d => d.compressed.dex || 0),
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.7)',
                         fill: true
                     },
                     {
                         label: 'Resources (ARSC)',
-                        data: processedData.map(d => d.compressed.arsc / (1024 * 1024)),
+                        data: diffuseData.map(d => d.compressed.arsc || 0),
                         borderColor: '#764ba2',
                         backgroundColor: 'rgba(118, 75, 162, 0.7)',
                         fill: true
                     },
                     {
                         label: 'Res Files',
-                        data: processedData.map(d => d.compressed.res / (1024 * 1024)),
+                        data: diffuseData.map(d => d.compressed.res || 0),
                         borderColor: '#f093fb',
                         backgroundColor: 'rgba(240, 147, 251, 0.7)',
                         fill: true
                     },
                     {
                         label: 'Native Libs',
-                        data: processedData.map(d => d.compressed.native / (1024 * 1024)),
+                        data: diffuseData.map(d => d.compressed.native || 0),
                         borderColor: '#4facfe',
                         backgroundColor: 'rgba(79, 172, 254, 0.7)',
                         fill: true
                     },
                     {
                         label: 'Assets',
-                        data: processedData.map(d => d.compressed.asset / (1024 * 1024)),
+                        data: diffuseData.map(d => d.compressed.asset || 0),
                         borderColor: '#43e97b',
                         backgroundColor: 'rgba(67, 233, 123, 0.7)',
                         fill: true
                     },
                     {
                         label: 'Other',
-                        data: processedData.map(d => d.compressed.other / (1024 * 1024)),
+                        data: diffuseData.map(d => d.compressed.other || 0),
                         borderColor: '#fa709a',
                         backgroundColor: 'rgba(250, 112, 154, 0.7)',
                         fill: true
@@ -538,11 +1158,11 @@
         });
 
         // 3. Size Changes Between Versions
-        const sizeChanges = processedData.slice(1).map((d, i) => 
-            (d.compressed.total - processedData[i].compressed.total) / 1024
+        const sizeChanges = diffuseData.slice(1).map((d, i) => 
+            (d.compressed.total - diffuseData[i].compressed.total) * 1024
         );
-        const versionTransitions = processedData.slice(1).map((d, i) => 
-            `${processedData[i].version} → ${d.version}`
+        const versionTransitions = diffuseData.slice(1).map((d, i) => 
+            `${diffuseData[i].version} → ${d.version}`
         );
 
         new Chart(document.getElementById('sizeChangesChart'), {
@@ -592,7 +1212,7 @@
                 datasets: [
                     {
                         label: 'Strings',
-                        data: processedData.map(d => d.dex.strings),
+                        data: diffuseData.map(d => d.dex.strings || 0),
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.1)',
                         borderWidth: 2,
@@ -601,7 +1221,7 @@
                     },
                     {
                         label: 'Types',
-                        data: processedData.map(d => d.dex.types),
+                        data: diffuseData.map(d => d.dex.types || 0),
                         borderColor: '#764ba2',
                         backgroundColor: 'rgba(118, 75, 162, 0.1)',
                         borderWidth: 2,
@@ -610,7 +1230,7 @@
                     },
                     {
                         label: 'Classes',
-                        data: processedData.map(d => d.dex.classes),
+                        data: diffuseData.map(d => d.dex.classes || 0),
                         borderColor: '#f093fb',
                         backgroundColor: 'rgba(240, 147, 251, 0.1)',
                         borderWidth: 2,
@@ -647,7 +1267,7 @@
                 datasets: [
                     {
                         label: 'Methods',
-                        data: processedData.map(d => d.dex.methods),
+                        data: diffuseData.map(d => d.dex.methods || 0),
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.2)',
                         borderWidth: 3,
@@ -657,7 +1277,7 @@
                     },
                     {
                         label: 'Fields',
-                        data: processedData.map(d => d.dex.fields),
+                        data: diffuseData.map(d => d.dex.fields || 0),
                         borderColor: '#43e97b',
                         backgroundColor: 'rgba(67, 233, 123, 0.2)',
                         borderWidth: 3,
@@ -696,7 +1316,7 @@
                 labels: versions,
                 datasets: [{
                     label: 'ARSC Entries',
-                    data: processedData.map(d => d.arsc.entries),
+                    data: diffuseData.map(d => d.arsc.entries || 0),
                     backgroundColor: 'rgba(102, 126, 234, 0.7)',
                     borderColor: '#667eea',
                     borderWidth: 1

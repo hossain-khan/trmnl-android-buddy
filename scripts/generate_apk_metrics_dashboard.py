@@ -132,11 +132,14 @@ def parse_diffuse_slim_report(file_path: Path) -> Optional[Dict]:
         
         # Parse APK size table (compressed and uncompressed)
         # The table has format:
+        #           │            compressed            │           uncompressed
+        #           ├───────────┬───────────┬──────────┼───────────┬───────────┬───────────
         # APK      │ old       │ new       │ diff     │ old       │ new       │ diff
+        # ──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼───────────
         # dex      │   3.2 MiB │   3.2 MiB │   +912 B │   3.2 MiB │   3.2 MiB │    +912 B
         
         apk_table_match = re.search(
-            r'APK\s+│.*?compressed.*?│.*?uncompressed.*?\n.*?───.*?\n(.*?)\n.*?───',
+            r'APK\s+│\s+old\s+│\s+new\s+│\s+diff\s+│\s+old\s+│\s+new\s+│\s+diff.*?\n──────────┼(.*?)\n──────────┼',
             content,
             re.DOTALL
         )
@@ -157,15 +160,7 @@ def parse_diffuse_slim_report(file_path: Path) -> Optional[Dict]:
                     continue
                 
                 component = parts[0].strip()
-                if not component or component == 'total':
-                    if component == 'total':
-                        # Parse total separately
-                        new_compressed = parse_size_value(parts[2])
-                        new_uncompressed = parse_size_value(parts[5])
-                        if new_compressed:
-                            apk_sizes['compressed']['total'] = new_compressed
-                        if new_uncompressed:
-                            apk_sizes['uncompressed']['total'] = new_uncompressed
+                if not component:
                     continue
                 
                 # Parse NEW values (column index 2 for compressed, 5 for uncompressed)
@@ -177,6 +172,20 @@ def parse_diffuse_slim_report(file_path: Path) -> Optional[Dict]:
                 if new_uncompressed:
                     apk_sizes['uncompressed'][component] = new_uncompressed
         
+        # Parse the total line separately (it comes after the separator)
+        total_match = re.search(
+            r'^\s*total\s+│([^│]+)│([^│]+)│([^│]+)│([^│]+)│([^│]+)│([^│\n]+)',
+            content,
+            re.MULTILINE
+        )
+        if total_match:
+            total_compressed = parse_size_value(total_match.group(2).strip())
+            total_uncompressed = parse_size_value(total_match.group(5).strip())
+            if total_compressed:
+                apk_sizes['compressed']['total'] = total_compressed
+            if total_uncompressed:
+                apk_sizes['uncompressed']['total'] = total_uncompressed
+        
         # Parse DEX metrics table
         # Format:
         # DEX     │ old   │ new   │ diff
@@ -185,7 +194,7 @@ def parse_diffuse_slim_report(file_path: Path) -> Optional[Dict]:
         
         dex_metrics = {}
         dex_table_match = re.search(
-            r'DEX\s+│.*?\n.*?───.*?\n(.*?)(?:\n\s*\n|\n.*?ARSC)',
+            r'DEX\s+│.*?\n─+┼─+┼─+┼─+\n(.*?)\n\s*\n',
             content,
             re.DOTALL
         )
@@ -197,11 +206,12 @@ def parse_diffuse_slim_report(file_path: Path) -> Optional[Dict]:
                     continue
                 
                 parts = [p.strip() for p in line.split('│')]
-                if len(parts) < 3:
+                if len(parts) < 4:
                     continue
                 
                 metric = parts[0].strip()
                 if metric in ['files', 'strings', 'types', 'classes', 'methods', 'fields']:
+                    # Column 2 is "new" value (0=metric, 1=old, 2=new, 3=diff)
                     new_value = parse_number_value(parts[2])
                     if new_value is not None:
                         dex_metrics[metric] = new_value
@@ -214,7 +224,7 @@ def parse_diffuse_slim_report(file_path: Path) -> Optional[Dict]:
         
         arsc_metrics = {}
         arsc_table_match = re.search(
-            r'ARSC\s+│.*?\n.*?───.*?\n(.*?)(?:\n\s*\n|$)',
+            r'ARSC\s+│.*?\n─+┼─+┼─+┼─+\n(.*?)(?:\n\s*\n|$)',
             content,
             re.DOTALL
         )
@@ -226,11 +236,12 @@ def parse_diffuse_slim_report(file_path: Path) -> Optional[Dict]:
                     continue
                 
                 parts = [p.strip() for p in line.split('│')]
-                if len(parts) < 3:
+                if len(parts) < 4:
                     continue
                 
                 metric = parts[0].strip()
                 if metric in ['configs', 'entries']:
+                    # Column 2 is "new" value (0=metric, 1=old, 2=new, 3=diff)
                     new_value = parse_number_value(parts[2])
                     if new_value is not None:
                         arsc_metrics[metric] = new_value
