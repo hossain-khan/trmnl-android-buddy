@@ -29,6 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Optimized Gradle build performance** - Applied advanced JVM and GC settings from [Now in Android](https://github.com/android/nowinandroid) project
+  - JVM arguments: G1GC, soft reference tuning, increased code cache (256m), 4g max heap
+  - Kotlin daemon: Same GC optimizations with 320m code cache for compiler
+  - Enabled parallel execution (`org.gradle.parallel=true`)
+  - Enabled configuration caching for improved build times
+  - Disabled unused build features (resvalues, shaders) to reduce build overhead
 - **Refactored UI architecture for better maintainability** - Split five monolithic Circuit UI screen files into separate Screen, Presenter, and Content files following the established `BookmarkedRecipesScreen` pattern:
   - `BlogPostsScreen.kt` (953 lines) → `BlogPostsScreen.kt` (55 lines) + `BlogPostsPresenter.kt` (157 lines) + `BlogPostsContent.kt` (757 lines)
   - `AnnouncementsScreen.kt` (1038 lines) → `AnnouncementsScreen.kt` (57 lines) + `AnnouncementsPresenter.kt` (164 lines) + `AnnouncementsContent.kt` (834 lines)
