@@ -163,6 +163,104 @@ class DeviceModelTest {
         assertThat(device49.getWifiStatus()).isEqualTo("Fair")
     }
 
+    @Test
+    fun `getBatteryStatus returns Low for below 20 percent`() {
+        // Given: Devices with battery levels below 20%
+        val device0 = createTestDevice(percentCharged = 0.0)
+        val device10 = createTestDevice(percentCharged = 10.0)
+        val device19 = createTestDevice(percentCharged = 19.9)
+
+        // Then: All return "Low"
+        assertThat(device0.getBatteryStatus()).isEqualTo("Low")
+        assertThat(device10.getBatteryStatus()).isEqualTo("Low")
+        assertThat(device19.getBatteryStatus()).isEqualTo("Low")
+    }
+
+    @Test
+    fun `getWifiStatus returns Weak for below 30 percent`() {
+        // Given: Devices with WiFi strength below 30%
+        val device0 = createTestDevice(wifiStrength = 0.0)
+        val device15 = createTestDevice(wifiStrength = 15.0)
+        val device29 = createTestDevice(wifiStrength = 29.9)
+
+        // Then: All return "Weak"
+        assertThat(device0.getWifiStatus()).isEqualTo("Weak")
+        assertThat(device15.getWifiStatus()).isEqualTo("Weak")
+        assertThat(device29.getWifiStatus()).isEqualTo("Weak")
+    }
+
+    @Test
+    fun `isBatteryLow returns true for battery below 20 percent`() {
+        // Given: Device with 15% battery
+        val device = createTestDevice(percentCharged = 15.0)
+
+        // When: Check if battery is low
+        val isLow = device.isBatteryLow()
+
+        // Then: Battery is low
+        assertThat(isLow).isTrue()
+    }
+
+    @Test
+    fun `isBatteryLow returns false for battery at 20 percent`() {
+        // Given: Device with exactly 20% battery
+        val device = createTestDevice(percentCharged = 20.0)
+
+        // When: Check if battery is low
+        val isLow = device.isBatteryLow()
+
+        // Then: Battery is not low (threshold is < 20%)
+        assertThat(isLow).isFalse()
+    }
+
+    @Test
+    fun `isBatteryLow returns false for battery above 20 percent`() {
+        // Given: Device with 25% battery
+        val device = createTestDevice(percentCharged = 25.0)
+
+        // When: Check if battery is low
+        val isLow = device.isBatteryLow()
+
+        // Then: Battery is not low
+        assertThat(isLow).isFalse()
+    }
+
+    @Test
+    fun `isWifiWeak returns true for WiFi below 40 percent`() {
+        // Given: Device with 30% WiFi strength
+        val device = createTestDevice(wifiStrength = 30.0)
+
+        // When: Check if WiFi is weak
+        val isWeak = device.isWifiWeak()
+
+        // Then: WiFi is weak
+        assertThat(isWeak).isTrue()
+    }
+
+    @Test
+    fun `isWifiWeak returns false for WiFi at 40 percent`() {
+        // Given: Device with exactly 40% WiFi strength
+        val device = createTestDevice(wifiStrength = 40.0)
+
+        // When: Check if WiFi is weak
+        val isWeak = device.isWifiWeak()
+
+        // Then: WiFi is not weak (threshold is < 40%)
+        assertThat(isWeak).isFalse()
+    }
+
+    @Test
+    fun `isWifiWeak returns false for WiFi above 40 percent`() {
+        // Given: Device with 50% WiFi strength
+        val device = createTestDevice(wifiStrength = 50.0)
+
+        // When: Check if WiFi is weak
+        val isWeak = device.isWifiWeak()
+
+        // Then: WiFi is not weak
+        assertThat(isWeak).isFalse()
+    }
+
     /**
      * Helper method to create a test device with customizable properties.
      */

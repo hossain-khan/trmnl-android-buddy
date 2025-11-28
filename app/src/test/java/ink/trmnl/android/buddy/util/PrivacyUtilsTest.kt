@@ -119,4 +119,43 @@ class PrivacyUtilsTest {
 
         assertThat(result).isEqualTo("")
     }
+
+    @Test
+    fun `redactApiKey with standard key shows first 4 and last 4 characters`() {
+        // "user_abc123xyz789" has 17 chars: prefix="user", suffix="z789", middle=9 asterisks
+        val result = PrivacyUtils.redactApiKey("user_abc123xyz789")
+
+        assertThat(result).isEqualTo("user*********z789")
+    }
+
+    @Test
+    fun `redactApiKey with longer key uses asterisks for middle characters`() {
+        // "user_abcdefghijklmnop" has 21 chars: prefix="user", suffix="mnop", middle=13 asterisks
+        val result = PrivacyUtils.redactApiKey("user_abcdefghijklmnop")
+
+        assertThat(result).isEqualTo("user*************mnop")
+    }
+
+    @Test
+    fun `redactApiKey with short key (8 or less) returns fully redacted`() {
+        val result1 = PrivacyUtils.redactApiKey("12345678")
+        val result2 = PrivacyUtils.redactApiKey("abc")
+
+        assertThat(result1).isEqualTo("****")
+        assertThat(result2).isEqualTo("****")
+    }
+
+    @Test
+    fun `redactApiKey with exactly 9 characters shows first 4 and last 4`() {
+        val result = PrivacyUtils.redactApiKey("123456789")
+
+        assertThat(result).isEqualTo("1234****6789")
+    }
+
+    @Test
+    fun `redactApiKey with empty string returns asterisks`() {
+        val result = PrivacyUtils.redactApiKey("")
+
+        assertThat(result).isEqualTo("****")
+    }
 }
