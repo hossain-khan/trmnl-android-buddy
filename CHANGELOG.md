@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Increased test coverage for Device model** - Added missing unit tests for `isBatteryLow()`, `isWifiWeak()`, `getBatteryStatus()` Low status, and `getWifiStatus()` Weak status in `DeviceModelTest`
+- **Test coverage for PrivacyUtils.redactApiKey()** - Added comprehensive tests for API key redaction including standard keys, longer keys, short keys, exact boundary cases, and empty strings
 - **APK size trend report** - Added Python script to generate historical APK size analysis across all releases
   - Downloads Diffuse tool from source and builds it locally
   - Analyzes 22 releases from 1.0.0 to 2.6.0
