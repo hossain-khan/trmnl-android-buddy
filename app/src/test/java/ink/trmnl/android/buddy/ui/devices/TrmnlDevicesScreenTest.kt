@@ -1,4 +1,5 @@
 package ink.trmnl.android.buddy.ui.devices
+
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
@@ -21,14 +22,11 @@ import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
-import ink.trmnl.android.buddy.content.db.AnnouncementDao
-import ink.trmnl.android.buddy.content.db.AnnouncementEntity
-import ink.trmnl.android.buddy.content.db.BlogPostDao
-import ink.trmnl.android.buddy.content.db.BlogPostEntity
+import ink.trmnl.android.buddy.content.db.FakeAnnouncementDao
+import ink.trmnl.android.buddy.content.db.FakeBlogPostDao
 import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.content.repository.ContentFeedRepository
-import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
@@ -37,9 +35,6 @@ import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicedetail.DeviceDetailScreen
 import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
 import ink.trmnl.android.buddy.ui.settings.SettingsScreen
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -395,63 +390,4 @@ private class FakeApiService(
     override suspend fun getRecipe(id: Int): ApiResult<RecipeDetailResponse, ApiError> = throw NotImplementedError()
 
     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = throw NotImplementedError()
-}
-
-private class FakeAnnouncementDao : AnnouncementDao {
-    override fun getAll() = flowOf(emptyList<AnnouncementEntity>())
-
-    override fun getLatest(limit: Int) = flowOf(emptyList<AnnouncementEntity>())
-
-    override fun getUnread() = flowOf(emptyList<AnnouncementEntity>())
-
-    override fun getRead() = flowOf(emptyList<AnnouncementEntity>())
-
-    override suspend fun insertAll(announcements: List<AnnouncementEntity>) {}
-
-    override suspend fun markAsRead(id: String) {}
-
-    override suspend fun markAsUnread(id: String) {}
-
-    override suspend fun markAllAsRead() {}
-
-    override suspend fun deleteOlderThan(threshold: Long) {}
-
-    override fun getUnreadCount() = flowOf(0)
-}
-
-private class FakeBlogPostDao : BlogPostDao {
-    override fun getAll() = flowOf(emptyList<BlogPostEntity>())
-
-    override fun getByCategory(category: String) = flowOf(emptyList<BlogPostEntity>())
-
-    override fun getFavorites() = flowOf(emptyList<BlogPostEntity>())
-
-    override fun getUnread() = flowOf(emptyList<BlogPostEntity>())
-
-    override fun getRecentlyRead() = flowOf(emptyList<BlogPostEntity>())
-
-    override suspend fun insertAll(posts: List<BlogPostEntity>) {}
-
-    override suspend fun markAsRead(id: String) {}
-
-    override suspend fun markAllAsRead(timestamp: java.time.Instant) {}
-
-    override fun getUnreadCount() = flowOf(0)
-
-    override suspend fun updateReadingProgress(
-        id: String,
-        progress: Float,
-        timestamp: java.time.Instant,
-    ) {}
-
-    override suspend fun toggleFavorite(id: String) {}
-
-    override suspend fun updateSummary(
-        id: String,
-        summary: String,
-    ) {}
-
-    override suspend fun deleteOlderThan(threshold: Long) {}
-
-    override fun searchPosts(query: String) = flowOf(emptyList<BlogPostEntity>())
 }
