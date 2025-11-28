@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Removed duplicate test `parse actual recipe_list json file successfully` from `TrmnlRecipesApiTest` that was already covered by `RecipeListJsonParsingTest`
+- Reduced code duplication in tests by consolidating fake DAO implementations:
+  - `TrmnlDevicesScreenTest` now uses shared `FakeAnnouncementDao` and `FakeBlogPostDao` from `ink.trmnl.android.buddy.content.db` package instead of private inline implementations
+
 ### Added
 
 - **APK size trend report** - Added Python script to generate historical APK size analysis across all releases
