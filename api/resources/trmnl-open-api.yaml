@@ -217,6 +217,31 @@ paths:
                   message:
                     type: string
                     example: Register at usetrmnl.com/signup with Device ID 'ABC-123'
+  "/api/categories":
+    get:
+      summary: List all plugin categories
+      tags:
+      - Categories
+      description: Returns a list of approved plugin categories.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                    - life
+                    - marketing
+                    - ecommerce
   "/api/ips":
     get:
       summary: List all TRMNL server IP addresses
@@ -260,16 +285,11 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: string
-        '422':
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                    oneOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
       requestBody:
         content:
           application/json:
@@ -277,8 +297,15 @@ paths:
               type: object
               properties:
                 markup:
-                  type: string
-                  example: Hello, {{ name }}!
+                  oneOf:
+                  - type: string
+                    example: Hello, {{ name }}!
+                  - type: array
+                    items:
+                      type: string
+                    example:
+                    - Hello, {{ name }}!
+                    - Goodbye, {{ name }}!
                 variables:
                   type: object
                   example:
@@ -288,7 +315,7 @@ paths:
               - variables
               additionalProperties: false
         required: true
-        description: The Liquid markup to render and an optional set of variables
+        description: The Liquid markup(s) to render and an optional set of variables
           to use in the rendering process.
   "/api/models":
     get:
@@ -541,10 +568,10 @@ paths:
     parameters:
     - name: id
       in: path
-      description: Plugin setting ID
+      description: Plugin setting ID or UUID
       required: true
       schema:
-        type: integer
+        type: string
     get:
       summary: Get the data of a plugin setting
       tags:
@@ -594,7 +621,7 @@ paths:
               schema:
                 "$ref": "#/components/schemas/Error"
         '200':
-          description: Success
+          description: Success with UUID (no auth required)
           content:
             application/json:
               schema:
@@ -637,9 +664,9 @@ paths:
       - name: plugin_id
         in: query
         required: false
-        description: ID of a plugin
+        description: ID of a plugin or "calendars" to filter calendar plugins
         schema:
-          type: integer
+          type: string
       responses:
         '401':
           description: Unauthorized
@@ -648,7 +675,7 @@ paths:
               schema:
                 "$ref": "#/components/schemas/Error"
         '200':
-          description: Success
+          description: Returns all calendar plugin settings except Google Calendar
           content:
             application/json:
               schema:
@@ -840,6 +867,7 @@ components:
           - trmnl
           - kindle
           - byod
+          - tidbyt
         palette_ids:
           type: array
           items:
