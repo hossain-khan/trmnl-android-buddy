@@ -179,4 +179,50 @@ class TrmnlDeviceRepository(
                 is ApiResult.Failure -> result
             }
         }
+
+    /**
+     * Get all available plugin categories.
+     *
+     * Returns a list of valid category identifiers that can be used for filtering
+     * recipes and improving search exposure. This endpoint does not require authentication.
+     *
+     * Categories include: analytics, art, calendar, comics, crm, custom, discovery,
+     * ecommerce, education, email, entertainment, environment, finance, games, humor,
+     * images, kpi, life, marketing, nature, news, personal, productivity, programming,
+     * sales, sports, and travel.
+     *
+     * @return ApiResult containing list of category strings or error
+     *
+     * Example usage:
+     * ```kotlin
+     * val repository = TrmnlDeviceRepository(apiService, "user_abc123")
+     * when (val result = repository.getCategories()) {
+     *     is ApiResult.Success -> {
+     *         println("Available categories: ${result.value.joinToString(", ")}")
+     *         result.value.forEach { category ->
+     *             println("- $category")
+     *         }
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> {
+     *         println("HTTP Error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> {
+     *         println("Network Error: ${result.error}")
+     *     }
+     *     is ApiResult.Failure.ApiFailure -> {
+     *         println("API Error: ${result.error}")
+     *     }
+     *     is ApiResult.Failure.UnknownFailure -> {
+     *         println("Unknown Error: ${result.error}")
+     *     }
+     * }
+     * ```
+     */
+    suspend fun getCategories(): ApiResult<List<String>, *> =
+        withContext(Dispatchers.IO) {
+            when (val result = apiService.getCategories()) {
+                is ApiResult.Success -> ApiResult.success(result.value.data)
+                is ApiResult.Failure -> result
+            }
+        }
 }

@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.api
 
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
@@ -324,6 +325,68 @@ interface TrmnlApiService {
     suspend fun getRecipe(
         @Path("id") id: Int,
     ): ApiResult<RecipeDetailResponse, ApiError>
+
+    // ========================================
+    // Categories API
+    // ========================================
+
+    /**
+     * Get a list of all valid plugin categories.
+     *
+     * Returns all available categories that can be used to improve search exposure
+     * and filtering for Public or Recipe style plugins. This endpoint does not
+     * require authentication.
+     *
+     * @return ApiResult containing a list of category identifiers (strings) or error
+     *
+     * Example response:
+     * ```json
+     * {
+     *   "data": [
+     *     "analytics",
+     *     "art",
+     *     "calendar",
+     *     "comics",
+     *     "crm",
+     *     "custom",
+     *     "discovery",
+     *     "ecommerce",
+     *     "education",
+     *     "email",
+     *     "entertainment",
+     *     "environment",
+     *     "finance",
+     *     "games",
+     *     "humor",
+     *     "images",
+     *     "kpi",
+     *     "life",
+     *     "marketing",
+     *     "nature",
+     *     "news",
+     *     "personal",
+     *     "productivity",
+     *     "programming",
+     *     "sales",
+     *     "sports",
+     *     "travel"
+     *   ]
+     * }
+     * ```
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.getCategories()) {
+     *     is ApiResult.Success -> println("Found ${result.value.data.size} categories")
+     *     is ApiResult.Failure.HttpFailure -> println("HTTP error: ${result.code}")
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("categories")
+    suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError>
 
     // ========================================
     // Models API

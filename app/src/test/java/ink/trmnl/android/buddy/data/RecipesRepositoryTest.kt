@@ -8,6 +8,7 @@ import assertk.assertions.isSuccess
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
@@ -185,6 +186,8 @@ class RecipesRepositoryTest {
         override suspend fun getDisplayCurrent(deviceApiKey: String): ApiResult<Display, ApiError> = throw NotImplementedError()
 
         override suspend fun userInfo(authorization: String): ApiResult<UserResponse, ApiError> = throw NotImplementedError()
+
+        override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> = throw NotImplementedError()
 
         override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = throw NotImplementedError()
     }
