@@ -1,0 +1,1712 @@
+{
+  "data": [
+    {
+      "id": 49610,
+      "name": "Weather Chum",
+      "published_at": "2025-05-14T05:32:00.000Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/ajjlbek4cabcvhk3s1lxggn8cgon",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/j6ode2o5irmnif4ftcukt0jt34jw?response-content-disposition=inline%3B%20filename%3D%22plugin-d5bba8%22%3B%20filename%2A%3DUTF-8%27%27plugin-d5bba8\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=fa8205d67508f811bf6432a59ef6080d77b2f57faa7214359eb4daee6bc8add4",
+      "author_bio": null,
+      "custom_fields": [
+        {
+          "keyname": "user_location",
+          "field_type": "string",
+          "name": "Weather Location",
+          "placeholder": "New York, NY",
+          "description": "Choose a location",
+          "help_text": "Please be precise. Examples: \u003c/br\u003e Paris, France (City/country) \u003c/br\u003e 10101 (Pass US Zipcode, UK Postcode, Canada Postal code)\u003c/br\u003e 33.7501,84.3885 (Lat/long)\u003c/br\u003e",
+          "required": true
+        },
+        {
+          "keyname": "metric",
+          "name": "Temperature Metric",
+          "description": "Celsius or Fahrenheit?",
+          "field_type": "select",
+          "options": [
+            "Fahrenheit",
+            "Celsius"
+          ],
+          "default": "Fahrenheit"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 1453
+      }
+    },
+    {
+      "id": 18267,
+      "name": "XKCD",
+      "published_at": "2025-02-21T13:38:00.000Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/b7dhdidomkjkl2lm7zft4v6uqvjl?response-content-disposition=inline%3B%20filename%3D%22plugin-2025-04-10T10-47-27Z-4c7977%22%3B%20filename%2A%3DUTF-8%27%27plugin-2025-04-10T10-47-27Z-4c7977\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=538e151ed8db33dc9b08c7f1217ea056a78ffce54fb8768642940107b096b83f",
+      "author_bio": null,
+      "custom_fields": [
+        {
+          "keyname": "orientation",
+          "field_type": "select",
+          "options": [
+            "90deg",
+            "270deg"
+          ],
+          "name": "orientation for half horizontal view",
+          "description": "Rotates the image either 90 degrees or 270 degrees clockwise"
+        }
+      ],
+      "stats": {
+        "installs": 5,
+        "forks": 1170
+      }
+    },
+    {
+      "id": 11023,
+      "name": "Simple Calendar",
+      "published_at": "2025-01-08T08:35:46.709Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/1xsrzlkit2xlu9uyqbp8pevppwpl",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/trlz0ukfznqpe9fwg4lu1tlp9kb6?response-content-disposition=inline%3B%20filename%3D%22plugin-2025-04-10T12-38-23Z-49a12b%22%3B%20filename%2A%3DUTF-8%27%27plugin-2025-04-10T12-38-23Z-49a12b\u0026response-content-type=image%2Fbmp\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=af0072e2cd090e2b000f2f8e6521a451df02b3a32852e92b5d7a13dc89785137",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "category": "calendar,custom",
+        "field_type": "author_bio",
+        "description": "Your customizable desktop companion. Supports multiple languages, worldwide holidays, and secondary calendars (Chinese, Hebrew, Hijri, and more).",
+        "email_address": "le.zip.1385@gmail.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "category": "calendar,custom",
+          "field_type": "author_bio",
+          "description": "Your customizable desktop companion. Supports multiple languages, worldwide holidays, and secondary calendars (Chinese, Hebrew, Hijri, and more).",
+          "email_address": "le.zip.1385@gmail.com"
+        },
+        {
+          "keyname": "locale",
+          "field_type": "select",
+          "name": "Language",
+          "description": "Which language should be used for month names?",
+          "options": [
+            "default - Follow TRMNL UI",
+            "da - Danish",
+            "de-AT - German (Austria)",
+            "de - German",
+            "en - English",
+            "es-ES - Spanish (Spain)",
+            "fr - French",
+            "he - Hebrew",
+            "hu - Hungarian",
+            "id - Indonesian",
+            "is - Icelandic",
+            "it - Italian",
+            "ja - Japanese",
+            "ko - Korean",
+            "nl - Dutch",
+            "pl - Polish",
+            "pt-BR - Portuguese (Brazil)",
+            "ru - Russian",
+            "sk - Slovakia",
+            "sv - Swedish",
+            "uk - Ukrainian",
+            "zh-CN - Simplified Chinese (China)",
+            "zh-HK - Traditional Chinese (Hong Kong)"
+          ],
+          "default": "default_-_follow_trmnl_ui"
+        },
+        {
+          "keyname": "week_starts_from",
+          "field_type": "select",
+          "name": "Week starts on",
+          "description": "Sunday or Monday? It's up to you.",
+          "options": [
+            "0 - Sunday",
+            "1 - Monday",
+            "2 - Tuesday",
+            "3 - Wednesday",
+            "4 - Thursday",
+            "5 - Friday",
+            "6 - Saturday"
+          ],
+          "default": "0_-_sunday"
+        },
+        {
+          "keyname": "holiday_wday",
+          "field_type": "select",
+          "name": "Weekly holiday day",
+          "description": "Which day usually gets the red highlight?",
+          "options": [
+            "Off",
+            "0 - Sunday",
+            "1 - Monday",
+            "2 - Tuesday",
+            "3 - Wednesday",
+            "4 - Thursday",
+            "5 - Friday",
+            "6 - Saturday"
+          ],
+          "default": "0_-_sunday"
+        },
+        {
+          "keyname": "holiday_country",
+          "field_type": "select",
+          "name": "National/Regional public holiday",
+          "description": "Select a region to show upcoming holidays.",
+          "options": [
+            "Off",
+            "AD",
+            "AL",
+            "AM",
+            "AR",
+            "AT",
+            "AU-WA",
+            "AU-ACT",
+            "AU-SA",
+            "AU-TAS",
+            "AU-VIC",
+            "AU-NSW",
+            "AU-NT",
+            "AU-QLD",
+            "AU",
+            "AX",
+            "BA-SRP",
+            "BA-BIH",
+            "BA",
+            "BB",
+            "BE",
+            "BG",
+            "BJ",
+            "BO",
+            "BR-SP",
+            "BR",
+            "BS",
+            "BW",
+            "BY",
+            "BZ",
+            "CA-MB",
+            "CA-PE",
+            "CA-NS",
+            "CA-AB",
+            "CA-BC",
+            "CA-NB",
+            "CA-ON",
+            "CA-SK",
+            "CA-NL",
+            "CA-QC",
+            "CA-NT",
+            "CA-NU",
+            "CA-YT",
+            "CA",
+            "CD",
+            "CG",
+            "CH-BE",
+            "CH-FR",
+            "CH-SH",
+            "CH-AG",
+            "CH-TG",
+            "CH-VD",
+            "CH-TI",
+            "CH-UR",
+            "CH-SZ",
+            "CH-NE",
+            "CH-VS",
+            "CH-LU",
+            "CH-NW",
+            "CH-GL",
+            "CH-ZH",
+            "CH-OW",
+            "CH-ZG",
+            "CH-SO",
+            "CH-BS",
+            "CH-BL",
+            "CH-AR",
+            "CH-AI",
+            "CH-SG",
+            "CH-GR",
+            "CH-GE",
+            "CH-JU",
+            "CH",
+            "CL-AP",
+            "CL",
+            "CN",
+            "CO",
+            "CR",
+            "CU",
+            "CY",
+            "CZ",
+            "DE-BW",
+            "DE-BY",
+            "DE-ST",
+            "DE-BE",
+            "DE-MV",
+            "DE-BB",
+            "DE-HE",
+            "DE-NW",
+            "DE-RP",
+            "DE-SL",
+            "DE-TH",
+            "DE-SN",
+            "DE-HB",
+            "DE-HH",
+            "DE-NI",
+            "DE-SH",
+            "DE",
+            "DK",
+            "DO",
+            "EC",
+            "EE",
+            "EG",
+            "ES-AN",
+            "ES-IB",
+            "ES-AR",
+            "ES-CL",
+            "ES-CM",
+            "ES-CN",
+            "ES-EX",
+            "ES-GA",
+            "ES-RI",
+            "ES-MD",
+            "ES-MC",
+            "ES-NC",
+            "ES-AS",
+            "ES-PV",
+            "ES-CB",
+            "ES-CT",
+            "ES-VC",
+            "ES",
+            "FI",
+            "FO",
+            "FR",
+            "GA",
+            "GB-ENG",
+            "GB-NIR",
+            "GB-SCT",
+            "GB-WLS",
+            "GB",
+            "GD",
+            "GE",
+            "GG",
+            "GI",
+            "GL",
+            "GM",
+            "GR",
+            "GT",
+            "GY",
+            "HK",
+            "HN",
+            "HR",
+            "HT",
+            "HU",
+            "ID",
+            "IE",
+            "IM",
+            "IS",
+            "IT-32",
+            "IT",
+            "JE",
+            "JM",
+            "JP",
+            "KE",
+            "KR",
+            "KZ",
+            "LI",
+            "LS",
+            "LT",
+            "LU",
+            "LV",
+            "MA",
+            "MC",
+            "MD",
+            "ME",
+            "MG",
+            "MK",
+            "MN",
+            "MS",
+            "MT",
+            "MX",
+            "MZ",
+            "NA",
+            "NE",
+            "NG",
+            "NI",
+            "NL",
+            "NO",
+            "NZ-WGN",
+            "NZ-MWT",
+            "NZ-AUK",
+            "NZ-NTL",
+            "NZ-WKO",
+            "NZ-GIS",
+            "NZ-BOP",
+            "NZ-NSN",
+            "NZ-TKI",
+            "NZ-OTA",
+            "NZ-STL",
+            "NZ-CAN",
+            "NZ-HKB",
+            "NZ-MBH",
+            "NZ-CIT",
+            "NZ-WTC",
+            "NZ",
+            "PA",
+            "PE",
+            "PG",
+            "PH",
+            "PL",
+            "PR",
+            "PT-20",
+            "PT-30",
+            "PT",
+            "PY",
+            "RO",
+            "RS",
+            "RU",
+            "SE",
+            "SG",
+            "SI",
+            "SJ",
+            "SK",
+            "SM",
+            "SR",
+            "SV",
+            "TN",
+            "TR",
+            "UA",
+            "US-CA",
+            "US-CT",
+            "US-IL",
+            "US-IN",
+            "US-KY",
+            "US-MI",
+            "US-NY",
+            "US-MO",
+            "US-OH",
+            "US-DE",
+            "US-HI",
+            "US-LA",
+            "US-NC",
+            "US-ND",
+            "US-NJ",
+            "US-TN",
+            "US-TX",
+            "US-AL",
+            "US-AZ",
+            "US-CO",
+            "US-GA",
+            "US-ID",
+            "US-IA",
+            "US-KS",
+            "US-ME",
+            "US-MD",
+            "US-MA",
+            "US-MS",
+            "US-MT",
+            "US-NE",
+            "US-NH",
+            "US-NM",
+            "US-OK",
+            "US-PA",
+            "US-RI",
+            "US-SC",
+            "US-UT",
+            "US-VA",
+            "US-WV",
+            "US-AK",
+            "US-MN",
+            "US-OR",
+            "US-SD",
+            "US-VT",
+            "US-WI",
+            "US",
+            "UY",
+            "VA",
+            "VE",
+            "VN",
+            "ZA",
+            "ZW"
+          ],
+          "default": "off"
+        },
+        {
+          "keyname": "font_size",
+          "field_type": "select",
+          "name": "Font size",
+          "description": "Need bigger text for easier reading?",
+          "options": [
+            "Regular",
+            "Large"
+          ],
+          "default": "regular",
+          "conditional_validation": [
+            {
+              "when": "large",
+              "hidden": [
+                "show_wday_labels",
+                "alternate_calendar"
+              ]
+            }
+          ]
+        },
+        {
+          "keyname": "show_wday_labels",
+          "field_type": "select",
+          "name": "Weekday labels",
+          "description": "Want to see M, T, W at the top?",
+          "options": [
+            "Automatic",
+            "Shown",
+            "Hidden"
+          ],
+          "default": "automatic"
+        },
+        {
+          "keyname": "alternate_calendar",
+          "field_type": "select",
+          "name": "Alternate calendar",
+          "description": "Display a secondary calendar system.",
+          "options": [
+            "Off",
+            "Bengali",
+            "Chinese",
+            "Hebrew",
+            "Hijri",
+            "Indian",
+            "Japanese",
+            "Julian",
+            "Korean"
+          ],
+          "default": "off"
+        },
+        {
+          "keyname": "hide_title_bar",
+          "field_type": "select",
+          "name": "Hide title bar",
+          "description": "Remove the title for a cleaner look.",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "default": "no"
+        }
+      ],
+      "stats": {
+        "installs": 69,
+        "forks": 963
+      }
+    },
+    {
+      "id": 11914,
+      "name": "Formula 1 Races",
+      "published_at": "2025-01-15T15:13:00.000Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/4qpknksrls6jwa1mk0xeclhw1zwc",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/b4hvamaqwvx5vzujwzsdpffrjtdj?response-content-disposition=inline%3B%20filename%3D%22plugin-f86501%22%3B%20filename%2A%3DUTF-8%27%27plugin-f86501\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=1daebaaa259cb254d52eebf568ca77ffdba755a5d8b81f1eb8992540b657c76f",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Gear up for race day! This plugin highlights the upcoming Grand Prix with circuit details, location, date, and a slick track image.\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my ko-fi link below or e-mail me! 🙂",
+        "category": "sports,life",
+        "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+        "github_url": "http://github.com/danielsitnik/",
+        "email_address": "danielsitnik@outlook.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Gear up for race day! This plugin highlights the upcoming Grand Prix with circuit details, location, date, and a slick track image.\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my ko-fi link below or e-mail me! 🙂",
+          "category": "sports,life",
+          "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+          "github_url": "http://github.com/danielsitnik/",
+          "email_address": "danielsitnik@outlook.com"
+        }
+      ],
+      "stats": {
+        "installs": 897,
+        "forks": 29
+      }
+    },
+    {
+      "id": 27184,
+      "name": "Calvin and Hobbes Comics",
+      "published_at": "2025-03-13T16:55:00.000Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/78snmipuuv4com6b5nmfvasop7a8",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/7t29dfh6kivp6c42vqetz8zxlxzi?response-content-disposition=inline%3B%20filename%3D%22plugin-c07818%22%3B%20filename%2A%3DUTF-8%27%27plugin-c07818\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=6c0a91657e57789a53cb09beb89e33b1943259050b7dafcf066c0f644408c934",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Calvin And Hobbes comic recipe was created by Kyle. @kylec32 on TRMNL Discord.",
+        "email_address": "trmnlplugins@scaledcode.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Calvin And Hobbes comic recipe was created by Kyle. @kylec32 on TRMNL Discord.",
+          "email_address": "trmnlplugins@scaledcode.com"
+        }
+      ],
+      "stats": {
+        "installs": 827,
+        "forks": 39
+      }
+    },
+    {
+      "id": 619,
+      "name": "Dad Jokes",
+      "published_at": "2024-09-19T12:25:09.253Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/5ej8pgjirdxtspupvr9q4g8qw9md?response-content-disposition=inline%3B%20filename%3D%22plugin-c0795b%22%3B%20filename%2A%3DUTF-8%27%27plugin-c0795b\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=bc5b2b1a962d3e36c5461af9bce620441103fcc918c9f1d3467463d6c79a1c46",
+      "author_bio": null,
+      "custom_fields": [],
+      "stats": {
+        "installs": 813,
+        "forks": 26
+      }
+    },
+    {
+      "id": 9917,
+      "name": "This Day in History",
+      "published_at": "2024-12-30T13:07:43.314Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/zsnpwm616q9rvngi0wrjvg0clk5v?response-content-disposition=inline%3B%20filename%3D%22plugin-638d6f%22%3B%20filename%2A%3DUTF-8%27%27plugin-638d6f\u0026response-content-type=image%2Fbmp\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=6392b54dc9fdc192394f7cf508bb67188221f20a9f990aad8af91bf879b40489",
+      "author_bio": null,
+      "custom_fields": [],
+      "stats": {
+        "installs": 799,
+        "forks": 35
+      }
+    },
+    {
+      "id": 28496,
+      "name": "Peanuts Comics",
+      "published_at": "2025-03-12T23:35:31.247Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/rq83bcflbrb1vgte2gv0686a6kme",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/9enivgqcv0h2dmso635584u7v9hk?response-content-disposition=inline%3B%20filename%3D%22plugin-2f40c2%22%3B%20filename%2A%3DUTF-8%27%27plugin-2f40c2\u0026response-content-type=image%2Fbmp\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=07bb85581f5ec447f2f38bfd2ba6475acbd84958dcf6927eac61ca2f6e8d8022",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Peanuts comic recipe was created by Kyle. @kylec32 on TRMNL Discord.",
+        "email_address": "trmnlplugins@scaledcode.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Peanuts comic recipe was created by Kyle. @kylec32 on TRMNL Discord.",
+          "email_address": "trmnlplugins@scaledcode.com"
+        }
+      ],
+      "stats": {
+        "installs": 473,
+        "forks": 202
+      }
+    },
+    {
+      "id": 16765,
+      "name": "Art of the Day",
+      "published_at": "2025-02-10T14:58:05.198Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/teas0l757f6v6rb0qu5lu53hrl0x",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/yt86637dup06jx62qw4t533j7iew?response-content-disposition=inline%3B%20filename%3D%22plugin-549d7c%22%3B%20filename%2A%3DUTF-8%27%27plugin-549d7c\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=b65fbea98707f70aeece826fd030bf98d7559d61cc302d1cb0690e265aeb2d38",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "category": "images,art",
+        "description": "A handpicked artwork per day of the year. Art of the Day is created by Jasper using public domain artworks. @jasper on TRMNL Discord.",
+        "description-de": "Ein handverlesenes Kunstwerk für jeden Tag des Jahres. Art of the Day wurde von Jasper unter Verwendung gemeinfreier Kunstwerke erstellt. @jasper auf dem TRMNL-Discord. Dank an David Ortmann für den deutschen Inhalt",
+        "description-de-AT": "Ein handverlesenes Kunstwerk für jeden Tag des Jahres. Art of the Day wurde von Jasper unter Verwendung gemeinfreier Kunstwerke erstellt. @jasper auf dem TRMNL-Discord. Dank an David Ortmann für den deutschen Inhalt",
+        "email_address": "info@jaspervandermeij.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "category": "images,art",
+          "description": "A handpicked artwork per day of the year. Art of the Day is created by Jasper using public domain artworks. @jasper on TRMNL Discord.",
+          "description-de": "Ein handverlesenes Kunstwerk für jeden Tag des Jahres. Art of the Day wurde von Jasper unter Verwendung gemeinfreier Kunstwerke erstellt. @jasper auf dem TRMNL-Discord. Dank an David Ortmann für den deutschen Inhalt",
+          "description-de-AT": "Ein handverlesenes Kunstwerk für jeden Tag des Jahres. Art of the Day wurde von Jasper unter Verwendung gemeinfreier Kunstwerke erstellt. @jasper auf dem TRMNL-Discord. Dank an David Ortmann für den deutschen Inhalt",
+          "email_address": "info@jaspervandermeij.com"
+        },
+        {
+          "keyname": "language",
+          "field_type": "select",
+          "options": [
+            "English",
+            "German"
+          ],
+          "default": "english",
+          "name": "Language",
+          "description": "Choose a supported language for this recipe"
+        },
+        {
+          "keyname": "fill_screen",
+          "field_type": "select",
+          "options": [
+            {
+              "Show full artwork": "contain"
+            },
+            {
+              "Artwork fills screen": "cover"
+            }
+          ],
+          "default": "contain",
+          "name": "Fill screen?",
+          "description": "Choose how the artwork is shown."
+        }
+      ],
+      "stats": {
+        "installs": 368,
+        "forks": 286
+      }
+    },
+    {
+      "id": 35788,
+      "name": "Hourly Weather Forecast",
+      "published_at": "2025-04-11T00:40:00.000Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/6ip2563fc5cplob41fdueb7q8g7j?response-content-disposition=inline%3B%20filename%3D%22plugin-2025-04-10T15-26-14Z-924c11%22%3B%20filename%2A%3DUTF-8%27%27plugin-2025-04-10T15-26-14Z-924c11\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=bd11b31306a210d4833c5cf820fb14735ef948a2d9d4d266328108778220e670",
+      "author_bio": null,
+      "custom_fields": [
+        {
+          "keyname": "Latitude",
+          "field_type": "string",
+          "name": "Latitude",
+          "description": "Location in Latitude, find yours \u003ca href=\"https://www.latlong.net/\" class=\"underline\" target=\"_blank\"\u003ehere\u003c/a\u003e."
+        },
+        {
+          "keyname": "Longitude",
+          "field_type": "string",
+          "name": "Longitude",
+          "description": "Location in Longitude, find yours \u003ca href=\"https://www.latlong.net/\" class=\"underline\" target=\"_blank\"\u003ehere\u003c/a\u003e."
+        },
+        {
+          "keyname": "Units",
+          "field_type": "select",
+          "options": [
+            "Metric",
+            "Imperial"
+          ],
+          "default": "Metric",
+          "name": "Units"
+        }
+      ],
+      "stats": {
+        "installs": 2,
+        "forks": 628
+      }
+    },
+    {
+      "id": 79766,
+      "name": "BBC World News",
+      "published_at": "2025-05-29T00:53:00.000Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/od19w0onfwhboef2q8snrl62kbqg?response-content-disposition=inline%3B%20filename%3D%22plugin-ea5394%22%3B%20filename%2A%3DUTF-8%27%27plugin-ea5394\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=069b133a0ac855b1a146fb1757d90e477a98ee4a61b79f2b6c6499fa7e6a6411",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "BBC World News RSS Feed",
+        "email_address": "mark.nick.turner@icloud.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "BBC World News RSS Feed",
+          "email_address": "mark.nick.turner@icloud.com"
+        }
+      ],
+      "stats": {
+        "installs": 586,
+        "forks": 26
+      }
+    },
+    {
+      "id": 152705,
+      "name": "Paperboy - Choose from hundreds of newspaper frontpages",
+      "published_at": "2025-09-12T19:44:00.000Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/qwzb2zykooi6vipsjdq2f10xb0ug",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/kbjv3ykuctpkimkk710lecsfjcs7?response-content-disposition=inline%3B%20filename%3D%22plugin-ed12d3%22%3B%20filename%2A%3DUTF-8%27%27plugin-ed12d3\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=dc4e58c2ab0b15629dbfc3f82ed71dd86915621d8454a8d8462ed748a8a3f827",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "category": "news,images",
+        "description": "Paperboy delivering you hundreds of fresh daily newspaper frontpages. Frontpages by Riley Walz (https://walzr.com). Recipe created by Jasper. Jasper on Discord.",
+        "email_address": "info@jaspervandermeij.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "category": "news,images",
+          "description": "Paperboy delivering you hundreds of fresh daily newspaper frontpages. Frontpages by Riley Walz (https://walzr.com). Recipe created by Jasper. Jasper on Discord.",
+          "email_address": "info@jaspervandermeij.com"
+        },
+        {
+          "keyname": "newspaper",
+          "field_type": "select",
+          "options": [
+            {
+              "Random - Paperboy will throw a random newspaper on your TRMNL": "random"
+            },
+            {
+              "Random top 3 - The New York Times,The Wall Street Journal or The Guardian": "randomtop3"
+            },
+            {
+              "Albany Times Union": "albany-times-union"
+            },
+            {
+              "Albuquerque Journal": "albuquerque-journal"
+            },
+            {
+              "Antelope Valley Press": "antelope-valley-press"
+            },
+            {
+              "Arizona Republic": "azrepublic"
+            },
+            {
+              "Arkansas Democrat-Gazette": "arkansas-democrat-gazette"
+            },
+            {
+              "Austin American-Statesman": "aas"
+            },
+            {
+              "Belleville News-Democrat": "belleville-news-democrat"
+            },
+            {
+              "Big Spring Herald": "big-spring-herald"
+            },
+            {
+              "Big Spring Herald Weekend": "big-spring-herald-weekend"
+            },
+            {
+              "Calhoun Times": "calhoun-times"
+            },
+            {
+              "Centre Daily Times": "centre-daily-times"
+            },
+            {
+              "Chattanooga Times Free Press": "chattanooga-times-free-press"
+            },
+            {
+              "China Daily": "chinadaily"
+            },
+            {
+              "China Daily Global Weekly": "china-daily-global-weekly"
+            },
+            {
+              "Connecticut Post": "connecticut-post"
+            },
+            {
+              "Custer County Chief": "custer-county-chief"
+            },
+            {
+              "Dayton Daily News": "dayton-daily-news"
+            },
+            {
+              "Detroit Free Press": "detroit-free-press"
+            },
+            {
+              "Deutsche Welle": "welle"
+            },
+            {
+              "El Dorado News-Times": "el-dorado-news-times"
+            },
+            {
+              "Financial Post": "financialpost"
+            },
+            {
+              "Financial Times": "financialtimes"
+            },
+            {
+              "Greenwich Time": "greenwich-time"
+            },
+            {
+              "Guymon Daily Herald": "guymon-daily-herald"
+            },
+            {
+              "Haiti Liberte": "haiti-liberte"
+            },
+            {
+              "Hamilton Journal News": "hamilton-journal-news"
+            },
+            {
+              "Houston Chronicle": "houston-chronicle"
+            },
+            {
+              "Imperial Valley Press": "imperial-valley-press"
+            },
+            {
+              "Khaleej Times": "khaleejtimes"
+            },
+            {
+              "Las Vegas Review-Journal": "las-vegas-review-journal"
+            },
+            {
+              "Ledger-Enquirer": "ledger-enquirer"
+            },
+            {
+              "Lexington Herald-Leader": "lexington-herald-leader"
+            },
+            {
+              "Lodi News-Sentinel": "lodi-news-sentinel"
+            },
+            {
+              "Los Angeles Times": "latimes"
+            },
+            {
+              "Malvern Daily Record": "malvern-daily-record"
+            },
+            {
+              "Marysville Appeal-Democrat": "marysville-appeal-democrat"
+            },
+            {
+              "Merced Sun-Star": "merced-sun-star"
+            },
+            {
+              "Merced Sun-Star": "merced-sun-star-weekend"
+            },
+            {
+              "Miami Herald": "miamiherald"
+            },
+            {
+              "Milwaukee Journal Sentinel": "milwaukee-journal-sentinel"
+            },
+            {
+              "Montreal Gazette": "montrealgazette"
+            },
+            {
+              "New Haven Register": "new-haven-register"
+            },
+            {
+              "New York Post": "nyp"
+            },
+            {
+              "Northwest Arkansas Democrat-Gazette": "northwest-arkansas-democrat-gazette"
+            },
+            {
+              "Pasatiempo": "pasatiempo"
+            },
+            {
+              "Pittsburgh Post-Gazette": "pittsburgh-post-gazette"
+            },
+            {
+              "Porterville Recorder": "porterville-recorder"
+            },
+            {
+              "Rappahannock News": "rappahannock-news"
+            },
+            {
+              "San Antonio Express-News": "san-antonio-express-news"
+            },
+            {
+              "San Francisco Chronicle": "sfchronicle"
+            },
+            {
+              "Santa Fe New Mexican": "santa-fe-new-mexican"
+            },
+            {
+              "Shelby Daily Globe": "shelby-daily-globe"
+            },
+            {
+              "South China Morning Post": "scmp"
+            },
+            {
+              "Springfield News-Sun": "springfield-news-sun"
+            },
+            {
+              "Stamford Advocate": "stamford-advocate"
+            },
+            {
+              "Star-Telegram": "star-telegram"
+            },
+            {
+              "Starkville Daily News": "starkville-daily-news"
+            },
+            {
+              "Sweetwater Reporter": "sweetwater-reporter"
+            },
+            {
+              "Tehachapi News": "tehachapi-news"
+            },
+            {
+              "Texarkana Gazette": "texarkana-gazette"
+            },
+            {
+              "The Atlanta Journal-Constitution": "atlantajournalconstitution"
+            },
+            {
+              "The Bakersfield Californian": "the-bakersfield-californian"
+            },
+            {
+              "The Beaufort Gazette": "the-beaufort-gazette"
+            },
+            {
+              "The Bellingham Herald": "the-bellingham-herald"
+            },
+            {
+              "The Boston Globe": "bostonglobe"
+            },
+            {
+              "The Bradenton Herald": "the-bradenton-herald"
+            },
+            {
+              "The Catoosa County News": "the-catoosa-county-news"
+            },
+            {
+              "The Charlotte Observer": "charlotte-observer"
+            },
+            {
+              "The Cincinnati Enquirer": "the-cincinnati-enquirer"
+            },
+            {
+              "The Columbus Dispatch": "the-columbus-dispatch"
+            },
+            {
+              "The Commercial Appeal": "the-commercial-appeal"
+            },
+            {
+              "The Daily Press": "the-daily-press"
+            },
+            {
+              "The Dallas Morning News": "dallasmorningnews"
+            },
+            {
+              "The Day": "the-day"
+            },
+            {
+              "The Evening Leader": "the-evening-leader"
+            },
+            {
+              "The Fresno Bee": "the-fresno-bee"
+            },
+            {
+              "The Guardian": "guardian"
+            },
+            {
+              "The Herald": "the-herald-rock-hill"
+            },
+            {
+              "The Herald Sun": "the-herald-sun"
+            },
+            {
+              "The Idaho Statesman": "the-idaho-statesman"
+            },
+            {
+              "The Independent": "independent"
+            },
+            {
+              "The Indianapolis Star": "the-indianapolis-star"
+            },
+            {
+              "The Island Packet": "the-island-packet"
+            },
+            {
+              "The Jerusalem Post": "jerusalempost"
+            },
+            {
+              "The Kansas City Star": "the-kansas-city-star"
+            },
+            {
+              "The Maui News": "the-maui-news"
+            },
+            {
+              "The Middletown Press": "the-middletown-press-middletown-ct"
+            },
+            {
+              "The Modesto Bee": "the-modesto-bee"
+            },
+            {
+              "The New York Times": "nyt"
+            },
+            {
+              "The News \u0026 Observer": "the-news-observer"
+            },
+            {
+              "The News Tribune": "the-news-tribune"
+            },
+            {
+              "The News-Times": "the-news-times"
+            },
+            {
+              "The Norwalk Hour": "the-norwalk-hour"
+            },
+            {
+              "The Oklahoman": "the-oklahoman"
+            },
+            {
+              "The Palm Beach Post": "the-palm-beach-post"
+            },
+            {
+              "The Philadelphia Inquirer": "philadelphiainquirer"
+            },
+            {
+              "The Philippine Star": "phstar"
+            },
+            {
+              "The Pilot News": "the-pilot-news"
+            },
+            {
+              "The Post": "postnz"
+            },
+            {
+              "The Punxsutawney Spirit": "the-punxsutawney-spirit"
+            },
+            {
+              "The Sacramento Bee": "the-sacramento-bee"
+            },
+            {
+              "The Saline Courier": "the-saline-couriereEf37"
+            },
+            {
+              "The Saline Courier Weekend": "benton-courier-weekend"
+            },
+            {
+              "The Sentinel-Record": "the-sentinel-record"
+            },
+            {
+              "The Signal": "the-signal"
+            },
+            {
+              "The Spokesman-Review": "the-spokesman-review-spokane"
+            },
+            {
+              "The Standard Journal": "the-standard-journal"
+            },
+            {
+              "The State": "the-state"
+            },
+            {
+              "The Sun Herald": "the-sun-herald"
+            },
+            {
+              "The Sun News": "the-sun-news"
+            },
+            {
+              "The Taos News": "the-taos-news"
+            },
+            {
+              "The Telegraph": "the-telegraph-macon"
+            },
+            {
+              "The Tennessean": "the-tennessean"
+            },
+            {
+              "The Tribune": "the-tribune-slo"
+            },
+            {
+              "The Union Democrat": "the-union-democrat"
+            },
+            {
+              "The Wall Street Journal": "wsj"
+            },
+            {
+              "The Washington Post": "wapo"
+            },
+            {
+              "The Week": "the-week-us"
+            },
+            {
+              "The Wichita Eagle": "the-wichita-eagle"
+            },
+            {
+              "Toronto Star": "torontostar"
+            },
+            {
+              "Tri-City Herald": "tri-city-herald"
+            },
+            {
+              "USA Today": "usatoday"
+            },
+            {
+              "Valley City Times-Record": "valley-city-times-record"
+            },
+            {
+              "Vancouver Sun": "vancouversun"
+            },
+            {
+              "Wapakoneta Daily News": "wapakoneta-daily-news"
+            },
+            {
+              "Yuma Sun": "yuma-sun"
+            }
+          ],
+          "default": "nyt",
+          "name": "Newspaper",
+          "description": "Choose your favorite newspaper"
+        },
+        {
+          "keyname": "orientation",
+          "field_type": "select",
+          "options": [
+            {
+              "Landscape": "landscape"
+            },
+            {
+              "Portrait": "portrait"
+            }
+          ],
+          "default": "landscape",
+          "name": "Orientation",
+          "description": "Choose your orientation"
+        },
+        {
+          "keyname": "titlebar",
+          "field_type": "select",
+          "options": [
+            {
+              "Hide title bar": "hidden"
+            },
+            {
+              "Show title bar": "visible"
+            }
+          ],
+          "default": "hidden",
+          "name": "Show title bar?",
+          "description": "Hide the title bar to see more of the frontpage"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 589
+      }
+    },
+    {
+      "id": 28722,
+      "name": "Useless Facts",
+      "published_at": "2025-03-25T00:27:00.000Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/9lk61j1vgx1lbe7mog8s6ma019ys",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/mm6305i5fa8qyp4cvr2apdpz70yq?response-content-disposition=inline%3B%20filename%3D%22plugin-5d81cd%22%3B%20filename%2A%3DUTF-8%27%27plugin-5d81cd\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=9c27298e47412a77353f75b3d1e06d7dd10e4e6f5bcd84c9e041efb79b7b4966",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "category": "education,life",
+        "description": "Random useless fact recipe, using the Useless facts api. Created by Jasper, @jasper on TRMNL Discord.",
+        "email_address": "info@jaspervandermeij.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "category": "education,life",
+          "description": "Random useless fact recipe, using the Useless facts api. Created by Jasper, @jasper on TRMNL Discord.",
+          "email_address": "info@jaspervandermeij.com"
+        }
+      ],
+      "stats": {
+        "installs": 547,
+        "forks": 29
+      }
+    },
+    {
+      "id": 33259,
+      "name": "Word of the Day (Eng)",
+      "published_at": "2025-04-03T17:24:00.000Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/k14uda3jp4ak6kima1htn4tnjlql?response-content-disposition=inline%3B%20filename%3D%22plugin-5cc915%22%3B%20filename%2A%3DUTF-8%27%27plugin-5cc915\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=b817e694d32d14d05d68d3d5a9f465ebae7d24abe42fee86c55f3ee968a1077a",
+      "author_bio": null,
+      "custom_fields": [],
+      "stats": {
+        "installs": 531,
+        "forks": 23
+      }
+    },
+    {
+      "id": 150460,
+      "name": "Daily Weather",
+      "published_at": "2025-09-11T22:23:00.000Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/fzqh409k525gnrak25v431vljugp",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/kt0qfx6tljlyqqkx3y6s3v4t3rl5?response-content-disposition=inline%3B%20filename%3D%22plugin-f3ea0f%22%3B%20filename%2A%3DUTF-8%27%27plugin-f3ea0f\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=6f811774f135a11f899bb85afb258b4c412ef36cacbd2d9030d97272475cf8f0",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Get a clear snapshot of today’s weather plus a 5-day forecast, including temperatures, uv indexes and rain chances.\u003cbr/\u003e\u003cbr/\u003eThis plugin was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my \u003ca href=\"https://ko-fi.com/danielsitnik/shop\" target=\"_blank\"\u003eko-fi page\u003c/a\u003e or e-mail me! 😀",
+        "category": "life,personal",
+        "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+        "github_url": "http://github.com/danielsitnik/",
+        "email_address": "danielsitnik@outlook.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Get a clear snapshot of today’s weather plus a 5-day forecast, including temperatures, uv indexes and rain chances.\u003cbr/\u003e\u003cbr/\u003eThis plugin was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my \u003ca href=\"https://ko-fi.com/danielsitnik/shop\" target=\"_blank\"\u003eko-fi page\u003c/a\u003e or e-mail me! 😀",
+          "category": "life,personal",
+          "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+          "github_url": "http://github.com/danielsitnik/",
+          "email_address": "danielsitnik@outlook.com"
+        },
+        {
+          "keyname": "latitude",
+          "field_type": "string",
+          "name": "Latitude",
+          "description": "The latitude of your location",
+          "placeholder": "Latitude",
+          "help_text": "Go to \u003ca href=\"https://www.latlong.net\" target=\"_blank\"\u003ehttps://www.latlong.net\u003c/a\u003e, search for the desired place or navigate using the map, then copy the latitude."
+        },
+        {
+          "keyname": "longitude",
+          "field_type": "string",
+          "name": "Longitude",
+          "description": "The longitude of your location",
+          "placeholder": "Longitude",
+          "help_text": "Go to \u003ca href=\"https://www.latlong.net\" target=\"_blank\"\u003ehttps://www.latlong.net\u003c/a\u003e, search for the desired place or navigate using the map, then copy the longitude."
+        },
+        {
+          "keyname": "temp_unit",
+          "field_type": "select",
+          "name": "Temperature Unit",
+          "description": "Select the desired temperature unit",
+          "default": "fahrenheit",
+          "options": [
+            {
+              "Celsius": "celsius"
+            },
+            {
+              "Fahrenheit": "fahrenheit"
+            }
+          ]
+        },
+        {
+          "keyname": "location_name",
+          "field_type": "string",
+          "optional": true,
+          "name": "Location Name",
+          "placeholder": "Location name",
+          "description": "Give a name to help identify this location (eg: home, office, city name, etc.)",
+          "help_text": "This name will be displayed at the right side of the plugin title bar."
+        }
+      ],
+      "stats": {
+        "installs": 2,
+        "forks": 472
+      }
+    },
+    {
+      "id": 17237,
+      "name": "Apple Reminders",
+      "published_at": "2025-02-11T10:31:44.369Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/3246qcv02isx4pcqhrm6wm1bcto4",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/2q333d2wwgj22u3dvp0b13646awx?response-content-disposition=inline%3B%20filename%3D%22plugin-2025-04-08T03-19-33Z-5b4585%22%3B%20filename%2A%3DUTF-8%27%27plugin-2025-04-08T03-19-33Z-5b4585\u0026response-content-type=image%2Fbmp\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=c02d2dd8da78c26cd062dfd0d706db90881940a02acfa5b77b6ec7dfd48e26ea",
+      "author_bio": null,
+      "custom_fields": [
+        {
+          "keyname": "apple_shortcut_url",
+          "field_type": "copyable",
+          "name": "Shortcut URL",
+          "value": "https://www.icloud.com/shortcuts/a14aeed02b744a1bb88fc908841fa852",
+          "description": "Import this shortcut on your iPhone or iPad.\nSet up automations to trigger it at 00:05 and when Reminders is closed.\nYou will need to know the UUID of this plugin instance while importing."
+        },
+        {
+          "keyname": "show_dates_and_times",
+          "field_type": "select",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "default": "yes",
+          "name": "Dates and Times",
+          "description": "Do you want dates/times shown for reminders?"
+        },
+        {
+          "keyname": "show_list_names",
+          "field_type": "select",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "default": "yes",
+          "name": "List Names",
+          "description": "Do you want list names shown for reminders?"
+        },
+        {
+          "keyname": "show_notes",
+          "field_type": "select",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "default": "yes",
+          "name": "Notes",
+          "description": "Do you want notes shown for reminders?"
+        },
+        {
+          "keyname": "show_tags",
+          "field_type": "select",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "default": "yes",
+          "name": "Tags",
+          "description": "Do you want tags shown for reminders?"
+        },
+        {
+          "keyname": "date_format",
+          "field_type": "select",
+          "options": [
+            "31 Jan 2025",
+            "2025-01-31",
+            "31/01/2025",
+            "01/31/2025"
+          ],
+          "default": "31_jan_2025",
+          "name": "Date Formatting",
+          "description": "How do you want dates to be formatted? (will have no effect if dates are not shown)"
+        },
+        {
+          "keyname": "date_day_name",
+          "field_type": "select",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "default": "yes",
+          "name": "Display Day Names?",
+          "description": "Do you want day names shown in front of dates? (will have no effect if dates are not shown)"
+        },
+        {
+          "keyname": "time_format",
+          "field_type": "select",
+          "options": [
+            "12 hours",
+            "24 hours (leading zeroes 08:45)",
+            "24 hours (no leading zeroes 8:45)"
+          ],
+          "default": "24_hours_(leading_zeroes_08:45)",
+          "name": "Time Formatting",
+          "description": "How do you want times to be formatted? (will have no effect if times are not shown)"
+        },
+        {
+          "keyname": "right_label",
+          "field_type": "select",
+          "options": [
+            "Attribution",
+            "Your Name",
+            "Blank"
+          ],
+          "default": "attribution",
+          "name": "Right Label",
+          "description": "What do you want shown on the right of the title bar?"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 462
+      }
+    },
+    {
+      "id": 30547,
+      "name": "Formula 1 Driver Standings",
+      "published_at": "2025-03-25T19:13:00.000Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/zzlmgoyu5m67bu9zwmhescjfr59z",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/n4g0jkscpndybrhqy56zkkidtf1d?response-content-disposition=inline%3B%20filename%3D%22plugin-7fd993%22%3B%20filename%2A%3DUTF-8%27%27plugin-7fd993\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=3a289be3090044a0456de09f68ee8c6d07e4cea5da1667137c1306955e89eb36",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Follow the fight for the title! This plugin shows each driver’s current ranking, wins, and points as the season unfolds.\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my ko-fi link below or e-mail me! 🙂",
+        "category": "sports,life",
+        "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+        "github_url": "http://github.com/danielsitnik/",
+        "email_address": "danielsitnik@outlook.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Follow the fight for the title! This plugin shows each driver’s current ranking, wins, and points as the season unfolds.\u003cbr/\u003e\u003cbr/\u003eIt was created by Daniel Sitnik, Principal Architect @ Accenture Brazil and creator of small things. Want a custom TRMNL Plugin for you? Check my ko-fi link below or e-mail me! 🙂",
+          "category": "sports,life",
+          "learn_more_url": "https://ko-fi.com/danielsitnik/shop",
+          "github_url": "http://github.com/danielsitnik/",
+          "email_address": "danielsitnik@outlook.com"
+        }
+      ],
+      "stats": {
+        "installs": 448,
+        "forks": 10
+      }
+    },
+    {
+      "id": 40143,
+      "name": "Simple Date",
+      "published_at": "2025-04-23T03:26:00.000Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/klskhg9ejqz9pl7tuukbyaqlszp5?response-content-disposition=inline%3B%20filename%3D%22plugin-e90000%22%3B%20filename%2A%3DUTF-8%27%27plugin-e90000\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=c30526ddeeb1a380ad73bd21c992b09560fb59c789c63582321a1ffa34d2eb8a",
+      "author_bio": null,
+      "custom_fields": [],
+      "stats": {
+        "installs": 369,
+        "forks": 72
+      }
+    },
+    {
+      "id": 27251,
+      "name": "Who's That Pokémon?",
+      "published_at": "2025-03-12T16:59:00.000Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/vbllcuwgv1hpdypgjfv1mvwgj98j?response-content-disposition=inline%3B%20filename%3D%22plugin-e4aa84%22%3B%20filename%2A%3DUTF-8%27%27plugin-e4aa84\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=9aac13a37cefca4c04b7a45b97ce5c453c187d148e9ccd4561eac436ce8bfed9",
+      "author_bio": null,
+      "custom_fields": [],
+      "stats": {
+        "installs": 393,
+        "forks": 31
+      }
+    },
+    {
+      "id": 29557,
+      "name": "Sunrise and Sunset",
+      "published_at": "2025-03-17T22:21:00.000Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/98br1zotfxjq3gi22dijzra62kvc?response-content-disposition=inline%3B%20filename%3D%22plugin-2025-04-10T14-47-56Z-e3066c%22%3B%20filename%2A%3DUTF-8%27%27plugin-2025-04-10T14-47-56Z-e3066c\u0026response-content-type=image%2Fbmp\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=9f56b45b238e028593fc9e09d6c0f2f32d0c1bd0659b6d07e807af8f51b5100e",
+      "author_bio": null,
+      "custom_fields": [
+        {
+          "keyname": "Latitude",
+          "field_type": "string",
+          "name": "Latitude",
+          "description": "Location in Latitude, find yours \u003ca href=\"https://www.latlong.net/\" class=\"underline\" target=\"_blank\"\u003ehere\u003c/a\u003e."
+        },
+        {
+          "keyname": "Longitude",
+          "field_type": "string",
+          "name": "Longitude",
+          "description": "Location in Longitude, find yours \u003ca href=\"https://www.latlong.net/\" class=\"underline\" target=\"_blank\"\u003ehere\u003c/a\u003e."
+        }
+      ],
+      "stats": {
+        "installs": 4,
+        "forks": 419
+      }
+    },
+    {
+      "id": 29604,
+      "name": "TRMNL Battery Status",
+      "published_at": "2025-03-16T16:43:06.565Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/d3s8pjwlaagmsgni0ukzan7i4r27?response-content-disposition=inline%3B%20filename%3D%22plugin-2cb5c1%22%3B%20filename%2A%3DUTF-8%27%27plugin-2cb5c1\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=d1779899c43dd5d415daa329d371f5ea87c9650e293cdcde0a83c605ae5b1f54",
+      "author_bio": null,
+      "custom_fields": [],
+      "stats": {
+        "installs": 333,
+        "forks": 66
+      }
+    },
+    {
+      "id": 112422,
+      "name": "Open-Meteo Hourly Weather Forecast v1.4.3",
+      "published_at": "2025-07-16T10:17:00.000Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/wx59zioxxv1lq74m9bz1msjrmvqi",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/gsjwnj728obmb1yjmmfd3564wcv2?response-content-disposition=inline%3B%20filename%3D%22plugin-44b2f5%22%3B%20filename%2A%3DUTF-8%27%27plugin-44b2f5\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=0a2c41599d80ae119dd73db3ea0ef35f11d228b4de1ee1cad32995bf19017887",
+      "author_bio": {
+        "keyname": "fubar",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Hourly weather forecast plugin with Open-Meteo Backend. No API key required. \u003cbr\u003eNOTE: Click save right after plugin import, to populate the required fields to fetch the weather data. Otherwise you will get \"Liquid error\" messages. \u003cbr\u003eReport bugs and translation issues on GitHub link below.\n",
+        "github_url": "https://github.com/andi4000/trmnl-open-meteo-weather-forecast"
+      },
+      "custom_fields": [
+        {
+          "keyname": "fubar",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Hourly weather forecast plugin with Open-Meteo Backend. No API key required. \u003cbr\u003eNOTE: Click save right after plugin import, to populate the required fields to fetch the weather data. Otherwise you will get \"Liquid error\" messages. \u003cbr\u003eReport bugs and translation issues on GitHub link below.\n",
+          "github_url": "https://github.com/andi4000/trmnl-open-meteo-weather-forecast"
+        },
+        {
+          "keyname": "lat",
+          "optional": false,
+          "field_type": "string",
+          "name": "Latitude",
+          "description": "Latitude of your location",
+          "help_text": "Google \"lat lon \u0026lt;city name\u0026gt;\" to find your coordinates",
+          "placeholder": 52.52,
+          "default": 52.52
+        },
+        {
+          "keyname": "lon",
+          "optional": false,
+          "field_type": "string",
+          "name": "Longitude",
+          "description": "Longitude of your location",
+          "help_text": "Google \"lat lon \u0026lt;city name\u0026gt;\" to find your coordinates",
+          "placeholder": 13.41,
+          "default": 13.41
+        },
+        {
+          "keyname": "lang",
+          "field_type": "select",
+          "name": "Language",
+          "description": "Display language",
+          "optional": false,
+          "default": "en",
+          "options": [
+            {
+              "English": "en"
+            },
+            {
+              "German": "de"
+            },
+            {
+              "French": "fr"
+            },
+            {
+              "Spanish": "es"
+            },
+            {
+              "Italian": "it"
+            },
+            {
+              "Dutch": "nl"
+            }
+          ]
+        },
+        {
+          "keyname": "unit_temperature",
+          "field_type": "select",
+          "name": "Temperature Unit",
+          "description": "Temperature unit to use",
+          "optional": false,
+          "default": "celsius",
+          "options": [
+            {
+              "Celsius": "celsius"
+            },
+            {
+              "Fahrenheit": "fahrenheit"
+            }
+          ]
+        },
+        {
+          "keyname": "date_format_today",
+          "field_type": "string",
+          "name": "Date Format Today",
+          "description": "Format for today's date in strftime format",
+          "help_text": "See \u003ca href=\"https://strftime.net/\" class=\"underline\"\u003estrftime.net\u003c/a\u003e for details",
+          "default": "%A, %d.%m.%Y"
+        },
+        {
+          "keyname": "date_format_tomorrow",
+          "field_type": "string",
+          "name": "Date Format Tomorrow",
+          "description": "Format for tomorrow's date in strftime format",
+          "help_text": "See \u003ca href=\"https://strftime.net/\" class=\"underline\"\u003estrftime.net\u003c/a\u003e for details",
+          "default": "%A"
+        },
+        {
+          "keyname": "disp_full_today_max_hours",
+          "field_type": "number",
+          "name": "Full Display: Today's Max Hours",
+          "description": "Number of hours to display for today's hourly temperature, counting from current hour. For Full and Half Horizontal Display mode.",
+          "optional": false,
+          "default": 7
+        },
+        {
+          "keyname": "disp_full_tomorrow_hours",
+          "field_type": "string",
+          "name": "Full Display: Tomorrow's Hours",
+          "description": "Comma-separated list of hours to display for tomorrow. For Full and Half Horizontal Display mode.",
+          "optional": false,
+          "default": "7,9,11,13,15,17,19"
+        },
+        {
+          "keyname": "disp_half_vertical_today_max_hours",
+          "field_type": "number",
+          "name": "Half Vertical Display: Today's Max Hours",
+          "description": "Number of hours to display for today's hourly temperature. For Half Vertical Display mode.",
+          "optional": false,
+          "default": 5
+        }
+      ],
+      "stats": {
+        "installs": 0,
+        "forks": 383
+      }
+    },
+    {
+      "id": 19343,
+      "name": "Stoic Quotes",
+      "published_at": "2025-02-15T17:48:33.576Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/qcrum64d7kvdxz154piv7q8xine5?response-content-disposition=inline%3B%20filename%3D%22plugin-bf0150%22%3B%20filename%2A%3DUTF-8%27%27plugin-bf0150\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=e28f540b07880d4b89414ee8dc403e1e76f39977a25a529d32b2135bb7dd0e4c",
+      "author_bio": null,
+      "custom_fields": [],
+      "stats": {
+        "installs": 349,
+        "forks": 29
+      }
+    },
+    {
+      "id": 53263,
+      "name": "SunClock",
+      "published_at": "2025-05-14T05:32:00.000Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/5bvor8wiptx8hbs2ljsu48ly5ca1?response-content-disposition=inline%3B%20filename%3D%22plugin-1105e2%22%3B%20filename%2A%3DUTF-8%27%27plugin-1105e2\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=a2af8508bddac1c9a4a81dd321d78f0fe627e138f0e9c894570e93a7a14bd124",
+      "author_bio": null,
+      "custom_fields": [],
+      "stats": {
+        "installs": 339,
+        "forks": 34
+      }
+    },
+    {
+      "id": 2734,
+      "name": "Cat Facts",
+      "published_at": "2024-11-15T04:30:50.532Z",
+      "icon_url": null,
+      "icon_content_type": null,
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/8pvswdlsh3sehxpzfagvyoery8tv?response-content-disposition=inline%3B%20filename%3D%22plugin-87a416%22%3B%20filename%2A%3DUTF-8%27%27plugin-87a416\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20251205%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20251205T040125Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=bd5aa1fedb67de551a3d96db821119542c2d82b7d6c876b8244e77fa19892f1c",
+      "author_bio": null,
+      "custom_fields": [],
+      "stats": {
+        "installs": 359,
+        "forks": 8
+      }
+    }
+  ],
+  "total": 568,
+  "from": 1,
+  "to": 25,
+  "per_page": 25,
+  "current_page": 1,
+  "prev_page_url": null,
+  "next_page_url": "/recipes.json?page=2\u0026sort_by=popularity"
+}
