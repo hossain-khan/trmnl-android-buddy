@@ -37,7 +37,7 @@ data object RecipesCatalogScreen : Screen {
         val recipes: List<Recipe> = emptyList(),
         val bookmarkedRecipeIds: Set<Int> = emptySet(),
         val searchQuery: String = "",
-        val selectedSort: SortOption = SortOption.NEWEST,
+        val selectedSort: SortOption = SortOption.POPULARITY,
         val availableCategories: List<String> = emptyList(),
         val selectedCategories: Set<String> = emptySet(),
         val showFilters: Boolean = false,
@@ -163,7 +163,12 @@ enum class SortOption(
     val displayName: String,
 ) {
     /**
-     * Sort by newest recipes first (default).
+     * Sort by popularity (most popular first) - default.
+     */
+    POPULARITY("popularity", "Popular"),
+
+    /**
+     * Sort by newest recipes first.
      */
     NEWEST("newest", "Newest"),
 
@@ -171,11 +176,6 @@ enum class SortOption(
      * Sort by oldest recipes first.
      */
     OLDEST("oldest", "Oldest"),
-
-    /**
-     * Sort by popularity (most popular first).
-     */
-    POPULARITY("popularity", "Popular"),
 
     /**
      * Sort by number of installs (most installed first).

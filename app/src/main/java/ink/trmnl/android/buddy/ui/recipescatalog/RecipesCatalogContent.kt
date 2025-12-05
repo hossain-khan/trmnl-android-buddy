@@ -141,7 +141,7 @@ fun RecipesCatalogContent(
                             ),
                         contentDescription = if (state.showFilters) "Hide filters" else "Show filters",
                         tint =
-                            if (state.selectedCategories.isNotEmpty() || state.selectedSort != SortOption.NEWEST) {
+                            if (state.selectedCategories.isNotEmpty() || state.selectedSort != SortOption.POPULARITY) {
                                 MaterialTheme.colorScheme.primary
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
@@ -620,7 +620,7 @@ private fun RecipesCatalogContentPreview() {
                     recipes = SAMPLE_RECIPES,
                     bookmarkedRecipeIds = setOf(1), // First recipe is bookmarked
                     searchQuery = "",
-                    selectedSort = SortOption.NEWEST,
+                    selectedSort = SortOption.POPULARITY,
                     hasMorePages = true,
                     totalRecipes = 100,
                 ),
