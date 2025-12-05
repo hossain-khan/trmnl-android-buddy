@@ -217,6 +217,7 @@ private fun RecipesSearchBar(
                     Icon(
                         painter = painterResource(R.drawable.search_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                         contentDescription = "Search",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },
                 trailingIcon = {
