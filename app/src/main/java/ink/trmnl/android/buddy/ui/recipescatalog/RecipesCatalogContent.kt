@@ -103,42 +103,76 @@ fun RecipesCatalogContent(
                     .padding(innerPadding),
         ) {
             // Search bar
-            RecipesSearchBar(
-                searchQuery = state.searchQuery,
-                onQueryChange = { query ->
-                    state.eventSink(RecipesCatalogScreen.Event.SearchQueryChanged(query))
-                },
-                onSearchClicked = {
-                    state.eventSink(RecipesCatalogScreen.Event.SearchClicked)
-                },
-                onClearClicked = {
-                    state.eventSink(RecipesCatalogScreen.Event.ClearSearchClicked)
-                },
-            )
-
-            // Sort chips
-            SortFilterRow(
-                selectedSort = state.selectedSort,
-                onSortSelected = { sort ->
-                    state.eventSink(RecipesCatalogScreen.Event.SortSelected(sort))
-                },
-            )
-
-            // Category filter chips
-            if (state.availableCategories.isNotEmpty()) {
-                CategoryFilterRow(
-                    availableCategories = state.availableCategories,
-                    selectedCategories = state.selectedCategories,
-                    onCategorySelected = { category ->
-                        state.eventSink(RecipesCatalogScreen.Event.CategorySelected(category))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RecipesSearchBar(
+                    searchQuery = state.searchQuery,
+                    onQueryChange = { query ->
+                        state.eventSink(RecipesCatalogScreen.Event.SearchQueryChanged(query))
                     },
-                    onCategoryDeselected = { category ->
-                        state.eventSink(RecipesCatalogScreen.Event.CategoryDeselected(category))
+                    onSearchClicked = {
+                        state.eventSink(RecipesCatalogScreen.Event.SearchClicked)
                     },
-                    onClearAll = {
-                        state.eventSink(RecipesCatalogScreen.Event.ClearCategoryFilters)
+                    onClearClicked = {
+                        state.eventSink(RecipesCatalogScreen.Event.ClearSearchClicked)
+                    },
+                    modifier = Modifier.weight(1f),
+                )
+
+                // Filter toggle button
+                IconButton(
+                    onClick = { state.eventSink(RecipesCatalogScreen.Event.ToggleFiltersClicked) },
+                    modifier = Modifier.padding(end = 8.dp),
+                ) {
+                    Icon(
+                        painter =
+                            painterResource(
+                                if (state.showFilters) {
+                                    R.drawable.filter_alt_off_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                } else {
+                                    R.drawable.filter_alt_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                },
+                            ),
+                        contentDescription = if (state.showFilters) "Hide filters" else "Show filters",
+                        tint =
+                            if (state.selectedCategories.isNotEmpty() || state.selectedSort != SortOption.NEWEST) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                    )
+                }
+            }
+
+            // Collapsible filters
+            if (state.showFilters) {
+                // Sort chips
+                SortFilterRow(
+                    selectedSort = state.selectedSort,
+                    onSortSelected = { sort ->
+                        state.eventSink(RecipesCatalogScreen.Event.SortSelected(sort))
                     },
                 )
+
+                // Category filter chips
+                if (state.availableCategories.isNotEmpty()) {
+                    CategoryFilterRow(
+                        availableCategories = state.availableCategories,
+                        selectedCategories = state.selectedCategories,
+                        onCategorySelected = { category ->
+                            state.eventSink(RecipesCatalogScreen.Event.CategorySelected(category))
+                        },
+                        onCategoryDeselected = { category ->
+                            state.eventSink(RecipesCatalogScreen.Event.CategoryDeselected(category))
+                        },
+                        onClearAll = {
+                            state.eventSink(RecipesCatalogScreen.Event.ClearCategoryFilters)
+                        },
+                    )
+                }
             }
 
             // Content area
@@ -239,7 +273,7 @@ private fun RecipesSearchBar(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(start = 16.dp),
     ) {
         // Search suggestions can be added here in future
     }

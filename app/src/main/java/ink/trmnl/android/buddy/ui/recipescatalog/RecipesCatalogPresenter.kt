@@ -56,6 +56,7 @@ class RecipesCatalogPresenter(
         var selectedSort by remember { mutableStateOf(SortOption.NEWEST) }
         var availableCategories by remember { mutableStateOf<List<String>>(emptyList()) }
         var selectedCategories by remember { mutableStateOf<Set<String>>(emptySet()) }
+        var showFilters by remember { mutableStateOf(false) }
         var isLoading by remember { mutableStateOf(false) }
         var isLoadingMore by remember { mutableStateOf(false) }
         var error by remember { mutableStateOf<String?>(null) }
@@ -64,7 +65,9 @@ class RecipesCatalogPresenter(
         var totalRecipes by remember { mutableStateOf(0) }
 
         // Collect bookmarked recipe IDs as state
-        val bookmarkedRecipeIds by bookmarkRepository.getAllBookmarkedIds().collectAsState(initial = emptySet())
+        val bookmarkedRecipeIds by bookmarkRepository
+            .getAllBookmarkedIds()
+            .collectAsState(initial = emptySet())
 
         val coroutineScope = rememberCoroutineScope()
         var searchJob by remember { mutableStateOf<Job?>(null) }
@@ -118,6 +121,7 @@ class RecipesCatalogPresenter(
             selectedSort = selectedSort,
             availableCategories = availableCategories,
             selectedCategories = selectedCategories,
+            showFilters = showFilters,
             isLoading = isLoading,
             isLoadingMore = isLoadingMore,
             error = error,
@@ -233,7 +237,10 @@ class RecipesCatalogPresenter(
                             bookmarkRepository.toggleBookmark(event.recipe)
                             Timber.d("Bookmark toggled for recipe: ${event.recipe.name} (ID: ${event.recipe.id})")
                         } catch (e: Exception) {
-                            Timber.e(e, "Failed to toggle bookmark for recipe: ${event.recipe.name}")
+                            Timber.e(
+                                e,
+                                "Failed to toggle bookmark for recipe: ${event.recipe.name}",
+                            )
                         }
                     }
                 }
@@ -299,6 +306,11 @@ class RecipesCatalogPresenter(
                 RecipesCatalogScreen.Event.ClearCategoryFilters -> {
                     // Clear all category filters
                     selectedCategories = emptySet()
+                }
+
+                RecipesCatalogScreen.Event.ToggleFiltersClicked -> {
+                    // Toggle filter visibility
+                    showFilters = !showFilters
                 }
             }
         }

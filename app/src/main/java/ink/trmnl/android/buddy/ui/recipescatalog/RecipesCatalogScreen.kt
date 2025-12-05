@@ -40,6 +40,7 @@ data object RecipesCatalogScreen : Screen {
         val selectedSort: SortOption = SortOption.NEWEST,
         val availableCategories: List<String> = emptyList(),
         val selectedCategories: Set<String> = emptySet(),
+        val showFilters: Boolean = false,
         val isLoading: Boolean = false,
         val isLoadingMore: Boolean = false,
         val error: String? = null,
@@ -141,6 +142,11 @@ data object RecipesCatalogScreen : Screen {
          * User clicked to clear all category filters.
          */
         data object ClearCategoryFilters : Event()
+
+        /**
+         * User clicked the filter toggle button to show/hide filters.
+         */
+        data object ToggleFiltersClicked : Event()
     }
 }
 
