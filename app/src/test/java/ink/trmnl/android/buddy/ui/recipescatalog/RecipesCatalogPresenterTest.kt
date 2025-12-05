@@ -20,6 +20,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Ignore
 import org.junit.Test
 
+/** Default number of recipes per page - matches DEFAULT_PER_PAGE in RecipesCatalogPresenter */
+private const val DEFAULT_PER_PAGE = 25
+
 /**
  * Tests for RecipesCatalogScreen presenter.
  *
@@ -204,6 +207,81 @@ class RecipesCatalogPresenterTest {
                 assertThat(loadedMoreState.recipes).hasSize(4) // 2 + 2
                 assertThat(loadedMoreState.currentPage).isEqualTo(2)
                 assertThat(loadedMoreState.hasMorePages).isFalse()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `load more filters duplicate recipe IDs across pages`() =
+        runTest {
+            // Given: API returns duplicate recipe ID across pages
+            val page1Recipes =
+                listOf(
+                    createSampleRecipe(1),
+                    createSampleRecipe(2),
+                )
+            val page1Response =
+                RecipesResponse(
+                    data = page1Recipes,
+                    total = 100,
+                    from = 1,
+                    to = 2,
+                    perPage = DEFAULT_PER_PAGE,
+                    currentPage = 1,
+                    prevPageUrl = null,
+                    nextPageUrl = "https://usetrmnl.com/recipes.json?page=2",
+                )
+
+            // Page 2 contains a duplicate (ID 2) and a new recipe (ID 27)
+            val page2Recipes =
+                listOf(
+                    createSampleRecipe(2), // Duplicate from page 1
+                    createSampleRecipe(27), // New recipe
+                )
+            val page2Response =
+                RecipesResponse(
+                    data = page2Recipes,
+                    total = 100,
+                    from = 3,
+                    to = 4,
+                    perPage = DEFAULT_PER_PAGE,
+                    currentPage = 2,
+                    prevPageUrl = "https://usetrmnl.com/recipes.json?page=1",
+                    nextPageUrl = null,
+                )
+
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository = FakeRecipesRepository(recipesResponse = page1Response)
+            repository.setResponseForPage(2, page2Response)
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            // When/Then
+            presenter.test {
+                // Wait for initial load
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                assertThat(loadedState.recipes).hasSize(2)
+                assertThat(loadedState.recipes.map { it.id }).isEqualTo(listOf(1, 2))
+
+                // Load more
+                loadedState.eventSink(RecipesCatalogScreen.Event.LoadMoreClicked)
+                testScheduler.advanceUntilIdle()
+
+                // Wait for state with more recipes
+                var loadedMoreState: RecipesCatalogScreen.State
+                do {
+                    loadedMoreState = awaitItem()
+                } while (loadedMoreState.recipes.size < 3 && !loadedMoreState.isLoadingMore)
+
+                // Verify only unique recipes are kept (3 total, not 4)
+                // The duplicate ID 2 should be filtered out
+                assertThat(loadedMoreState.recipes).hasSize(3)
+                assertThat(loadedMoreState.recipes.map { it.id }).isEqualTo(listOf(1, 2, 27))
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -805,13 +883,15 @@ private fun createSampleRecipesResponse(
     currentPage: Int = 1,
     hasNext: Boolean = true,
 ): RecipesResponse {
-    val recipes = (1..count).map { createSampleRecipe(it) }
+    // Generate unique IDs based on page to avoid duplicates when testing pagination
+    val startId = (currentPage - 1) * DEFAULT_PER_PAGE + 1
+    val recipes = (startId until startId + count).map { createSampleRecipe(it) }
     return RecipesResponse(
         data = recipes,
         total = 100,
-        from = (currentPage - 1) * 25 + 1,
-        to = (currentPage - 1) * 25 + count,
-        perPage = 25,
+        from = (currentPage - 1) * DEFAULT_PER_PAGE + 1,
+        to = (currentPage - 1) * DEFAULT_PER_PAGE + count,
+        perPage = DEFAULT_PER_PAGE,
         currentPage = currentPage,
         prevPageUrl = if (currentPage > 1) "https://usetrmnl.com/recipes.json?page=${currentPage - 1}" else null,
         nextPageUrl = if (hasNext) "https://usetrmnl.com/recipes.json?page=${currentPage + 1}" else null,

@@ -102,7 +102,7 @@ class RecipesCatalogPresenter(
                 onLoadingStart = { isLoading = true },
                 onLoadingEnd = { isLoading = false },
                 onSuccess = { response ->
-                    allRecipes = response.data
+                    allRecipes = response.data.distinctBy { it.id }
                     currentPage = response.currentPage
                     hasMorePages = response.nextPageUrl != null
                     totalRecipes = response.total
@@ -157,7 +157,7 @@ class RecipesCatalogPresenter(
                                 onLoadingStart = { isLoading = true },
                                 onLoadingEnd = { isLoading = false },
                                 onSuccess = { response ->
-                                    allRecipes = response.data
+                                    allRecipes = response.data.distinctBy { it.id }
                                     currentPage = response.currentPage
                                     hasMorePages = response.nextPageUrl != null
                                     totalRecipes = response.total
@@ -188,7 +188,7 @@ class RecipesCatalogPresenter(
                             onLoadingStart = { isLoading = true },
                             onLoadingEnd = { isLoading = false },
                             onSuccess = { response ->
-                                allRecipes = response.data
+                                allRecipes = response.data.distinctBy { it.id }
                                 currentPage = response.currentPage
                                 hasMorePages = response.nextPageUrl != null
                                 totalRecipes = response.total
@@ -213,7 +213,7 @@ class RecipesCatalogPresenter(
                             onLoadingStart = { isLoading = true },
                             onLoadingEnd = { isLoading = false },
                             onSuccess = { response ->
-                                allRecipes = response.data
+                                allRecipes = response.data.distinctBy { it.id }
                                 currentPage = response.currentPage
                                 hasMorePages = response.nextPageUrl != null
                                 totalRecipes = response.total
@@ -256,7 +256,9 @@ class RecipesCatalogPresenter(
                                 onLoadingStart = { isLoadingMore = true },
                                 onLoadingEnd = { isLoadingMore = false },
                                 onSuccess = { response ->
-                                    allRecipes = allRecipes + response.data
+                                    // Combine and dedupe across pages - keeps first occurrence (existing recipes)
+                                    // to preserve user's view and handle API returning duplicates across pages
+                                    allRecipes = (allRecipes + response.data).distinctBy { it.id }
                                     currentPage = response.currentPage
                                     hasMorePages = response.nextPageUrl != null
                                     totalRecipes = response.total
@@ -280,7 +282,7 @@ class RecipesCatalogPresenter(
                             onLoadingStart = { isLoading = true },
                             onLoadingEnd = { isLoading = false },
                             onSuccess = { response ->
-                                allRecipes = response.data
+                                allRecipes = response.data.distinctBy { it.id }
                                 currentPage = response.currentPage
                                 hasMorePages = response.nextPageUrl != null
                                 totalRecipes = response.total
