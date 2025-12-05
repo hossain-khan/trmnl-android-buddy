@@ -256,6 +256,8 @@ class RecipesCatalogPresenter(
                                 onLoadingStart = { isLoadingMore = true },
                                 onLoadingEnd = { isLoadingMore = false },
                                 onSuccess = { response ->
+                                    // Combine and dedupe across pages - keeps first occurrence (existing recipes)
+                                    // to preserve user's view and handle API returning duplicates across pages
                                     allRecipes = (allRecipes + response.data).distinctBy { it.id }
                                     currentPage = response.currentPage
                                     hasMorePages = response.nextPageUrl != null
