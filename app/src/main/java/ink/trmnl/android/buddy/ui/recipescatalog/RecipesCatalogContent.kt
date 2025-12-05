@@ -1,5 +1,8 @@
 package ink.trmnl.android.buddy.ui.recipescatalog
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -147,31 +150,37 @@ fun RecipesCatalogContent(
                 }
             }
 
-            // Collapsible filters
-            if (state.showFilters) {
-                // Sort chips
-                SortFilterRow(
-                    selectedSort = state.selectedSort,
-                    onSortSelected = { sort ->
-                        state.eventSink(RecipesCatalogScreen.Event.SortSelected(sort))
-                    },
-                )
-
-                // Category filter chips
-                if (state.availableCategories.isNotEmpty()) {
-                    CategoryFilterRow(
-                        availableCategories = state.availableCategories,
-                        selectedCategories = state.selectedCategories,
-                        onCategorySelected = { category ->
-                            state.eventSink(RecipesCatalogScreen.Event.CategorySelected(category))
-                        },
-                        onCategoryDeselected = { category ->
-                            state.eventSink(RecipesCatalogScreen.Event.CategoryDeselected(category))
-                        },
-                        onClearAll = {
-                            state.eventSink(RecipesCatalogScreen.Event.ClearCategoryFilters)
+            // Collapsible filters with expand/collapse animation
+            AnimatedVisibility(
+                visible = state.showFilters,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
+            ) {
+                Column {
+                    // Sort chips
+                    SortFilterRow(
+                        selectedSort = state.selectedSort,
+                        onSortSelected = { sort ->
+                            state.eventSink(RecipesCatalogScreen.Event.SortSelected(sort))
                         },
                     )
+
+                    // Category filter chips
+                    if (state.availableCategories.isNotEmpty()) {
+                        CategoryFilterRow(
+                            availableCategories = state.availableCategories,
+                            selectedCategories = state.selectedCategories,
+                            onCategorySelected = { category ->
+                                state.eventSink(RecipesCatalogScreen.Event.CategorySelected(category))
+                            },
+                            onCategoryDeselected = { category ->
+                                state.eventSink(RecipesCatalogScreen.Event.CategoryDeselected(category))
+                            },
+                            onClearAll = {
+                                state.eventSink(RecipesCatalogScreen.Event.ClearCategoryFilters)
+                            },
+                        )
+                    }
                 }
             }
 
