@@ -42,6 +42,7 @@ data class Recipe(
  * @property name Display name
  * @property fieldType Type of field ("author_bio", etc.)
  * @property description Author biography text
+ * @property category Comma-separated list of categories (e.g., "calendar,custom")
  */
 @Serializable
 data class AuthorBio(
@@ -50,6 +51,7 @@ data class AuthorBio(
     @SerialName("field_type")
     val fieldType: String? = null,
     val description: String? = null,
+    val category: String? = null,
 )
 
 /**

@@ -51,9 +51,11 @@ class RecipesCatalogPresenter(
 ) : Presenter<RecipesCatalogScreen.State> {
     @Composable
     override fun present(): RecipesCatalogScreen.State {
-        var recipes by remember { mutableStateOf<List<Recipe>>(emptyList()) }
+        var allRecipes by remember { mutableStateOf<List<Recipe>>(emptyList()) }
         var searchQuery by remember { mutableStateOf("") }
         var selectedSort by remember { mutableStateOf(SortOption.NEWEST) }
+        var availableCategories by remember { mutableStateOf<List<String>>(emptyList()) }
+        var selectedCategories by remember { mutableStateOf<Set<String>>(emptySet()) }
         var isLoading by remember { mutableStateOf(false) }
         var isLoadingMore by remember { mutableStateOf(false) }
         var error by remember { mutableStateOf<String?>(null) }
@@ -67,6 +69,26 @@ class RecipesCatalogPresenter(
         val coroutineScope = rememberCoroutineScope()
         var searchJob by remember { mutableStateOf<Job?>(null) }
 
+        // Apply client-side category filtering to recipes
+        val filteredRecipes =
+            remember(allRecipes, selectedCategories) {
+                filterRecipesByCategories(allRecipes, selectedCategories)
+            }
+
+        // Load categories on first composition
+        LaunchedEffect(Unit) {
+            val categoriesResult = recipesRepository.getCategories()
+            categoriesResult.fold(
+                onSuccess = { categories ->
+                    availableCategories = categories
+                },
+                onFailure = { exception ->
+                    Timber.e(exception, "Failed to fetch categories")
+                    // Continue without categories - non-blocking error
+                },
+            )
+        }
+
         // Load initial recipes on first composition
         LaunchedEffect(Unit) {
             fetchRecipes(
@@ -77,7 +99,7 @@ class RecipesCatalogPresenter(
                 onLoadingStart = { isLoading = true },
                 onLoadingEnd = { isLoading = false },
                 onSuccess = { response ->
-                    recipes = response.data
+                    allRecipes = response.data
                     currentPage = response.currentPage
                     hasMorePages = response.nextPageUrl != null
                     totalRecipes = response.total
@@ -90,10 +112,12 @@ class RecipesCatalogPresenter(
         }
 
         return RecipesCatalogScreen.State(
-            recipes = recipes,
+            recipes = filteredRecipes,
             bookmarkedRecipeIds = bookmarkedRecipeIds,
             searchQuery = searchQuery,
             selectedSort = selectedSort,
+            availableCategories = availableCategories,
+            selectedCategories = selectedCategories,
             isLoading = isLoading,
             isLoadingMore = isLoadingMore,
             error = error,
@@ -129,7 +153,7 @@ class RecipesCatalogPresenter(
                                 onLoadingStart = { isLoading = true },
                                 onLoadingEnd = { isLoading = false },
                                 onSuccess = { response ->
-                                    recipes = response.data
+                                    allRecipes = response.data
                                     currentPage = response.currentPage
                                     hasMorePages = response.nextPageUrl != null
                                     totalRecipes = response.total
@@ -160,7 +184,7 @@ class RecipesCatalogPresenter(
                             onLoadingStart = { isLoading = true },
                             onLoadingEnd = { isLoading = false },
                             onSuccess = { response ->
-                                recipes = response.data
+                                allRecipes = response.data
                                 currentPage = response.currentPage
                                 hasMorePages = response.nextPageUrl != null
                                 totalRecipes = response.total
@@ -185,7 +209,7 @@ class RecipesCatalogPresenter(
                             onLoadingStart = { isLoading = true },
                             onLoadingEnd = { isLoading = false },
                             onSuccess = { response ->
-                                recipes = response.data
+                                allRecipes = response.data
                                 currentPage = response.currentPage
                                 hasMorePages = response.nextPageUrl != null
                                 totalRecipes = response.total
@@ -225,7 +249,7 @@ class RecipesCatalogPresenter(
                                 onLoadingStart = { isLoadingMore = true },
                                 onLoadingEnd = { isLoadingMore = false },
                                 onSuccess = { response ->
-                                    recipes = recipes + response.data
+                                    allRecipes = allRecipes + response.data
                                     currentPage = response.currentPage
                                     hasMorePages = response.nextPageUrl != null
                                     totalRecipes = response.total
@@ -249,7 +273,7 @@ class RecipesCatalogPresenter(
                             onLoadingStart = { isLoading = true },
                             onLoadingEnd = { isLoading = false },
                             onSuccess = { response ->
-                                recipes = response.data
+                                allRecipes = response.data
                                 currentPage = response.currentPage
                                 hasMorePages = response.nextPageUrl != null
                                 totalRecipes = response.total
@@ -261,6 +285,21 @@ class RecipesCatalogPresenter(
                         )
                     }
                 }
+
+                is RecipesCatalogScreen.Event.CategorySelected -> {
+                    // Add category to selected set
+                    selectedCategories = selectedCategories + event.category
+                }
+
+                is RecipesCatalogScreen.Event.CategoryDeselected -> {
+                    // Remove category from selected set
+                    selectedCategories = selectedCategories - event.category
+                }
+
+                RecipesCatalogScreen.Event.ClearCategoryFilters -> {
+                    // Clear all category filters
+                    selectedCategories = emptySet()
+                }
             }
         }
     }
@@ -269,6 +308,38 @@ class RecipesCatalogPresenter(
     @AssistedFactory
     interface Factory {
         fun create(navigator: Navigator): RecipesCatalogPresenter
+    }
+}
+
+/**
+ * Filter recipes based on selected categories.
+ *
+ * A recipe matches if its author_bio.category contains ANY of the selected categories.
+ * Categories in author_bio are comma-separated (e.g., "calendar,custom").
+ *
+ * @param recipes List of recipes to filter
+ * @param selectedCategories Set of selected category filters
+ * @return Filtered list of recipes, or original list if no categories are selected
+ */
+private fun filterRecipesByCategories(
+    recipes: List<Recipe>,
+    selectedCategories: Set<String>,
+): List<Recipe> {
+    if (selectedCategories.isEmpty()) {
+        return recipes
+    }
+
+    return recipes.filter { recipe ->
+        val recipeCategories =
+            recipe.authorBio
+                ?.category
+                ?.split(",")
+                ?.map { it.trim() }
+                ?.toSet()
+                ?: emptySet()
+
+        // Recipe matches if it has ANY of the selected categories
+        recipeCategories.any { it in selectedCategories }
     }
 }
 
