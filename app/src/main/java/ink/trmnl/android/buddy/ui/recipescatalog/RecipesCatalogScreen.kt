@@ -23,6 +23,8 @@ data object RecipesCatalogScreen : Screen {
      * @property bookmarkedRecipeIds Set of IDs of bookmarked recipes
      * @property searchQuery Current search query text
      * @property selectedSort Currently selected sort option
+     * @property availableCategories List of all available recipe categories
+     * @property selectedCategories Set of currently selected categories for filtering
      * @property isLoading True when loading initial recipes
      * @property isLoadingMore True when loading next page of recipes
      * @property error Error message to display, or null if no error
@@ -36,6 +38,9 @@ data object RecipesCatalogScreen : Screen {
         val bookmarkedRecipeIds: Set<Int> = emptySet(),
         val searchQuery: String = "",
         val selectedSort: SortOption = SortOption.NEWEST,
+        val availableCategories: List<String> = emptyList(),
+        val selectedCategories: Set<String> = emptySet(),
+        val showFilters: Boolean = false,
         val isLoading: Boolean = false,
         val isLoadingMore: Boolean = false,
         val error: String? = null,
@@ -114,6 +119,34 @@ data object RecipesCatalogScreen : Screen {
          * User clicked retry button after an error.
          */
         data object RetryClicked : Event()
+
+        /**
+         * User selected a category to filter recipes.
+         *
+         * @property category The category identifier (e.g., "calendar", "sports")
+         */
+        data class CategorySelected(
+            val category: String,
+        ) : Event()
+
+        /**
+         * User deselected a category filter.
+         *
+         * @property category The category identifier to remove from filters
+         */
+        data class CategoryDeselected(
+            val category: String,
+        ) : Event()
+
+        /**
+         * User clicked to clear all category filters.
+         */
+        data object ClearCategoryFilters : Event()
+
+        /**
+         * User clicked the filter toggle button to show/hide filters.
+         */
+        data object ToggleFiltersClicked : Event()
     }
 }
 

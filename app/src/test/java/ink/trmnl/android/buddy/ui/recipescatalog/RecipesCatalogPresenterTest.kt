@@ -10,6 +10,7 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import ink.trmnl.android.buddy.api.models.AuthorBio
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.api.models.RecipesResponse
@@ -417,6 +418,293 @@ class RecipesCatalogPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+
+    @Test
+    fun `category filtering returns all recipes when no categories selected`() =
+        runTest {
+            // Given
+            val recipes =
+                listOf(
+                    createSampleRecipeWithCategories(1, "calendar"),
+                    createSampleRecipeWithCategories(2, "sports"),
+                    createSampleRecipeWithCategories(3, null),
+                )
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse =
+                        RecipesResponse(
+                            data = recipes,
+                            total = 3,
+                            from = 1,
+                            to = 3,
+                            perPage = 25,
+                            currentPage = 1,
+                            prevPageUrl = null,
+                            nextPageUrl = null,
+                        ),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                // With no categories selected, all recipes should be returned
+                assertThat(loadedState.recipes).hasSize(3)
+                assertThat(loadedState.selectedCategories).isEmpty()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `category filtering filters recipes with single selected category`() =
+        runTest {
+            // Given
+            val recipes =
+                listOf(
+                    createSampleRecipeWithCategories(1, "calendar"),
+                    createSampleRecipeWithCategories(2, "sports"),
+                    createSampleRecipeWithCategories(3, "calendar,custom"),
+                    createSampleRecipeWithCategories(4, "news"),
+                )
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse =
+                        RecipesResponse(
+                            data = recipes,
+                            total = 4,
+                            from = 1,
+                            to = 4,
+                            perPage = 25,
+                            currentPage = 1,
+                            prevPageUrl = null,
+                            nextPageUrl = null,
+                        ),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                // Select "calendar" category
+                loadedState.eventSink(RecipesCatalogScreen.Event.CategorySelected("calendar"))
+                testScheduler.advanceUntilIdle()
+
+                var filteredState = awaitItem()
+                assertThat(filteredState.selectedCategories).isEqualTo(setOf("calendar"))
+                assertThat(filteredState.recipes).hasSize(2) // Recipes 1 and 3 have "calendar"
+                assertThat(filteredState.recipes.map { it.id }).isEqualTo(listOf(1, 3))
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `category filtering uses OR logic for multiple categories`() =
+        runTest {
+            // Given
+            val recipes =
+                listOf(
+                    createSampleRecipeWithCategories(1, "calendar"),
+                    createSampleRecipeWithCategories(2, "sports"),
+                    createSampleRecipeWithCategories(3, "calendar,custom"),
+                    createSampleRecipeWithCategories(4, "news"),
+                    createSampleRecipeWithCategories(5, "sports,games"),
+                )
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse =
+                        RecipesResponse(
+                            data = recipes,
+                            total = 5,
+                            from = 1,
+                            to = 5,
+                            perPage = 25,
+                            currentPage = 1,
+                            prevPageUrl = null,
+                            nextPageUrl = null,
+                        ),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                // Select "calendar" and "sports" categories
+                loadedState.eventSink(RecipesCatalogScreen.Event.CategorySelected("calendar"))
+                testScheduler.advanceUntilIdle()
+                var state1 = awaitItem()
+
+                state1.eventSink(RecipesCatalogScreen.Event.CategorySelected("sports"))
+                testScheduler.advanceUntilIdle()
+                var state2 = awaitItem()
+
+                // Should match recipes with calendar OR sports
+                assertThat(state2.selectedCategories).isEqualTo(setOf("calendar", "sports"))
+                assertThat(state2.recipes).hasSize(4) // Recipes 1, 2, 3, 5 have calendar OR sports
+                assertThat(state2.recipes.map { it.id }).isEqualTo(listOf(1, 2, 3, 5))
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `category filtering handles comma-separated categories correctly`() =
+        runTest {
+            // Given
+            val recipes =
+                listOf(
+                    createSampleRecipeWithCategories(1, "calendar, custom"),
+                    createSampleRecipeWithCategories(2, " sports , games "),
+                    createSampleRecipeWithCategories(3, "news"),
+                )
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse =
+                        RecipesResponse(
+                            data = recipes,
+                            total = 3,
+                            from = 1,
+                            to = 3,
+                            perPage = 25,
+                            currentPage = 1,
+                            prevPageUrl = null,
+                            nextPageUrl = null,
+                        ),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                // Select "custom" category (should match despite comma-separated format)
+                loadedState.eventSink(RecipesCatalogScreen.Event.CategorySelected("custom"))
+                testScheduler.advanceUntilIdle()
+
+                var filteredState = awaitItem()
+                assertThat(filteredState.recipes).hasSize(1) // Only recipe 1 has "custom"
+                assertThat(filteredState.recipes.first().id).isEqualTo(1)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `category filtering handles null or empty category field`() =
+        runTest {
+            // Given
+            val recipes =
+                listOf(
+                    createSampleRecipeWithCategories(1, null),
+                    createSampleRecipeWithCategories(2, ""),
+                    createSampleRecipeWithCategories(3, "calendar"),
+                )
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse =
+                        RecipesResponse(
+                            data = recipes,
+                            total = 3,
+                            from = 1,
+                            to = 3,
+                            perPage = 25,
+                            currentPage = 1,
+                            prevPageUrl = null,
+                            nextPageUrl = null,
+                        ),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                // Select "calendar" category
+                loadedState.eventSink(RecipesCatalogScreen.Event.CategorySelected("calendar"))
+                testScheduler.advanceUntilIdle()
+
+                var filteredState = awaitItem()
+                assertThat(filteredState.recipes).hasSize(1) // Only recipe 3 matches
+                assertThat(filteredState.recipes.first().id).isEqualTo(3)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `category filtering returns empty list when no recipes match`() =
+        runTest {
+            // Given
+            val recipes =
+                listOf(
+                    createSampleRecipeWithCategories(1, "calendar"),
+                    createSampleRecipeWithCategories(2, "sports"),
+                )
+            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse =
+                        RecipesResponse(
+                            data = recipes,
+                            total = 2,
+                            from = 1,
+                            to = 2,
+                            perPage = 25,
+                            currentPage = 1,
+                            prevPageUrl = null,
+                            nextPageUrl = null,
+                        ),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                // Select a category that doesn't match any recipes
+                loadedState.eventSink(RecipesCatalogScreen.Event.CategorySelected("finance"))
+                testScheduler.advanceUntilIdle()
+
+                var filteredState = awaitItem()
+                assertThat(filteredState.recipes).isEmpty()
+                assertThat(filteredState.selectedCategories).isEqualTo(setOf("finance"))
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
 }
 
 /**
@@ -539,6 +827,26 @@ private fun createSampleRecipe(id: Int): Recipe =
         name = "Recipe $id",
         iconUrl = "https://example.com/icon$id.png",
         screenshotUrl = "https://example.com/screenshot$id.png",
+        stats =
+            RecipeStats(
+                installs = id * 100,
+                forks = id * 10,
+            ),
+    )
+
+/**
+ * Create a sample Recipe with specific categories for testing.
+ */
+private fun createSampleRecipeWithCategories(
+    id: Int,
+    categories: String?,
+): Recipe =
+    Recipe(
+        id = id,
+        name = "Recipe $id",
+        iconUrl = "https://example.com/icon$id.png",
+        screenshotUrl = "https://example.com/screenshot$id.png",
+        authorBio = AuthorBio(category = categories),
         stats =
             RecipeStats(
                 installs = id * 100,

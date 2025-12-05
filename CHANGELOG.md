@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- Removed duplicate test `parse actual recipe_list json file successfully` from `TrmnlRecipesApiTest` that was already covered by `RecipeListJsonParsingTest`
-- Reduced code duplication in tests by consolidating fake DAO implementations:
-  - `TrmnlDevicesScreenTest` now uses shared `FakeAnnouncementDao` and `FakeBlogPostDao` from `ink.trmnl.android.buddy.content.db` package instead of private inline implementations
-
 ### Added
 
 - **Categories API integration** - Integrated TRMNL `/api/categories` endpoint for dynamic category filtering
@@ -21,6 +15,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `getCategories()` method to `TrmnlDeviceRepository` with EitherNet's `ApiResult` for type-safe error handling
   - Comprehensive unit tests in `TrmnlCategoriesApiTest` using MockWebServer and AssertK assertions
   - Foundation for recipe filtering by category (see Issue #384)
+- **Category filtering for recipe catalog** - Implemented client-side category filtering for recipes with Material 3 UI
+  - Added `category` field to `AuthorBio` model to support comma-separated category values (e.g., "calendar,custom")
+  - Extended `RecipesCatalogScreen.State` with `availableCategories` and `selectedCategories` fields
+  - Added category selection events: `CategorySelected`, `CategoryDeselected`, `ClearCategoryFilters`
+  - Implemented `filterRecipesByCategories()` with OR matching logic (recipe matches if it has ANY selected category)
+  - Client-side filtering using `remember()` derived state for instant category toggling without API calls
+  - Fetches categories on screen init with non-blocking error handling
+  - Added `CategoryFilterRow` with Material 3 FilterChip components in horizontal scrollable row
+  - Shows "Clear All" chip with close icon when categories are selected for quick deselection
+  - Implemented `FilteredEmptyState` showing selected categories and "Clear Category Filters" button when no recipes match
+  - Material You theme-aware with proper color scheme usage from `MaterialTheme.colorScheme`
+  - Resolves Issue #384
+- **Collapsible filters for recipes catalog** - Added space-saving collapsible filter UI to reduce vertical space usage
+  - Filter toggle button positioned next to search bar with filter icon
+  - Filters (sort + category rows) can be shown/hidden with single tap
+  - Default state: filters hidden to maximize recipe list space
+  - Toggle icon switches between `filter_alt` (collapsed) and `filter_alt_off` (expanded) for clear visual feedback
+  - Icon tint changes to primary color when any filters are active (categories selected or sort changed from default)
+  - Smooth expand/collapse animation using `AnimatedVisibility` with `expandVertically`/`shrinkVertically`
+  - Animations happen in place below search bar without disrupting layout
+  - Improves mobile UX by reducing clutter and maximizing content visibility
 - **Increased test coverage for Device model** - Added missing unit tests for `isBatteryLow()`, `isWifiWeak()`, `getBatteryStatus()` Low status, and `getWifiStatus()` Weak status in `DeviceModelTest`
 - **Test coverage for PrivacyUtils.redactApiKey()** - Added comprehensive tests for API key redaction including standard keys, longer keys, short keys, exact boundary cases, and empty strings
 - **APK size trend report** - Added Python script to generate historical APK size analysis across all releases
@@ -67,6 +82,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Presenter logic in `*Presenter.kt`
   - UI composables in `*Content.kt`
   - Improves code organization, maintainability, and follows project architecture patterns
+- Removed duplicate test `parse actual recipe_list json file successfully` from `TrmnlRecipesApiTest` that was already covered by `RecipeListJsonParsingTest`
+- Reduced code duplication in tests by consolidating fake DAO implementations:
+  - `TrmnlDevicesScreenTest` now uses shared `FakeAnnouncementDao` and `FakeBlogPostDao` from `ink.trmnl.android.buddy.content.db` package instead of private inline implementations
 
 ### Fixed
 
@@ -83,30 +101,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Optimized RecipesCatalogPresenterTest performance** - Achieved 97% speed improvement (~36s → ~0.6s) by fixing test patterns, splitting monolithic test into 5 separate tests, and replacing arbitrary delays with proper test scheduler usage
 - **Refactored centralized test fakes** - Consolidated duplicate fake implementations to centralized fakes in `ink.trmnl.android.buddy.fakes`, eliminating ~160 lines of duplicate code across 4 test files. Enhanced fakes with MutableStateFlow for reactive updates, initialHistory/initialTokens parameters, error injection support, and notification helpers.
 
-### Added
-
-- **Unit tests for AnnouncementSyncWorker** - Added 30 tests covering RSS sync, read state preservation, error handling, notifications, and edge cases
-- **Unit tests for WorkerScheduler** - Added 27 tests covering scheduling, rescheduling, cancellation, and constraints for all background workers
-- **Unit tests for LowBatteryNotificationWorker** - Added 22 tests covering notifications, battery thresholds, API errors, and edge cases
-- **FakeTrmnlApiService** - Added reusable fake implementation for testing API interactions across the app
-- **Unit tests for BlogPostSyncWorker** - Added 15 tests covering RSS sync, error handling, notifications, and edge cases
-- **Unit tests for BatteryCollectionWorker** - Added 15 tests covering data collection, API integration, error handling, and edge cases
-- **Unit tests for WorkManagerObserver** - Added 20 tests covering worker monitoring, state tracking, cancellation, and reset functionality
-- **AndroidX Work Testing dependency** - Added `androidx.work:work-testing:2.10.5` for WorkManager unit testing support
-- **Unit tests for TrmnlDevicesScreen presenter** - Added 12 tests covering device loading, error handling, and navigation flows
-- **Unit tests for DeviceDetailScreen presenter** - Added 19 tests covering battery tracking, history, notifications, and user interactions
-- **Unit tests for bookmark management** - Added 13 tests for bookmark repository covering loading, toggling, clearing, and edge cases
-- **Unit tests for AccessTokenScreen and DeviceTokenScreen presenters** - Added 34 tests covering token validation, save/update operations, and edge cases
-- **Unit tests for BlogPostsScreen presenter** - Added 14 tests covering loading, filtering, favorites, refresh, and error handling
-- **Unit tests for AnnouncementsScreen presenter** - Added 15 tests covering loading, filtering, interactions, authentication banner, and embedded mode
-- **Unit tests for ContentHubScreen presenter** - Added 10 tests covering tab switching, unread counts, and navigation
-- **Unit tests for DevelopmentPresenter** - Added 18 tests for development/debug tools covering worker observation, notifications, and triggers
-- **Unit tests for preferences repositories** - Added 26 edge case tests (57 total) for DeviceTokenRepository and UserPreferencesRepository
-- **AndroidX Test Core dependency** - Added `androidx.test:core:1.6.1` for unit testing support (ApplicationProvider)
-- **WorkManager Observability and Debugging** - Enhanced monitoring with WorkManagerObserver, real-time status display, worker cancellation/reset, and structured logging
-- **Optimized image loading with Coil caching** - Configured disk (1% of disk, max 50 MB) and memory cache (10% of app memory) for faster image loading
-- **Unit tests for content module** - Added 65 tests (110 total) covering entities, DAOs, and ContentItem sealed class with fake implementations
-- **VS Code devcontainer** - Added configuration with Java 21, Android SDK, NDK, build tools, VS Code extensions, and automated setup script for consistent development environment
 
 ## [2.6.0] - 2025-11-12
 
