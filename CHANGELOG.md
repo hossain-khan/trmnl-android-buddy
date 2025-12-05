@@ -21,6 +21,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `getCategories()` method to `TrmnlDeviceRepository` with EitherNet's `ApiResult` for type-safe error handling
   - Comprehensive unit tests in `TrmnlCategoriesApiTest` using MockWebServer and AssertK assertions
   - Foundation for recipe filtering by category (see Issue #384)
+- **Category filtering for recipe catalog** - Implemented client-side category filtering for recipes with Material 3 UI
+  - Added `category` field to `AuthorBio` model to support comma-separated category values (e.g., "calendar,custom")
+  - Extended `RecipesCatalogScreen.State` with `availableCategories` and `selectedCategories` fields
+  - Added category selection events: `CategorySelected`, `CategoryDeselected`, `ClearCategoryFilters`
+  - Implemented `filterRecipesByCategories()` with OR matching logic (recipe matches if it has ANY selected category)
+  - Client-side filtering using `remember()` derived state for instant category toggling without API calls
+  - Fetches categories on screen init with non-blocking error handling
+  - Added `CategoryFilterRow` with Material 3 FilterChip components in horizontal scrollable row
+  - Shows "Clear All" chip with close icon when categories are selected for quick deselection
+  - Implemented `FilteredEmptyState` showing selected categories and "Clear Category Filters" button when no recipes match
+  - Material You theme-aware with proper color scheme usage from `MaterialTheme.colorScheme`
+  - Resolves Issue #384
 - **Increased test coverage for Device model** - Added missing unit tests for `isBatteryLow()`, `isWifiWeak()`, `getBatteryStatus()` Low status, and `getWifiStatus()` Weak status in `DeviceModelTest`
 - **Test coverage for PrivacyUtils.redactApiKey()** - Added comprehensive tests for API key redaction including standard keys, longer keys, short keys, exact boundary cases, and empty strings
 - **APK size trend report** - Added Python script to generate historical APK size analysis across all releases
