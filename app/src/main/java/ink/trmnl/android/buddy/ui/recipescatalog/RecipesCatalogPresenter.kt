@@ -53,7 +53,7 @@ class RecipesCatalogPresenter(
     override fun present(): RecipesCatalogScreen.State {
         var allRecipes by remember { mutableStateOf<List<Recipe>>(emptyList()) }
         var searchQuery by remember { mutableStateOf("") }
-        var selectedSort by remember { mutableStateOf(SortOption.NEWEST) }
+        var selectedSort by remember { mutableStateOf(SortOption.POPULARITY) }
         var availableCategories by remember { mutableStateOf<List<String>>(emptyList()) }
         var selectedCategories by remember { mutableStateOf<Set<String>>(emptySet()) }
         var showFilters by remember { mutableStateOf(false) }

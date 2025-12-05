@@ -153,7 +153,7 @@ class RecipesCatalogPresenterTest {
                     loadedState = awaitItem()
                 } while (loadedState.recipes.isEmpty())
 
-                assertThat(loadedState.selectedSort).isEqualTo(SortOption.NEWEST)
+                assertThat(loadedState.selectedSort).isEqualTo(SortOption.POPULARITY)
 
                 // Select popularity sort
                 loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.POPULARITY))
@@ -299,16 +299,16 @@ class RecipesCatalogPresenterTest {
                     loadedState = awaitItem()
                 } while (loadedState.recipes.isEmpty())
 
-                // Initial sort is already NEWEST - default sort was used for initial load
-                assertThat(loadedState.selectedSort).isEqualTo(SortOption.NEWEST)
-                assertThat(repository.lastSortBy).isEqualTo("newest") // Called during initial load
+                // Initial sort is POPULARITY by default
+                assertThat(loadedState.selectedSort).isEqualTo(SortOption.POPULARITY)
+                assertThat(repository.lastSortBy).isEqualTo("popularity") // Called during initial load
 
-                // Change to OLDEST
-                loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.OLDEST))
+                // Change to NEWEST
+                loadedState.eventSink(RecipesCatalogScreen.Event.SortSelected(SortOption.NEWEST))
                 testScheduler.advanceUntilIdle()
 
-                // Repository was called with new sort, but state might not have changed if results are same
-                assertThat(repository.lastSortBy).isEqualTo("oldest")
+                // Repository was called with new sort
+                assertThat(repository.lastSortBy).isEqualTo("newest")
 
                 // Consume any state updates
                 cancelAndIgnoreRemainingEvents()
