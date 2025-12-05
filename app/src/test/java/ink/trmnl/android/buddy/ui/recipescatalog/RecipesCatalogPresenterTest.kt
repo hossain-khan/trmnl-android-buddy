@@ -460,6 +460,43 @@ private class FakeRecipesRepository(
             Result.success(createSampleRecipe(id))
         }
 
+    override suspend fun getCategories(): Result<List<String>> =
+        if (shouldFail) {
+            Result.failure(Exception(errorMessage))
+        } else {
+            Result.success(
+                listOf(
+                    "analytics",
+                    "art",
+                    "calendar",
+                    "comics",
+                    "crm",
+                    "custom",
+                    "discovery",
+                    "ecommerce",
+                    "education",
+                    "email",
+                    "entertainment",
+                    "environment",
+                    "finance",
+                    "games",
+                    "humor",
+                    "images",
+                    "kpi",
+                    "life",
+                    "marketing",
+                    "nature",
+                    "news",
+                    "personal",
+                    "productivity",
+                    "programming",
+                    "sales",
+                    "sports",
+                    "travel",
+                ),
+            )
+        }
+
     /**
      * Set a specific response for a given page number.
      * Useful for testing pagination.

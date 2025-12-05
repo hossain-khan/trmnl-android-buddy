@@ -8,6 +8,7 @@ import com.slack.circuit.test.test
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
@@ -298,4 +299,7 @@ private class FakeApiService(
     ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
     override suspend fun getRecipe(id: Int) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
+
+    override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
+        throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 }

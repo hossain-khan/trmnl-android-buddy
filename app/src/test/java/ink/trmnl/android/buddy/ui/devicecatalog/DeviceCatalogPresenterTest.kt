@@ -12,6 +12,7 @@ import com.slack.circuit.test.test
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
@@ -435,6 +436,9 @@ private open class FakeApiService(
     ): ApiResult<RecipesResponse, ApiError> = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
     override suspend fun getRecipe(id: Int): ApiResult<RecipeDetailResponse, ApiError> =
+        throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
+
+    override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
         throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = deviceModelsResponse

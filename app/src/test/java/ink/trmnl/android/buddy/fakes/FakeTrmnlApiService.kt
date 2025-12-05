@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.fakes
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
@@ -70,4 +71,7 @@ class FakeTrmnlApiService : TrmnlApiService {
 
     override suspend fun getDisplayCurrent(deviceApiKey: String): ApiResult<Display, ApiError> =
         getDisplayCurrentResult ?: throw NotImplementedError("getDisplayCurrentResult not implemented")
+
+    override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
+        throw NotImplementedError("getCategories not implemented")
 }

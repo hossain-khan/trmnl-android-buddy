@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Categories API integration** - Integrated TRMNL `/api/categories` endpoint for dynamic category filtering
+  - Added `CategoriesResponse` model with 27 available plugin categories (analytics, art, calendar, comics, crm, custom, discovery, ecommerce, education, email, entertainment, environment, finance, games, humor, images, kpi, life, marketing, nature, news, personal, productivity, programming, sales, sports, travel)
+  - Added `getCategories()` endpoint to `TrmnlApiService` for fetching category list (no authentication required)
+  - Added `getCategories()` method to `TrmnlDeviceRepository` with EitherNet's `ApiResult` for type-safe error handling
+  - Comprehensive unit tests in `TrmnlCategoriesApiTest` using MockWebServer and AssertK assertions
+  - Foundation for recipe filtering by category (see Issue #384)
 - **Increased test coverage for Device model** - Added missing unit tests for `isBatteryLow()`, `isWifiWeak()`, `getBatteryStatus()` Low status, and `getWifiStatus()` Weak status in `DeviceModelTest`
 - **Test coverage for PrivacyUtils.redactApiKey()** - Added comprehensive tests for API key redaction including standard keys, longer keys, short keys, exact boundary cases, and empty strings
 - **APK size trend report** - Added Python script to generate historical APK size analysis across all releases
