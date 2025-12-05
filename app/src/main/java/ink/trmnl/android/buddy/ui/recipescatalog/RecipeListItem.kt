@@ -7,8 +7,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -112,11 +118,38 @@ fun RecipeListItem(
                 )
             },
             supportingContent = {
-                Text(
-                    text = "${recipe.stats.installs} installs • ${recipe.stats.forks} forks",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                Column {
+                    // Stats text
+                    Text(
+                        text = "${recipe.stats.installs} installs • ${recipe.stats.forks} forks",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    // Category tag below stats
+                    val categories =
+                        recipe.authorBio
+                            ?.category
+                            ?.split(",")
+                            ?.map { it.trim() }
+                            ?.filter { it.isNotEmpty() }
+                            ?: emptyList()
+
+                    if (categories.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = categories.first().replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            modifier =
+                                Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                                        shape = MaterialTheme.shapes.extraSmall,
+                                    ).padding(horizontal = 6.dp, vertical = 2.dp),
+                        )
+                    }
+                }
             },
             trailingContent = {
                 // Animated bookmark button
@@ -187,6 +220,10 @@ private fun RecipeListItemPreview() {
                     name = "Weather Chum",
                     iconUrl = null,
                     screenshotUrl = null,
+                    authorBio =
+                        ink.trmnl.android.buddy.api.models.AuthorBio(
+                            category = "weather,custom",
+                        ),
                     stats = RecipeStats(installs = 1230, forks = 1),
                 ),
             isBookmarked = false,
@@ -207,6 +244,10 @@ private fun RecipeListItemWithHighStatsPreview() {
                     name = "Matrix",
                     iconUrl = null,
                     screenshotUrl = null,
+                    authorBio =
+                        ink.trmnl.android.buddy.api.models.AuthorBio(
+                            category = "entertainment,programming",
+                        ),
                     stats = RecipeStats(installs = 25, forks = 176),
                 ),
             isBookmarked = false,
@@ -227,6 +268,10 @@ private fun RecipeListItemBookmarkedPreview() {
                     name = "Bookmarked Recipe",
                     iconUrl = null,
                     screenshotUrl = null,
+                    authorBio =
+                        ink.trmnl.android.buddy.api.models.AuthorBio(
+                            category = "productivity",
+                        ),
                     stats = RecipeStats(installs = 500, forks = 50),
                 ),
             isBookmarked = true,
