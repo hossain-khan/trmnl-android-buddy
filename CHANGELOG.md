@@ -27,6 +27,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implemented `FilteredEmptyState` showing selected categories and "Clear Category Filters" button when no recipes match
   - Material You theme-aware with proper color scheme usage from `MaterialTheme.colorScheme`
   - Resolves Issue #384
+- **Collapsible filters for recipes catalog** - Added space-saving collapsible filter UI to reduce vertical space usage
+  - Filter toggle button positioned next to search bar with filter icon
+  - Filters (sort + category rows) can be shown/hidden with single tap
+  - Default state: filters hidden to maximize recipe list space
+  - Toggle icon switches between `filter_alt` (collapsed) and `filter_alt_off` (expanded) for clear visual feedback
+  - Icon tint changes to primary color when any filters are active (categories selected or sort changed from default)
+  - Smooth expand/collapse animation using `AnimatedVisibility` with `expandVertically`/`shrinkVertically`
+  - Animations happen in place below search bar without disrupting layout
+  - Improves mobile UX by reducing clutter and maximizing content visibility
 - **Increased test coverage for Device model** - Added missing unit tests for `isBatteryLow()`, `isWifiWeak()`, `getBatteryStatus()` Low status, and `getWifiStatus()` Weak status in `DeviceModelTest`
 - **Test coverage for PrivacyUtils.redactApiKey()** - Added comprehensive tests for API key redaction including standard keys, longer keys, short keys, exact boundary cases, and empty strings
 - **APK size trend report** - Added Python script to generate historical APK size analysis across all releases
