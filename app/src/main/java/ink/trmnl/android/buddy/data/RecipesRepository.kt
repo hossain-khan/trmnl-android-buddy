@@ -38,6 +38,21 @@ interface RecipesRepository {
      * @return Result containing Recipe or error
      */
     suspend fun getRecipe(id: Int): Result<Recipe>
+
+    /**
+     * Get all available plugin categories.
+     *
+     * Returns a list of valid category identifiers that can be used for filtering
+     * recipes and improving search exposure. This endpoint does not require authentication.
+     *
+     * Categories include: analytics, art, calendar, comics, crm, custom, discovery,
+     * ecommerce, education, email, entertainment, environment, finance, games, humor,
+     * images, kpi, life, marketing, nature, news, personal, productivity, programming,
+     * sales, sports, and travel.
+     *
+     * @return Result containing list of category strings or error
+     */
+    suspend fun getCategories(): Result<List<String>>
 }
 
 /**
@@ -80,6 +95,27 @@ class RecipesRepositoryImpl(
             is ApiResult.Failure.HttpFailure ->
                 Result.failure(
                     Exception("HTTP ${result.code}: Failed to fetch recipe $id"),
+                )
+            is ApiResult.Failure.NetworkFailure ->
+                Result.failure(
+                    Exception("Network error: ${result.error.message}"),
+                )
+            is ApiResult.Failure.ApiFailure ->
+                Result.failure(
+                    Exception("API error: ${result.error}"),
+                )
+            is ApiResult.Failure.UnknownFailure ->
+                Result.failure(
+                    Exception("Unknown error: ${result.error.message}"),
+                )
+        }
+
+    override suspend fun getCategories(): Result<List<String>> =
+        when (val result = apiService.getCategories()) {
+            is ApiResult.Success -> Result.success(result.value.data)
+            is ApiResult.Failure.HttpFailure ->
+                Result.failure(
+                    Exception("HTTP ${result.code}: Failed to fetch categories"),
                 )
             is ApiResult.Failure.NetworkFailure ->
                 Result.failure(
