@@ -805,7 +805,9 @@ private fun createSampleRecipesResponse(
     currentPage: Int = 1,
     hasNext: Boolean = true,
 ): RecipesResponse {
-    val recipes = (1..count).map { createSampleRecipe(it) }
+    // Generate unique IDs based on page to avoid duplicates when testing pagination
+    val startId = (currentPage - 1) * 25 + 1
+    val recipes = (startId until startId + count).map { createSampleRecipe(it) }
     return RecipesResponse(
         data = recipes,
         total = 100,

@@ -256,7 +256,7 @@ class RecipesCatalogPresenter(
                                 onLoadingStart = { isLoadingMore = true },
                                 onLoadingEnd = { isLoadingMore = false },
                                 onSuccess = { response ->
-                                    allRecipes = allRecipes + response.data
+                                    allRecipes = (allRecipes + response.data).distinctBy { it.id }
                                     currentPage = response.currentPage
                                     hasMorePages = response.nextPageUrl != null
                                     totalRecipes = response.total

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Recipe Catalog Crash Fix**: Fixed app crash when browsing Recipe Catalog list with duplicate recipe IDs
+  - Error: `IllegalArgumentException: Key "182990" was already used` in LazyColumn
+  - Root cause: API pagination could return duplicate recipes across pages
+  - Solution: Filter out duplicate recipes by ID when loading more pages using `distinctBy { it.id }`
+
 ## [2.7.0] - 2025-12-05
 
 ### Added
