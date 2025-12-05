@@ -20,6 +20,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Ignore
 import org.junit.Test
 
+/** Default number of recipes per page - matches DEFAULT_PER_PAGE in RecipesCatalogPresenter */
+private const val DEFAULT_PER_PAGE = 25
+
 /**
  * Tests for RecipesCatalogScreen presenter.
  *
@@ -806,14 +809,14 @@ private fun createSampleRecipesResponse(
     hasNext: Boolean = true,
 ): RecipesResponse {
     // Generate unique IDs based on page to avoid duplicates when testing pagination
-    val startId = (currentPage - 1) * 25 + 1
+    val startId = (currentPage - 1) * DEFAULT_PER_PAGE + 1
     val recipes = (startId until startId + count).map { createSampleRecipe(it) }
     return RecipesResponse(
         data = recipes,
         total = 100,
-        from = (currentPage - 1) * 25 + 1,
-        to = (currentPage - 1) * 25 + count,
-        perPage = 25,
+        from = (currentPage - 1) * DEFAULT_PER_PAGE + 1,
+        to = (currentPage - 1) * DEFAULT_PER_PAGE + count,
+        perPage = DEFAULT_PER_PAGE,
         currentPage = currentPage,
         prevPageUrl = if (currentPage > 1) "https://usetrmnl.com/recipes.json?page=${currentPage - 1}" else null,
         nextPageUrl = if (hasNext) "https://usetrmnl.com/recipes.json?page=${currentPage + 1}" else null,
