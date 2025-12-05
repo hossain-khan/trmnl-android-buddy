@@ -10,12 +10,16 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,7 +51,7 @@ import ink.trmnl.android.buddy.ui.utils.SmartInvertTransformation
 /**
  * List item component for displaying a single recipe.
  *
- * Shows recipe icon, name, statistics (installs and forks), and bookmark button.
+ * Shows recipe icon, name, statistics (installs and forks), category tags, and bookmark button.
  * Uses Material 3 Card and ListItem for consistent styling.
  *
  * @param recipe The recipe to display
@@ -56,6 +60,7 @@ import ink.trmnl.android.buddy.ui.utils.SmartInvertTransformation
  * @param onBookmarkClick Callback when the bookmark button is clicked
  * @param modifier Optional modifier for the component
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecipeListItem(
     recipe: Recipe,
@@ -126,7 +131,7 @@ fun RecipeListItem(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
 
-                    // Category tag below stats
+                    // Category tags below stats
                     val categories =
                         recipe.authorBio
                             ?.category
@@ -137,17 +142,24 @@ fun RecipeListItem(
 
                     if (categories.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = categories.first().replaceFirstChar { it.uppercase() },
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer,
-                            modifier =
-                                Modifier
-                                    .background(
-                                        color = MaterialTheme.colorScheme.tertiaryContainer,
-                                        shape = MaterialTheme.shapes.extraSmall,
-                                    ).padding(horizontal = 6.dp, vertical = 2.dp),
-                        )
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            categories.forEach { category ->
+                                Text(
+                                    text = category.replaceFirstChar { it.uppercase() },
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                    modifier =
+                                        Modifier
+                                            .background(
+                                                color = MaterialTheme.colorScheme.tertiaryContainer,
+                                                shape = MaterialTheme.shapes.extraSmall,
+                                            ).padding(horizontal = 6.dp, vertical = 2.dp),
+                                )
+                            }
+                        }
                     }
                 }
             },
