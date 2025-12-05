@@ -123,6 +123,23 @@ fun RecipesCatalogContent(
                 },
             )
 
+            // Category filter chips
+            if (state.availableCategories.isNotEmpty()) {
+                CategoryFilterRow(
+                    availableCategories = state.availableCategories,
+                    selectedCategories = state.selectedCategories,
+                    onCategorySelected = { category ->
+                        state.eventSink(RecipesCatalogScreen.Event.CategorySelected(category))
+                    },
+                    onCategoryDeselected = { category ->
+                        state.eventSink(RecipesCatalogScreen.Event.CategoryDeselected(category))
+                    },
+                    onClearAll = {
+                        state.eventSink(RecipesCatalogScreen.Event.ClearCategoryFilters)
+                    },
+                )
+            }
+
             // Content area
             when {
                 state.isLoading -> {
@@ -133,6 +150,15 @@ fun RecipesCatalogContent(
                         errorMessage = state.error,
                         onRetryClick = {
                             state.eventSink(RecipesCatalogScreen.Event.RetryClicked)
+                        },
+                    )
+                }
+                state.recipes.isEmpty() && state.selectedCategories.isNotEmpty() -> {
+                    // Empty filtered results - show message with selected categories
+                    FilteredEmptyState(
+                        selectedCategories = state.selectedCategories,
+                        onClearFilters = {
+                            state.eventSink(RecipesCatalogScreen.Event.ClearCategoryFilters)
                         },
                     )
                 }
@@ -238,6 +264,63 @@ private fun SortFilterRow(
                 selected = selectedSort == sortOption,
                 onClick = { onSortSelected(sortOption) },
                 label = { Text(sortOption.displayName) },
+            )
+        }
+    }
+}
+
+/**
+ * Horizontal scrollable row of category filter chips.
+ *
+ * Shows all available categories with selection state. Adds a "Clear All" chip
+ * when categories are selected for quick deselection.
+ */
+@Composable
+private fun CategoryFilterRow(
+    availableCategories: List<String>,
+    selectedCategories: Set<String>,
+    onCategorySelected: (String) -> Unit,
+    onCategoryDeselected: (String) -> Unit,
+    onClearAll: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        // Clear All chip (only shown when categories are selected)
+        if (selectedCategories.isNotEmpty()) {
+            FilterChip(
+                selected = false,
+                onClick = onClearAll,
+                label = { Text("Clear All") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.close_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                },
+            )
+        }
+
+        // Category filter chips
+        availableCategories.forEach { category ->
+            val isSelected = category in selectedCategories
+            FilterChip(
+                selected = isSelected,
+                onClick = {
+                    if (isSelected) {
+                        onCategoryDeselected(category)
+                    } else {
+                        onCategorySelected(category)
+                    }
+                },
+                label = { Text(category.replaceFirstChar { it.uppercase() }) },
             )
         }
     }
@@ -360,6 +443,59 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+/**
+ * Empty state when no recipes match the selected category filters.
+ *
+ * Shows the selected categories and provides a button to clear filters.
+ */
+@Composable
+private fun FilteredEmptyState(
+    selectedCategories: Set<String>,
+    onClearFilters: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.recipe_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "No recipes found",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "No recipes match the selected categories:",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = selectedCategories.joinToString(", ") { it.replaceFirstChar { char -> char.uppercase() } },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 32.dp),
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(onClick = onClearFilters) {
+            Text("Clear Category Filters")
+        }
     }
 }
 
