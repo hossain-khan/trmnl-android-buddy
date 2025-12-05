@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2025-12-05
+
 ### Added
 
 - **Categories API integration** - Integrated TRMNL `/api/categories` endpoint for dynamic category filtering
@@ -1229,7 +1231,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.6.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.0...HEAD
+[2.7.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.6.0...2.7.0
 [2.6.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.5.0...2.6.0
 [2.5.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.3.0...2.4.0
