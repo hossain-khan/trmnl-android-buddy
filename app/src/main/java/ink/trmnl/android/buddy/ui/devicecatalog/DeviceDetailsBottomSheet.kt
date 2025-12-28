@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.devicecatalog
 
+import android.content.ClipData
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,18 +20,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import kotlinx.coroutines.launch
 
 /**
  * Bottom sheet showing device details with copy functionality.
@@ -49,7 +52,8 @@ fun DeviceDetailsBottomSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier =
@@ -162,8 +166,11 @@ fun DeviceDetailsBottomSheet(
         ) {
             OutlinedButton(
                 onClick = {
-                    val details = buildDeviceDetailsText(device)
-                    clipboardManager.setText(AnnotatedString(details))
+                    scope.launch {
+                        val details = buildDeviceDetailsText(device)
+                        val clipData = ClipData.newPlainText("Device Details", details)
+                        clipboard.setClipEntry(ClipEntry(clipData))
+                    }
                 },
                 modifier = Modifier.weight(1f),
             ) {
