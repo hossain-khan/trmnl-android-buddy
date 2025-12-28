@@ -145,7 +145,7 @@ fun DeviceDetailsBottomSheet(
                         label = "Color Palettes",
                         value = device.paletteIds.joinToString(", "),
                     )
-                    DetailRow(label = "Published", value = device.publishedAt.take(10))
+                    DetailRow(label = "Published", value = device.publishedAt?.take(10) ?: "Unknown")
                 }
             }
 
@@ -236,7 +236,7 @@ private fun buildDeviceDetailsText(device: DeviceModel): String =
         appendLine("Offset: (${device.offsetX}, ${device.offsetY})")
         appendLine("Device Kind: ${device.kind.uppercase()}")
         appendLine("Color Palettes: ${device.paletteIds.joinToString(", ")}")
-        appendLine("Published: ${device.publishedAt}")
+        appendLine("Published: ${device.publishedAt ?: "Unknown"}")
     }
 
 // ============================================

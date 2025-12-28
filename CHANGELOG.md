@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Device list loading error**: Fixed app crash when loading device models with missing `published_at` field
+  - Made `published_at` field optional (nullable) in `DeviceModel` to handle API responses that don't include this field
+  - Added defensive deserialization with default value `null` for missing `published_at`
+  - Added unit tests for missing `published_at` field scenarios and mixed presence across models
+  - Prevents crash with error: "Field 'published_at' is required for type with serial name 'ink.trmnl.android.buddy.api.models.DeviceModel', but it was missing"
+
 ## [2.7.1] - 2025-12-05
 
 ### Fixed

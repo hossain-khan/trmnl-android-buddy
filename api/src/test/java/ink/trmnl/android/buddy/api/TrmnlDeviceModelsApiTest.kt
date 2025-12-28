@@ -270,6 +270,121 @@ class TrmnlDeviceModelsApiTest : BaseApiTest() {
         assertThat(models[2].getSpecsSummary()).isEqualTo("1200×820 • 8 colors • 3-bit")
     }
 
+    @Test
+    fun `getDeviceModels handles missing published_at field`() =
+        runTest {
+            // Given: Mock server returns response with missing published_at field
+            val responseBody =
+                """
+                {
+                  "data": [
+                    {
+                      "name": "og_png",
+                      "label": "TRMNL OG (1-bit)",
+                      "description": "TRMNL OG (1-bit)",
+                      "width": 800,
+                      "height": 480,
+                      "colors": 2,
+                      "bit_depth": 1,
+                      "scale_factor": 1.0,
+                      "rotation": 0,
+                      "mime_type": "image/png",
+                      "offset_x": 0,
+                      "offset_y": 0,
+                      "kind": "trmnl",
+                      "palette_ids": ["bw"]
+                    }
+                  ]
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .setHeader("Content-Type", "application/json"),
+            )
+
+            // When: Calling getDeviceModels
+            val result = apiService.getDeviceModels("Bearer test_token")
+
+            // Then: Response should be successful and published_at should be null
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val success = result as ApiResult.Success
+            assertThat(success.value.data).hasSize(1)
+            assertThat(success.value.data[0].publishedAt).isEqualTo(null)
+            assertThat(success.value.data[0].name).isEqualTo("og_png")
+        }
+
+    @Test
+    fun `getDeviceModels handles mixed presence of published_at field`() =
+        runTest {
+            // Given: Mock server returns response with some models having published_at and some not
+            val responseBody =
+                """
+                {
+                  "data": [
+                    {
+                      "name": "og_png",
+                      "label": "TRMNL OG (1-bit)",
+                      "description": "TRMNL OG (1-bit)",
+                      "width": 800,
+                      "height": 480,
+                      "colors": 2,
+                      "bit_depth": 1,
+                      "scale_factor": 1.0,
+                      "rotation": 0,
+                      "mime_type": "image/png",
+                      "offset_x": 0,
+                      "offset_y": 0,
+                      "published_at": "2024-01-01T00:00:00.000Z",
+                      "kind": "trmnl",
+                      "palette_ids": ["bw"]
+                    },
+                    {
+                      "name": "amazon_kindle_2024",
+                      "label": "Amazon Kindle 2024",
+                      "description": "Amazon Kindle 2024",
+                      "width": 1400,
+                      "height": 840,
+                      "colors": 256,
+                      "bit_depth": 8,
+                      "scale_factor": 1.75,
+                      "rotation": 90,
+                      "mime_type": "image/png",
+                      "offset_x": 75,
+                      "offset_y": 25,
+                      "kind": "kindle",
+                      "palette_ids": ["gray-256"]
+                    }
+                  ]
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .setHeader("Content-Type", "application/json"),
+            )
+
+            // When: Calling getDeviceModels
+            val result = apiService.getDeviceModels("Bearer test_token")
+
+            // Then: Response should be successful with both models
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val success = result as ApiResult.Success
+            assertThat(success.value.data).hasSize(2)
+
+            // First model should have published_at
+            assertThat(success.value.data[0].publishedAt).isEqualTo("2024-01-01T00:00:00.000Z")
+            assertThat(success.value.data[0].name).isEqualTo("og_png")
+
+            // Second model should have null published_at
+            assertThat(success.value.data[1].publishedAt).isEqualTo(null)
+            assertThat(success.value.data[1].name).isEqualTo("amazon_kindle_2024")
+        }
+
     /**
      * Helper function to create test device model with customizable properties.
      */
@@ -286,7 +401,7 @@ class TrmnlDeviceModelsApiTest : BaseApiTest() {
         mimeType: String = "image/png",
         offsetX: Int = 0,
         offsetY: Int = 0,
-        publishedAt: String = "2024-01-01T00:00:00.000Z",
+        publishedAt: String? = "2024-01-01T00:00:00.000Z",
         kind: String = "trmnl",
         paletteIds: List<String> = listOf("bw"),
     ) = ink.trmnl.android.buddy.api.models.DeviceModel(
