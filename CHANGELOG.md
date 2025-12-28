@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.2] - 2025-12-28
+
 ### Fixed
 
 - **Device list loading error**: Fixed app crash when loading device models with missing `published_at` field
@@ -1248,7 +1250,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.1...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.2...HEAD
+[2.7.2]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.1...2.7.2
 [2.7.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.0...2.7.1
 [2.7.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.6.0...2.7.0
 [2.6.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.5.0...2.6.0
