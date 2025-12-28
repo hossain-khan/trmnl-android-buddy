@@ -21,7 +21,7 @@ import kotlinx.serialization.Serializable
  * @property mimeType Image MIME type (e.g., "image/png")
  * @property offsetX Horizontal offset in pixels
  * @property offsetY Vertical offset in pixels
- * @property publishedAt ISO 8601 timestamp when the model was published
+ * @property publishedAt ISO 8601 timestamp when the model was published (optional, nullable)
  * @property kind Device category: "trmnl" (official), "kindle" (Amazon), or "byod" (third-party)
  * @property paletteIds List of supported color palette IDs
  */
@@ -52,7 +52,7 @@ data class DeviceModel(
     @SerialName("offset_y")
     val offsetY: Int,
     @SerialName("published_at")
-    val publishedAt: String,
+    val publishedAt: String? = null,
     @SerialName("kind")
     val kind: String,
     @SerialName("palette_ids")
