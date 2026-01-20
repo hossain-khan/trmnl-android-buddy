@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,10 +26,12 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -42,6 +45,7 @@ import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.utils.SmartInvertTransformation
+import ink.trmnl.android.buddy.ui.utils.htmlToAnnotatedString
 
 /**
  * Bottom sheet displaying detailed information about a recipe.
@@ -220,10 +224,35 @@ fun RecipeDetailBottomSheet(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+
+                // Render HTML description with clickable links
+                val uriHandler = LocalUriHandler.current
+                val linkColor = MaterialTheme.colorScheme.primary
+                val annotatedDescription =
+                    remember(description, linkColor) {
+                        htmlToAnnotatedString(
+                            html = description,
+                            linkColor = linkColor,
+                        )
+                    }
+
+                ClickableText(
+                    text = annotatedDescription,
+                    style =
+                        MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                    onClick = { offset ->
+                        annotatedDescription
+                            .getStringAnnotations(
+                                tag = "URL",
+                                start = offset,
+                                end = offset,
+                            ).firstOrNull()
+                            ?.let { annotation ->
+                                uriHandler.openUri(annotation.item)
+                            }
+                    },
                 )
             }
 
