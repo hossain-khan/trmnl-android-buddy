@@ -24,6 +24,9 @@ import kotlinx.serialization.Serializable
  * @property publishedAt ISO 8601 timestamp when the model was published (optional, nullable)
  * @property kind Device category: "trmnl" (official), "kindle" (Amazon), or "byod" (third-party)
  * @property paletteIds List of supported color palette IDs
+ * @property imageSizeLimit Maximum file size in bytes for images (optional, nullable)
+ * @property imageUploadSupported Whether image upload is supported for this device (optional, nullable)
+ * @property css Device styling configuration for web display (optional, nullable)
  */
 @Serializable
 data class DeviceModel(
@@ -57,6 +60,12 @@ data class DeviceModel(
     val kind: String,
     @SerialName("palette_ids")
     val paletteIds: List<String>,
+    @SerialName("image_size_limit")
+    val imageSizeLimit: Int? = null,
+    @SerialName("image_upload_supported")
+    val imageUploadSupported: Boolean? = null,
+    @SerialName("css")
+    val css: DeviceCss? = null,
 ) {
     /**
      * Get device specifications summary for display.
@@ -64,3 +73,33 @@ data class DeviceModel(
      */
     fun getSpecsSummary(): String = "$width×$height • $colors colors • $bitDepth-bit"
 }
+
+/**
+ * Device CSS configuration for web display.
+ *
+ * Contains styling information for rendering device displays on the web.
+ *
+ * @property classes CSS class names for device styling
+ * @property variables CSS custom property variables as key-value pairs
+ */
+@Serializable
+data class DeviceCss(
+    @SerialName("classes")
+    val classes: DeviceCssClasses,
+    @SerialName("variables")
+    val variables: List<List<String>>,
+)
+
+/**
+ * CSS class names for device styling.
+ *
+ * @property device Device-specific CSS class name
+ * @property size Size-specific CSS class name
+ */
+@Serializable
+data class DeviceCssClasses(
+    @SerialName("device")
+    val device: String,
+    @SerialName("size")
+    val size: String,
+)

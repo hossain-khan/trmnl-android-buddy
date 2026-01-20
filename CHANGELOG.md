@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **New DeviceModel API fields**: Added support for three new API fields in `DeviceModel` data class
+  - `imageSizeLimit` (Int?): Maximum file size in bytes for images (optional, nullable)
+  - `imageUploadSupported` (Boolean?): Flag indicating if image upload is supported for the device (optional, nullable)
+  - `css` (DeviceCss?): Device styling configuration for web display (optional, nullable)
+  - Created new data classes: `DeviceCss` and `DeviceCssClasses` to handle CSS configuration structure
+  - Added comprehensive unit tests for JSON deserialization with new optional fields
+  - Tests verify backward compatibility with missing fields (all new fields default to null)
+  - Tests cover mixed presence of fields across multiple device models
+  - Maintains full backward compatibility with existing API responses
+
 ## [2.7.2] - 2025-12-28
 
 ### Fixed
