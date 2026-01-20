@@ -34,6 +34,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 /**
  * Bottom sheet showing device details with copy functionality.
@@ -155,7 +156,7 @@ fun DeviceDetailsBottomSheet(
                     device.imageSizeLimit?.let { limit ->
                         DetailRow(
                             label = "Image Size Limit",
-                            value = "${(limit + 512) / 1024} KB",
+                            value = "${bytesToKilobytes(limit)} KB",
                         )
                     }
 
@@ -262,12 +263,20 @@ private fun buildDeviceDetailsText(device: DeviceModel): String =
 
         // Image upload capabilities
         device.imageSizeLimit?.let { limit ->
-            appendLine("Image Size Limit: ${(limit + 512) / 1024} KB")
+            appendLine("Image Size Limit: ${bytesToKilobytes(limit)} KB")
         }
         device.imageUploadSupported?.let { supported ->
             appendLine("Image Upload: ${if (supported) "✓ Supported" else "Not Supported"}")
         }
     }
+
+/**
+ * Convert bytes to kilobytes using proper rounding.
+ *
+ * @param bytes Size in bytes
+ * @return Size in kilobytes (rounded)
+ */
+private fun bytesToKilobytes(bytes: Int): Int = (bytes.toDouble() / 1024).roundToInt()
 
 // ============================================
 // Composable Previews
