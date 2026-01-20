@@ -155,7 +155,7 @@ fun DeviceDetailsBottomSheet(
                     device.imageSizeLimit?.let { limit ->
                         DetailRow(
                             label = "Image Size Limit",
-                            value = "${limit / 1024} KB",
+                            value = "${(limit + 512) / 1024} KB",
                         )
                     }
 
@@ -262,7 +262,7 @@ private fun buildDeviceDetailsText(device: DeviceModel): String =
 
         // Image upload capabilities
         device.imageSizeLimit?.let { limit ->
-            appendLine("Image Size Limit: ${limit / 1024} KB")
+            appendLine("Image Size Limit: ${(limit + 512) / 1024} KB")
         }
         device.imageUploadSupported?.let { supported ->
             appendLine("Image Upload: ${if (supported) "✓ Supported" else "Not Supported"}")
