@@ -108,7 +108,7 @@ fun RecipeDetailBottomSheet(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.fork_right_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        painter = painterResource(R.drawable.fork_right_24dp_999999_fill0_wght400_grad0_opsz24),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp),

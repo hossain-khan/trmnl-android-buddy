@@ -1,0 +1,1880 @@
+{
+  "data": [
+    {
+      "id": 227463,
+      "name": "One Forgotten Default",
+      "published_at": "2026-01-20T20:05:46.890Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/5de6ivqo2sxkr7h0wds9yv0boidl",
+      "icon_content_type": "image/svg+xml",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/zheayxnvzp868qtxe94vor8ndzs7?response-content-disposition=inline%3B%20filename%3D%22plugin-096c9a%22%3B%20filename%2A%3DUTF-8%27%27plugin-096c9a\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=73b5e0b73c7ea589c3f7b744670b7b8680b410557eab85f544bc456532f5d58d",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "field_type": "author_bio",
+        "name": "About This Plugin",
+        "description": "One Forgotten Default displays a single, carefully chosen assumption — followed by the reason it might not be true. Designed for reflection rather than productivity, this plugin offers a quiet mental reset during your day. Each message is short, intentional, and meant to be read slowly.\u003cbr /\u003e\u003cbr /\u003e Perfect for:\u003cbr /\u003e * moments of pause\u003cbr /\u003e * desks, kitchens, or shared spaces\u003cbr /\u003e * anyone who enjoys calm, thoughtful prompts instead of notifications\u003cbr /\u003e\u003cbr /\u003e Updated daily. No interaction required.\u003cbr /\u003e\u003cbr /\u003e One Forgotten Default was created by Herre, sometimes the boss at Verotopia.",
+        "category": "life",
+        "email_address": "trmnl@verotopia.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "field_type": "author_bio",
+          "name": "About This Plugin",
+          "description": "One Forgotten Default displays a single, carefully chosen assumption — followed by the reason it might not be true. Designed for reflection rather than productivity, this plugin offers a quiet mental reset during your day. Each message is short, intentional, and meant to be read slowly.\u003cbr /\u003e\u003cbr /\u003e Perfect for:\u003cbr /\u003e * moments of pause\u003cbr /\u003e * desks, kitchens, or shared spaces\u003cbr /\u003e * anyone who enjoys calm, thoughtful prompts instead of notifications\u003cbr /\u003e\u003cbr /\u003e Updated daily. No interaction required.\u003cbr /\u003e\u003cbr /\u003e One Forgotten Default was created by Herre, sometimes the boss at Verotopia.",
+          "category": "life",
+          "email_address": "trmnl@verotopia.com"
+        }
+      ],
+      "stats": {
+        "installs": 3,
+        "forks": 0
+      }
+    },
+    {
+      "id": 226391,
+      "name": "Lyrics",
+      "published_at": "2026-01-20T19:34:06.124Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/p0i66799sr2ngaguydldsr8p64nr",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/b9awlaubc68bhb4lgiw5i75rblo0?response-content-disposition=inline%3B%20filename%3D%22plugin-83126f%22%3B%20filename%2A%3DUTF-8%27%27plugin-83126f\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=a6b74522e39d656650ce176e2f345bd5acc235f3c07933e8c0a2be41cf5cba54",
+      "author_bio": {
+        "keyname": "author_details",
+        "name": "About This Plugin",
+        "category": "entertainment",
+        "field_type": "author_bio",
+        "description": "Randomly displays lyrics from a song performed by your favourite artists.\u003cbr/\u003e\u003cbr/\u003eData retrieved from MusicBrainz and LRCLIB.",
+        "github_url": "https://github.com/r4wizard",
+        "email_address": "peter@shadowacre.ltd"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_details",
+          "name": "About This Plugin",
+          "category": "entertainment",
+          "field_type": "author_bio",
+          "description": "Randomly displays lyrics from a song performed by your favourite artists.\u003cbr/\u003e\u003cbr/\u003eData retrieved from MusicBrainz and LRCLIB.",
+          "github_url": "https://github.com/r4wizard",
+          "email_address": "peter@shadowacre.ltd"
+        },
+        {
+          "keyname": "artists",
+          "field_type": "multi_string",
+          "name": "Artist",
+          "description": "A list of artists to retrieve songs from",
+          "placeholder": "Outkast"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 0
+      }
+    },
+    {
+      "id": 227481,
+      "name": "DigitalOcean Status",
+      "published_at": "2026-01-20T19:28:09.422Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/stpy4tmtbeybftqqfivmrqy3e4k1",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/764mdu3pf3429x0kyc5pw2l0eqbc?response-content-disposition=inline%3B%20filename%3D%22plugin-9143d1%22%3B%20filename%2A%3DUTF-8%27%27plugin-9143d1\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=b1be35b68d76860027d58bfe1ab155ab546f07d690a36a88cc5c3e8f71449435",
+      "author_bio": {
+        "keyname": "author_details",
+        "name": "About This Plugin",
+        "category": "programming,analytics",
+        "field_type": "author_bio",
+        "description": "Monitor the status of DigitalOcean services and keep ahead of any downtime.",
+        "github_url": "https://github.com/r4wizard",
+        "email_address": "peter@shadowacre.ltd"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_details",
+          "name": "About This Plugin",
+          "category": "programming,analytics",
+          "field_type": "author_bio",
+          "description": "Monitor the status of DigitalOcean services and keep ahead of any downtime.",
+          "github_url": "https://github.com/r4wizard",
+          "email_address": "peter@shadowacre.ltd"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 0
+      }
+    },
+    {
+      "id": 225183,
+      "name": "Puget Sound Transit Nearby",
+      "published_at": "2026-01-20T11:11:25.841Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/zzccysij1k8a2hd1cebcwzgw5p2z",
+      "icon_content_type": "image/svg+xml",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/9gs5zkw57b7b8ryxzastiknxg9vy?response-content-disposition=inline%3B%20filename%3D%22plugin-0ef9ca%22%3B%20filename%2A%3DUTF-8%27%27plugin-0ef9ca\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=414ae40ab3642c9ed55e81e125d2df0021074ee9a8f2105369f709b036c307cc",
+      "author_bio": {
+        "keyname": "author_bio",
+        "field_type": "author_bio",
+        "name": "About This Plugin",
+        "description": "Dashboard public transit information close to you. Supports all public transit types in Puget Sound, Washington, USA: bus, lightrail, street car, monorail, Amtrak, ferries and more. Supports multiple layouts. \u003ca href=\"https://github.com/blueset/trmnl-recipes/tree/master/transit\" class=\"underline\" target=\"_blank\"\u003eCheck out previews of each layout\u003c/a\u003e.",
+        "category": "personal,travel",
+        "github_url": "https://github.com/blueset/trmnl-recipes"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "field_type": "author_bio",
+          "name": "About This Plugin",
+          "description": "Dashboard public transit information close to you. Supports all public transit types in Puget Sound, Washington, USA: bus, lightrail, street car, monorail, Amtrak, ferries and more. Supports multiple layouts. \u003ca href=\"https://github.com/blueset/trmnl-recipes/tree/master/transit\" class=\"underline\" target=\"_blank\"\u003eCheck out previews of each layout\u003c/a\u003e.",
+          "category": "personal,travel",
+          "github_url": "https://github.com/blueset/trmnl-recipes"
+        },
+        {
+          "keyname": "key",
+          "field_type": "string",
+          "name": "OneBusAway API Key",
+          "help_text": "Check \u003ca href=\"https://www.soundtransit.org/help-contacts/business-information/open-transit-data-otd\" class=\"underline\" target=\"_blank\"\u003ehttps://www.soundtransit.org/help-contacts/business-information/open-transit-data-otd\u003c/a\u003e for details on obtaining an API key."
+        },
+        {
+          "keyname": "lat",
+          "field_type": "string",
+          "name": "Latitude",
+          "help_text": "Find yours \u003ca href=\"https://www.latlong.net/\" class=\"underline\" target=\"_blank\"\u003ehere\u003c/a\u003e."
+        },
+        {
+          "keyname": "lon",
+          "field_type": "string",
+          "name": "Longitude",
+          "help_text": "Find yours \u003ca href=\"https://www.latlong.net/\" class=\"underline\" target=\"_blank\"\u003ehere\u003c/a\u003e."
+        },
+        {
+          "keyname": "radius",
+          "field_type": "number",
+          "name": "Radius in meters",
+          "description": "Radius from origin to look for stops. 500m by default.",
+          "optional": true
+        },
+        {
+          "keyname": "hourCycle",
+          "field_type": "select",
+          "name": "Time format",
+          "default": "h23",
+          "optional": true,
+          "options": [
+            {
+              "24-hour": "h23"
+            },
+            {
+              "12-hour": "h12"
+            }
+          ]
+        },
+        {
+          "keyname": "distanceUnit",
+          "field_type": "select",
+          "name": "Distance Unit",
+          "description": "Unit of distance to show on screen",
+          "default": "meter",
+          "optional": true,
+          "options": [
+            "meter",
+            "feet"
+          ]
+        },
+        {
+          "keyname": "stopIds",
+          "field_type": "multi_string",
+          "name": "Stops to show",
+          "description": "Specify stops to show, all stops near by are shown by default.",
+          "help_text": "Enter stop IDs, one ID in a row. Check \u003ca href=\"https://pugetsound.onebusaway.org/\" class=\"underline\" target=\"_blank\"\u003ehttps://pugetsound.onebusaway.org/\u003c/a\u003e for stop IDs.",
+          "placeholder": "e.g. 40_532, 1_1550, 96_SCM, 40_E15-T1, 40_S_KS_T3",
+          "optional": true
+        },
+        {
+          "keyname": "routeIds",
+          "field_type": "multi_string",
+          "name": "Routes to show",
+          "description": "Specify routes to show for nearby or selected stops, all routes near by are shown by default.",
+          "help_text": "Enter route IDs, one ID in a row. Check \u003ca href=\"https://pugetsound.onebusaway.org/\" class=\"underline\" target=\"_blank\"\u003ehttps://pugetsound.onebusaway.org/\u003c/a\u003e for route IDs.",
+          "placeholder": "e.g. 40_100479, 96_SCM, 40_100236, 23_100340, 40_2LINE, 51_60",
+          "optional": true
+        },
+        {
+          "keyname": "fullLayout",
+          "field_type": "select",
+          "name": "Layout in full view",
+          "description": "Check out \u003ca href=\"https://github.com/blueset/trmnl-recipes/tree/master/transit\" class=\"underline\" target=\"_blank\"\u003epreviews of each layout\u003c/a\u003e.",
+          "default": "large",
+          "options": [
+            "Large",
+            "Compact"
+          ]
+        }
+      ],
+      "stats": {
+        "installs": 0,
+        "forks": 0
+      }
+    },
+    {
+      "id": 226511,
+      "name": "Daily Conway's Game of Life",
+      "published_at": "2026-01-19T23:54:13.339Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/c95nokcv2ravr78y2yyprjlc2mtk",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/fws0g9batfmuvc5g6i4lnbhpcimw?response-content-disposition=inline%3B%20filename%3D%22plugin-6b8e4d%22%3B%20filename%2A%3DUTF-8%27%27plugin-6b8e4d\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=86edf0480f2a74a24bbc3916bdcfbd2228be2850db3011c0b7d54f03fa4c4c96",
+      "author_bio": {
+        "keyname": "author_details",
+        "name": "About This Plugin",
+        "category": "finance,personal",
+        "field_type": "author_bio",
+        "description": "Conway's Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. Watch as the cellular field evolves throughout the day based on rules applied to each cell and its neighbors.\u003cbr\u003e\u003cbr\u003eTo understand the available options visit the \u003ca href=\"https://game-of-life.r4wizard.co.uk\"\u003elive simulator\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003eThe same cellular field is seen across all devices and resets daily at 8AM GMT.",
+        "github_url": "https://github.com/r4wizard",
+        "email_address": "peter@shadowacre.ltd"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_details",
+          "name": "About This Plugin",
+          "category": "finance,personal",
+          "field_type": "author_bio",
+          "description": "Conway's Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970. Watch as the cellular field evolves throughout the day based on rules applied to each cell and its neighbors.\u003cbr\u003e\u003cbr\u003eTo understand the available options visit the \u003ca href=\"https://game-of-life.r4wizard.co.uk\"\u003elive simulator\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003eThe same cellular field is seen across all devices and resets daily at 8AM GMT.",
+          "github_url": "https://github.com/r4wizard",
+          "email_address": "peter@shadowacre.ltd"
+        },
+        {
+          "keyname": "render_style",
+          "field_type": "select",
+          "name": "Render Style",
+          "description": "This configures how the individual cells are rendered on the screen.",
+          "options": [
+            "square",
+            "pixel",
+            "dot",
+            "circle",
+            "triangle",
+            "diamond",
+            "line",
+            "cross"
+          ],
+          "default": "square"
+        },
+        {
+          "keyname": "data_style",
+          "field_type": "select",
+          "name": "Render Style",
+          "description": "This configures how we classify the data for rendering",
+          "options": [
+            "age",
+            "binary",
+            "distance"
+          ],
+          "default": "age"
+        },
+        {
+          "keyname": "cell_size",
+          "field_type": "select",
+          "name": "Render Style",
+          "description": "This configures how large the individual cells are (higher numbers reduce the visible grid size)",
+          "options": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30
+          ],
+          "default": 5
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 3
+      }
+    },
+    {
+      "id": 226952,
+      "name": "Daily Corporate Bullshit",
+      "published_at": "2026-01-19T21:15:22.776Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/rjipw1gvgox5rc3tj3hi1b5q4l92",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/ca1v0ypya2lc9ywwj68q5d907fwf?response-content-disposition=inline%3B%20filename%3D%22plugin-d66518%22%3B%20filename%2A%3DUTF-8%27%27plugin-d66518\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=d7b9e268e324ed1357f01bd262f990594f18084c874527ff153c21661d8ae11d",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Random Corporate Bullshit Buzzwords",
+        "email_address": "info@mav-software.de",
+        "learn_more_url": "https://github.com/sameerkumar18/corporate-bs-generator-api"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Random Corporate Bullshit Buzzwords",
+          "email_address": "info@mav-software.de",
+          "learn_more_url": "https://github.com/sameerkumar18/corporate-bs-generator-api"
+        }
+      ],
+      "stats": {
+        "installs": 4,
+        "forks": 0
+      }
+    },
+    {
+      "id": 227088,
+      "name": "Rick and Morty",
+      "published_at": "2026-01-19T21:11:52.852Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/mzqzm7546klivpjzoeqqi3pggjdk",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/o70zfdnnq8fgtm1aq1jpk6zlav8i?response-content-disposition=inline%3B%20filename%3D%22plugin-3d9c4c%22%3B%20filename%2A%3DUTF-8%27%27plugin-3d9c4c\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=1689f2e08a9048c929f8f72ef882dbf973c506ac192679443899b37bff04a93c",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Rick and Morty Characters",
+        "learn_more_url": "https://rickandmortyapi.com/",
+        "email_address": "info@mav-software.de"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Rick and Morty Characters",
+          "learn_more_url": "https://rickandmortyapi.com/",
+          "email_address": "info@mav-software.de"
+        }
+      ],
+      "stats": {
+        "installs": 4,
+        "forks": 0
+      }
+    },
+    {
+      "id": 221833,
+      "name": "GitHub Pull Requests",
+      "published_at": "2026-01-19T09:52:39.708Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/cxq14r3l46pxm4z0c3eao2lahfqo",
+      "icon_content_type": "image/svg+xml",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/tpil4dwku9k58lu80bp9uy6pgen9?response-content-disposition=inline%3B%20filename%3D%22plugin-8648ad%22%3B%20filename%2A%3DUTF-8%27%27plugin-8648ad\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=9c85c74cf7b50428e9c78c5ff397b3b33364ec1b6701ac1cdc28c07c6d2a52ca",
+      "author_bio": {
+        "keyname": "author_bio",
+        "field_type": "author_bio",
+        "name": "About This Plugin",
+        "description": "Displays all your open pull requests from GitHub in one place, so you can easily track review status and pending work. GitHub Pull Request was created by Guilherme Morais",
+        "category": "productivity,programming",
+        "github_url": "https://github.com/GuilhermeMorais/trmnl-github-pull-requests",
+        "email_address": "gui.lopes@gmail.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "field_type": "author_bio",
+          "name": "About This Plugin",
+          "description": "Displays all your open pull requests from GitHub in one place, so you can easily track review status and pending work. GitHub Pull Request was created by Guilherme Morais",
+          "category": "productivity,programming",
+          "github_url": "https://github.com/GuilhermeMorais/trmnl-github-pull-requests",
+          "email_address": "gui.lopes@gmail.com"
+        },
+        {
+          "keyname": "api_token",
+          "field_type": "password",
+          "name": "Github API Token",
+          "description": "\u003ca href=\"https://github.com/settings/personal-access-tokens\"\u003eGithub Personal Access Token\u003c/a\u003e with Read access to Pull Requests."
+        },
+        {
+          "keyname": "username",
+          "field_type": "string",
+          "name": "Github Username",
+          "description": "Used to filter the pull requests."
+        }
+      ],
+      "stats": {
+        "installs": 2,
+        "forks": 1
+      }
+    },
+    {
+      "id": 225680,
+      "name": "Stock Price",
+      "published_at": "2026-01-18T14:21:30.453Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/bvgc6ljdcl3a6mejfm7d1idgzojh",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/gp3wmr44xgy0i50ykkiexpqbcej9?response-content-disposition=inline%3B%20filename%3D%22plugin-7af7e8%22%3B%20filename%2A%3DUTF-8%27%27plugin-7af7e8\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=5ef4c7008ca1a30fbe1b4c70d0b9f21b6c50f52e2c3a15117d770ff059c9492d",
+      "author_bio": {
+        "keyname": "author_details",
+        "name": "About This Plugin",
+        "category": "finance,personal",
+        "field_type": "author_bio",
+        "description": "Access real-time market prices and exchange rates for equities, forex, cryptocurrencies, ETFs, and more.\u003cbr /\u003e\u003cbr /\u003eData is provided by \u003ca href=\"https://twelvedata.com\"\u003eTwelve Data\u003c/a\u003e (API key required - free API keys only have access to US market data).",
+        "github_url": "https://github.com/r4wizard",
+        "email_address": "peter@shadowacre.ltd"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_details",
+          "name": "About This Plugin",
+          "category": "finance,personal",
+          "field_type": "author_bio",
+          "description": "Access real-time market prices and exchange rates for equities, forex, cryptocurrencies, ETFs, and more.\u003cbr /\u003e\u003cbr /\u003eData is provided by \u003ca href=\"https://twelvedata.com\"\u003eTwelve Data\u003c/a\u003e (API key required - free API keys only have access to US market data).",
+          "github_url": "https://github.com/r4wizard",
+          "email_address": "peter@shadowacre.ltd"
+        },
+        {
+          "keyname": "api_key",
+          "field_type": "string",
+          "name": "TwelveData API Key",
+          "description": "To retrieve data we will need a free API key for TwelveData",
+          "help_text": "Retrieve your API key from the \u003ca href=\"https://twelvedata.com/account/api-keys\" class=\"underline\"\u003eTwelveData Dashboard\u003c/a\u003e.",
+          "placeholder": "38a28d..."
+        },
+        {
+          "keyname": "ticker",
+          "field_type": "string",
+          "name": "Symbol Ticker",
+          "description": "Symbol ticker of the instrument. e.g. \u003ccode\u003eAAPL\u003c/code\u003e, \u003ccode\u003eEUR/USD\u003c/code\u003e, \u003ccode\u003eETH/BTC\u003c/code\u003e",
+          "placeholder": "AAPL"
+        }
+      ],
+      "stats": {
+        "installs": 4,
+        "forks": 5
+      }
+    },
+    {
+      "id": 226166,
+      "name": "Element of the Day",
+      "published_at": "2026-01-17T23:28:12.159Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/lnh3i6y972h4nrrv2t7r0jcwu14n",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/b8yov0x0nb29rwavaq3km4n84uj3?response-content-disposition=inline%3B%20filename%3D%22plugin-477d7a%22%3B%20filename%2A%3DUTF-8%27%27plugin-477d7a\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=c61b65d8e4dc55cf318c5aafcbca0acdb2a69fbdb6c9c6a7dabcaf34c7d36860",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "category": "education,discovery",
+        "description": "Element of the Day brings the wonder of chemistry to your TRMNL device by displaying a different element from the Periodic Table each day (or hour).\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eFeatures:\u003c/strong\u003e\u003cbr\u003e\n🔬 118 elements with comprehensive scientific data\u003cbr\u003e\n⏰ Daily rotation or hourly random display modes\u003cbr\u003e\n📊 Atomic number, mass, electron configuration, and more\u003cbr\u003e\n🎨 Periodic table-style card design\u003cbr\u003e\n📱 Four optimized layouts (Full, Half Horizontal, Half Vertical, Quadrant)\u003cbr\u003e\n⚡ Fast static data delivery via GitHub Pages\u003cbr\u003e\n🧪 Data sourced from PubChem database\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eSetup:\u003c/strong\u003e\u003cbr\u003e\n1. Install or Fork this recipe\u003cbr\u003e\n2. Choose your preferred display mode (Daily or Hourly)\u003cbr\u003e\n3. Select your favorite layout size\u003cbr\u003e\n4. Add to your playlist and learn chemistry one element at a time\n\u003cbr\u003e\u003cbr\u003e\nPerfect for students, educators, science enthusiasts, or anyone curious about the building blocks of matter. Each element includes atomic properties, physical characteristics, and historical discovery information.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eData Source:\u003c/strong\u003e All 118 elements verified from PubChem (National Center for Biotechnology Information)\n",
+        "github_url": "https://github.com/hossain-khan/trmnl-elements-plugin",
+        "learn_more_url": "https://hossain-khan.github.io/trmnl-elements-plugin/",
+        "email_address": "trmnl@hossain.dev"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "category": "education,discovery",
+          "description": "Element of the Day brings the wonder of chemistry to your TRMNL device by displaying a different element from the Periodic Table each day (or hour).\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eFeatures:\u003c/strong\u003e\u003cbr\u003e\n🔬 118 elements with comprehensive scientific data\u003cbr\u003e\n⏰ Daily rotation or hourly random display modes\u003cbr\u003e\n📊 Atomic number, mass, electron configuration, and more\u003cbr\u003e\n🎨 Periodic table-style card design\u003cbr\u003e\n📱 Four optimized layouts (Full, Half Horizontal, Half Vertical, Quadrant)\u003cbr\u003e\n⚡ Fast static data delivery via GitHub Pages\u003cbr\u003e\n🧪 Data sourced from PubChem database\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eSetup:\u003c/strong\u003e\u003cbr\u003e\n1. Install or Fork this recipe\u003cbr\u003e\n2. Choose your preferred display mode (Daily or Hourly)\u003cbr\u003e\n3. Select your favorite layout size\u003cbr\u003e\n4. Add to your playlist and learn chemistry one element at a time\n\u003cbr\u003e\u003cbr\u003e\nPerfect for students, educators, science enthusiasts, or anyone curious about the building blocks of matter. Each element includes atomic properties, physical characteristics, and historical discovery information.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eData Source:\u003c/strong\u003e All 118 elements verified from PubChem (National Center for Biotechnology Information)\n",
+          "github_url": "https://github.com/hossain-khan/trmnl-elements-plugin",
+          "learn_more_url": "https://hossain-khan.github.io/trmnl-elements-plugin/",
+          "email_address": "trmnl@hossain.dev"
+        },
+        {
+          "keyname": "display_mode",
+          "field_type": "select",
+          "name": "Display Mode",
+          "description": "Choose how elements are selected",
+          "options": [
+            {
+              "Daily Rotation": "daily"
+            },
+            {
+              "Hourly Random": "hourly"
+            }
+          ],
+          "default": "daily",
+          "help_text": "Daily Rotation cycles through all 118 elements based on the day of year. Hourly Random shows a different element each hour."
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 13
+      }
+    },
+    {
+      "id": 210616,
+      "name": "Pretty Calendar via CalDav",
+      "published_at": "2026-01-17T23:07:06.880Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/2c26jtuzjgyg5uujpxij10484xxw",
+      "icon_content_type": "image/svg+xml",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/bhc7rek0alkbbd29bud8cr1qqml3?response-content-disposition=inline%3B%20filename%3D%22plugin-293407%22%3B%20filename%2A%3DUTF-8%27%27plugin-293407\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=c76b819d7da5b7048565f19533f0cad39c090045f6c00b1f38b185a428ac8aa7",
+      "author_bio": {
+        "keyname": "author_bio",
+        "field_type": "author_bio",
+        "name": "About This Plugin",
+        "description": "For this plugin you need to have the \u003ca href=\"https://usetrmnl.com/plugin_settings/new?keyname=caldav\"\u003eCalDav\u003c/a\u003e calendar plugin active and in a playlist. You can hide it so you only see this one. You also need a developer kit/account, so you have access to the User API key.",
+        "category": "calendar"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "field_type": "author_bio",
+          "name": "About This Plugin",
+          "description": "For this plugin you need to have the \u003ca href=\"https://usetrmnl.com/plugin_settings/new?keyname=caldav\"\u003eCalDav\u003c/a\u003e calendar plugin active and in a playlist. You can hide it so you only see this one. You also need a developer kit/account, so you have access to the User API key.",
+          "category": "calendar"
+        },
+        {
+          "keyname": "user_token",
+          "field_type": "string",
+          "name": "User API key",
+          "description": "Find it in the \u003ca href=\"https://usetrmnl.com/account\"\u003eAccount settings\u003c/a\u003e. You do need a developer account/kit for this.",
+          "placeholder": "user_jaksdjkajklsdjkls1241"
+        },
+        {
+          "keyname": "caldav_id",
+          "field_type": "string",
+          "name": "Caldav ID",
+          "description": "Please enter your Caldav Plugin ID. ",
+          "help_text": "We will need your Caldav plugin ID, please go to your Caldav plugin page, open the Caldav that you would like to link and see in the URL bar the id that we need. (You see usetrmnl.com/plugin_settings/\u003cstrong\u003e123\u003c/strong\u003e, the 123 number is what we need).",
+          "placeholder": "12345678"
+        },
+        {
+          "keyname": "show_calendar_items",
+          "field_type": "select",
+          "name": "Show calendar items",
+          "description": "Show all your items (over 3 columns) or only the items of today.",
+          "help_text": "This is only for the full view",
+          "default": "all",
+          "options": [
+            {
+              "Today": "today"
+            },
+            {
+              "All": "all"
+            }
+          ]
+        },
+        {
+          "keyname": "show_weeks",
+          "field_type": "select",
+          "name": "Weeks in view",
+          "description": "How many weeks would you like to see in the screen?",
+          "help_text": "This is only for the full view, and the half-vertical view.",
+          "default": 7,
+          "options": [
+            {
+              "1 week": 7
+            },
+            {
+              "2 weeks": 14
+            }
+          ]
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 10
+      }
+    },
+    {
+      "id": 225941,
+      "name": "Birthday Calendar",
+      "published_at": "2026-01-17T10:51:57.882Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/alzz87y05eub293o8p2jd5m6otq6",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/dtvnhsh4cfcc0uoqdlnpqyk4o4jj?response-content-disposition=inline%3B%20filename%3D%22plugin-5ca436%22%3B%20filename%2A%3DUTF-8%27%27plugin-5ca436\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=e2d344c299fa4f741616257c5a5342c495c940e3cb91aa0fcf20ad2d2487c0ab",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "category": "personal,calendar",
+        "field_type": "author_bio",
+        "description": "Never forget a birthday again! The Birthday Calendar for your TRMNL shows you all upcoming birthdays. Enter once, repeated yearly! Recipe created by Jasper, @jasper on TRMNL Discord. Plugin Icon by sentya irma from \u003ca href=\"https://thenounproject.com/browse/icons/term/birthday-calendar/\" target=\"_blank\" title=\"birthday calendar Icons\"\u003eNoun Project\u003c/a\u003e (CC BY 3.0).",
+        "email_address": "trmnl@jaspervandermeij.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "category": "personal,calendar",
+          "field_type": "author_bio",
+          "description": "Never forget a birthday again! The Birthday Calendar for your TRMNL shows you all upcoming birthdays. Enter once, repeated yearly! Recipe created by Jasper, @jasper on TRMNL Discord. Plugin Icon by sentya irma from \u003ca href=\"https://thenounproject.com/browse/icons/term/birthday-calendar/\" target=\"_blank\" title=\"birthday calendar Icons\"\u003eNoun Project\u003c/a\u003e (CC BY 3.0).",
+          "email_address": "trmnl@jaspervandermeij.com"
+        },
+        {
+          "keyname": "birthdays",
+          "field_type": "multi_string",
+          "name": "Birthdays",
+          "description": "List birthdates of your family and friends. Enter `Name ; YYYY-MM-DD` or `Name ; MM-DD`",
+          "placeholder": "Name;YYYY-MM-DD",
+          "help_text": "Enter as follows `Jasper ; 1976-04-11` (`Name ; YYYY-MM-DD`). Don't know the year of birth, just enter `Name ; MM-DD`"
+        },
+        {
+          "keyname": "skip_if_no_new_birthdays_within",
+          "field_type": "select",
+          "name": "Only show when birthdays are within the next..",
+          "description": "The plugin won't show if there are no birthdays upcoming. Makes for a cleaner playlist.",
+          "options": [
+            {
+              "2 weeks": 14
+            },
+            {
+              "3 weeks": 21
+            },
+            {
+              "month": 31
+            },
+            {
+              "2 months": 62
+            },
+            {
+              "Always show this plugin": "always"
+            }
+          ],
+          "default": "always"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 38
+      }
+    },
+    {
+      "id": 225668,
+      "name": "Metro North Trip Status",
+      "published_at": "2026-01-16T19:31:45.192Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/ewk0c9egula0sqricvz4i3dm40l8",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/b11knqm7xazg0ta46qujfmv4v8vt?response-content-disposition=inline%3B%20filename%3D%22plugin-ad2718%22%3B%20filename%2A%3DUTF-8%27%27plugin-ad2718\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=d051e52bcb69c0b3a15847617053e9dc4bc98ebd092e50a0d6341f4101c594fb",
+      "author_bio": {
+        "keyname": "author_info",
+        "name": "About This Plugin",
+        "category": "travel",
+        "field_type": "author_bio",
+        "description": "Status for the trip you take frequently on Metro North by John F Morton, owner of Morton Studio, and frequent train traveler.",
+        "github_url": "https://github.com/johnfmorton",
+        "learn_more_url": "https://supergeekery.com/",
+        "email_address": "contact+mtastatus@supergeekery.com",
+        "youtube_url": "https://www.youtube.com/@johnfmorton"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_info",
+          "name": "About This Plugin",
+          "category": "travel",
+          "field_type": "author_bio",
+          "description": "Status for the trip you take frequently on Metro North by John F Morton, owner of Morton Studio, and frequent train traveler.",
+          "github_url": "https://github.com/johnfmorton",
+          "learn_more_url": "https://supergeekery.com/",
+          "email_address": "contact+mtastatus@supergeekery.com",
+          "youtube_url": "https://www.youtube.com/@johnfmorton"
+        },
+        {
+          "keyname": "train_line",
+          "field_type": "select",
+          "name": "Train line",
+          "description": "Choose the train line for your trip",
+          "help_text": "Departure and Arrival station options will update below",
+          "default": "harlem",
+          "options": [
+            {
+              "Harlem Line": "harlem"
+            },
+            {
+              "Hudson Line": "hudson"
+            },
+            {
+              "New Haven": "new_haven"
+            }
+          ],
+          "conditional_validation": [
+            {
+              "when": "harlem",
+              "hidden": [
+                "departure_new_haven",
+                "departure_hudson",
+                "arrival_hudson",
+                "arrival_new_haven"
+              ]
+            },
+            {
+              "when": "hudson",
+              "hidden": [
+                "departure_harlem",
+                "departure_new_haven",
+                "arrival_harlem",
+                "arrival_new_haven"
+              ]
+            },
+            {
+              "when": "new_haven",
+              "hidden": [
+                "departure_harlem",
+                "departure_hudson",
+                "arrival_harlem",
+                "arrival_hudson"
+              ]
+            }
+          ]
+        },
+        {
+          "keyname": "departure_harlem",
+          "field_type": "select",
+          "name": "Departure (Harlem Line)",
+          "description": "Departure station",
+          "default": "gct",
+          "options": [
+            {
+              "Grand Central": "gct"
+            },
+            {
+              "Harlem-125th St": "h125"
+            },
+            {
+              "Southeast": "se"
+            },
+            {
+              "Brewster": "brw"
+            },
+            {
+              "Patterson": "pa"
+            },
+            {
+              "Pawling": "pwl"
+            },
+            {
+              "Appalachian Trail": "app"
+            },
+            {
+              "Wingdale": "wng"
+            },
+            {
+              "Dover Plains": "dvr"
+            },
+            {
+              "Tenmile River": "ten"
+            },
+            {
+              "Wassaic": "was"
+            }
+          ]
+        },
+        {
+          "keyname": "arrival_harlem",
+          "field_type": "select",
+          "name": "Arrival (Harlem Line)",
+          "description": "Arrival station",
+          "default": "ten",
+          "options": [
+            {
+              "Grand Central": "gct"
+            },
+            {
+              "Harlem-125th St": "h125"
+            },
+            {
+              "Southeast": "se"
+            },
+            {
+              "Brewster": "brw"
+            },
+            {
+              "Patterson": "pa"
+            },
+            {
+              "Pawling": "pwl"
+            },
+            {
+              "Appalachian Trail": "app"
+            },
+            {
+              "Wingdale": "wng"
+            },
+            {
+              "Dover Plains": "dvr"
+            },
+            {
+              "Tenmile River": "ten"
+            },
+            {
+              "Wassaic": "was"
+            }
+          ]
+        },
+        {
+          "keyname": "departure_hudson",
+          "field_type": "select",
+          "name": "Departure (Hudson Line)",
+          "description": "Departure station",
+          "default": "gct",
+          "options": [
+            {
+              "Grand Central": "gct"
+            },
+            {
+              "Harlem-125th St": "h125"
+            },
+            {
+              "Yankees-E 153 St": "y153"
+            },
+            {
+              "Morris Heights": "mht"
+            },
+            {
+              "University Heights": "uht"
+            },
+            {
+              "Marble Hill": "mrb"
+            },
+            {
+              "Spuyten Duyvil": "spy"
+            },
+            {
+              "Riverdale": "rv"
+            },
+            {
+              "Ludlow": "ldl"
+            },
+            {
+              "Yonkers": "yon"
+            },
+            {
+              "Glenwood": "glw"
+            },
+            {
+              "Greystone": "gr"
+            },
+            {
+              "Hastings-on-Hudson": "has"
+            },
+            {
+              "Dobbs Ferry": "dob"
+            },
+            {
+              "Ardsley-on-Hudson": "ard"
+            },
+            {
+              "Irvington": "ir"
+            },
+            {
+              "Tarrytown": "ta"
+            },
+            {
+              "Philipse Manor": "phi"
+            },
+            {
+              "Scarborough": "sca"
+            },
+            {
+              "Ossining": "oss"
+            },
+            {
+              "Croton-Harmon": "cro"
+            },
+            {
+              "Cortlandt": "co"
+            },
+            {
+              "Peekskill": "pk"
+            },
+            {
+              "Manitou": "man"
+            },
+            {
+              "Garrison": "gar"
+            },
+            {
+              "Cold Spring": "csp"
+            },
+            {
+              "Beacon": "bea"
+            },
+            {
+              "New Hamburg": "nhb"
+            },
+            {
+              "Poughkeepsie": "pok"
+            }
+          ]
+        },
+        {
+          "keyname": "arrival_hudson",
+          "field_type": "select",
+          "name": "Arrival (Hudson Line)",
+          "description": "Arrival station",
+          "default": "pok",
+          "options": [
+            {
+              "Grand Central": "gct"
+            },
+            {
+              "Harlem-125th St": "h125"
+            },
+            {
+              "Yankees-E 153 St": "y153"
+            },
+            {
+              "Morris Heights": "mht"
+            },
+            {
+              "University Heights": "uht"
+            },
+            {
+              "Marble Hill": "mrb"
+            },
+            {
+              "Spuyten Duyvil": "spy"
+            },
+            {
+              "Riverdale": "rv"
+            },
+            {
+              "Ludlow": "ldl"
+            },
+            {
+              "Yonkers": "yon"
+            },
+            {
+              "Glenwood": "glw"
+            },
+            {
+              "Greystone": "gr"
+            },
+            {
+              "Hastings-on-Hudson": "has"
+            },
+            {
+              "Dobbs Ferry": "dob"
+            },
+            {
+              "Ardsley-on-Hudson": "ard"
+            },
+            {
+              "Irvington": "ir"
+            },
+            {
+              "Tarrytown": "ta"
+            },
+            {
+              "Philipse Manor": "phi"
+            },
+            {
+              "Scarborough": "sca"
+            },
+            {
+              "Ossining": "oss"
+            },
+            {
+              "Croton-Harmon": "cro"
+            },
+            {
+              "Cortlandt": "co"
+            },
+            {
+              "Peekskill": "pk"
+            },
+            {
+              "Manitou": "man"
+            },
+            {
+              "Garrison": "gar"
+            },
+            {
+              "Cold Spring": "csp"
+            },
+            {
+              "Beacon": "bea"
+            },
+            {
+              "New Hamburg": "nhb"
+            },
+            {
+              "Poughkeepsie": "pok"
+            }
+          ]
+        },
+        {
+          "keyname": "departure_new_haven",
+          "field_type": "select",
+          "name": "Departure (New Haven Line)",
+          "description": "Departure station",
+          "default": "gct",
+          "options": [
+            {
+              "Grand Central": "gct"
+            },
+            {
+              "Harlem-125th St": "h125"
+            },
+            {
+              "Mt Vernon East": "mve"
+            },
+            {
+              "Pelham": "plm"
+            },
+            {
+              "New Rochelle": "nro"
+            },
+            {
+              "Larchmont": "la"
+            },
+            {
+              "Mamaroneck": "mam"
+            },
+            {
+              "Harrison": "hrn"
+            },
+            {
+              "Rye": "rye"
+            },
+            {
+              "Port Chester": "pch"
+            },
+            {
+              "Greenwich": "gr"
+            },
+            {
+              "Cos Cob": "csc"
+            },
+            {
+              "Riverside": "ri"
+            },
+            {
+              "Old Greenwich": "ogr"
+            },
+            {
+              "Stamford": "stm"
+            },
+            {
+              "Noroton Heights": "nor"
+            },
+            {
+              "Darien": "dar"
+            },
+            {
+              "Rowayton": "row"
+            },
+            {
+              "South Norwalk": "snw"
+            },
+            {
+              "East Norwalk": "enw"
+            },
+            {
+              "Westport": "wpt"
+            },
+            {
+              "Green's Farms": "grf"
+            },
+            {
+              "Southport": "sp"
+            },
+            {
+              "Fairfield": "ff"
+            },
+            {
+              "Bridgeport": "bpt"
+            },
+            {
+              "Stratford": "st"
+            },
+            {
+              "Milford": "mil"
+            },
+            {
+              "New Haven": "nh"
+            },
+            {
+              "New Haven-State St": "nhs"
+            }
+          ]
+        },
+        {
+          "keyname": "arrival_new_haven",
+          "field_type": "select",
+          "name": "Arrival (New Haven Line)",
+          "description": "Arrival station",
+          "default": "nh",
+          "options": [
+            {
+              "Grand Central": "gct"
+            },
+            {
+              "Harlem-125th St": "h125"
+            },
+            {
+              "Mt Vernon East": "mve"
+            },
+            {
+              "Pelham": "plm"
+            },
+            {
+              "New Rochelle": "nro"
+            },
+            {
+              "Larchmont": "la"
+            },
+            {
+              "Mamaroneck": "mam"
+            },
+            {
+              "Harrison": "hrn"
+            },
+            {
+              "Rye": "rye"
+            },
+            {
+              "Port Chester": "pch"
+            },
+            {
+              "Greenwich": "gr"
+            },
+            {
+              "Cos Cob": "csc"
+            },
+            {
+              "Riverside": "ri"
+            },
+            {
+              "Old Greenwich": "ogr"
+            },
+            {
+              "Stamford": "stm"
+            },
+            {
+              "Noroton Heights": "nor"
+            },
+            {
+              "Darien": "dar"
+            },
+            {
+              "Rowayton": "row"
+            },
+            {
+              "South Norwalk": "snw"
+            },
+            {
+              "East Norwalk": "enw"
+            },
+            {
+              "Westport": "wpt"
+            },
+            {
+              "Green's Farms": "grf"
+            },
+            {
+              "Southport": "sp"
+            },
+            {
+              "Fairfield": "ff"
+            },
+            {
+              "Bridgeport": "bpt"
+            },
+            {
+              "Stratford": "st"
+            },
+            {
+              "Milford": "mil"
+            },
+            {
+              "New Haven": "nh"
+            },
+            {
+              "New Haven-State St": "nhs"
+            }
+          ]
+        }
+      ],
+      "stats": {
+        "installs": 0,
+        "forks": 0
+      }
+    },
+    {
+      "id": 224761,
+      "name": "Max Payne Quotes",
+      "published_at": "2026-01-16T19:24:34.472Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/8zzyovftdgvenuqqolm7ro64yy5u",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/g70ido6dhz1m5yymwjprx0ko6g7r?response-content-disposition=inline%3B%20filename%3D%22plugin-11c2af%22%3B%20filename%2A%3DUTF-8%27%27plugin-11c2af\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=37d566258556b1a32bc2653bda74bd83ba66ccd40c00b20a8ba83cce15f69a63",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "category": "entertainment,games",
+        "description": "Max Payne Quotes brings the iconic noir dialogue from the legendary Max Payne trilogy directly to your TRMNL device.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eFeatures:\u003c/strong\u003e\u003cbr\u003e\n🎮 39 authentic quotes from Max Payne, Max Payne 2, and Max Payne 3\u003cbr\u003e\n🗨️ Noir-style typography with Courier New monospace font\u003cbr\u003e\n📱 Optimized layouts for all TRMNL view sizes\u003cbr\u003e\n🎨 Game-specific poster artwork for visual atmosphere\u003cbr\u003e\n🎲 Random quote selection with daily automatic updates\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eSetup:\u003c/strong\u003e\u003cbr\u003e\n1. Install or Fork this recipe\u003cbr\u003e\n2. The plugin automatically polls for a new quote every 24 hours\u003cbr\u003e\n3. Add to your playlist and enjoy noir wisdom on your e-ink display\n\u003cbr\u003e\u003cbr\u003e\nAll quotes are verified authentic from Wikiquote and capture the philosophical, dark, and action-packed moments that made Max Payne an iconic character in gaming.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eQuote Database:\u003c/strong\u003e 39 quotes verified from Wikiquote (35 Max Payne across trilogy, 4 Mona Sax)\n",
+        "github_url": "https://github.com/hossain-khan/trmnl-max-payne-quotes-plugin",
+        "learn_more_url": "https://hossain-khan.github.io/trmnl-max-payne-quotes-plugin/",
+        "email_address": "trmnl@hossain.dev"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "category": "entertainment,games",
+          "description": "Max Payne Quotes brings the iconic noir dialogue from the legendary Max Payne trilogy directly to your TRMNL device.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eFeatures:\u003c/strong\u003e\u003cbr\u003e\n🎮 39 authentic quotes from Max Payne, Max Payne 2, and Max Payne 3\u003cbr\u003e\n🗨️ Noir-style typography with Courier New monospace font\u003cbr\u003e\n📱 Optimized layouts for all TRMNL view sizes\u003cbr\u003e\n🎨 Game-specific poster artwork for visual atmosphere\u003cbr\u003e\n🎲 Random quote selection with daily automatic updates\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eSetup:\u003c/strong\u003e\u003cbr\u003e\n1. Install or Fork this recipe\u003cbr\u003e\n2. The plugin automatically polls for a new quote every 24 hours\u003cbr\u003e\n3. Add to your playlist and enjoy noir wisdom on your e-ink display\n\u003cbr\u003e\u003cbr\u003e\nAll quotes are verified authentic from Wikiquote and capture the philosophical, dark, and action-packed moments that made Max Payne an iconic character in gaming.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eQuote Database:\u003c/strong\u003e 39 quotes verified from Wikiquote (35 Max Payne across trilogy, 4 Mona Sax)\n",
+          "github_url": "https://github.com/hossain-khan/trmnl-max-payne-quotes-plugin",
+          "learn_more_url": "https://hossain-khan.github.io/trmnl-max-payne-quotes-plugin/",
+          "email_address": "trmnl@hossain.dev"
+        }
+      ],
+      "stats": {
+        "installs": 8,
+        "forks": 0
+      }
+    },
+    {
+      "id": 222328,
+      "name": "UK Bus Departures (bustimes.org)",
+      "published_at": "2026-01-14T22:53:07.587Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/59lqujqwid1cvzsd7sr3erfuexur",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/tqfrhlhyo7evupc9xjd4sp22dtis?response-content-disposition=inline%3B%20filename%3D%22plugin-1b1137%22%3B%20filename%2A%3DUTF-8%27%27plugin-1b1137\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=d87ac7d9c3035489818d515aaed65b39bcf4aa208d075cd6c969f6d28b3d2f1f",
+      "author_bio": {
+        "keyname": "readme",
+        "name": "About This Plugin",
+        "category": "travel",
+        "field_type": "author_bio",
+        "description": "Displays upcoming live departures for a chosen bus stop in the UK.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eAbout\u003c/strong\u003e\n\u003cbr\u003e\u003cbr\u003e\nDeparture and stop data is provided via \u003ca href=\"https://bustimes.org\"\u003ebustimes.org\u003c/a\u003e. Bus stop information such as the stop name is fetched from the \u003ca href=\"https://bustimes.org/api/\"\u003ebustimes.org API\u003c/a\u003e. Departure data is sadly not available via this API so it has to be scraped from the HTML.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eSetup\u003c/strong\u003e\n\u003cbr\u003e\u003cbr\u003e\nTo display departure data for a stop you will need the stop's \u003ca href=\"https://mullinscr.github.io/naptan/atco_codes/\"\u003eATCO\u003c/a\u003e code.\n\u003cbr\u003e\nYou can find it by navigating to your stop on \u003ca href=\"https://bustimes.org/map\"\u003ehttps://bustimes.org/map\u003c/a\u003e and opening the departure page. The ATCO code starts with at least four digits (\u003cb\u003enot\u003c/b\u003e letters) and is displayed directly above the departure table.\n\u003cbr\u003e\u003cbr\u003e\nAlternatively, you can download the ATCO codes for your local authority from \u003ca href=\"https://beta-naptan.dft.gov.uk/download/la\"\u003ethis DfT website\u003c/a\u003e.\n\u003cbr\u003e\u003cbr\u003e\nYou can specify a list of bus services to display. Just use the usual name of the service, e.g. '10' or '3A'. If left empty, the plugin will simply display all services with departures from the stop.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eAttributions\u003c/strong\u003e\n\u003cbr\u003e\u003cbr\u003e\nAll data is provided by \u003ca href=\"https://bustimes.org\"\u003ebustimes.org\u003c/a\u003e thanks to its maintainers and contributors who keep the project running.\n",
+        "github_url": "https://github.com/CaptainProton42/trmnl-bustimes-org"
+      },
+      "custom_fields": [
+        {
+          "keyname": "readme",
+          "name": "About This Plugin",
+          "category": "travel",
+          "field_type": "author_bio",
+          "description": "Displays upcoming live departures for a chosen bus stop in the UK.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eAbout\u003c/strong\u003e\n\u003cbr\u003e\u003cbr\u003e\nDeparture and stop data is provided via \u003ca href=\"https://bustimes.org\"\u003ebustimes.org\u003c/a\u003e. Bus stop information such as the stop name is fetched from the \u003ca href=\"https://bustimes.org/api/\"\u003ebustimes.org API\u003c/a\u003e. Departure data is sadly not available via this API so it has to be scraped from the HTML.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eSetup\u003c/strong\u003e\n\u003cbr\u003e\u003cbr\u003e\nTo display departure data for a stop you will need the stop's \u003ca href=\"https://mullinscr.github.io/naptan/atco_codes/\"\u003eATCO\u003c/a\u003e code.\n\u003cbr\u003e\nYou can find it by navigating to your stop on \u003ca href=\"https://bustimes.org/map\"\u003ehttps://bustimes.org/map\u003c/a\u003e and opening the departure page. The ATCO code starts with at least four digits (\u003cb\u003enot\u003c/b\u003e letters) and is displayed directly above the departure table.\n\u003cbr\u003e\u003cbr\u003e\nAlternatively, you can download the ATCO codes for your local authority from \u003ca href=\"https://beta-naptan.dft.gov.uk/download/la\"\u003ethis DfT website\u003c/a\u003e.\n\u003cbr\u003e\u003cbr\u003e\nYou can specify a list of bus services to display. Just use the usual name of the service, e.g. '10' or '3A'. If left empty, the plugin will simply display all services with departures from the stop.\n\u003cbr\u003e\u003cbr\u003e\n\u003cstrong\u003eAttributions\u003c/strong\u003e\n\u003cbr\u003e\u003cbr\u003e\nAll data is provided by \u003ca href=\"https://bustimes.org\"\u003ebustimes.org\u003c/a\u003e thanks to its maintainers and contributors who keep the project running.\n",
+          "github_url": "https://github.com/CaptainProton42/trmnl-bustimes-org"
+        },
+        {
+          "keyname": "atco",
+          "field_type": "string",
+          "name": "Bus Stop",
+          "description": "The \u003ca href=\"https://mullinscr.github.io/naptan/atco_codes/\"\u003eATCO\u003c/a\u003e code for your bus stop.",
+          "help_text": "You can find this on \u003ca href=\"https://bustimes.org\"\u003ehttps://bustimes.org\u003c/a\u003e directly above the departure table for a stop."
+        },
+        {
+          "keyname": "bus",
+          "field_type": "multi_string",
+          "name": "Busses",
+          "description": "Optionally, choose specific bus services you want to display departures for.",
+          "help_text": "Use the name of the service, e.g. '10' or '3A'.",
+          "optional": true
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 9
+      }
+    },
+    {
+      "id": 221170,
+      "name": "ÜSTRA Status: Aufzüge \u0026 Rolltreppen",
+      "published_at": "2026-01-14T22:34:35.507Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/4231eqeij9q98ujr8jrkyvujtcio",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/k6ebkku1at282o9uk41vogj9soqm?response-content-disposition=inline%3B%20filename%3D%22plugin-5050de%22%3B%20filename%2A%3DUTF-8%27%27plugin-5050de\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=86e48dbe0089cff4d8a3b26fdfcd8a4bc511a5152573e2ce7dabfb1d401275c4",
+      "author_bio": {
+        "keyname": "ignore",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "description": "Show the status of elevators and escalators from the public transport operator ÜSTRA in Hannover.",
+        "github_url": "https://github.com/Wandmalfarbe/trmnl-uestra-status-elevators-escalators"
+      },
+      "custom_fields": [
+        {
+          "keyname": "ignore",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "description": "Show the status of elevators and escalators from the public transport operator ÜSTRA in Hannover.",
+          "github_url": "https://github.com/Wandmalfarbe/trmnl-uestra-status-elevators-escalators"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 0
+      }
+    },
+    {
+      "id": 209398,
+      "name": "Price Tags",
+      "published_at": "2026-01-14T22:31:11.802Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/jm9ws7f28xtn5s4clayz9dqam3j1",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/v98on1zricgbwg69wts0v05boow9?response-content-disposition=inline%3B%20filename%3D%22plugin-495d73%22%3B%20filename%2A%3DUTF-8%27%27plugin-495d73\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=650e7c427e1bbd4e1604f2f6a274b4a5b79ad0b8b2289f2607164fa269f184dd",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About This Plugin",
+        "category": "marketing,ecommerce",
+        "field_type": "author_bio",
+        "description": "Create professional tags in seconds and send them directly to TRMNL e-ink displays. No printing, no waste, no hassle.",
+        "github_url": "https://github.com/tamago-cx",
+        "learn_more_url": "https://pricetags.io",
+        "email_address": "comercial@tamago.cx",
+        "youtube_url": "https://www.youtube.com/@tamagocx"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About This Plugin",
+          "category": "marketing,ecommerce",
+          "field_type": "author_bio",
+          "description": "Create professional tags in seconds and send them directly to TRMNL e-ink displays. No printing, no waste, no hassle.",
+          "github_url": "https://github.com/tamago-cx",
+          "learn_more_url": "https://pricetags.io",
+          "email_address": "comercial@tamago.cx",
+          "youtube_url": "https://www.youtube.com/@tamagocx"
+        },
+        {
+          "keyname": "api_key",
+          "field_type": "password",
+          "name": "API Key",
+          "description": "Find this in the TRMNL Connection menu in \u003ca href=\"pricetags.io\"\u003epricetags.io\u003c/a\u003e"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 0
+      }
+    },
+    {
+      "id": 179242,
+      "name": "MBTA Arrivals",
+      "published_at": "2026-01-14T21:46:29.778Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/wenhyndo58jl3qhc3kbile4z3k7z",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/ei8ne1upcr7cpib8a1qkqm3apjri?response-content-disposition=inline%3B%20filename%3D%22plugin-45ffbf%22%3B%20filename%2A%3DUTF-8%27%27plugin-45ffbf\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=54727e130cb21fe96dfb367d730241651358f8e94025b7eb65d0987e3b4053fb",
+      "author_bio": {
+        "keyname": "bio",
+        "name": "About This Plugin",
+        "category": "productivity,travel",
+        "field_type": "author_bio",
+        "description": "Arrival times for MBTA stops",
+        "github_url": "https://github.com/GLBurnett"
+      },
+      "custom_fields": [
+        {
+          "keyname": "bio",
+          "name": "About This Plugin",
+          "category": "productivity,travel",
+          "field_type": "author_bio",
+          "description": "Arrival times for MBTA stops",
+          "github_url": "https://github.com/GLBurnett"
+        },
+        {
+          "keyname": "stop_id",
+          "field_type": "string",
+          "name": "Stop ID",
+          "description": "Enter the MBTA Stop ID. To find the Stop ID for subway, commuter rail, and ferry stops, navigate to the \u003ca href=\"https://www.mbta.com/stops/subway\" class=\"underline\"\u003eMBTA Subway Stops website\u003c/a\u003e and click on the stop. The Stop ID will be the last part of the URL (For example, the URL for Back Bay Station is https://www.mbta.com/stops/\u003cb\u003eplace-bbsta\u003c/b\u003e so the Stop ID is \"place-bbsta\"). To find the Stop ID for buses, navigate to the \u003ca href=\"https://www.mbta.com/schedules/bus\" class=\"underline\"\u003eMBTA Bus Stops website\u003c/a\u003e and click on the desired route. Make sure the correct direction is selected, then click on the stop. The Stop ID will be the last part of the URL (For example, the URL for Jackson Square is https://www.mbta.com/stops/\u003cb\u003eplace-jaksn\u003c/b\u003e so the Stop ID is \"place-jaksn\")."
+        },
+        {
+          "keyname": "subway_routes",
+          "field_type": "select",
+          "options": [
+            {
+              "Red": "Red"
+            },
+            {
+              "Orange": "Orange"
+            },
+            {
+              "Blue": "Blue"
+            },
+            {
+              "Green (B Branch)": "Green-B"
+            },
+            {
+              "Green (C Branch)": "Green-C"
+            },
+            {
+              "Green (D Branch)": "Green-D"
+            },
+            {
+              "Green (E Branch)": "Green-E"
+            },
+            {
+              "Mattapan Trolley": "Mattapan"
+            }
+          ],
+          "name": "(Optional) Filter Subway Routes",
+          "description": "By default, all subway, Green Line, and Mattapan Trolley routes are included. Use this filter to only include selected routes.",
+          "optional": true,
+          "multiple": true,
+          "help_text": "Use \u003ckbd\u003e⌘\u003c/kbd\u003e+\u003ckbd\u003eclick\u003c/kbd\u003e or \u003ckbd\u003ectrl\u003c/kbd\u003e+\u003ckbd\u003eclick\u003c/kbd\u003e to select and deselect multiple options."
+        },
+        {
+          "keyname": "cr_routes",
+          "field_type": "select",
+          "options": [
+            {
+              "Fairmount": "CR-Fairmount"
+            },
+            {
+              "Fall River/New Bedford": "CR-NewBedford"
+            },
+            {
+              "Fitchburg": "CR-Fitchburg"
+            },
+            {
+              "Framingham/Worcester": "CR-Worcester"
+            },
+            {
+              "Franklin/Foxboro": "CR-Franklin"
+            },
+            {
+              "Greenbush": "CR-Greenbush"
+            },
+            {
+              "Haverhill": "CR-Haverhill"
+            },
+            {
+              "Kingston": "CR-Kingston"
+            },
+            {
+              "Lowell": "CR-Lowell"
+            },
+            {
+              "Needham": "CR-Needham"
+            },
+            {
+              "Newburyport/Rockport": "CR-Newburyport"
+            },
+            {
+              "Providence/Stoughton": "CR-Providence"
+            },
+            {
+              "Foxboro Event Service": "CR-Foxboro"
+            }
+          ],
+          "name": "(Optional) Filter Commuter Rail Routes",
+          "description": "By default, all commuter rail routes are included. Use this filter to only include selected commuter rail routes.",
+          "optional": true,
+          "multiple": true,
+          "help_text": "Use \u003ckbd\u003e⌘\u003c/kbd\u003e+\u003ckbd\u003eclick\u003c/kbd\u003e or \u003ckbd\u003ectrl\u003c/kbd\u003e+\u003ckbd\u003eclick\u003c/kbd\u003e to select and deselect multiple options."
+        },
+        {
+          "keyname": "special_bus_routes",
+          "field_type": "select",
+          "options": [
+            {
+              "SL1": "741"
+            },
+            {
+              "SL2": "742"
+            },
+            {
+              "SL3": "743"
+            },
+            {
+              "SL4": "751"
+            },
+            {
+              "SL5": "749"
+            },
+            {
+              "CT2": "747"
+            },
+            {
+              "CT3": "708"
+            }
+          ],
+          "name": "(Optional) Filter Silver Line and Crosstown Buses",
+          "description": "By default, all Silver Line and Crosstown bus routes are included. Use this field to only include selected bus routes.",
+          "optional": true,
+          "multiple": true,
+          "help_text": "Use \u003ckbd\u003e⌘\u003c/kbd\u003e+\u003ckbd\u003eclick\u003c/kbd\u003e or \u003ckbd\u003ectrl\u003c/kbd\u003e+\u003ckbd\u003eclick\u003c/kbd\u003e to select and deselect multiple options."
+        },
+        {
+          "keyname": "bus_routes",
+          "field_type": "multi_string",
+          "name": "(Optional) Filter Bus Routes",
+          "description": "By default, all bus routes are included. Use this field to only include selected bus routes. Use the bus number (Ex. 39).",
+          "optional": true
+        },
+        {
+          "keyname": "ferry_routes",
+          "field_type": "select",
+          "options": [
+            {
+              "Charlestown": "Boat-F4"
+            },
+            {
+              "Hingham/Hull": "Boat-F1"
+            },
+            {
+              "East Boston": "Boat-EastBoston"
+            },
+            {
+              "Lynn": "Boat-Lynn"
+            },
+            {
+              "Winthrop": "Boat-F6"
+            },
+            {
+              "Quincy": "Boat-F7"
+            }
+          ],
+          "name": "(Optional) Filter Ferry Routes",
+          "description": "By default, all ferry routes are included. Use this filter to only include selected ferry routes.",
+          "optional": true,
+          "multiple": true,
+          "help_text": "Use \u003ckbd\u003e⌘\u003c/kbd\u003e+\u003ckbd\u003eclick\u003c/kbd\u003e or \u003ckbd\u003ectrl\u003c/kbd\u003e+\u003ckbd\u003eclick\u003c/kbd\u003e to select and deselect multiple options."
+        }
+      ],
+      "stats": {
+        "installs": 0,
+        "forks": 2
+      }
+    },
+    {
+      "id": 209012,
+      "name": "Random D\u0026D Monster",
+      "published_at": "2026-01-14T19:32:16.112Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/njnphd3m6txkn3tuzobl69kp0syh",
+      "icon_content_type": "image/svg+xml",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/y8cdqc378el156cag0ly3uj3b4hi?response-content-disposition=inline%3B%20filename%3D%22plugin-00c574%22%3B%20filename%2A%3DUTF-8%27%27plugin-00c574\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=148093ab21e6a49b4f33983b5142657f160fa8366970ea2a4c5a09987494d936",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "Random DnD Monster",
+        "category": "discovery,games",
+        "field_type": "author_bio",
+        "description": "Random DnD Monster Biography",
+        "github_url": "https://github.com/SorceressLyra"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "Random DnD Monster",
+          "category": "discovery,games",
+          "field_type": "author_bio",
+          "description": "Random DnD Monster Biography",
+          "github_url": "https://github.com/SorceressLyra"
+        }
+      ],
+      "stats": {
+        "installs": 17,
+        "forks": 0
+      }
+    },
+    {
+      "id": 198010,
+      "name": "Snooker Scores",
+      "published_at": "2026-01-14T18:15:49.846Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/mgzytzielyrwuknmsqdtfpmt61s7",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/mjtfyy0bqgu38e9rm4k11qqus8n6?response-content-disposition=inline%3B%20filename%3D%22plugin-869e0e%22%3B%20filename%2A%3DUTF-8%27%27plugin-869e0e\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=5bd64bc56a3d9752a93bf5833188a94a1d6e623ace4c33d092d3f1af644b42ce",
+      "author_bio": {
+        "keyname": "author_bio",
+        "field_type": "author_bio",
+        "name": "About This Plugin",
+        "description": "Live scores, recent results and upcoming matches and events from the World Snooker tour. Updated every 15 minutes from Snooker.org. Email snookertrmnl@heli.cat for support, suggestions or feedback.",
+        "category": "sports",
+        "email_address": "snookertrmnl@heli.cat"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "field_type": "author_bio",
+          "name": "About This Plugin",
+          "description": "Live scores, recent results and upcoming matches and events from the World Snooker tour. Updated every 15 minutes from Snooker.org. Email snookertrmnl@heli.cat for support, suggestions or feedback.",
+          "category": "sports",
+          "email_address": "snookertrmnl@heli.cat"
+        }
+      ],
+      "stats": {
+        "installs": 2,
+        "forks": 0
+      }
+    },
+    {
+      "id": 224093,
+      "name": "Fish Tank",
+      "published_at": "2026-01-14T11:32:51.423Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/x8ug2vvtfpqeb8io1vejxtjiddo9",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/frf41msdyhc2hatrn2o0mprgmpvg?response-content-disposition=inline%3B%20filename%3D%22plugin-25da52%22%3B%20filename%2A%3DUTF-8%27%27plugin-25da52\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=364af36907b36bc228039244f763504d45b882fbfcd4f5f4ba42a63f2a3fcd87",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "About this plugin",
+        "category": "humor,art",
+        "field_type": "author_bio",
+        "description": "Turn your display into a tiny, monochrome aquarium. We capture snapshots of the latest wobbly wonders released into the wild on drawafish.com.",
+        "email_address": "le.zip.1385@gmail.com",
+        "learn_more_url": "https://drawafish.com/"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "About this plugin",
+          "category": "humor,art",
+          "field_type": "author_bio",
+          "description": "Turn your display into a tiny, monochrome aquarium. We capture snapshots of the latest wobbly wonders released into the wild on drawafish.com.",
+          "email_address": "le.zip.1385@gmail.com",
+          "learn_more_url": "https://drawafish.com/"
+        }
+      ],
+      "stats": {
+        "installs": 27,
+        "forks": 0
+      }
+    },
+    {
+      "id": 221425,
+      "name": "Is Mercury in Retrograde?",
+      "published_at": "2026-01-14T01:02:20.758Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/yya68p8e7ctff079qsa4fthwhri8",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/4wqpi500dc0unfw8ctptgp4y4cix?response-content-disposition=inline%3B%20filename%3D%22plugin-5c1819%22%3B%20filename%2A%3DUTF-8%27%27plugin-5c1819\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=ed576a5cd5233a1b12821e3d490ac0ad41b73fbae2b20b3512db84bab654966b",
+      "author_bio": {
+        "keyname": "author_bio",
+        "name": "About This Plugin",
+        "category": "entertainment,life",
+        "field_type": "author_bio",
+        "description": "Displays a YES/NO if Mercury is in Retrograde.\u003cbr\u003e Learn more about Mercury in Retrograde \u003ca href=\"https://en.wikipedia.org/wiki/Apparent_retrograde_motion#Apparent_motion\"\u003ehere\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e In astrology, Mercury rules over things like communication, how we process information, local travel, planning your schedule, and your routine. Confusion and mishaps can occur when Mercury moves retrograde, but if you understand more about this common event, you can navigate your daily life with less stress.\u003cbr\u003e\u003cbr\u003e This is a rif on the website \u003ca href=\"https://ismercuryinretrograde.com/\"\u003ehttps://ismercuryinretrograde.com/\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e \u003ca href=\"https://ko-fi.com/solarmax\" target=\"_blank\"\u003eSupport this project\u003c/a\u003e",
+        "email_address": "dev@photic.zone",
+        "learn_more_url": "https://ko-fi.com/solarmax"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_bio",
+          "name": "About This Plugin",
+          "category": "entertainment,life",
+          "field_type": "author_bio",
+          "description": "Displays a YES/NO if Mercury is in Retrograde.\u003cbr\u003e Learn more about Mercury in Retrograde \u003ca href=\"https://en.wikipedia.org/wiki/Apparent_retrograde_motion#Apparent_motion\"\u003ehere\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e In astrology, Mercury rules over things like communication, how we process information, local travel, planning your schedule, and your routine. Confusion and mishaps can occur when Mercury moves retrograde, but if you understand more about this common event, you can navigate your daily life with less stress.\u003cbr\u003e\u003cbr\u003e This is a rif on the website \u003ca href=\"https://ismercuryinretrograde.com/\"\u003ehttps://ismercuryinretrograde.com/\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003e \u003ca href=\"https://ko-fi.com/solarmax\" target=\"_blank\"\u003eSupport this project\u003c/a\u003e",
+          "email_address": "dev@photic.zone",
+          "learn_more_url": "https://ko-fi.com/solarmax"
+        }
+      ],
+      "stats": {
+        "installs": 5,
+        "forks": 0
+      }
+    },
+    {
+      "id": 220520,
+      "name": "Pi-hole",
+      "published_at": "2026-01-13T22:03:34.152Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/pgxg1atv6m1fq9nkrsk74iygvnon",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/pybnp2p2vk3gg7q7dhmpyh359dti?response-content-disposition=inline%3B%20filename%3D%22plugin-eab3dd%22%3B%20filename%2A%3DUTF-8%27%27plugin-eab3dd\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=290b9b8643626ebaf7b6858514ab0627ac789339b92ec53c15a46466dca5f035",
+      "author_bio": {
+        "keyname": "author_info",
+        "name": "About This Plugin",
+        "field_type": "author_bio",
+        "category": "analytics,programming",
+        "description": "Display real-time statistics from your \u003ca href=\"https://pi-hole.net/\"\u003ePi-hole\u003c/a\u003e network-wide ad blocker on your TRMNL device. Monitor DNS queries, blocked requests, system performance, query history charts, and top blocked domains.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eRequirements:\u003c/strong\u003e Pi-hole device with SSH access (root or sudo access required), TRMNL webhook URL from plugin settings.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eInstallation:\u003c/strong\u003e Run the install script on your Pi-hole via SSH. Updates automatically every 15 minutes. Full instructions available in the \u003ca href=\"https://github.com/rishikeshsreehari/trmnl-pihole\"\u003eGitHub repository\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003eFor issues or suggestions, please \u003ca href=\"https://github.com/rishikeshsreehari/trmnl-pihole/issues\"\u003eraise an issue on GitHub\u003c/a\u003e or send an email.",
+        "github_url": "https://github.com/rishikeshsreehari/trmnl-pihole",
+        "learn_more_url": "https://rishikeshs.com/projects/trmnl-pihole",
+        "email_address": "hello@rishikeshs.com"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_info",
+          "name": "About This Plugin",
+          "field_type": "author_bio",
+          "category": "analytics,programming",
+          "description": "Display real-time statistics from your \u003ca href=\"https://pi-hole.net/\"\u003ePi-hole\u003c/a\u003e network-wide ad blocker on your TRMNL device. Monitor DNS queries, blocked requests, system performance, query history charts, and top blocked domains.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eRequirements:\u003c/strong\u003e Pi-hole device with SSH access (root or sudo access required), TRMNL webhook URL from plugin settings.\u003cbr\u003e\u003cbr\u003e\u003cstrong\u003eInstallation:\u003c/strong\u003e Run the install script on your Pi-hole via SSH. Updates automatically every 15 minutes. Full instructions available in the \u003ca href=\"https://github.com/rishikeshsreehari/trmnl-pihole\"\u003eGitHub repository\u003c/a\u003e.\u003cbr\u003e\u003cbr\u003eFor issues or suggestions, please \u003ca href=\"https://github.com/rishikeshsreehari/trmnl-pihole/issues\"\u003eraise an issue on GitHub\u003c/a\u003e or send an email.",
+          "github_url": "https://github.com/rishikeshsreehari/trmnl-pihole",
+          "learn_more_url": "https://rishikeshs.com/projects/trmnl-pihole",
+          "email_address": "hello@rishikeshs.com"
+        },
+        {
+          "keyname": "github",
+          "field_type": "copyable_webhook_url",
+          "name": "Webhook URL"
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 5
+      }
+    },
+    {
+      "id": 223120,
+      "name": "N64 Title Screens",
+      "published_at": "2026-01-13T13:00:32.349Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/hv0iuyf66mikt2dtdweys19kbe63",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/8pho9lt2zjg4q529bpf60wg5wps2?response-content-disposition=inline%3B%20filename%3D%22plugin-b41f18%22%3B%20filename%2A%3DUTF-8%27%27plugin-b41f18\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=05ecfcca589921938a782a1efa6020bac542236791b3b4ed74ec2dc4a2149796",
+      "author_bio": {
+        "keyname": "doesnt_matter",
+        "name": "N64 Title Screens",
+        "field_type": "author_bio",
+        "description": "Shows a random N64 game title screen",
+        "github_url": "https://github.com/rknightuk/trmnl-n64-title-screens",
+        "learn_more_url": "https://rknight.me"
+      },
+      "custom_fields": [
+        {
+          "keyname": "doesnt_matter",
+          "name": "N64 Title Screens",
+          "field_type": "author_bio",
+          "description": "Shows a random N64 game title screen",
+          "github_url": "https://github.com/rknightuk/trmnl-n64-title-screens",
+          "learn_more_url": "https://rknight.me"
+        }
+      ],
+      "stats": {
+        "installs": 15,
+        "forks": 0
+      }
+    },
+    {
+      "id": 221410,
+      "name": "Counter Strike 2",
+      "published_at": "2026-01-13T12:47:02.071Z",
+      "icon_url": "https://trmnl-public.s3.us-east-2.amazonaws.com/jutxjxcf4nmo1r2ojkb626cnwbwt",
+      "icon_content_type": "image/png",
+      "screenshot_url": "https://trmnl.s3.us-east-2.amazonaws.com/zb16a4s5lwinlnvnz9ai852ufrs2?response-content-disposition=inline%3B%20filename%3D%22plugin-5d42d5%22%3B%20filename%2A%3DUTF-8%27%27plugin-5d42d5\u0026response-content-type=image%2Fpng\u0026X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIA47CRUQUU4VKBBMOF%2F20260120%2Fus-east-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260120T221751Z\u0026X-Amz-Expires=300\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=b81a1d08a800032605ffa19644b1cacb0d7ef3f5280dfd1340ac911f58db57a6",
+      "author_bio": {
+        "keyname": "author_details",
+        "name": "About This Plugin",
+        "category": "entertainment,humor",
+        "field_type": "author_bio",
+        "description": "Display your recent Counter Strike 2 matches and statistics with data provided by \u003ca href=\"https://leetify.com\"\u003eLeetify\u003c/a\u003e.\u003cbr/\u003e\u003cbr/\u003ePlease note that data will only be processed and collected if you have setup a \u003ca href=\"https://leetify.com\"\u003eLeetify\u003c/a\u003e account.",
+        "github_url": "https://github.com/r4wizard",
+        "email_address": "peter@shadowacre.ltd"
+      },
+      "custom_fields": [
+        {
+          "keyname": "author_details",
+          "name": "About This Plugin",
+          "category": "entertainment,humor",
+          "field_type": "author_bio",
+          "description": "Display your recent Counter Strike 2 matches and statistics with data provided by \u003ca href=\"https://leetify.com\"\u003eLeetify\u003c/a\u003e.\u003cbr/\u003e\u003cbr/\u003ePlease note that data will only be processed and collected if you have setup a \u003ca href=\"https://leetify.com\"\u003eLeetify\u003c/a\u003e account.",
+          "github_url": "https://github.com/r4wizard",
+          "email_address": "peter@shadowacre.ltd"
+        },
+        {
+          "keyname": "steam_id",
+          "field_type": "string",
+          "name": "Steam ID",
+          "description": "The Steam64 ID for your steam account. Use \u003ca href=\"https://steamid.io/\"\u003esteamid.io\u003c/a\u003e to find yours."
+        },
+        {
+          "keyname": "tri_goal_level",
+          "field_type": "select",
+          "name": "Player Profile: Goal",
+          "description": "When rendering the player profile triangle panel, which range of rating should be used as the goal.",
+          "options": [
+            {
+              "1,000 - 4,999": "1k"
+            },
+            {
+              "5,000 - 9,999": "5k"
+            },
+            {
+              "10,000 - 14,999": "10k"
+            },
+            {
+              "15,000 - 19,999": "15k"
+            },
+            {
+              "20,000 - 24,999": "20k"
+            },
+            {
+              "25,000+": "25k"
+            }
+          ],
+          "default": "1k"
+        },
+        {
+          "keyname": "halfv_layout",
+          "field_type": "select",
+          "name": "Half Vertical: Panels to display",
+          "description": "When rendering as a half vertical plugin, what data should be displayed?",
+          "options": [
+            {
+              "Player Details / Profile": "player"
+            },
+            {
+              "Recent Matches / Teammates": "recent"
+            }
+          ],
+          "default": "player"
+        },
+        {
+          "keyname": "halfh_layout_a",
+          "field_type": "select",
+          "name": "Half Horizontal: Left panel to display",
+          "description": "When rendering as a half horizontal plugin, what data should be displayed on the left?",
+          "options": [
+            {
+              "Player Details": "player"
+            },
+            {
+              "Player Profile": "profile"
+            },
+            {
+              "Last Match": "last"
+            },
+            {
+              "Recent Matches": "recent"
+            },
+            {
+              "Recent Teammates": "teammates"
+            }
+          ],
+          "default": "player"
+        },
+        {
+          "keyname": "halfh_layout_b",
+          "field_type": "select",
+          "name": "Half Horizontal: Right panel to display",
+          "description": "When rendering as a half horizontal plugin, what data should be displayed on the right?",
+          "options": [
+            {
+              "Player Details": "player"
+            },
+            {
+              "Player Profile": "profile"
+            },
+            {
+              "Last Match": "last"
+            },
+            {
+              "Recent Matches": "recent"
+            },
+            {
+              "Recent Teammates": "teammates"
+            }
+          ],
+          "default": "player"
+        },
+        {
+          "keyname": "quad_layout",
+          "field_type": "select",
+          "name": "Quadrant: Panel to display",
+          "description": "When rendering as a quadrant plugin, what data should be displayed?",
+          "options": [
+            {
+              "Player Details": "player"
+            },
+            {
+              "Player Profile": "profile"
+            },
+            {
+              "Last Match": "last"
+            },
+            {
+              "Recent Matches": "recent"
+            },
+            {
+              "Recent Teammates": "teammates"
+            }
+          ],
+          "default": "player"
+        },
+        {
+          "keyname": "api_key",
+          "field_type": "string",
+          "name": "Leetify API Key",
+          "description": "Although not strictly mandatory, the documentation suggests more generous rate limits when an API key is used. \u003ca href=\"https://leetify.com/app/developer\"\u003eGenerate\u003c/a\u003e a key if you have issues.",
+          "placeholder": "00000000-0000-0000-0000-000000000000",
+          "optional": true
+        }
+      ],
+      "stats": {
+        "installs": 1,
+        "forks": 1
+      }
+    }
+  ],
+  "total": 672,
+  "from": 1,
+  "to": 25,
+  "per_page": 25,
+  "current_page": 1,
+  "prev_page_url": null,
+  "next_page_url": "/recipes.json?page=2\u0026sort_by=newest"
+}
