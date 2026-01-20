@@ -36,6 +36,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -75,6 +76,8 @@ fun RecipesCatalogContent(
     state: RecipesCatalogScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val bottomSheetState = rememberModalBottomSheetState()
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -228,6 +231,17 @@ fun RecipesCatalogContent(
                 }
             }
         }
+    }
+
+    // Show recipe detail bottom sheet when a recipe is selected
+    state.selectedRecipeForDetails?.let { recipe ->
+        RecipeDetailBottomSheet(
+            recipe = recipe,
+            sheetState = bottomSheetState,
+            onDismiss = {
+                state.eventSink(RecipesCatalogScreen.Event.DismissRecipeDetails)
+            },
+        )
     }
 }
 

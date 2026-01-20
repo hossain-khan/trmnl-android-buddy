@@ -63,6 +63,7 @@ class RecipesCatalogPresenter(
         var currentPage by remember { mutableStateOf(1) }
         var hasMorePages by remember { mutableStateOf(false) }
         var totalRecipes by remember { mutableStateOf(0) }
+        var selectedRecipeForDetails by remember { mutableStateOf<Recipe?>(null) }
 
         // Collect bookmarked recipe IDs as state
         val bookmarkedRecipeIds by bookmarkRepository
@@ -128,6 +129,7 @@ class RecipesCatalogPresenter(
             currentPage = currentPage,
             hasMorePages = hasMorePages,
             totalRecipes = totalRecipes,
+            selectedRecipeForDetails = selectedRecipeForDetails,
         ) { event ->
             when (event) {
                 RecipesCatalogScreen.Event.BackClicked -> {
@@ -227,8 +229,14 @@ class RecipesCatalogPresenter(
                 }
 
                 is RecipesCatalogScreen.Event.RecipeClicked -> {
-                    // For now, just log. Navigation to detail screen can be added later.
+                    // Show recipe details in bottom sheet
+                    selectedRecipeForDetails = event.recipe
                     Timber.d("Recipe clicked: ${event.recipe.name} (ID: ${event.recipe.id})")
+                }
+
+                RecipesCatalogScreen.Event.DismissRecipeDetails -> {
+                    // Dismiss recipe details bottom sheet
+                    selectedRecipeForDetails = null
                 }
 
                 is RecipesCatalogScreen.Event.BookmarkClicked -> {
