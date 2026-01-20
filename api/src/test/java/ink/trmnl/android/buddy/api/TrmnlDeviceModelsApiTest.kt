@@ -5,6 +5,7 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.slack.eithernet.ApiResult
 import kotlinx.coroutines.test.runTest
@@ -383,6 +384,234 @@ class TrmnlDeviceModelsApiTest : BaseApiTest() {
             // Second model should have null published_at
             assertThat(success.value.data[1].publishedAt).isEqualTo(null)
             assertThat(success.value.data[1].name).isEqualTo("amazon_kindle_2024")
+        }
+
+    @Test
+    fun `getDeviceModels handles new optional fields - image_size_limit, image_upload_supported, css`() =
+        runTest {
+            // Given: Mock server returns response with new optional fields
+            val responseBody =
+                """
+                {
+                  "data": [
+                    {
+                      "name": "og_png",
+                      "label": "TRMNL OG (1-bit)",
+                      "description": "TRMNL OG (1-bit)",
+                      "width": 800,
+                      "height": 480,
+                      "colors": 2,
+                      "bit_depth": 1,
+                      "scale_factor": 1.0,
+                      "rotation": 0,
+                      "mime_type": "image/png",
+                      "offset_x": 0,
+                      "offset_y": 0,
+                      "published_at": "2024-01-01T00:00:00.000Z",
+                      "kind": "trmnl",
+                      "palette_ids": ["bw"],
+                      "image_size_limit": 102400,
+                      "image_upload_supported": true,
+                      "css": {
+                        "classes": {
+                          "device": "trmnl-og",
+                          "size": "medium"
+                        },
+                        "variables": [
+                          ["--device-width", "800px"],
+                          ["--device-height", "480px"]
+                        ]
+                      }
+                    }
+                  ]
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .setHeader("Content-Type", "application/json"),
+            )
+
+            // When: Calling getDeviceModels
+            val result = apiService.getDeviceModels("Bearer test_token")
+
+            // Then: Response should be successful with new fields populated
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val success = result as ApiResult.Success
+            assertThat(success.value.data).hasSize(1)
+
+            val model = success.value.data[0]
+            assertThat(model.imageSizeLimit).isEqualTo(102400)
+            assertThat(model.imageUploadSupported).isEqualTo(true)
+            assertThat(model.css).isNotNull()
+            val css = model.css!!
+            assertThat(css.classes.device).isEqualTo("trmnl-og")
+            assertThat(css.classes.size).isEqualTo("medium")
+            assertThat(css.variables).hasSize(2)
+            assertThat(css.variables[0]).isEqualTo(listOf("--device-width", "800px"))
+            assertThat(css.variables[1]).isEqualTo(listOf("--device-height", "480px"))
+        }
+
+    @Test
+    fun `getDeviceModels handles missing new optional fields - backward compatibility`() =
+        runTest {
+            // Given: Mock server returns response without new optional fields
+            val responseBody =
+                """
+                {
+                  "data": [
+                    {
+                      "name": "og_png",
+                      "label": "TRMNL OG (1-bit)",
+                      "description": "TRMNL OG (1-bit)",
+                      "width": 800,
+                      "height": 480,
+                      "colors": 2,
+                      "bit_depth": 1,
+                      "scale_factor": 1.0,
+                      "rotation": 0,
+                      "mime_type": "image/png",
+                      "offset_x": 0,
+                      "offset_y": 0,
+                      "published_at": "2024-01-01T00:00:00.000Z",
+                      "kind": "trmnl",
+                      "palette_ids": ["bw"]
+                    }
+                  ]
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .setHeader("Content-Type", "application/json"),
+            )
+
+            // When: Calling getDeviceModels
+            val result = apiService.getDeviceModels("Bearer test_token")
+
+            // Then: Response should be successful with new fields as null (backward compatible)
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val success = result as ApiResult.Success
+            assertThat(success.value.data).hasSize(1)
+
+            val model = success.value.data[0]
+            assertThat(model.name).isEqualTo("og_png")
+            assertThat(model.imageSizeLimit).isEqualTo(null)
+            assertThat(model.imageUploadSupported).isEqualTo(null)
+            assertThat(model.css).isEqualTo(null)
+        }
+
+    @Test
+    fun `getDeviceModels handles mixed presence of new optional fields`() =
+        runTest {
+            // Given: Mock server returns response with some models having new fields and some not
+            val responseBody =
+                """
+                {
+                  "data": [
+                    {
+                      "name": "og_png",
+                      "label": "TRMNL OG (1-bit)",
+                      "description": "TRMNL OG (1-bit)",
+                      "width": 800,
+                      "height": 480,
+                      "colors": 2,
+                      "bit_depth": 1,
+                      "scale_factor": 1.0,
+                      "rotation": 0,
+                      "mime_type": "image/png",
+                      "offset_x": 0,
+                      "offset_y": 0,
+                      "kind": "trmnl",
+                      "palette_ids": ["bw"],
+                      "image_size_limit": 102400,
+                      "image_upload_supported": true,
+                      "css": {
+                        "classes": {
+                          "device": "trmnl-og",
+                          "size": "medium"
+                        },
+                        "variables": []
+                      }
+                    },
+                    {
+                      "name": "amazon_kindle_2024",
+                      "label": "Amazon Kindle 2024",
+                      "description": "Amazon Kindle 2024",
+                      "width": 1400,
+                      "height": 840,
+                      "colors": 256,
+                      "bit_depth": 8,
+                      "scale_factor": 1.75,
+                      "rotation": 90,
+                      "mime_type": "image/png",
+                      "offset_x": 75,
+                      "offset_y": 25,
+                      "kind": "kindle",
+                      "palette_ids": ["gray-256"]
+                    },
+                    {
+                      "name": "inkplate_10",
+                      "label": "Inkplate 10",
+                      "description": "Inkplate 10",
+                      "width": 1200,
+                      "height": 820,
+                      "colors": 8,
+                      "bit_depth": 3,
+                      "scale_factor": 1.0,
+                      "rotation": 0,
+                      "mime_type": "image/png",
+                      "offset_x": 0,
+                      "offset_y": 0,
+                      "kind": "byod",
+                      "palette_ids": ["gray-4", "bw"],
+                      "image_size_limit": 204800,
+                      "image_upload_supported": false
+                    }
+                  ]
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .setHeader("Content-Type", "application/json"),
+            )
+
+            // When: Calling getDeviceModels
+            val result = apiService.getDeviceModels("Bearer test_token")
+
+            // Then: Response should be successful with mixed new fields
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val success = result as ApiResult.Success
+            assertThat(success.value.data).hasSize(3)
+
+            // First model should have all new fields
+            val firstModel = success.value.data[0]
+            assertThat(firstModel.name).isEqualTo("og_png")
+            assertThat(firstModel.imageSizeLimit).isEqualTo(102400)
+            assertThat(firstModel.imageUploadSupported).isEqualTo(true)
+            assertThat(firstModel.css).isNotNull()
+            assertThat(firstModel.css!!.classes.device).isEqualTo("trmnl-og")
+
+            // Second model should have no new fields
+            val secondModel = success.value.data[1]
+            assertThat(secondModel.name).isEqualTo("amazon_kindle_2024")
+            assertThat(secondModel.imageSizeLimit).isEqualTo(null)
+            assertThat(secondModel.imageUploadSupported).isEqualTo(null)
+            assertThat(secondModel.css).isEqualTo(null)
+
+            // Third model should have partial new fields (no css)
+            val thirdModel = success.value.data[2]
+            assertThat(thirdModel.name).isEqualTo("inkplate_10")
+            assertThat(thirdModel.imageSizeLimit).isEqualTo(204800)
+            assertThat(thirdModel.imageUploadSupported).isEqualTo(false)
+            assertThat(thirdModel.css).isEqualTo(null)
         }
 
     /**
