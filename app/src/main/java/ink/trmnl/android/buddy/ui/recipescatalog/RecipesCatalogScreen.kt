@@ -31,6 +31,7 @@ data object RecipesCatalogScreen : Screen {
      * @property currentPage Current page number in pagination
      * @property hasMorePages True if more pages are available
      * @property totalRecipes Total number of recipes matching the query
+     * @property selectedRecipeForDetails Recipe selected to show in detail bottom sheet, or null
      * @property eventSink Handler for UI events
      */
     data class State(
@@ -47,6 +48,7 @@ data object RecipesCatalogScreen : Screen {
         val currentPage: Int = 1,
         val hasMorePages: Boolean = false,
         val totalRecipes: Int = 0,
+        val selectedRecipeForDetails: Recipe? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -147,6 +149,11 @@ data object RecipesCatalogScreen : Screen {
          * User clicked the filter toggle button to show/hide filters.
          */
         data object ToggleFiltersClicked : Event()
+
+        /**
+         * User dismissed the recipe detail bottom sheet.
+         */
+        data object DismissRecipeDetails : Event()
     }
 }
 
