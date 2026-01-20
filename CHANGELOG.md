@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tests verify backward compatibility with missing fields (all new fields default to null)
   - Tests cover mixed presence of fields across multiple device models
   - Maintains full backward compatibility with existing API responses
+- **Device Details Bottom Sheet enhancements**: Display image upload capabilities
+  - Added "Image Size Limit" row showing file size limit in KB (when available)
+  - Added "Image Upload" row with "✓ Supported" or "Not Supported" indicator (when available)
+  - Updated clipboard copy function to include image upload information
+  - Enhanced preview device models with sample image upload data
 
 ## [2.7.2] - 2025-12-28
 

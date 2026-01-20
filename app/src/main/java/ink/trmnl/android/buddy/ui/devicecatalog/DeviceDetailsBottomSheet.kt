@@ -150,6 +150,21 @@ fun DeviceDetailsBottomSheet(
                         value = device.paletteIds.joinToString(", "),
                     )
                     DetailRow(label = "Published", value = device.publishedAt?.take(10) ?: "Unknown")
+
+                    // Image upload capabilities
+                    device.imageSizeLimit?.let { limit ->
+                        DetailRow(
+                            label = "Image Size Limit",
+                            value = "${limit / 1024} KB",
+                        )
+                    }
+
+                    device.imageUploadSupported?.let { supported ->
+                        DetailRow(
+                            label = "Image Upload",
+                            value = if (supported) "✓ Supported" else "Not Supported",
+                        )
+                    }
                 }
             }
 
@@ -244,6 +259,14 @@ private fun buildDeviceDetailsText(device: DeviceModel): String =
         appendLine("Device Kind: ${device.kind.uppercase()}")
         appendLine("Color Palettes: ${device.paletteIds.joinToString(", ")}")
         appendLine("Published: ${device.publishedAt ?: "Unknown"}")
+
+        // Image upload capabilities
+        device.imageSizeLimit?.let { limit ->
+            appendLine("Image Size Limit: ${limit / 1024} KB")
+        }
+        device.imageUploadSupported?.let { supported ->
+            appendLine("Image Upload: ${if (supported) "✓ Supported" else "Not Supported"}")
+        }
     }
 
 // ============================================
@@ -303,6 +326,8 @@ private val previewDeviceTrmnl =
         publishedAt = "2024-01-01T00:00:00.000Z",
         kind = "trmnl",
         paletteIds = listOf("bw"),
+        imageSizeLimit = 94208, // 92 KB
+        imageUploadSupported = true,
     )
 
 private val previewDeviceKindle =
@@ -322,6 +347,8 @@ private val previewDeviceKindle =
         publishedAt = "2024-10-15T00:00:00.000Z",
         kind = "kindle",
         paletteIds = listOf("gray-256"),
+        imageSizeLimit = 524288, // 512 KB
+        imageUploadSupported = true,
     )
 
 private val previewDeviceByod =
@@ -341,4 +368,6 @@ private val previewDeviceByod =
         publishedAt = "2024-03-20T00:00:00.000Z",
         kind = "byod",
         paletteIds = listOf("gray-8", "bw"),
+        imageSizeLimit = 94208, // 92 KB (BYOD devices)
+        imageUploadSupported = true,
     )
