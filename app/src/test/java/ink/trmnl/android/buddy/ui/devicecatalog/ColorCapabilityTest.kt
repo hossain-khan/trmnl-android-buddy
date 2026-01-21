@@ -51,8 +51,15 @@ class ColorCapabilityTest {
     }
 
     @Test
-    fun `device with 16 colors is Grayscale`() {
+    fun `device with 16 colors is Multi-tone`() {
         val device = createTestDevice(colors = 16)
+
+        assertThat(device.colorCapability).isEqualTo(ColorCapability.MULTI_TONE)
+    }
+
+    @Test
+    fun `device with 17 colors is Grayscale`() {
+        val device = createTestDevice(colors = 17)
 
         assertThat(device.colorCapability).isEqualTo(ColorCapability.GRAYSCALE)
     }
