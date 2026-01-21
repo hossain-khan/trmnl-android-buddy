@@ -10,7 +10,7 @@ import org.junit.Test
  *
  * Tests verify correct categorization of devices based on their color count:
  * - Full Color: >1000 colors
- * - Grayscale: 16-256 colors
+ * - Grayscale: 17-1000 colors
  * - Multi-tone: 4-16 colors
  * - Monochrome: 2-3 colors
  */
