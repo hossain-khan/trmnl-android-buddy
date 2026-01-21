@@ -164,7 +164,7 @@ fun RecipeDetailBottomSheet(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .height(300.dp)
+                            .height(250.dp)
                             .clip(MaterialTheme.shapes.medium)
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center,
@@ -181,7 +181,7 @@ fun RecipeDetailBottomSheet(
                             Modifier
                                 .fillMaxWidth()
                                 .clip(MaterialTheme.shapes.medium),
-                        contentScale = ContentScale.Fit,
+                        contentScale = ContentScale.FillWidth,
                         loading = {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(48.dp),
