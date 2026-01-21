@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.ui.devicecatalog
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -39,9 +40,29 @@ fun ColorCapabilityBadge(
 
     Surface(
         modifier =
-            modifier.semantics {
-                contentDescription = "$label display"
-            },
+            modifier
+                .then(
+                    // Add colorful gradient border for FULL_COLOR
+                    if (capability == ColorCapability.FULL_COLOR) {
+                        Modifier.border(
+                            width = 1.5.dp,
+                            brush =
+                                Brush.horizontalGradient(
+                                    colors =
+                                        listOf(
+                                            MaterialTheme.colorScheme.primary,
+                                            MaterialTheme.colorScheme.tertiary,
+                                            MaterialTheme.colorScheme.secondary,
+                                        ),
+                                ),
+                            shape = MaterialTheme.shapes.extraSmall,
+                        )
+                    } else {
+                        Modifier
+                    },
+                ).semantics {
+                    contentDescription = "$label display"
+                },
         shape = MaterialTheme.shapes.extraSmall,
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
