@@ -3,7 +3,10 @@ package ink.trmnl.android.buddy.ui.devicecatalog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -57,23 +60,21 @@ fun DeviceListItem(
     ) {
         ListItem(
             headlineContent = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = device.label,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    ColorCapabilityBadge(capability = device.colorCapability)
-                }
+                Text(
+                    text = device.label,
+                    style = MaterialTheme.typography.titleMedium,
+                )
             },
             supportingContent = {
-                Text(
-                    text = device.getSpecsSummary(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.secondary,
-                )
+                Column {
+                    Text(
+                        text = device.getSpecsSummary(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    ColorCapabilityBadge(capability = device.colorCapability)
+                }
             },
             trailingContent =
                 if (logoResource != null) {
