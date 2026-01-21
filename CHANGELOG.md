@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-01-20
+
 ### Added
 
 - **Visual badges for device color capabilities in catalog**: Added color capability badges to device list items to help users quickly identify device characteristics at a glance
@@ -30,6 +32,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added "Image Upload" row with "✓ Supported" or "Not Supported" indicator (when available)
   - Updated clipboard copy function to include image upload information
   - Enhanced preview device models with sample image upload data
+- **Rainbow gradient border to FULL_COLOR badge**: FULL_COLOR device capability badges now display with vibrant gradient border (1.5dp)
+  - Uses primary→tertiary→secondary color gradient from Material theme
+  - Border adds subtle but effective visual distinction
+  - Makes devices like Tidbyt (16M colors) immediately recognizable while maintaining professional appearance
+
+### Fixed
+
+- **ColorCapabilityBadge layout in portrait mode**: Fixed horizontal space constraint by moving badge from beside title to below device specifications
+  - Badge now displays under device specs instead of beside title
+  - Added 4dp spacing between specs and badge for visual separation
+  - Provides better layout on smaller screens while maintaining visual hierarchy
+- **Recipe screenshot display with adaptive height**: Improved recipe screenshot display with better visual consistency
+  - Changed screenshot from fixed 300.dp to adaptive height based on image aspect ratio
+  - Uses ContentScale.FillWidth to fill width while maintaining aspect ratio
+  - Added 250.dp placeholder height to prevent UI jumping during image load
+  - Loading indicator shows in centered placeholder before image loads
+  - After load, image naturally adapts to its aspect ratio
 
 ## [2.7.2] - 2025-12-28
 
@@ -1274,7 +1293,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.2...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.8.0...HEAD
+[2.8.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.2...2.8.0
 [2.7.2]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.1...2.7.2
 [2.7.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.0...2.7.1
 [2.7.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.6.0...2.7.0
