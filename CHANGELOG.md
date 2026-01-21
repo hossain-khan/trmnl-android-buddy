@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Visual badges for device color capabilities in catalog**: Added color capability badges to device list items to help users quickly identify device characteristics at a glance
+  - Badge types: Full Color (>1000 colors), Grayscale (16-256 colors), Multi-tone (4-16 colors), Monochrome (2-3 colors)
+  - Created `ColorCapability` enum to categorize devices by color count
+  - Created `ColorCapabilityBadge` composable component with Material 3 design
+  - Uses MaterialTheme.colorScheme for consistent theming in both light and dark modes
+  - Includes accessibility labels for screen readers
+  - Added comprehensive unit tests for color capability categorization logic
 - **New DeviceModel API fields**: Added support for three new API fields in `DeviceModel` data class
   - `imageSizeLimit` (Int?): Maximum file size in bytes for images (optional, nullable)
   - `imageUploadSupported` (Boolean?): Flag indicating if image upload is supported for the device (optional, nullable)
