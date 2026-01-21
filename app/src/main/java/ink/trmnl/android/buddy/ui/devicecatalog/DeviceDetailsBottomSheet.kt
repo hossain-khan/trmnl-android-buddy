@@ -34,6 +34,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 /**
  * Bottom sheet showing device details with copy functionality.
@@ -150,6 +151,21 @@ fun DeviceDetailsBottomSheet(
                         value = device.paletteIds.joinToString(", "),
                     )
                     DetailRow(label = "Published", value = device.publishedAt?.take(10) ?: "Unknown")
+
+                    // Image upload capabilities
+                    device.imageSizeLimit?.let { limit ->
+                        DetailRow(
+                            label = "Image Size Limit",
+                            value = "${bytesToKilobytes(limit)} KB",
+                        )
+                    }
+
+                    device.imageUploadSupported?.let { supported ->
+                        DetailRow(
+                            label = "Image Upload",
+                            value = if (supported) "✓ Supported" else "Not Supported",
+                        )
+                    }
                 }
             }
 
@@ -244,7 +260,23 @@ private fun buildDeviceDetailsText(device: DeviceModel): String =
         appendLine("Device Kind: ${device.kind.uppercase()}")
         appendLine("Color Palettes: ${device.paletteIds.joinToString(", ")}")
         appendLine("Published: ${device.publishedAt ?: "Unknown"}")
+
+        // Image upload capabilities
+        device.imageSizeLimit?.let { limit ->
+            appendLine("Image Size Limit: ${bytesToKilobytes(limit)} KB")
+        }
+        device.imageUploadSupported?.let { supported ->
+            appendLine("Image Upload: ${if (supported) "✓ Supported" else "Not Supported"}")
+        }
     }
+
+/**
+ * Convert bytes to kilobytes using proper rounding.
+ *
+ * @param bytes Size in bytes
+ * @return Size in kilobytes (rounded)
+ */
+private fun bytesToKilobytes(bytes: Int): Int = (bytes.toDouble() / 1024).roundToInt()
 
 // ============================================
 // Composable Previews
@@ -303,6 +335,8 @@ private val previewDeviceTrmnl =
         publishedAt = "2024-01-01T00:00:00.000Z",
         kind = "trmnl",
         paletteIds = listOf("bw"),
+        imageSizeLimit = 94208, // 92 KB
+        imageUploadSupported = true,
     )
 
 private val previewDeviceKindle =
@@ -322,6 +356,8 @@ private val previewDeviceKindle =
         publishedAt = "2024-10-15T00:00:00.000Z",
         kind = "kindle",
         paletteIds = listOf("gray-256"),
+        imageSizeLimit = 524288, // 512 KB
+        imageUploadSupported = true,
     )
 
 private val previewDeviceByod =
@@ -341,4 +377,6 @@ private val previewDeviceByod =
         publishedAt = "2024-03-20T00:00:00.000Z",
         kind = "byod",
         paletteIds = listOf("gray-8", "bw"),
+        imageSizeLimit = 94208, // 92 KB (BYOD devices)
+        imageUploadSupported = true,
     )
