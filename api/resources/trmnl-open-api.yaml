@@ -58,12 +58,6 @@ paths:
         description: Encode image function (eg. true)
         schema:
           type: boolean
-      - name: Temperature-Profile
-        in: header
-        required: false
-        description: Request device temperature profile (eg. true)
-        schema:
-          type: boolean
       responses:
         '200':
           description: Success
@@ -78,7 +72,7 @@ paths:
                   image_url:
                     type: string
                     nullable: true
-                    example: https://usetrmnl.com/images/setup/setup-logo.bmp
+                    example: https://trmnl.com/images/setup/setup-logo.bmp
                   filename:
                     type: string
                     nullable: true
@@ -95,7 +89,7 @@ paths:
                   firmware_url:
                     type: string
                     nullable: true
-                    example: https://usetrmnl.com/firmware/1.0.0.bin
+                    example: https://trmnl.com/firmware/1.0.0.bin
                   special_function:
                     type: string
                     nullable: false
@@ -133,7 +127,7 @@ paths:
                   image_url:
                     type: string
                     nullable: true
-                    example: https://usetrmnl.com/images/setup/setup-logo.bmp
+                    example: https://trmnl.com/images/setup/setup-logo.bmp
                   filename:
                     type: string
                     nullable: true
@@ -156,7 +150,7 @@ paths:
           type: string
       responses:
         '204':
-          description: Logs created
+          description: Logs created when ignore_log_messages is not set
       requestBody:
         content:
           application/json:
@@ -213,10 +207,10 @@ paths:
                   image_url:
                     type: string
                     nullable: true
-                    example: https://usetrmnl.com/images/setup/setup-logo.bmp
+                    example: https://trmnl.com/images/setup/setup-logo.bmp
                   message:
                     type: string
-                    example: Register at usetrmnl.com/signup with Device ID 'ABC-123'
+                    example: Register at trmnl.com/signup with Device ID 'ABC-123'
   "/api/categories":
     get:
       summary: List all plugin categories
@@ -412,6 +406,40 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+    patch:
+      summary: Update a device
+      tags:
+      - Devices
+      parameters: []
+      security:
+      - bearer_auth: []
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '200':
+          description: Updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sleep_mode_enabled:
+                  type: boolean
+                  example: true
+                sleep_start_time:
+                  type: integer
+                  example: 1320
+                sleep_end_time:
+                  type: integer
+                  example: 480
+                percent_charged:
+                  type: number
+                  example: 69.0
   "/api/me":
     get:
       summary: Get my user data
@@ -653,6 +681,37 @@ paths:
               additionalProperties: false
         required: true
         description: The value of `merge_variables` must be a JSON object
+  "/api/plugin_settings/{id}/image":
+    parameters:
+    - name: id
+      in: path
+      description: Plugin setting UUID
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Upload an image for a webhook_image plugin
+      tags:
+      - Plugin Settings
+      responses:
+        '200':
+          description: Success with home_assistant_screenshot plugin
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+        '404':
+          description: Not found
+        '422':
+          description: Image too large
+        '429':
+          description: Rate limited
   "/api/plugin_settings":
     get:
       summary: List my plugin settings
@@ -753,7 +812,7 @@ servers:
 - url: https://{defaultHost}
   variables:
     defaultHost:
-      default: usetrmnl.com
+      default: trmnl.com
 components:
   securitySchemes:
     bearer_auth:
@@ -792,6 +851,16 @@ components:
           type: integer
           nullable: true
           example: -70
+        sleep_mode_enabled:
+          type: boolean
+          nullable: false
+          example: false
+        sleep_start_time:
+          type: integer
+          example: 1320
+        sleep_end_time:
+          type: integer
+          example: 480
         percent_charged:
           type: number
           example: 85.0
@@ -854,11 +923,6 @@ components:
           type: integer
           example: 20
           description: Y offset for image rendering
-        published_at:
-          type: string
-          format: date_time
-          example: '2023-10-01T12:00:00Z'
-          description: Publication date in RFC 3339 format
         kind:
           type: string
           example: trmnl
@@ -877,6 +941,38 @@ components:
           - gray-4
           - gray-16
           description: Supported color palette IDs
+        image_size_limit:
+          type: integer
+          example: 92160
+          description: Maximum image file size in bytes for webhook uploads
+        image_upload_supported:
+          type: boolean
+          example: true
+          description: Whether webhook image uploads are supported for this device
+            type
+        css:
+          type: object
+          nullable: true
+          description: CSS classes and variables for web rendering
+          properties:
+            classes:
+              type: object
+              properties:
+                device:
+                  type: string
+                  example: screen--og_plus
+                size:
+                  type: string
+                  example: screen--md
+            variables:
+              type: array
+              items:
+                type: array
+                items:
+                  type: string
+                example:
+                - "--screen-w"
+                - 800px
     Palette:
       type: object
       additionalProperties: false
