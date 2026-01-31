@@ -893,8 +893,8 @@ private fun createSampleRecipesResponse(
         to = (currentPage - 1) * DEFAULT_PER_PAGE + count,
         perPage = DEFAULT_PER_PAGE,
         currentPage = currentPage,
-        prevPageUrl = if (currentPage > 1) "https://usetrmnl.com/recipes.json?page=${currentPage - 1}" else null,
-        nextPageUrl = if (hasNext) "https://usetrmnl.com/recipes.json?page=${currentPage + 1}" else null,
+        prevPageUrl = if (currentPage > 1) "https://trmnl.com/recipes.json?page=${currentPage - 1}" else null,
+        nextPageUrl = if (hasNext) "https://trmnl.com/recipes.json?page=${currentPage + 1}" else null,
     )
 }
 

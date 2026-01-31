@@ -429,7 +429,7 @@ class BlogPostDaoTest {
         id = id,
         title = title,
         summary = summary,
-        link = "https://usetrmnl.com/blog/$id",
+        link = "https://trmnl.com/blog/$id",
         authorName = "Test Author",
         category = category,
         publishedDate = publishedDate,

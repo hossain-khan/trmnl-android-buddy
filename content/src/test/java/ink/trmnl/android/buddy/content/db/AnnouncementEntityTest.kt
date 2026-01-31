@@ -23,7 +23,7 @@ class AnnouncementEntityTest {
                 id = "announcement-1",
                 title = "New Feature Release",
                 summary = "We've released a new feature",
-                link = "https://usetrmnl.com/announcement-1",
+                link = "https://trmnl.com/announcement-1",
                 publishedDate = publishedDate,
                 isRead = true,
                 fetchedAt = fetchedAt,
@@ -32,7 +32,7 @@ class AnnouncementEntityTest {
         assertThat(announcement.id).isEqualTo("announcement-1")
         assertThat(announcement.title).isEqualTo("New Feature Release")
         assertThat(announcement.summary).isEqualTo("We've released a new feature")
-        assertThat(announcement.link).isEqualTo("https://usetrmnl.com/announcement-1")
+        assertThat(announcement.link).isEqualTo("https://trmnl.com/announcement-1")
         assertThat(announcement.publishedDate).isEqualTo(publishedDate)
         assertThat(announcement.isRead).isTrue()
         assertThat(announcement.fetchedAt).isEqualTo(fetchedAt)
@@ -48,7 +48,7 @@ class AnnouncementEntityTest {
                 id = "announcement-2",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/announcement-2",
+                link = "https://trmnl.com/announcement-2",
                 publishedDate = publishedDate,
             )
 
@@ -67,7 +67,7 @@ class AnnouncementEntityTest {
                 id = "announcement-3",
                 title = "Original Title",
                 summary = "Original Summary",
-                link = "https://usetrmnl.com/announcement-3",
+                link = "https://trmnl.com/announcement-3",
                 publishedDate = Instant.parse("2024-01-01T12:00:00Z"),
                 isRead = false,
             )
@@ -90,7 +90,7 @@ class AnnouncementEntityTest {
                 id = "announcement-4",
                 title = "Original Title",
                 summary = "Original Summary",
-                link = "https://usetrmnl.com/announcement-4",
+                link = "https://trmnl.com/announcement-4",
                 publishedDate = Instant.parse("2024-01-01T12:00:00Z"),
                 isRead = false,
             )
@@ -122,7 +122,7 @@ class AnnouncementEntityTest {
                 id = "announcement-5",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/announcement-5",
+                link = "https://trmnl.com/announcement-5",
                 publishedDate = publishedDate,
                 isRead = false,
                 fetchedAt = fetchedAt,
@@ -133,7 +133,7 @@ class AnnouncementEntityTest {
                 id = "announcement-5",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/announcement-5",
+                link = "https://trmnl.com/announcement-5",
                 publishedDate = publishedDate,
                 isRead = false,
                 fetchedAt = fetchedAt,
@@ -149,7 +149,7 @@ class AnnouncementEntityTest {
                 id = "announcement-6",
                 title = "Test Title",
                 summary = "Test Summary",
-                link = "https://usetrmnl.com/announcement-6",
+                link = "https://trmnl.com/announcement-6",
                 publishedDate = Instant.parse("2024-01-01T12:00:00Z"),
                 isRead = true,
             )

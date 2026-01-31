@@ -27,7 +27,7 @@ data class AnnouncementEntity(
      */
     val summary: String,
     /**
-     * URL to the full announcement on usetrmnl.com.
+     * URL to the full announcement on trmnl.com.
      */
     val link: String,
     /**
