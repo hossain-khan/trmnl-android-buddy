@@ -230,7 +230,7 @@ class RecipesCatalogPresenterTest {
                     perPage = DEFAULT_PER_PAGE,
                     currentPage = 1,
                     prevPageUrl = null,
-                    nextPageUrl = "https://usetrmnl.com/recipes.json?page=2",
+                    nextPageUrl = "https://trmnl.com/recipes.json?page=2",
                 )
 
             // Page 2 contains a duplicate (ID 2) and a new recipe (ID 27)
@@ -247,7 +247,7 @@ class RecipesCatalogPresenterTest {
                     to = 4,
                     perPage = DEFAULT_PER_PAGE,
                     currentPage = 2,
-                    prevPageUrl = "https://usetrmnl.com/recipes.json?page=1",
+                    prevPageUrl = "https://trmnl.com/recipes.json?page=1",
                     nextPageUrl = null,
                 )
 

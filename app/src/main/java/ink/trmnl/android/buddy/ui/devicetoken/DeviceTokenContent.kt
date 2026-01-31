@@ -197,7 +197,7 @@ private fun InstructionsCard(modifier: Modifier = Modifier) {
                     )
                     withLink(
                         LinkAnnotation.Url(
-                            url = "https://usetrmnl.com/devices/",
+                            url = "https://trmnl.com/devices/",
                             styles = linkStyle,
                         ),
                     ) {

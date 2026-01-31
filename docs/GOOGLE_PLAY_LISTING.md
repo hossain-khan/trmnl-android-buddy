@@ -115,7 +115,7 @@ Monitor TRMNL displays, track battery, get news & blog updates - all in one app
 • Internet connection for device data sync
 
 **🔗 USEFUL LINKS**
-• TRMNL Website: https://usetrmnl.com
+• TRMNL Website: https://trmnl.com
 • Report Issues: https://github.com/hossain-khan/trmnl-android-buddy/issues
 
 Perfect for TRMNL device owners who want to keep their e-ink displays running smoothly, monitor battery health, and stay updated with the latest TRMNL news and blog posts!
@@ -181,7 +181,7 @@ TRMNL Android Buddy is the essential companion app for managing your TRMNL e-ink
 • Internet connection for device data sync
 
 🔗 USEFUL LINKS
-• TRMNL Website: https://usetrmnl.com
+• TRMNL Website: https://trmnl.com
 • Report Issues: https://github.com/hossain-khan/trmnl-android-buddy/issues
 
 Perfect for TRMNL device owners who want to keep their e-ink displays running smoothly, monitor battery health, and stay updated with the latest TRMNL news!

@@ -618,7 +618,7 @@ private fun createBlogPost(
         id = id,
         title = title,
         summary = "Summary for $title",
-        link = "https://usetrmnl.com/blog/$id",
+        link = "https://trmnl.com/blog/$id",
         authorName = "Test Author",
         category = category,
         publishedDate = Instant.now().plus(id.filter { it.isDigit() }.toLongOrNull() ?: 0, ChronoUnit.HOURS),

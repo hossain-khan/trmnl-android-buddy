@@ -11,7 +11,7 @@
 ## 1. Executive Summary
 
 ### 1.1 Product Overview
-TRMNL Android Buddy is a companion Android application for managing and monitoring [TRMNL](https://usetrmnl.com) e-ink display devices. The app provides users with real-time device status monitoring, battery health tracking, content feed access, and comprehensive device management capabilities—all optimized for mobile use with a privacy-first approach.
+TRMNL Android Buddy is a companion Android application for managing and monitoring [TRMNL](https://trmnl.com) e-ink display devices. The app provides users with real-time device status monitoring, battery health tracking, content feed access, and comprehensive device management capabilities—all optimized for mobile use with a privacy-first approach.
 
 ### 1.2 Product Vision
 To be the essential mobile companion for TRMNL device owners, providing seamless device monitoring, proactive health insights, and easy access to TRMNL content updates while maintaining user privacy and following Material You design principles.
@@ -115,8 +115,8 @@ trmnl-android-buddy/
 
 **Requirements**:
 - FR-1.2.1: Provide input field for TRMNL API key with validation
-- FR-1.2.2: Display clickable links to TRMNL account settings (https://usetrmnl.com/account)
-- FR-1.2.3: Show help documentation link (https://usetrmnl.com/help)
+- FR-1.2.2: Display clickable links to TRMNL account settings (https://trmnl.com/account)
+- FR-1.2.3: Show help documentation link (https://trmnl.com/help)
 - FR-1.2.4: Validate API key format (alphanumeric string)
 - FR-1.2.5: Securely store API key in encrypted DataStore
 - FR-1.2.6: Show "Save" button (enabled only when valid key entered)
@@ -292,7 +292,7 @@ trmnl-android-buddy/
 - FR-2.4.2: Display device information (name, ID, MAC address)
 - FR-2.4.3: Show format guide: "20+ character hexadecimal string"
 - FR-2.4.4: Validate minimum token length of 20 characters
-- FR-2.4.5: Clickable link to TRMNL devices page (https://usetrmnl.com/devices/)
+- FR-2.4.5: Clickable link to TRMNL devices page (https://trmnl.com/devices/)
 - FR-2.4.6: Show help text for finding device API keys
 - FR-2.4.7: Securely store device tokens in encrypted DataStore (isolated from user token)
 - FR-2.4.8: "Save" button enabled only when valid key entered
@@ -404,7 +404,7 @@ trmnl-android-buddy/
 **Purpose**: Keep users informed of TRMNL product announcements
 
 **Requirements**:
-- FR-5.1.1: Fetch announcements from https://usetrmnl.com/feeds/announcements.xml
+- FR-5.1.1: Fetch announcements from https://trmnl.com/feeds/announcements.xml
 - FR-5.1.2: Parse RSS feed using RSS-Parser 6.0.8
 - FR-5.1.3: Store in ContentDatabase (AnnouncementEntity)
 - FR-5.1.4: Offline-first pattern with reactive Flow API
@@ -444,7 +444,7 @@ trmnl-android-buddy/
 **Purpose**: Provide access to TRMNL blog content within the app
 
 **Requirements**:
-- FR-5.2.1: Fetch blog posts from https://usetrmnl.com/feeds/posts.xml
+- FR-5.2.1: Fetch blog posts from https://trmnl.com/feeds/posts.xml
 - FR-5.2.2: Parse RSS/Atom feed with author extraction and category parsing
 - FR-5.2.3: Store in ContentDatabase (BlogPostEntity)
 - FR-5.2.4: Extract all images from RSS feed content (not just first)
@@ -1426,11 +1426,11 @@ data class BookmarkEntity(
 
 ### 11.1 External Links
 
-- **TRMNL Website**: https://usetrmnl.com
-- **TRMNL API Docs**: https://usetrmnl.com/api
-- **TRMNL Account**: https://usetrmnl.com/account
-- **TRMNL Help**: https://usetrmnl.com/help
-- **TRMNL Devices**: https://usetrmnl.com/devices/
+- **TRMNL Website**: https://trmnl.com
+- **TRMNL API Docs**: https://trmnl.com/api
+- **TRMNL Account**: https://trmnl.com/account
+- **TRMNL Help**: https://trmnl.com/help
+- **TRMNL Devices**: https://trmnl.com/devices/
 - **GitHub Repository**: https://github.com/hossain-khan/trmnl-android-buddy
 - **Google Play**: https://play.google.com/store/apps/details?id=ink.trmnl.android.buddy
 

@@ -33,7 +33,7 @@ import org.junit.Test
  *
  * **Note**: These are public endpoints that do NOT require authentication.
  *
- * **IGNORED**: These tests use hardcoded URLs (https://usetrmnl.com/recipes.json) that bypass
+ * **IGNORED**: These tests use hardcoded URLs (https://trmnl.com/recipes.json) that bypass
  * MockWebServer's base URL, making them incompatible with unit testing. The recipe endpoints
  * are at a different path than the main API (/recipes vs /api/).
  *
@@ -77,7 +77,7 @@ class TrmnlRecipesApiTest : BaseApiTest() {
                   "per_page": 25,
                   "current_page": 1,
                   "prev_page_url": null,
-                  "next_page_url": "https://usetrmnl.com/recipes.json?page=2"
+                  "next_page_url": "https://trmnl.com/recipes.json?page=2"
                 }
                 """.trimIndent()
 
@@ -488,7 +488,7 @@ class TrmnlRecipesApiTest : BaseApiTest() {
                   "to": 50,
                   "per_page": 25,
                   "current_page": 2,
-                  "prev_page_url": "https://usetrmnl.com/recipes.json?page=1",
+                  "prev_page_url": "https://trmnl.com/recipes.json?page=1",
                   "next_page_url": null
                 }
                 """.trimIndent()

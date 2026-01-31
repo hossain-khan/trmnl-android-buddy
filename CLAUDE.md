@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**TRMNL Android Buddy** is an Android companion app for managing [TRMNL](https://usetrmnl.com) e-ink display devices. The app uses modern Android architecture patterns with Circuit (Compose-driven UDF), Metro (DI), and Material You design.
+**TRMNL Android Buddy** is an Android companion app for managing [TRMNL](https://trmnl.com) e-ink display devices. The app uses modern Android architecture patterns with Circuit (Compose-driven UDF), Metro (DI), and Material You design.
 
 ## Tech Stack
 
@@ -211,7 +211,7 @@ assertEquals(3, list.size)
 - `GET /devices/{id}` - Get device details
 - `GET /display/current` - Get device display (requires device token)
 - `GET /me` - Get user info
-- `GET https://usetrmnl.com/recipes.json` - List recipes (public, no auth)
+- `GET https://trmnl.com/recipes.json` - List recipes (public, no auth)
 
 See `api/src/main/java/ink/trmnl/android/buddy/api/TrmnlApiService.kt` for full API documentation.
 
@@ -351,4 +351,4 @@ fun MyPresenter(): MyScreen.State {
 - [EitherNet Repository](https://github.com/slackhq/EitherNet)
 - [AssertK Documentation](https://github.com/assertk-org/assertk)
 - [Material 3 Compose](https://developer.android.com/jetpack/compose/designsystems/material3)
-- [TRMNL API Documentation](https://usetrmnl.com/api-docs/index.html)
+- [TRMNL API Documentation](https://trmnl.com/api-docs/index.html)

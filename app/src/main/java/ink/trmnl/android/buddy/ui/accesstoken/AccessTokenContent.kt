@@ -237,7 +237,7 @@ private fun HelpLinksSection(modifier: Modifier = Modifier) {
             append("Generate your User API Key from your ")
             withLink(
                 LinkAnnotation.Url(
-                    url = "https://usetrmnl.com/account",
+                    url = "https://trmnl.com/account",
                     styles = linkStyle,
                 ),
             ) {
@@ -247,7 +247,7 @@ private fun HelpLinksSection(modifier: Modifier = Modifier) {
 
             withLink(
                 LinkAnnotation.Url(
-                    url = "https://help.usetrmnl.com/en/articles/11195228-user-level-api-keys",
+                    url = "https://help.trmnl.com/en/articles/11195228-user-level-api-keys",
                     styles = linkStyle,
                 ),
             ) {

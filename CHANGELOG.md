@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated TRMNL domain references from `usetrmnl.com` to `trmnl.com` for documentation and guides
+  - Updated all documentation files (README.md, CLAUDE.md, copilot-instructions.md, PRD.md, GOOGLE_PLAY_LISTING.md)
+  - Updated API documentation comments and example URLs
+  - Updated RSS feed URLs in content module (`announcements.xml` and `posts.xml`)
+  - Updated UI component links (account settings, help docs, device settings, blog posts)
+  - Updated preview/test data URLs to use new domain
+  - Note: API base URL remains at `usetrmnl.com/api` (production endpoint unchanged)
+
 ## [2.8.0] - 2026-01-20
 
 ### Added
