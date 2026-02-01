@@ -316,7 +316,7 @@ class AnnouncementDaoTest {
         id = id,
         title = title,
         summary = "Summary for $title",
-        link = "https://usetrmnl.com/$id",
+        link = "https://trmnl.com/$id",
         publishedDate = publishedDate,
         isRead = isRead,
         fetchedAt = fetchedAt,

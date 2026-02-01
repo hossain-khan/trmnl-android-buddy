@@ -97,8 +97,8 @@ data class BlogPostEntity(
 
 | Content Type  | Feed URL                                      | Format |
 |---------------|-----------------------------------------------|--------|
-| Announcements | `https://usetrmnl.com/feeds/announcements.xml` | Atom   |
-| Blog Posts    | `https://usetrmnl.com/feeds/posts.xml`        | Atom   |
+| Announcements | `https://trmnl.com/feeds/announcements.xml` | Atom   |
+| Blog Posts    | `https://trmnl.com/feeds/posts.xml`        | Atom   |
 
 ### Content Processing
 
@@ -385,7 +385,7 @@ When adding new features to this module:
 - [Room Database Guide](https://developer.android.com/training/data-storage/room)
 - [RSS-Parser GitHub](https://github.com/prof18/RSS-Parser)
 - [Kotlin Flow Documentation](https://kotlinlang.org/docs/flow.html)
-- [TRMNL Content Feeds](https://usetrmnl.com/feeds)
+- [TRMNL Content Feeds](https://trmnl.com/feeds)
 
 ---
 

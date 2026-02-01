@@ -25,7 +25,7 @@ class ContentItemTest {
                 id = "announcement-1",
                 title = "New Feature Release",
                 summary = "We've released a new feature",
-                link = "https://usetrmnl.com/announcement-1",
+                link = "https://trmnl.com/announcement-1",
                 publishedDate = publishedDate,
                 isRead = true,
             )
@@ -33,7 +33,7 @@ class ContentItemTest {
         assertThat(announcement.id).isEqualTo("announcement-1")
         assertThat(announcement.title).isEqualTo("New Feature Release")
         assertThat(announcement.summary).isEqualTo("We've released a new feature")
-        assertThat(announcement.link).isEqualTo("https://usetrmnl.com/announcement-1")
+        assertThat(announcement.link).isEqualTo("https://trmnl.com/announcement-1")
         assertThat(announcement.publishedDate).isEqualTo(publishedDate)
         assertThat(announcement.isRead).isTrue()
     }
@@ -47,7 +47,7 @@ class ContentItemTest {
                 id = "post-1",
                 title = "Getting Started with TRMNL",
                 summary = "Learn how to set up your TRMNL device",
-                link = "https://usetrmnl.com/blog/getting-started",
+                link = "https://trmnl.com/blog/getting-started",
                 publishedDate = publishedDate,
                 isRead = false,
                 authorName = "Ryan Kulp",
@@ -59,7 +59,7 @@ class ContentItemTest {
         assertThat(blogPost.id).isEqualTo("post-1")
         assertThat(blogPost.title).isEqualTo("Getting Started with TRMNL")
         assertThat(blogPost.summary).isEqualTo("Learn how to set up your TRMNL device")
-        assertThat(blogPost.link).isEqualTo("https://usetrmnl.com/blog/getting-started")
+        assertThat(blogPost.link).isEqualTo("https://trmnl.com/blog/getting-started")
         assertThat(blogPost.publishedDate).isEqualTo(publishedDate)
         assertThat(blogPost.isRead).isFalse()
         assertThat(blogPost.authorName).isEqualTo("Ryan Kulp")
@@ -77,7 +77,7 @@ class ContentItemTest {
                 id = "post-2",
                 title = "Uncategorized Post",
                 summary = "A post without category or image",
-                link = "https://usetrmnl.com/blog/post-2",
+                link = "https://trmnl.com/blog/post-2",
                 publishedDate = publishedDate,
                 isRead = false,
                 authorName = "Mario Lurig",
@@ -98,7 +98,7 @@ class ContentItemTest {
                 id = "announcement-2",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/announcement-2",
+                link = "https://trmnl.com/announcement-2",
                 publishedDate = Instant.now(),
                 isRead = false,
             )
@@ -114,7 +114,7 @@ class ContentItemTest {
                 id = "post-3",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/blog/post-3",
+                link = "https://trmnl.com/blog/post-3",
                 publishedDate = Instant.now(),
                 isRead = false,
                 authorName = "Author",
@@ -137,7 +137,7 @@ class ContentItemTest {
                     id = "announcement-3",
                     title = "Announcement",
                     summary = "An announcement",
-                    link = "https://usetrmnl.com/announcement-3",
+                    link = "https://trmnl.com/announcement-3",
                     publishedDate = publishedDate,
                     isRead = false,
                 ),
@@ -145,7 +145,7 @@ class ContentItemTest {
                     id = "post-4",
                     title = "Blog Post",
                     summary = "A blog post",
-                    link = "https://usetrmnl.com/blog/post-4",
+                    link = "https://trmnl.com/blog/post-4",
                     publishedDate = publishedDate,
                     isRead = false,
                     authorName = "Author",
@@ -167,7 +167,7 @@ class ContentItemTest {
                 id = "announcement-4",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/announcement-4",
+                link = "https://trmnl.com/announcement-4",
                 publishedDate = Instant.now(),
                 isRead = false,
             )
@@ -177,7 +177,7 @@ class ContentItemTest {
                 id = "post-5",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/blog/post-5",
+                link = "https://trmnl.com/blog/post-5",
                 publishedDate = Instant.now(),
                 isRead = false,
                 authorName = "Author",
@@ -201,7 +201,7 @@ class ContentItemTest {
                 id = "announcement-5",
                 title = "Original Title",
                 summary = "Original Summary",
-                link = "https://usetrmnl.com/announcement-5",
+                link = "https://trmnl.com/announcement-5",
                 publishedDate = Instant.parse("2024-01-01T12:00:00Z"),
                 isRead = false,
             )
@@ -220,7 +220,7 @@ class ContentItemTest {
                 id = "post-6",
                 title = "Original Title",
                 summary = "Original Summary",
-                link = "https://usetrmnl.com/blog/post-6",
+                link = "https://trmnl.com/blog/post-6",
                 publishedDate = Instant.parse("2024-01-01T12:00:00Z"),
                 isRead = false,
                 authorName = "Original Author",
@@ -245,7 +245,7 @@ class ContentItemTest {
                 id = "same-id",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/same-id",
+                link = "https://trmnl.com/same-id",
                 publishedDate = publishedDate,
                 isRead = false,
             )
@@ -255,7 +255,7 @@ class ContentItemTest {
                 id = "same-id",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/same-id",
+                link = "https://trmnl.com/same-id",
                 publishedDate = publishedDate,
                 isRead = false,
                 authorName = "Author",
@@ -277,7 +277,7 @@ class ContentItemTest {
                     id = "announcement-6",
                     title = "Announcement Title",
                     summary = "Announcement Summary",
-                    link = "https://usetrmnl.com/announcement-6",
+                    link = "https://trmnl.com/announcement-6",
                     publishedDate = publishedDate,
                     isRead = true,
                 ),
@@ -285,7 +285,7 @@ class ContentItemTest {
                     id = "post-7",
                     title = "Blog Post Title",
                     summary = "Blog Post Summary",
-                    link = "https://usetrmnl.com/blog/post-7",
+                    link = "https://trmnl.com/blog/post-7",
                     publishedDate = publishedDate,
                     isRead = false,
                     authorName = "Author",
@@ -299,14 +299,14 @@ class ContentItemTest {
         assertThat(items[0].id).isEqualTo("announcement-6")
         assertThat(items[0].title).isEqualTo("Announcement Title")
         assertThat(items[0].summary).isEqualTo("Announcement Summary")
-        assertThat(items[0].link).isEqualTo("https://usetrmnl.com/announcement-6")
+        assertThat(items[0].link).isEqualTo("https://trmnl.com/announcement-6")
         assertThat(items[0].publishedDate).isEqualTo(publishedDate)
         assertThat(items[0].isRead).isTrue()
 
         assertThat(items[1].id).isEqualTo("post-7")
         assertThat(items[1].title).isEqualTo("Blog Post Title")
         assertThat(items[1].summary).isEqualTo("Blog Post Summary")
-        assertThat(items[1].link).isEqualTo("https://usetrmnl.com/blog/post-7")
+        assertThat(items[1].link).isEqualTo("https://trmnl.com/blog/post-7")
         assertThat(items[1].publishedDate).isEqualTo(publishedDate)
         assertThat(items[1].isRead).isFalse()
     }
@@ -318,7 +318,7 @@ class ContentItemTest {
                 id = "post-8",
                 title = "Title",
                 summary = "Summary",
-                link = "https://usetrmnl.com/blog/post-8",
+                link = "https://trmnl.com/blog/post-8",
                 publishedDate = Instant.now(),
                 isRead = false,
                 authorName = "Ryan Kulp",
@@ -349,7 +349,7 @@ class ContentItemTest {
                     id = "post-b",
                     title = "Middle",
                     summary = "Summary",
-                    link = "https://usetrmnl.com/blog/post-b",
+                    link = "https://trmnl.com/blog/post-b",
                     publishedDate = date2,
                     isRead = false,
                     authorName = "Author",
@@ -361,7 +361,7 @@ class ContentItemTest {
                     id = "announcement-a",
                     title = "Oldest",
                     summary = "Summary",
-                    link = "https://usetrmnl.com/announcement-a",
+                    link = "https://trmnl.com/announcement-a",
                     publishedDate = date1,
                     isRead = false,
                 ),
@@ -369,7 +369,7 @@ class ContentItemTest {
                     id = "post-c",
                     title = "Newest",
                     summary = "Summary",
-                    link = "https://usetrmnl.com/blog/post-c",
+                    link = "https://trmnl.com/blog/post-c",
                     publishedDate = date3,
                     isRead = false,
                     authorName = "Author",
@@ -394,7 +394,7 @@ class ContentItemTest {
                     id = "announcement-read",
                     title = "Read Announcement",
                     summary = "Summary",
-                    link = "https://usetrmnl.com/announcement-read",
+                    link = "https://trmnl.com/announcement-read",
                     publishedDate = Instant.now(),
                     isRead = true,
                 ),
@@ -402,7 +402,7 @@ class ContentItemTest {
                     id = "post-unread",
                     title = "Unread Post",
                     summary = "Summary",
-                    link = "https://usetrmnl.com/blog/post-unread",
+                    link = "https://trmnl.com/blog/post-unread",
                     publishedDate = Instant.now(),
                     isRead = false,
                     authorName = "Author",
@@ -414,7 +414,7 @@ class ContentItemTest {
                     id = "announcement-unread",
                     title = "Unread Announcement",
                     summary = "Summary",
-                    link = "https://usetrmnl.com/announcement-unread",
+                    link = "https://trmnl.com/announcement-unread",
                     publishedDate = Instant.now(),
                     isRead = false,
                 ),

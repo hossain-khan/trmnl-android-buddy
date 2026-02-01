@@ -27,7 +27,7 @@ open class AnnouncementRepository
         private val rssParser = RssParser()
 
         companion object {
-            private const val ANNOUNCEMENTS_FEED_URL = "https://usetrmnl.com/feeds/announcements.xml"
+            private const val ANNOUNCEMENTS_FEED_URL = "https://trmnl.com/feeds/announcements.xml"
         }
 
         /**
@@ -69,7 +69,7 @@ open class AnnouncementRepository
         /**
          * Refresh announcements from the RSS feed.
          *
-         * Fetches the latest announcements from usetrmnl.com and stores them
+         * Fetches the latest announcements from trmnl.com and stores them
          * in the local database. Preserves read status for existing announcements.
          *
          * Marked as `open` to allow overriding in tests.

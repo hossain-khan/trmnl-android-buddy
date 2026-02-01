@@ -565,7 +565,7 @@ class AnnouncementSyncWorkerTest {
         id: String,
         title: String,
         summary: String = "Summary for $title",
-        link: String = "https://usetrmnl.com/announcements/$id",
+        link: String = "https://trmnl.com/announcements/$id",
         publishedDate: Instant = Instant.now().minus(1, ChronoUnit.DAYS),
         isRead: Boolean = false,
         fetchedAt: Instant = Instant.now(),

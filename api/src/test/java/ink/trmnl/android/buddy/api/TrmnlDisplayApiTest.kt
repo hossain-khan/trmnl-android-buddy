@@ -41,7 +41,7 @@ class TrmnlDisplayApiTest : BaseApiTest() {
                         {
                           "status": 200,
                           "refresh_rate": 300,
-                          "image_url": "https://usetrmnl.com/images/setup/setup-logo.bmp",
+                          "image_url": "https://trmnl.com/images/setup/setup-logo.bmp",
                           "filename": "setup-logo.bmp",
                           "rendered_at": "2023-01-01T00:00:00Z"
                         }
@@ -59,7 +59,7 @@ class TrmnlDisplayApiTest : BaseApiTest() {
 
             assertThat(display.status).isEqualTo(200)
             assertThat(display.refreshRate).isEqualTo(300)
-            assertThat(display.imageUrl).isEqualTo("https://usetrmnl.com/images/setup/setup-logo.bmp")
+            assertThat(display.imageUrl).isEqualTo("https://trmnl.com/images/setup/setup-logo.bmp")
             assertThat(display.filename).isEqualTo("setup-logo.bmp")
             assertThat(display.renderedAt).isEqualTo("2023-01-01T00:00:00Z")
 

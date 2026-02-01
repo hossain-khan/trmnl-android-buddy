@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
  * {
  *   "status": 200,
  *   "refresh_rate": 300,
- *   "image_url": "https://usetrmnl.com/images/setup/setup-logo.bmp",
+ *   "image_url": "https://trmnl.com/images/setup/setup-logo.bmp",
  *   "filename": "setup-logo.bmp",
  *   "rendered_at": "2023-01-01T00:00:00Z"
  * }

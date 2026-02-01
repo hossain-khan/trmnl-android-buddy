@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter
  * Provides offline-first access to blog posts with automatic caching
  * and reactive updates via Flow.
  *
- * Feed URL: https://usetrmnl.com/feeds/posts.xml (Atom format)
+ * Feed URL: https://trmnl.com/feeds/posts.xml (Atom format)
  *
  * @property blogPostDao DAO for blog post database operations
  */
@@ -24,7 +24,7 @@ open class BlogPostRepository(
     private val blogPostDao: BlogPostDao,
 ) {
     companion object {
-        private const val BLOG_POSTS_FEED_URL = "https://usetrmnl.com/feeds/posts.xml"
+        private const val BLOG_POSTS_FEED_URL = "https://trmnl.com/feeds/posts.xml"
     }
 
     /**

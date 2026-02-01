@@ -4,11 +4,11 @@ This module provides API integration with the TRMNL server for the Android Buddy
 
 ## Overview
 
-The `api` module is responsible for all network communication with the TRMNL server located at [https://usetrmnl.com](https://usetrmnl.com). It provides a clean, type-safe interface for interacting with TRMNL's REST API.
+The `api` module is responsible for all network communication with the TRMNL server located at [https://trmnl.com](https://trmnl.com). It provides a clean, type-safe interface for interacting with TRMNL's REST API.
 
 ## API Documentation
 
-Full API documentation is available at: [https://usetrmnl.com/api-docs/index.html](https://usetrmnl.com/api-docs/index.html)
+Full API documentation is available at: [https://trmnl.com/api-docs/index.html](https://trmnl.com/api-docs/index.html)
 
 ## Architecture
 
