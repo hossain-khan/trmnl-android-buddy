@@ -484,7 +484,7 @@ suspend fun fetchDevices(): Result<List<Device>> {
 - [Material 3 Compose Components](https://developer.android.com/jetpack/compose/designsystems/material3)
 - [Android Dynamic Color Guide](https://developer.android.com/develop/ui/views/theming/dynamic-colors)
 - [Android Test Doubles Guide](https://developer.android.com/training/testing/fundamentals/test-doubles)
-- [TRMNL API Documentation](https://trmnl.com/api)
+- [TRMNL API Documentation](https://trmnl.com/api-docs/index.html)
 
 ## Notes for AI Assistants
 
