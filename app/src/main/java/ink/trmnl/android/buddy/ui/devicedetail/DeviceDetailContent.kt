@@ -68,6 +68,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
 import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
@@ -176,6 +177,11 @@ fun DeviceDetailContent(
                 batteryHistory = state.batteryHistory,
                 isLoading = state.isLoading,
                 isBatteryTrackingEnabled = state.isBatteryTrackingEnabled,
+            )
+
+            // Battery Prediction (shown when ≥3 data points available)
+            BatteryPredictionCard(
+                batteryHistory = state.batteryHistory,
             )
 
             // Disclaimer
@@ -592,6 +598,68 @@ private fun BatteryChart(
 }
 
 @Composable
+private fun BatteryPredictionCard(
+    batteryHistory: List<BatteryHistoryEntity>,
+    modifier: Modifier = Modifier,
+) {
+    // Calculate prediction
+    val prediction =
+        remember(batteryHistory) {
+            BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory)
+        }
+
+    // Only show if prediction is available
+    if (prediction != null) {
+        Card(
+            modifier = modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                ),
+        ) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.outline_battery_android_3_24),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = "Predicted Battery Depletion",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                    Text(
+                        text = prediction.formatTimeRemaining(),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                    Text(
+                        text =
+                            "Based on ${prediction.dataPointsUsed} data points " +
+                                "(${String.format(java.util.Locale.getDefault(), "%.2f", prediction.drainageRatePercentPerDay)}% per day)",
+                        style = MaterialTheme.typography.bodySmall,
+                        color =
+                            MaterialTheme.colorScheme.onPrimaryContainer.copy(
+                                alpha = 0.8f,
+                            ),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun DisclaimerCard(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -803,6 +871,57 @@ private fun BatteryHistoryChartDisabledPreview() {
 private fun DisclaimerCardPreview() {
     TrmnlBuddyAppTheme {
         DisclaimerCard()
+    }
+}
+
+@PreviewLightDark
+@Preview(
+    name = "Battery Prediction Card",
+    showBackground = true,
+)
+@Composable
+private fun BatteryPredictionCardPreview() {
+    // Create sample battery history data with realistic drainage
+    val currentTime = System.currentTimeMillis()
+    val sampleData =
+        listOf(
+            BatteryHistoryEntity(
+                deviceId = "ABC-123",
+                percentCharged = 85.0,
+                batteryVoltage = 3.75,
+                timestamp =
+                    currentTime -
+                        java.util.concurrent.TimeUnit.DAYS
+                            .toMillis(21),
+            ),
+            BatteryHistoryEntity(
+                deviceId = "ABC-123",
+                percentCharged = 78.0,
+                batteryVoltage = 3.70,
+                timestamp =
+                    currentTime -
+                        java.util.concurrent.TimeUnit.DAYS
+                            .toMillis(14),
+            ),
+            BatteryHistoryEntity(
+                deviceId = "ABC-123",
+                percentCharged = 71.0,
+                batteryVoltage = 3.65,
+                timestamp =
+                    currentTime -
+                        java.util.concurrent.TimeUnit.DAYS
+                            .toMillis(7),
+            ),
+            BatteryHistoryEntity(
+                deviceId = "ABC-123",
+                percentCharged = 64.0,
+                batteryVoltage = 3.60,
+                timestamp = currentTime,
+            ),
+        )
+
+    TrmnlBuddyAppTheme {
+        BatteryPredictionCard(batteryHistory = sampleData)
     }
 }
 

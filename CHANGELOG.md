@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Battery depletion prediction on Device Detail screen**: Added intelligent battery life prediction based on historical drainage trends
+  - Predicts when device battery will run out using linear regression analysis
+  - Displays time remaining in user-friendly format (months, weeks, days)
+  - Smart charging spike detection: Automatically filters out charging events (>50% battery jumps)
+  - Uses longest continuous drainage sequence for accurate predictions
+  - Shows prediction card above disclaimer note when ≥3 data points available
+  - Displays drainage rate (% per day) and number of data points used
+  - Added `BatteryHistoryAnalyzer.predictBatteryDepletion()` function with comprehensive logic
+  - Added `BatteryPrediction` data class with `formatTimeRemaining()` helper
+  - Material 3 design with primaryContainer color for emphasis
+  - Added 15 comprehensive unit tests covering various scenarios (all passing)
+
 ### Changed
 
 - Updated TRMNL domain references from `usetrmnl.com` to `trmnl.com` for documentation and guides

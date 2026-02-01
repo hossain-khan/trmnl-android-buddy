@@ -120,4 +120,163 @@ object BatteryHistoryAnalyzer {
         /** Battery history has both charging events and stale data. */
         BOTH,
     }
+
+    /**
+     * Predicts when the battery will run out based on historical drainage trend.
+     *
+     * This function:
+     * 1. Filters out charging spikes (only considers decreasing battery points)
+     * 2. Requires at least 3 data points for a meaningful prediction
+     * 3. Uses linear regression to calculate the drainage rate
+     * 4. Predicts when battery will reach 0%
+     *
+     * @param batteryHistory List of battery history readings
+     * @param currentTimeMillis Current time in milliseconds (defaults to System.currentTimeMillis())
+     * @return [BatteryPrediction] if prediction can be made (≥3 drainage points), null otherwise
+     */
+    fun predictBatteryDepletion(
+        batteryHistory: List<BatteryHistoryEntity>,
+        currentTimeMillis: Long = System.currentTimeMillis(),
+    ): BatteryPrediction? {
+        if (batteryHistory.size < 3) return null
+
+        // Sort by timestamp to ensure chronological order
+        val sortedHistory = batteryHistory.sortedBy { it.timestamp }
+
+        // Filter to only keep decreasing battery points (ignore charging spikes)
+        // When a charging spike is detected (>50% jump), start a new drainage sequence
+        val drainagePoints = mutableListOf<BatteryHistoryEntity>()
+        var currentSequence = mutableListOf<BatteryHistoryEntity>()
+        currentSequence.add(sortedHistory[0])
+
+        for (i in 1 until sortedHistory.size) {
+            val previous = sortedHistory[i - 1]
+            val current = sortedHistory[i]
+            val batteryChange = current.percentCharged - previous.percentCharged
+
+            if (batteryChange > CHARGING_THRESHOLD_PERCENT) {
+                // Charging detected - save current sequence if it's the longest
+                if (currentSequence.size > drainagePoints.size) {
+                    drainagePoints.clear()
+                    drainagePoints.addAll(currentSequence)
+                }
+                // Start new sequence from this charged point
+                currentSequence.clear()
+                currentSequence.add(current)
+            } else if (current.percentCharged <= currentSequence.last().percentCharged) {
+                // Continue drainage - only add if battery decreased or stayed the same
+                currentSequence.add(current)
+            }
+        }
+
+        // Check if final sequence is the longest
+        if (currentSequence.size > drainagePoints.size) {
+            drainagePoints.clear()
+            drainagePoints.addAll(currentSequence)
+        }
+
+        // Need at least 3 drainage points for a meaningful prediction
+        if (drainagePoints.size < 3) return null
+
+        // Perform linear regression on drainage points
+        // Convert timestamps to days since first reading for easier calculation
+        val firstTimestamp = drainagePoints.first().timestamp
+        val dataPoints =
+            drainagePoints.map { entity ->
+                val daysElapsed = (entity.timestamp - firstTimestamp) / (1000.0 * 60 * 60 * 24)
+                Pair(daysElapsed, entity.percentCharged)
+            }
+
+        // Calculate linear regression: y = mx + b
+        val n = dataPoints.size
+        val sumX = dataPoints.sumOf { it.first }
+        val sumY = dataPoints.sumOf { it.second }
+        val sumXY = dataPoints.sumOf { it.first * it.second }
+        val sumX2 = dataPoints.sumOf { it.first * it.first }
+
+        val denominator = n * sumX2 - sumX * sumX
+        // Guard against division by zero (all timestamps identical or variance of X is 0)
+        if (denominator == 0.0) return null
+
+        val slope = (n * sumXY - sumX * sumY) / denominator
+        val intercept = (sumY - slope * sumX) / n
+
+        // Check for invalid regression results (NaN or Infinity)
+        if (!slope.isFinite() || !intercept.isFinite()) return null
+
+        // If slope is positive or zero, battery is not draining (unusual case)
+        if (slope >= 0) return null
+
+        // Calculate when battery will reach 0%
+        // 0 = slope * x + intercept
+        // x = -intercept / slope
+        val daysUntilDepleted = -intercept / slope
+
+        // If prediction is in the past or negative, return null
+        if (daysUntilDepleted <= 0) return null
+
+        // Convert to milliseconds from current time
+        val currentDaysElapsed = (currentTimeMillis - firstTimestamp) / (1000.0 * 60 * 60 * 24)
+        val remainingDays = daysUntilDepleted - currentDaysElapsed
+
+        // If remaining time is negative or too far in future (unrealistic), return null
+        if (remainingDays <= 0 || remainingDays > 1825) return null // Max 5 years
+
+        val depletionTimeMillis = currentTimeMillis + (remainingDays * 24 * 60 * 60 * 1000).toLong()
+
+        return BatteryPrediction(
+            depletionTimeMillis = depletionTimeMillis,
+            drainageRatePercentPerDay = -slope, // Positive value for display
+            dataPointsUsed = drainagePoints.size,
+        )
+    }
+
+    /**
+     * Data class representing battery depletion prediction.
+     *
+     * @property depletionTimeMillis Predicted timestamp when battery will reach 0%
+     * @property drainageRatePercentPerDay Average battery drainage rate (% per day)
+     * @property dataPointsUsed Number of drainage data points used for prediction
+     */
+    data class BatteryPrediction(
+        val depletionTimeMillis: Long,
+        val drainageRatePercentPerDay: Double,
+        val dataPointsUsed: Int,
+    ) {
+        /**
+         * Formats the time remaining until battery depletion in a human-readable format.
+         *
+         * Returns a comma-separated combination of "X months", "Y weeks", "Z days" where:
+         * - Months are shown if >= 1 month
+         * - Weeks are shown if >= 1 week (remaining after months)
+         * - Days are shown if >= 1 day, or when both months and weeks are 0 (to avoid an empty result)
+         *
+         * @param currentTimeMillis Current time in milliseconds
+         * @return Formatted string like "2 months, 3 weeks, 4 days" or "2 weeks" or "0 days"
+         */
+        fun formatTimeRemaining(currentTimeMillis: Long = System.currentTimeMillis()): String {
+            val remainingMillis = depletionTimeMillis - currentTimeMillis
+            if (remainingMillis <= 0) return "Battery depleted"
+
+            val totalDays = (remainingMillis / (1000.0 * 60 * 60 * 24)).toInt()
+
+            val months = totalDays / 30
+            val remainingAfterMonths = totalDays % 30
+            val weeks = remainingAfterMonths / 7
+            val days = remainingAfterMonths % 7
+
+            val parts = mutableListOf<String>()
+            if (months > 0) {
+                parts.add("$months ${if (months == 1) "month" else "months"}")
+            }
+            if (weeks > 0) {
+                parts.add("$weeks ${if (weeks == 1) "week" else "weeks"}")
+            }
+            if (days > 0 || parts.isEmpty()) {
+                parts.add("$days ${if (days == 1) "day" else "days"}")
+            }
+
+            return parts.joinToString(", ")
+        }
+    }
 }

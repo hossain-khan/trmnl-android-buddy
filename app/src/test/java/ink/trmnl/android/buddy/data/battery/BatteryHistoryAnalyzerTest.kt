@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.data.battery
 
 import assertk.assertThat
+import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
@@ -491,5 +492,433 @@ class BatteryHistoryAnalyzerTest {
         // Then
         assertThat(result).isNotNull()
         assertThat(result).isEqualTo(BatteryHistoryAnalyzer.ClearHistoryReason.BOTH)
+    }
+
+    // ========== Battery Prediction Tests ==========
+
+    @Test
+    fun `predictBatteryDepletion returns null for empty list`() {
+        // Given
+        val batteryHistory = emptyList<BatteryHistoryEntity>()
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory)
+
+        // Then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `predictBatteryDepletion returns null for less than 3 entries`() {
+        // Given
+        val batteryHistory =
+            listOf(
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 80.0,
+                    batteryVoltage = 3.7,
+                    timestamp = 1000L,
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 75.0,
+                    batteryVoltage = 3.6,
+                    timestamp = 2000L,
+                ),
+            )
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory)
+
+        // Then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `predictBatteryDepletion returns null when less than 3 drainage points after filtering`() {
+        // Given - 4 total points but only 2 drainage points due to non-spike increase
+        // Note: 75% -> 95% is a 20% increase (below 50% threshold), but still filtered
+        // as it's not a decreasing point
+        val batteryHistory =
+            listOf(
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 80.0,
+                    batteryVoltage = 3.7,
+                    timestamp = 1000L,
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 75.0,
+                    batteryVoltage = 3.6,
+                    timestamp = 2000L,
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 95.0, // Increase (not a >50% spike, but still filtered)
+                    batteryVoltage = 3.8,
+                    timestamp = 3000L,
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 90.0,
+                    batteryVoltage = 3.75,
+                    timestamp = 4000L,
+                ),
+            )
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory)
+
+        // Then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `predictBatteryDepletion calculates prediction for linear battery drain`() {
+        // Given - Battery draining from 90% to 60% over 30 days
+        // Expected: ~90 days until 0% (draining 1% per day)
+        val currentTime = System.currentTimeMillis()
+        val batteryHistory =
+            listOf(
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 90.0,
+                    batteryVoltage = 3.8,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(30),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 75.0,
+                    batteryVoltage = 3.7,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(15),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 60.0,
+                    batteryVoltage = 3.6,
+                    timestamp = currentTime,
+                ),
+            )
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory, currentTime)
+
+        // Then
+        assertThat(result).isNotNull()
+        assertThat(result!!.dataPointsUsed).isEqualTo(3)
+        // Should predict roughly 60 more days (current 60% at 1%/day rate)
+        val expectedDaysRemaining = 60.0
+        val actualDaysRemaining =
+            (result.depletionTimeMillis - currentTime) / (1000.0 * 60 * 60 * 24)
+        assertThat(actualDaysRemaining).isCloseTo(expectedDaysRemaining, 2.0) // Within 2 days tolerance
+    }
+
+    @Test
+    fun `predictBatteryDepletion filters out charging spikes and uses longest drainage sequence`() {
+        // Given - Battery drains normally, then has a charging spike, then drains again
+        val currentTime = System.currentTimeMillis()
+        val batteryHistory =
+            listOf(
+                // First drainage sequence: 80% -> 70% -> 40% (3 points)
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 80.0,
+                    batteryVoltage = 3.7,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(60),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 70.0,
+                    batteryVoltage = 3.6,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(50),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 40.0,
+                    batteryVoltage = 3.4,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(40),
+                ),
+                // Charging spike detected (40% -> 95% = 55% jump > 50% threshold)
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 95.0, // Charging spike
+                    batteryVoltage = 3.8,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(30),
+                ),
+                // Second drainage sequence: 95% -> 90% -> 85% -> 80% (4 points - longest)
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 90.0,
+                    batteryVoltage = 3.75,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(20),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 85.0,
+                    batteryVoltage = 3.7,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(10),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 80.0,
+                    batteryVoltage = 3.65,
+                    timestamp = currentTime,
+                ),
+            )
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory, currentTime)
+
+        // Then - Should use the longest drainage sequence: 95% -> 90% -> 85% -> 80% (4 points)
+        assertThat(result).isNotNull()
+        assertThat(result!!.dataPointsUsed).isEqualTo(4)
+    }
+
+    @Test
+    fun `predictBatteryDepletion returns null for zero slope (flat battery)`() {
+        // Given - Battery staying flat at 60% (zero slope, not draining)
+        val currentTime = System.currentTimeMillis()
+        val batteryHistory =
+            listOf(
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 60.0,
+                    batteryVoltage = 3.6,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(30),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 60.0,
+                    batteryVoltage = 3.6,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(15),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 60.0,
+                    batteryVoltage = 3.6,
+                    timestamp = currentTime,
+                ),
+            )
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory, currentTime)
+
+        // Then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `predictBatteryDepletion returns null when all timestamps are identical`() {
+        // Given - All battery readings at the same timestamp (division by zero in regression)
+        val currentTime = System.currentTimeMillis()
+        val batteryHistory =
+            listOf(
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 90.0,
+                    batteryVoltage = 3.8,
+                    timestamp = currentTime,
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 85.0,
+                    batteryVoltage = 3.75,
+                    timestamp = currentTime,
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 80.0,
+                    batteryVoltage = 3.7,
+                    timestamp = currentTime,
+                ),
+            )
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory, currentTime)
+
+        // Then - Should return null due to zero variance in X (division by zero)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `predictBatteryDepletion returns null for unrealistic future prediction`() {
+        // Given - Very slow drain that would predict > 5 years
+        val currentTime = System.currentTimeMillis()
+        val batteryHistory =
+            listOf(
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 100.0,
+                    batteryVoltage = 3.9,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(30),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 99.5,
+                    batteryVoltage = 3.9,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(15),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 99.0,
+                    batteryVoltage = 3.9,
+                    timestamp = currentTime,
+                ),
+            )
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory, currentTime)
+
+        // Then - Should be null because prediction is too far in future (unrealistic)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `predictBatteryDepletion works with unsorted data`() {
+        // Given - Unsorted battery history
+        val currentTime = System.currentTimeMillis()
+        val batteryHistory =
+            listOf(
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 60.0,
+                    batteryVoltage = 3.6,
+                    timestamp = currentTime,
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 90.0,
+                    batteryVoltage = 3.8,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(30),
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 75.0,
+                    batteryVoltage = 3.7,
+                    timestamp = currentTime - TimeUnit.DAYS.toMillis(15),
+                ),
+            )
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory, currentTime)
+
+        // Then - Should sort and calculate prediction correctly
+        assertThat(result).isNotNull()
+        assertThat(result!!.dataPointsUsed).isEqualTo(3)
+    }
+
+    @Test
+    fun `formatTimeRemaining shows months weeks and days correctly`() {
+        // Given - 2 months, 3 weeks, 4 days in future (2*30 + 3*7 + 4 = 85 days)
+        val currentTime = System.currentTimeMillis()
+        val depletionTime = currentTime + TimeUnit.DAYS.toMillis(85)
+        val prediction =
+            BatteryHistoryAnalyzer.BatteryPrediction(
+                depletionTimeMillis = depletionTime,
+                drainageRatePercentPerDay = 1.0,
+                dataPointsUsed = 5,
+            )
+
+        // When
+        val formatted = prediction.formatTimeRemaining(currentTime)
+
+        // Then
+        assertThat(formatted).isEqualTo("2 months, 3 weeks, 4 days")
+    }
+
+    @Test
+    fun `formatTimeRemaining shows only weeks and days when less than 1 month`() {
+        // Given - 2 weeks, 3 days (17 days)
+        val currentTime = System.currentTimeMillis()
+        val depletionTime = currentTime + TimeUnit.DAYS.toMillis(17)
+        val prediction =
+            BatteryHistoryAnalyzer.BatteryPrediction(
+                depletionTimeMillis = depletionTime,
+                drainageRatePercentPerDay = 2.0,
+                dataPointsUsed = 4,
+            )
+
+        // When
+        val formatted = prediction.formatTimeRemaining(currentTime)
+
+        // Then
+        assertThat(formatted).isEqualTo("2 weeks, 3 days")
+    }
+
+    @Test
+    fun `formatTimeRemaining shows only days when less than 1 week`() {
+        // Given - 5 days
+        val currentTime = System.currentTimeMillis()
+        val depletionTime = currentTime + TimeUnit.DAYS.toMillis(5)
+        val prediction =
+            BatteryHistoryAnalyzer.BatteryPrediction(
+                depletionTimeMillis = depletionTime,
+                drainageRatePercentPerDay = 3.0,
+                dataPointsUsed = 6,
+            )
+
+        // When
+        val formatted = prediction.formatTimeRemaining(currentTime)
+
+        // Then
+        assertThat(formatted).isEqualTo("5 days")
+    }
+
+    @Test
+    fun `formatTimeRemaining shows singular forms correctly`() {
+        // Given - 1 month, 1 week, 1 day (38 days)
+        val currentTime = System.currentTimeMillis()
+        val depletionTime = currentTime + TimeUnit.DAYS.toMillis(38)
+        val prediction =
+            BatteryHistoryAnalyzer.BatteryPrediction(
+                depletionTimeMillis = depletionTime,
+                drainageRatePercentPerDay = 1.5,
+                dataPointsUsed = 3,
+            )
+
+        // When
+        val formatted = prediction.formatTimeRemaining(currentTime)
+
+        // Then
+        assertThat(formatted).isEqualTo("1 month, 1 week, 1 day")
+    }
+
+    @Test
+    fun `formatTimeRemaining omits days when exactly on week boundary`() {
+        // Given - Exactly 2 weeks (14 days)
+        val currentTime = System.currentTimeMillis()
+        val depletionTime = currentTime + TimeUnit.DAYS.toMillis(14)
+        val prediction =
+            BatteryHistoryAnalyzer.BatteryPrediction(
+                depletionTimeMillis = depletionTime,
+                drainageRatePercentPerDay = 2.5,
+                dataPointsUsed = 4,
+            )
+
+        // When
+        val formatted = prediction.formatTimeRemaining(currentTime)
+
+        // Then - Should omit "0 days" for cleaner display
+        assertThat(formatted).isEqualTo("2 weeks")
+    }
+
+    @Test
+    fun `formatTimeRemaining returns depleted message for past time`() {
+        // Given - Depletion time in the past
+        val currentTime = System.currentTimeMillis()
+        val depletionTime = currentTime - TimeUnit.DAYS.toMillis(5)
+        val prediction =
+            BatteryHistoryAnalyzer.BatteryPrediction(
+                depletionTimeMillis = depletionTime,
+                drainageRatePercentPerDay = 5.0,
+                dataPointsUsed = 3,
+            )
+
+        // When
+        val formatted = prediction.formatTimeRemaining(currentTime)
+
+        // Then
+        assertThat(formatted).isEqualTo("Battery depleted")
     }
 }
