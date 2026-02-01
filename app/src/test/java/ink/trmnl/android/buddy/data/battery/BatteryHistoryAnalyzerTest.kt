@@ -536,7 +536,9 @@ class BatteryHistoryAnalyzerTest {
 
     @Test
     fun `predictBatteryDepletion returns null when less than 3 drainage points after filtering`() {
-        // Given - 4 total points but only 2 drainage points due to charging spike
+        // Given - 4 total points but only 2 drainage points due to non-spike increase
+        // Note: 75% -> 95% is a 20% increase (below 50% threshold), but still filtered
+        // as it's not a decreasing point
         val batteryHistory =
             listOf(
                 BatteryHistoryEntity(
@@ -553,7 +555,7 @@ class BatteryHistoryAnalyzerTest {
                 ),
                 BatteryHistoryEntity(
                     deviceId = "ABC-123",
-                    percentCharged = 95.0, // Charging spike
+                    percentCharged = 95.0, // Increase (not a >50% spike, but still filtered)
                     batteryVoltage = 3.8,
                     timestamp = 3000L,
                 ),
@@ -674,8 +676,8 @@ class BatteryHistoryAnalyzerTest {
     }
 
     @Test
-    fun `predictBatteryDepletion returns null for positive slope (battery increasing)`() {
-        // Given - Battery actually increasing (shouldn't happen in drainage scenario)
+    fun `predictBatteryDepletion returns null for zero slope (flat battery)`() {
+        // Given - Battery staying flat at 60% (zero slope, not draining)
         val currentTime = System.currentTimeMillis()
         val batteryHistory =
             listOf(
@@ -703,6 +705,39 @@ class BatteryHistoryAnalyzerTest {
         val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory, currentTime)
 
         // Then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `predictBatteryDepletion returns null when all timestamps are identical`() {
+        // Given - All battery readings at the same timestamp (division by zero in regression)
+        val currentTime = System.currentTimeMillis()
+        val batteryHistory =
+            listOf(
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 90.0,
+                    batteryVoltage = 3.8,
+                    timestamp = currentTime,
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 85.0,
+                    batteryVoltage = 3.75,
+                    timestamp = currentTime,
+                ),
+                BatteryHistoryEntity(
+                    deviceId = "ABC-123",
+                    percentCharged = 80.0,
+                    batteryVoltage = 3.7,
+                    timestamp = currentTime,
+                ),
+            )
+
+        // When
+        val result = BatteryHistoryAnalyzer.predictBatteryDepletion(batteryHistory, currentTime)
+
+        // Then - Should return null due to zero variance in X (division by zero)
         assertThat(result).isNull()
     }
 

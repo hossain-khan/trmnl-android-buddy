@@ -194,8 +194,15 @@ object BatteryHistoryAnalyzer {
         val sumXY = dataPoints.sumOf { it.first * it.second }
         val sumX2 = dataPoints.sumOf { it.first * it.first }
 
-        val slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)
+        val denominator = n * sumX2 - sumX * sumX
+        // Guard against division by zero (all timestamps identical or variance of X is 0)
+        if (denominator == 0.0) return null
+
+        val slope = (n * sumXY - sumX * sumY) / denominator
         val intercept = (sumY - slope * sumX) / n
+
+        // Check for invalid regression results (NaN or Infinity)
+        if (!slope.isFinite() || !intercept.isFinite()) return null
 
         // If slope is positive or zero, battery is not draining (unusual case)
         if (slope >= 0) return null
@@ -239,13 +246,13 @@ object BatteryHistoryAnalyzer {
         /**
          * Formats the time remaining until battery depletion in a human-readable format.
          *
-         * Returns format: "X months, Y weeks, Z days" where:
+         * Returns a comma-separated combination of "X months", "Y weeks", "Z days" where:
          * - Months are shown if >= 1 month
          * - Weeks are shown if >= 1 week (remaining after months)
-         * - Days are always shown (remaining after months and weeks)
+         * - Days are shown if >= 1 day, or when both months and weeks are 0 (to avoid an empty result)
          *
          * @param currentTimeMillis Current time in milliseconds
-         * @return Formatted string like "2 months, 3 weeks, 4 days"
+         * @return Formatted string like "2 months, 3 weeks, 4 days" or "2 weeks" or "0 days"
          */
         fun formatTimeRemaining(currentTimeMillis: Long = System.currentTimeMillis()): String {
             val remainingMillis = depletionTimeMillis - currentTimeMillis

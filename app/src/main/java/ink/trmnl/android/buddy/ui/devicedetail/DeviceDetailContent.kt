@@ -646,7 +646,7 @@ private fun BatteryPredictionCard(
                     Text(
                         text =
                             "Based on ${prediction.dataPointsUsed} data points " +
-                                "(${String.format("%.2f", prediction.drainageRatePercentPerDay)}% per day)",
+                                "(${String.format(java.util.Locale.getDefault(), "%.2f", prediction.drainageRatePercentPerDay)}% per day)",
                         style = MaterialTheme.typography.bodySmall,
                         color =
                             MaterialTheme.colorScheme.onPrimaryContainer.copy(
