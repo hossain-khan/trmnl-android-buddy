@@ -1,4 +1,4 @@
-[![Android CI](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml) [![codecov](https://codecov.io/gh/hossain-khan/trmnl-android-buddy/graph/badge.svg?token=K626D2JYAR)](https://codecov.io/gh/hossain-khan/trmnl-android-buddy)
+[![Android CI](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/trmnl-android-buddy/actions/workflows/android.yml) [![codecov](https://codecov.io/gh/hossain-khan/trmnl-android-buddy/graph/badge.svg?token=K626D2JYAR)](https://codecov.io/gh/hossain-khan/trmnl-android-buddy)  [![](https://playbadges.pavi2410.com/badge/downloads?id=ink.trmnl.android.buddy&pretty)](https://play.google.com/store/apps/details?id=ink.trmnl.android.buddy&pcampaignid=web_share)
 
 # TRMNL Buddy
 <img width="96" height="96" alt="App Icon" src="https://github.com/user-attachments/assets/f5871ce0-786d-4f2f-aa51-1c6b72413bf7" align="right" />
