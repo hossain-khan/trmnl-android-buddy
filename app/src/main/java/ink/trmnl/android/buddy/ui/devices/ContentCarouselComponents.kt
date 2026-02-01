@@ -673,7 +673,7 @@ private val sampleAnnouncement =
         summary =
             "We've added the ability to share your screen content with others. " +
                 "Check out the new settings panel to get started.",
-        link = "https://usetrmnl.com/announcements/screen-sharing",
+        link = "https://trmnl.com/announcements/screen-sharing",
         publishedDate =
             java.time.Instant
                 .now()
@@ -688,7 +688,7 @@ private val sampleBlogPost =
         summary =
             "Learn how to create an efficient and beautiful dashboard for your TRMNL device. " +
                 "We'll cover layout design, data sources, and optimization tips.",
-        link = "https://usetrmnl.com/blog/perfect-dashboard",
+        link = "https://trmnl.com/blog/perfect-dashboard",
         publishedDate =
             java.time.Instant
                 .now()
@@ -696,7 +696,7 @@ private val sampleBlogPost =
         isRead = false,
         authorName = "John Doe",
         category = "Tutorial",
-        featuredImageUrl = "https://usetrmnl.com/images/blog/dashboard.jpg",
+        featuredImageUrl = "https://trmnl.com/images/blog/dashboard.jpg",
         isFavorite = false,
     )
 

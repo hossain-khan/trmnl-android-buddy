@@ -5,7 +5,7 @@
 
 Your companion app to monitor and manage your TRMNL e-ink displays on the go.
 
-**TRMNL Android Buddy** is the essential companion app for managing your [TRMNL](https://usetrmnl.com) e-ink display devices. Monitor device health, track battery life over time, and stay on top of your displays' status—all from your Android phone.
+**TRMNL Android Buddy** is the essential companion app for managing your [TRMNL](https://trmnl.com) e-ink display devices. Monitor device health, track battery life over time, and stay on top of your displays' status—all from your Android phone.
 
 ## ✨ Features
 

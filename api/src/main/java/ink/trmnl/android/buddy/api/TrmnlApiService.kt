@@ -19,7 +19,7 @@ import retrofit2.http.Query
  * TRMNL API Service interface.
  *
  * Defines all available API endpoints for interacting with the TRMNL server.
- * Full API documentation: https://usetrmnl.com/api-docs/index.html
+ * Full API documentation: https://trmnl.com/api-docs/index.html
  *
  * ## Authentication
  * Most endpoints require authentication via Bearer token (Account API key).
@@ -29,7 +29,7 @@ import retrofit2.http.Query
  * ```
  *
  * ## Base URL
- * Production: `https://usetrmnl.com/api`
+ * Production: `https://trmnl.com/api`
  *
  * ## Error Handling
  * Uses EitherNet's ApiResult for type-safe error handling:
@@ -143,7 +143,7 @@ interface TrmnlApiService {
      * {
      *   "status": 200,
      *   "refresh_rate": 300,
-     *   "image_url": "https://usetrmnl.com/images/setup/setup-logo.bmp",
+     *   "image_url": "https://trmnl.com/images/setup/setup-logo.bmp",
      *   "filename": "setup-logo.bmp",
      *   "rendered_at": "2023-01-01T00:00:00Z"
      * }
@@ -266,7 +266,7 @@ interface TrmnlApiService {
      *   "per_page": 25,
      *   "current_page": 1,
      *   "prev_page_url": null,
-     *   "next_page_url": "https://usetrmnl.com/recipes.json?page=2"
+     *   "next_page_url": "https://trmnl.com/recipes.json?page=2"
      * }
      * ```
      *
@@ -285,7 +285,7 @@ interface TrmnlApiService {
      * val page2Result = api.getRecipes(page = 2, perPage = 50)
      * ```
      */
-    @GET("https://usetrmnl.com/recipes.json")
+    @GET("https://trmnl.com/recipes.json")
     suspend fun getRecipes(
         @Query("search") search: String? = null,
         @Query("sort-by") sortBy: String? = null,
@@ -321,7 +321,7 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @GET("https://usetrmnl.com/recipes/{id}.json")
+    @GET("https://trmnl.com/recipes/{id}.json")
     suspend fun getRecipe(
         @Path("id") id: Int,
     ): ApiResult<RecipeDetailResponse, ApiError>

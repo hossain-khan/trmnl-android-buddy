@@ -569,7 +569,7 @@ private val sampleBlogPosts =
             summary =
                 "We're excited to announce our new plugin system that lets you " +
                     "customize your TRMNL experience with community-built integrations.",
-            link = "https://usetrmnl.com/blog/introducing-plugins",
+            link = "https://trmnl.com/blog/introducing-plugins",
             authorName = "Ryan Kulp",
             category = "Product Updates",
             publishedDate = Instant.now().minus(2, ChronoUnit.HOURS),
@@ -588,7 +588,7 @@ private val sampleBlogPosts =
             id = "2",
             title = "5 Creative Ways to Use TRMNL at Home",
             summary = "From kitchen timers to family calendars, discover how TRMNL users are getting creative with their e-ink displays.",
-            link = "https://usetrmnl.com/blog/creative-uses",
+            link = "https://trmnl.com/blog/creative-uses",
             authorName = "Mario Lurig",
             category = "Community",
             publishedDate = Instant.now().minus(1, ChronoUnit.DAYS),
@@ -606,7 +606,7 @@ private val sampleBlogPosts =
             id = "3",
             title = "Behind the Scenes: Building TRMNL's Hardware",
             summary = "A deep dive into the engineering challenges we faced creating a beautiful, low-power e-ink display.",
-            link = "https://usetrmnl.com/blog/hardware-engineering",
+            link = "https://trmnl.com/blog/hardware-engineering",
             authorName = "Ryan Kulp",
             category = "Engineering",
             publishedDate = Instant.now().minus(3, ChronoUnit.DAYS),

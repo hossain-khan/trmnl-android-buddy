@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**TRMNL Android Buddy** is an Android application for managing and monitoring [TRMNL](https://usetrmnl.com) e-ink display devices. The app allows users to view device status, battery levels, WiFi strength, and manage their TRMNL devices.
+**TRMNL Android Buddy** is an Android application for managing and monitoring [TRMNL](https://trmnl.com) e-ink display devices. The app allows users to view device status, battery levels, WiFi strength, and manage their TRMNL devices.
 
 ### Tech Stack
 
@@ -484,7 +484,7 @@ suspend fun fetchDevices(): Result<List<Device>> {
 - [Material 3 Compose Components](https://developer.android.com/jetpack/compose/designsystems/material3)
 - [Android Dynamic Color Guide](https://developer.android.com/develop/ui/views/theming/dynamic-colors)
 - [Android Test Doubles Guide](https://developer.android.com/training/testing/fundamentals/test-doubles)
-- [TRMNL API Documentation](https://usetrmnl.com/api)
+- [TRMNL API Documentation](https://trmnl.com/api-docs/index.html)
 
 ## Notes for AI Assistants
 
