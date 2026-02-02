@@ -20,5 +20,10 @@
   {"tag": "2.3.0", "published_at": "2025-11-01T21:38:05Z", "apk_size": 5881754, "apk_name": "trmnl-android-buddy-v2.3.0.apk"},
   {"tag": "2.4.0", "published_at": "2025-11-05T02:27:24Z", "apk_size": 6203624, "apk_name": "trmnl-android-buddy-v2.4.0.apk"},
   {"tag": "2.5.0", "published_at": "2025-11-08T16:39:46Z", "apk_size": 6220008, "apk_name": "trmnl-android-buddy-v2.5.0.apk"},
-  {"tag": "2.6.0", "published_at": "2025-11-12T21:06:36Z", "apk_size": 6220008, "apk_name": "trmnl-android-buddy-v2.6.0.apk"}
+  {"tag": "2.6.0", "published_at": "2025-11-12T21:06:36Z", "apk_size": 6220008, "apk_name": "trmnl-android-buddy-v2.6.0.apk"},
+  {"tag": "2.7.0", "published_at": "2025-12-05T12:48:46Z", "apk_size": 6271932, "apk_name": "trmnl-android-buddy-v2.7.0.apk"},
+  {"tag": "2.7.1", "published_at": "2025-12-05T21:07:38Z", "apk_size": 6271932, "apk_name": "trmnl-android-buddy-v2.7.1.apk"},
+  {"tag": "2.7.2", "published_at": "2025-12-28T17:14:46Z", "apk_size": 6271932, "apk_name": "trmnl-android-buddy-v2.7.2.apk"},
+  {"tag": "2.8.0", "published_at": "2026-01-21T01:56:02Z", "apk_size": 6306020, "apk_name": "trmnl-android-buddy-v2.8.0.apk"},
+  {"tag": "2.9.0", "published_at": "2026-02-02T02:05:45Z", "apk_size": 6306020, "apk_name": "trmnl-android-buddy-v2.9.0.apk"}
 ]

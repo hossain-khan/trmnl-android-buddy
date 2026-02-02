@@ -1,0 +1,452 @@
+Diffuse Comparison: 2.8.0 → 2.9.0
+================================================================================
+
+OLD: 2.8.0.apk (signature: V2)
+NEW: 2.9.0.apk (signature: V2)
+
+          │            compressed            │           uncompressed           
+          ├───────────┬───────────┬──────────┼───────────┬───────────┬──────────
+ APK      │ old       │ new       │ diff     │ old       │ new       │ diff     
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+      dex │   4.6 MiB │   4.6 MiB │ +3.6 KiB │   4.6 MiB │   4.6 MiB │ +3.6 KiB 
+     arsc │ 901.4 KiB │ 901.4 KiB │      0 B │ 901.3 KiB │ 901.3 KiB │      0 B 
+ manifest │     3 KiB │     3 KiB │     -2 B │  12.5 KiB │  12.5 KiB │      0 B 
+      res │ 338.4 KiB │ 338.4 KiB │     +4 B │ 466.8 KiB │ 466.8 KiB │      0 B 
+   native │ 204.1 KiB │   197 KiB │ -7.1 KiB │  58.9 KiB │  58.9 KiB │      0 B 
+    asset │  50.2 KiB │  50.2 KiB │    -29 B │   138 KiB │ 137.9 KiB │    -27 B 
+    other │  51.4 KiB │  51.4 KiB │     +1 B │ 112.7 KiB │ 112.7 KiB │      0 B 
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+    total │   6.1 MiB │   6.1 MiB │ -3.6 KiB │   6.2 MiB │   6.2 MiB │ +3.6 KiB 
+
+ DEX     │ old   │ new   │ diff          
+─────────┼───────┼───────┼───────────────
+   files │     1 │     1 │   0           
+ strings │ 21400 │ 21418 │ +18 (+40 -22) 
+   types │  6994 │  6996 │  +2 (+4 -2)   
+ classes │  5764 │  5766 │  +2 (+2 -0)   
+ methods │ 29803 │ 29811 │  +8 (+70 -62) 
+  fields │ 19250 │ 19256 │  +6 (+72 -66) 
+
+ ARSC    │ old  │ new  │ diff 
+─────────┼──────┼──────┼──────
+ configs │  133 │  133 │  0   
+ entries │ 1580 │ 1580 │  0   
+
+=================
+====   APK   ====
+=================
+
+     compressed      │    uncompressed     │                                              
+──────────┬──────────┼──────────┬──────────┤                                              
+ size     │ diff     │ size     │ diff     │ path                                         
+──────────┼──────────┼──────────┼──────────┼──────────────────────────────────────────────
+ 29.5 KiB │ -7.1 KiB │  9.9 KiB │      0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so 
+  4.6 MiB │ +3.6 KiB │  4.6 MiB │ +3.6 KiB │ ∆ classes.dex                                
+  7.6 KiB │    -30 B │  7.5 KiB │    -28 B │ ∆ assets/dexopt/baseline.prof                
+    383 B │     +4 B │    281 B │      0 B │ ∆ res/-B.png                                 
+    3 KiB │     -2 B │ 12.5 KiB │      0 B │ ∆ AndroidManifest.xml                        
+    272 B │     +1 B │    120 B │      0 B │ ∆ META-INF/version-control-info.textproto    
+  1,010 B │     +1 B │    876 B │     +1 B │ ∆ assets/dexopt/baseline.profm               
+──────────┼──────────┼──────────┼──────────┼──────────────────────────────────────────────
+  4.6 MiB │ -3.6 KiB │  4.6 MiB │ +3.6 KiB │ (total)                                      
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 26                      │ 27                      
+ version name │ 2.8.0                   │ 2.9.0                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="26"
+-    android:versionName="2.8.0"
++    android:versionCode="27"
++    android:versionName="2.9.0"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
+====   DEX   ====
+=================
+
+STRINGS:
+
+   old   │ new   │ diff          
+  ───────┼───────┼───────────────
+   21400 │ 21418 │ +18 (+40 -22) 
+  
+  +  data points (
+  + % per day)
+  + %.2f
+  + , dataPointsUsed=
+  + , drainageRatePercentPerDay=
+  + 2.9.0
+  + 2.9.0 (release)
+  + Based on 
+  + Battery depleted
+  + BatteryPrediction(depletionTimeMillis=
+  + Lb9/d;
+  + Lp9/f0;
+  + Predicted Battery Depletion
+  + VJDI
+  + [Lb9/b;
+  + [Lp9/f0;
+  + day
+  + days
+  + https://help.trmnl.com/en/articles/11195228-user-level-api-keys
+  + https://trmnl.com/account
+  + https://trmnl.com/announcements/api-update
+  + https://trmnl.com/announcements/device-scheduling
+  + https://trmnl.com/announcements/maintenance
+  + https://trmnl.com/announcements/screen-sharing
+  + https://trmnl.com/api/
+  + https://trmnl.com/blog/creative-uses
+  + https://trmnl.com/blog/hardware-engineering
+  + https://trmnl.com/blog/introducing-plugins
+  + https://trmnl.com/blog/perfect-dashboard
+  + https://trmnl.com/devices/
+  + https://trmnl.com/feeds/announcements.xml
+  + https://trmnl.com/feeds/posts.xml
+  + https://trmnl.com/images/blog/dashboard.jpg
+  + https://trmnl.com/recipes.json
+  + month
+  + months
+  + r8-map-id-f9f282d07e556b331da32b719775407bf28a362051ff0873d04d6cd46328dece
+  + week
+  + weeks
+  + ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"f9f282d07e556b331da32b719775407bf28a362051ff0873d04d6cd46328dece","r8-mode":"full","version":"8.13.6"}
+  
+  - 2.8.0
+  - 2.8.0 (release)
+  - [Lb9/a;
+  - [Lp9/e0;
+  - https://help.usetrmnl.com/en/articles/11195228-user-level-api-keys
+  - https://usetrmnl.com/account
+  - https://usetrmnl.com/announcements/api-update
+  - https://usetrmnl.com/announcements/device-scheduling
+  - https://usetrmnl.com/announcements/maintenance
+  - https://usetrmnl.com/announcements/screen-sharing
+  - https://usetrmnl.com/api/
+  - https://usetrmnl.com/blog/creative-uses
+  - https://usetrmnl.com/blog/hardware-engineering
+  - https://usetrmnl.com/blog/introducing-plugins
+  - https://usetrmnl.com/blog/perfect-dashboard
+  - https://usetrmnl.com/devices/
+  - https://usetrmnl.com/feeds/announcements.xml
+  - https://usetrmnl.com/feeds/posts.xml
+  - https://usetrmnl.com/images/blog/dashboard.jpg
+  - https://usetrmnl.com/recipes.json
+  - r8-map-id-75ea0479384a93ff183e07ae87eb843bf52aaf488bf5192e8e485285f446ee2c
+  - ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"75ea0479384a93ff183e07ae87eb843bf52aaf488bf5192e8e485285f446ee2c","r8-mode":"full","version":"8.13.6"}
+  
+
+TYPES:
+
+   old  │ new  │ diff       
+  ──────┼──────┼────────────
+   6994 │ 6996 │ +2 (+4 -2) 
+  
+  + Lb9/d;
+  + Lp9/f0;
+  + [Lb9/b;
+  + [Lp9/f0;
+  
+  - [Lb9/a;
+  - [Lp9/e0;
+  
+
+METHODS:
+
+   old   │ new   │ diff         
+  ───────┼───────┼──────────────
+   29803 │ 29811 │ +8 (+70 -62) 
+  
+  + a0.z0 o(Object, Object, Object) → Object
+  + b9.a <init>(long, double, int)
+  + b9.a equals(Object) → boolean
+  + b9.a hashCode() → int
+  + b9.a toString() → String
+  + b9.b <clinit>()
+  + b9.b valueOf(String) → b
+  + b9.b values() → b[]
+  + b9.c <init>(int)
+  + b9.c compare(Object, Object) → int
+  + b9.d <clinit>()
+  + i9.c0 <init>(f0, d, d, i, a)
+  + ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsPresenterFactory(x) → a
+  + ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsPresenterFactory(x) → a
+  + p9.a c(List, s, t, int)
+  + p9.a d(b, a, s, t, int)
+  + p9.a e(b, a, a, t, int)
+  + p9.a f(double, Double, double, Integer, s, t, int)
+  + p9.a g(e0, s, t, int)
+  + p9.a h(s, t, int)
+  + p9.a i(double, int, s, t, int)
+  + p9.a j(int, t, s, a, boolean)
+  + p9.c0 <clinit>()
+  + p9.c0 equals(Object) → boolean
+  + p9.c0 hashCode() → int
+  + p9.c0 toString() → String
+  + p9.e0 <init>(String, String, double, Double, double, Integer, List, boolean, boolean, boolean, boolean, b, boolean, int, c)
+  + p9.e <init>(e0, int)
+  + p9.f0 <clinit>()
+  + p9.f0 <init>(String, String, double, Double, double, Integer)
+  + p9.f0 describeContents() → int
+  + p9.f0 equals(Object) → boolean
+  + p9.f0 hashCode() → int
+  + p9.f0 toString() → String
+  + p9.f0 writeToParcel(Parcel, int)
+  + p9.f <init>(e0, int)
+  + p9.g <init>(e0, int)
+  + p9.j <init>(List, s, int, int)
+  + p9.j h(Object, Object) → Object
+  + p9.k <init>(boolean, boolean, Object, h1, int)
+  + p9.l <init>(double, Double, double, Integer)
+  + p9.l f(Object, Object, Object) → Object
+  + p9.m <init>(double, Double, double, Integer, s, int)
+  + p9.n <init>(double, Double, double, Integer)
+  + p9.n h(Object, Object) → Object
+  + p9.o <init>(double, int)
+  + p9.o invoke() → Object
+  + p9.p <init>(List, SimpleDateFormat)
+  + p9.p a(g, double) → String
+  + p9.q <init>(s, a, boolean, int)
+  + p9.q <init>(boolean, a, s, int)
+  + p9.r <init>(List, j, c, int)
+  + p9.r h(Object, Object) → Object
+  + p9.r m(c, Object) → c
+  + p9.r p(Object) → Object
+  + p9.s compare(Object, Object) → int
+  + p9.t <init>(h1, c, int)
+  + p9.t h(Object, Object) → Object
+  + p9.t m(c, Object) → c
+  + p9.t p(Object) → Object
+  + p9.u <init>(h, h, h)
+  + p9.v <init>(u)
+  + p9.w <init>(c0, c, int)
+  + p9.w h(Object, Object) → Object
+  + p9.w m(c, Object) → c
+  + p9.w p(Object) → Object
+  + p9.x <init>(v)
+  + p9.x a(a, d, a) → b
+  + p9.y createFromParcel(Parcel) → Object
+  + p9.y newArray(int) → Object[]
+  
+  - b9.a <clinit>()
+  - b9.a valueOf(String) → a
+  - b9.a values() → a[]
+  - b9.b <init>(int)
+  - b9.b compare(Object, Object) → int
+  - b9.c <clinit>()
+  - i9.c0 <init>(e0, d, d, i, a)
+  - ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsPresenterFactory(w) → a
+  - ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsPresenterFactory(w) → a
+  - p9.a c(a, a, s, t, int)
+  - p9.a d(a, a, a, t, int)
+  - p9.a e(double, Double, double, Integer, s, t, int)
+  - p9.a f(d0, s, t, int)
+  - p9.a g(s, t, int)
+  - p9.a h(double, int, s, t, int)
+  - p9.a i(int, t, s, a, boolean)
+  - p9.d0 <init>(String, String, double, Double, double, Integer, List, boolean, boolean, boolean, boolean, a, boolean, int, c)
+  - p9.d0 equals(Object) → boolean
+  - p9.d0 hashCode() → int
+  - p9.d0 toString() → String
+  - p9.e0 <clinit>()
+  - p9.e0 <init>(String, String, double, Double, double, Integer)
+  - p9.e0 describeContents() → int
+  - p9.e0 writeToParcel(Parcel, int)
+  - p9.e <init>(d0, int)
+  - p9.f <init>(d0, int)
+  - p9.g <init>(d0, int)
+  - p9.j <init>(boolean, boolean, Object, h1, int)
+  - p9.j f(Object, Object, Object) → Object
+  - p9.k <init>(double, Double, double, Integer)
+  - p9.l <init>(double, Double, double, Integer, s, int)
+  - p9.l h(Object, Object) → Object
+  - p9.m <init>(double, Double, double, Integer)
+  - p9.n <init>(double, int)
+  - p9.n invoke() → Object
+  - p9.o <init>(List, SimpleDateFormat)
+  - p9.o a(g, double) → String
+  - p9.p <init>(s, a, boolean, int)
+  - p9.p <init>(boolean, a, s, int)
+  - p9.p h(Object, Object) → Object
+  - p9.q <init>(List, j, c, int)
+  - p9.q m(c, Object) → c
+  - p9.q p(Object) → Object
+  - p9.r compare(Object, Object) → int
+  - p9.s <init>(h1, c, int)
+  - p9.s h(Object, Object) → Object
+  - p9.s m(c, Object) → c
+  - p9.s p(Object) → Object
+  - p9.t <init>(h, h, h)
+  - p9.u <init>(t)
+  - p9.v <init>(c0, c, int)
+  - p9.v h(Object, Object) → Object
+  - p9.v m(c, Object) → c
+  - p9.v p(Object) → Object
+  - p9.w <init>(u)
+  - p9.w a(a, d, a) → b
+  - p9.x createFromParcel(Parcel) → Object
+  - p9.x newArray(int) → Object[]
+  - p9.y <clinit>()
+  - p9.y equals(Object) → boolean
+  - p9.y hashCode() → int
+  - p9.y toString() → String
+  
+
+FIELDS:
+
+   old   │ new   │ diff         
+  ───────┼───────┼──────────────
+   19250 │ 19256 │ +6 (+72 -66) 
+  
+  + b9.a a: long
+  + b9.a b: double
+  + b9.a c: int
+  + b9.b e: b
+  + b9.b f: b
+  + b9.b g: b
+  + b9.b h: b[]
+  + b9.c a: int
+  + b9.d a: long
+  + b9.d b: int
+  + ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph deviceDetailPresenterFactory: u
+  + p9.c0 a: c0
+  + p9.e0 a: String
+  + p9.e0 b: String
+  + p9.e0 c: double
+  + p9.e0 d: Double
+  + p9.e0 e: double
+  + p9.e0 f: Integer
+  + p9.e0 g: List
+  + p9.e0 h: boolean
+  + p9.e0 i: boolean
+  + p9.e0 j: boolean
+  + p9.e0 k: boolean
+  + p9.e0 l: b
+  + p9.e0 m: boolean
+  + p9.e0 n: int
+  + p9.e0 o: c
+  + p9.e f: e0
+  + p9.f0 CREATOR: Parcelable$Creator
+  + p9.f0 e: String
+  + p9.f0 f: String
+  + p9.f0 g: double
+  + p9.f0 h: Double
+  + p9.f0 i: double
+  + p9.f0 j: Integer
+  + p9.f f: e0
+  + p9.g f: e0
+  + p9.j f: List
+  + p9.j g: s
+  + p9.k e: int
+  + p9.k f: boolean
+  + p9.k g: boolean
+  + p9.k h: h1
+  + p9.k i: Object
+  + p9.m i: s
+  + p9.m j: int
+  + p9.n e: double
+  + p9.n f: Double
+  + p9.n g: double
+  + p9.n h: Integer
+  + p9.o e: int
+  + p9.o f: double
+  + p9.p b: List
+  + p9.p c: SimpleDateFormat
+  + p9.q e: int
+  + p9.q f: s
+  + p9.q g: a
+  + p9.q h: boolean
+  + p9.r i: int
+  + p9.r j: int
+  + p9.r k: List
+  + p9.r l: j
+  + p9.t i: int
+  + p9.t j: h1
+  + p9.u a: h
+  + p9.u b: h
+  + p9.u c: h
+  + p9.v a: u
+  + p9.w i: int
+  + p9.w j: int
+  + p9.w k: c0
+  + p9.x a: v
+  
+  - b9.a e: a
+  - b9.a f: a
+  - b9.a g: a
+  - b9.a h: a[]
+  - b9.b a: int
+  - b9.c a: long
+  - b9.c b: int
+  - ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph deviceDetailPresenterFactory: t
+  - p9.d0 a: String
+  - p9.d0 b: String
+  - p9.d0 c: double
+  - p9.d0 d: Double
+  - p9.d0 e: double
+  - p9.d0 f: Integer
+  - p9.d0 g: List
+  - p9.d0 h: boolean
+  - p9.d0 i: boolean
+  - p9.d0 j: boolean
+  - p9.d0 k: boolean
+  - p9.d0 l: a
+  - p9.d0 m: boolean
+  - p9.d0 n: int
+  - p9.d0 o: c
+  - p9.e0 CREATOR: Parcelable$Creator
+  - p9.e0 e: String
+  - p9.e0 f: String
+  - p9.e0 g: double
+  - p9.e0 h: Double
+  - p9.e0 i: double
+  - p9.e0 j: Integer
+  - p9.e f: d0
+  - p9.f f: d0
+  - p9.g f: d0
+  - p9.j f: boolean
+  - p9.j g: boolean
+  - p9.j h: h1
+  - p9.j i: Object
+  - p9.k e: double
+  - p9.k f: Double
+  - p9.k g: double
+  - p9.k h: Integer
+  - p9.l i: s
+  - p9.l j: int
+  - p9.n e: int
+  - p9.n f: double
+  - p9.o b: List
+  - p9.o c: SimpleDateFormat
+  - p9.p e: int
+  - p9.p f: s
+  - p9.p g: a
+  - p9.p h: boolean
+  - p9.p i: int
+  - p9.q j: int
+  - p9.q k: List
+  - p9.q l: j
+  - p9.s i: int
+  - p9.s j: h1
+  - p9.t a: h
+  - p9.t b: h
+  - p9.t c: h
+  - p9.u a: t
+  - p9.v i: int
+  - p9.v j: int
+  - p9.v k: c0
+  - p9.w a: u
+  - p9.y a: y
+  
+
+

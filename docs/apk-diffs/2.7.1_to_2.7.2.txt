@@ -1,0 +1,123 @@
+Diffuse Comparison: 2.7.1 → 2.7.2
+================================================================================
+
+OLD: 2.7.1.apk (signature: V2)
+NEW: 2.7.2.apk (signature: V2)
+
+          │            compressed            │           uncompressed           
+          ├───────────┬───────────┬──────────┼───────────┬───────────┬──────────
+ APK      │ old       │ new       │ diff     │ old       │ new       │ diff     
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+      dex │   4.5 MiB │   4.5 MiB │   -844 B │   4.5 MiB │   4.5 MiB │   -844 B 
+     arsc │ 901.1 KiB │ 901.1 KiB │      0 B │   901 KiB │   901 KiB │      0 B 
+ manifest │     3 KiB │     3 KiB │      0 B │  12.5 KiB │  12.5 KiB │      0 B 
+      res │ 337.4 KiB │ 337.4 KiB │      0 B │ 465.3 KiB │ 465.3 KiB │      0 B 
+   native │ 182.7 KiB │ 181.7 KiB │   -1 KiB │  58.9 KiB │  58.9 KiB │      0 B 
+    asset │  48.9 KiB │  50.2 KiB │ +1.3 KiB │ 136.6 KiB │   138 KiB │ +1.3 KiB 
+    other │  51.4 KiB │  51.4 KiB │      0 B │ 112.7 KiB │ 112.7 KiB │      0 B 
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+    total │     6 MiB │     6 MiB │   -529 B │   6.2 MiB │   6.2 MiB │   +529 B 
+
+ DEX     │ old   │ new   │ diff       
+─────────┼───────┼───────┼────────────
+   files │     1 │     1 │  0         
+ strings │ 21311 │ 21313 │ +2 (+6 -4) 
+   types │  6979 │  6979 │  0 (+0 -0) 
+ classes │  5752 │  5752 │  0 (+0 -0) 
+ methods │ 29704 │ 29701 │ -3 (+2 -5) 
+  fields │ 19211 │ 19211 │  0 (+2 -2) 
+
+ ARSC    │ old  │ new  │ diff 
+─────────┼──────┼──────┼──────
+ configs │  133 │  133 │  0   
+ entries │ 1578 │ 1578 │  0   
+
+=================
+====   APK   ====
+=================
+
+     compressed      │    uncompressed    │                                              
+──────────┬──────────┼─────────┬──────────┤                                              
+ size     │ diff     │ size    │ diff     │ path                                         
+──────────┼──────────┼─────────┼──────────┼──────────────────────────────────────────────
+  7.6 KiB │ +1.3 KiB │ 7.5 KiB │ +1.3 KiB │ ∆ assets/dexopt/baseline.prof                
+ 14.2 KiB │   -1 KiB │ 9.9 KiB │      0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so 
+  4.5 MiB │   -844 B │ 4.5 MiB │   -844 B │ ∆ classes.dex                                
+  1,009 B │     -2 B │   875 B │      0 B │ ∆ assets/dexopt/baseline.profm               
+──────────┼──────────┼─────────┼──────────┼──────────────────────────────────────────────
+  4.6 MiB │   -529 B │ 4.6 MiB │   +529 B │ (total)                                      
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 24                      │ 25                      
+ version name │ 2.7.1                   │ 2.7.2                   
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="24"
+-    android:versionName="2.7.1"
++    android:versionCode="25"
++    android:versionName="2.7.2"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
+====   DEX   ====
+=================
+
+STRINGS:
+
+   old   │ new   │ diff       
+  ───────┼───────┼────────────
+   21311 │ 21313 │ +2 (+6 -4) 
+  
+  + 2.7.2
+  + 2.7.2 (release)
+  + Device Details
+  + VLLLIIIIDILIILLLIL
+  + r8-map-id-9df81936fe0546eda976ccaa517bf4f6cf11eca9a3b081f820eb5684d9a0a8d6
+  + ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"9df81936fe0546eda976ccaa517bf4f6cf11eca9a3b081f820eb5684d9a0a8d6","r8-mode":"full","version":"8.13.6"}
+  
+  - 2.7.1
+  - 2.7.1 (release)
+  - r8-map-id-7da2c32dc44b7d5fc30cb395d26d8ea24256d227fa33072fa248cfa5bec46fc2
+  - ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"7da2c32dc44b7d5fc30cb395d26d8ea24256d227fa33072fa248cfa5bec46fc2","r8-mode":"full","version":"8.13.6"}
+  
+
+METHODS:
+
+   old   │ new   │ diff       
+  ───────┼───────┼────────────
+   29704 │ 29701 │ -3 (+2 -5) 
+  
+  + a1.w <init>(z, c)
+  + ink.trmnl.android.buddy.api.models.DeviceModel <init>(String, String, String, int, int, int, int, double, int, String, int, int, String, String, List, int, f)
+  
+  - d0.a <init>(int)
+  - d0.a <init>(String)
+  - d0.a f(long)
+  - x0.r0 <init>(z, c)
+  - x0.r0 <init>(n6, z)
+  
+
+FIELDS:
+
+   old   │ new   │ diff      
+  ───────┼───────┼───────────
+   19211 │ 19211 │ 0 (+2 -2) 
+  
+  + d0.a a: Parcel
+  + o9.d0 a: int
+  
+  - d0.a a: int
+  - d0.a b: Parcel
+  
+
+
