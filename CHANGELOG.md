@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.0] - 2026-02-01
+
 ### Added
 
 - **Battery depletion prediction on Device Detail screen**: Added intelligent battery life prediction based on historical drainage trends
