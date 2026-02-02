@@ -29,7 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated RSS feed URLs in content module (`announcements.xml` and `posts.xml`)
   - Updated UI component links (account settings, help docs, device settings, blog posts)
   - Updated preview/test data URLs to use new domain
-  - Note: API base URL remains at `usetrmnl.com/api` (production endpoint unchanged)
+  - Updated API base URL from `usetrmnl.com/api` to `trmnl.com/api`
+  - **Note**: Test data files contain historical API responses from old domain (for reference, see [TRMNL Domain Migration](https://trmnl.com/blog/trmnl-dot-com))
 
 ## [2.8.0] - 2026-01-20
 

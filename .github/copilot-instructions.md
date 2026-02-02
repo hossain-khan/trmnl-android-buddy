@@ -138,7 +138,7 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 
 When working with TRMNL API:
 
-1. **Base URL**: `https://usetrmnl.com/api`
+1. **Base URL**: `https://trmnl.com/api` (migrated from `usetrmnl.com`, see [TRMNL Domain Migration](https://trmnl.com/blog/trmnl-dot-com))
 2. **Authentication**: Bearer token in `Authorization` header
 3. **Response Handling**: Use EitherNet's `ApiResult<T, E>`
    ```kotlin

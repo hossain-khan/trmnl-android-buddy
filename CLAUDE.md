@@ -204,7 +204,7 @@ assertEquals(3, list.size)
 - **Device API**: `Access-Token: abc-123` (device-specific token)
 
 ### Base URL
-`https://usetrmnl.com/api`
+`https://trmnl.com/api`
 
 ### Key Endpoints
 - `GET /devices` - List all user devices
