@@ -1,5 +1,6 @@
 {
-  "X-NOTE": "This is API snapshot of '/api/models' endpoint.",
+  "X-NOTE": "This is API snapshot of 'https://trmnl.com/api/models' endpoint.",
+  "X-SORTER": "Run 'python3 scripts/sort_device_models.py' to sort device by model names.",
   "data": [
     {
       "name": "amazon_kindle_2024",
@@ -633,6 +634,52 @@
       }
     },
     {
+      "name": "kobo_sage",
+      "label": "Kobo Sage",
+      "description": "Kobo Sage",
+      "width": 1920,
+      "height": 1440,
+      "colors": 16,
+      "bit_depth": 4,
+      "scale_factor": 1.4,
+      "rotation": 90,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "kind": "byod",
+      "palette_ids": [
+        "bw",
+        "gray-4",
+        "gray-16"
+      ],
+      "image_size_limit": 92160,
+      "image_upload_supported": true,
+      "css": {
+        "classes": {
+          "device": "screen--kobo_sage",
+          "size": "screen--lg"
+        },
+        "variables": [
+          [
+            "--screen-w",
+            "1371px"
+          ],
+          [
+            "--screen-h",
+            "1029px"
+          ],
+          [
+            "--ui-scale",
+            "1.0"
+          ],
+          [
+            "--gap-scale",
+            "1.0"
+          ]
+        ]
+      }
+    },
+    {
       "name": "m5_paper_s3",
       "label": "M5PaperS3",
       "description": "M5PaperS3",
@@ -666,6 +713,53 @@
           [
             "--screen-h",
             "540px"
+          ],
+          [
+            "--ui-scale",
+            "1.0"
+          ],
+          [
+            "--gap-scale",
+            "1.0"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "nook_simple_touch",
+      "label": "Nook Simple Touch",
+      "description": "Nook Simple Touch",
+      "width": 800,
+      "height": 600,
+      "colors": 256,
+      "bit_depth": 8,
+      "scale_factor": 1.0,
+      "rotation": 90,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "kind": "kindle",
+      "palette_ids": [
+        "bw",
+        "gray-4",
+        "gray-16",
+        "gray-256"
+      ],
+      "image_size_limit": 512000,
+      "image_upload_supported": true,
+      "css": {
+        "classes": {
+          "device": "screen--nook_simple_touch",
+          "size": "screen--md"
+        },
+        "variables": [
+          [
+            "--screen-w",
+            "800px"
+          ],
+          [
+            "--screen-h",
+            "600px"
           ],
           [
             "--ui-scale",
@@ -755,6 +849,54 @@
           [
             "--screen-h",
             "480px"
+          ],
+          [
+            "--ui-scale",
+            "1.0"
+          ],
+          [
+            "--gap-scale",
+            "1.0"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "onxy_boox_nova_air_c",
+      "label": "ONYX BOOX Nova Air C",
+      "description": "ONYX BOOX Nova Air C",
+      "width": 1872,
+      "height": 1404,
+      "colors": 4096,
+      "bit_depth": 12,
+      "scale_factor": 1.8,
+      "rotation": 90,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "kind": "byod",
+      "palette_ids": [
+        "bw",
+        "gray-4",
+        "gray-16",
+        "gray-256",
+        "color-12bit"
+      ],
+      "image_size_limit": 92160,
+      "image_upload_supported": true,
+      "css": {
+        "classes": {
+          "device": "screen--onxy_boox_nova_air_c",
+          "size": "screen--lg"
+        },
+        "variables": [
+          [
+            "--screen-w",
+            "1040px"
+          ],
+          [
+            "--screen-h",
+            "780px"
           ],
           [
             "--ui-scale",
@@ -1170,6 +1312,50 @@
       "css": {
         "classes": {
           "device": "screen--og",
+          "size": "screen--md"
+        },
+        "variables": [
+          [
+            "--screen-w",
+            "800px"
+          ],
+          [
+            "--screen-h",
+            "480px"
+          ],
+          [
+            "--ui-scale",
+            "1.0"
+          ],
+          [
+            "--gap-scale",
+            "1.0"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "xteink_x4",
+      "label": "Xteink X4",
+      "description": "Xteink X4",
+      "width": 800,
+      "height": 480,
+      "colors": 4,
+      "bit_depth": 2,
+      "scale_factor": 1.0,
+      "rotation": 0,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "kind": "byod",
+      "palette_ids": [
+        "bw"
+      ],
+      "image_size_limit": 92160,
+      "image_upload_supported": true,
+      "css": {
+        "classes": {
+          "device": "screen--ogv2",
           "size": "screen--md"
         },
         "variables": [
