@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conditionally rendered - only appears when refresh rate data is available
   - Passed from device preview info to Device Detail screen via navigation parameters
 
+### Fixed
+
+- **Refresh rate display inconsistency**: Fixed discrepancy between device list and device details refresh rate display
+  - Device list was showing "1h" while details showed "2h" for the same device (e.g., 6812 seconds)
+  - Root cause: Device list used integer division (truncation), details used closest-match logic
+  - Solution: Updated `formatRefreshRate()` to use same closest-match algorithm as device details
+  - Now both screens consistently map to official TRMNL refresh rate options
+  - Example fixes:
+    - 6812s (113.5 mins) now correctly shows "2h" in both screens (closest to 120 mins)
+    - 912s (15.2 mins) now correctly shows "15m" in both screens (closest to 15 mins)
+  - Updated unit tests to verify closest-match behavior
+
 ## [2.9.0] - 2026-02-01
 
 ### Added

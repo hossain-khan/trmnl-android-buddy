@@ -6,26 +6,36 @@ import org.junit.Test
 
 class FormattingUtilsTest {
     @Test
-    fun `formatRefreshRate formats seconds correctly`() {
-        assertThat(formatRefreshRate(1)).isEqualTo("1s")
-        assertThat(formatRefreshRate(30)).isEqualTo("30s")
-        assertThat(formatRefreshRate(59)).isEqualTo("59s")
+    fun `formatRefreshRate maps to closest TRMNL option for exact matches`() {
+        // Test exact matches to TRMNL options
+        assertThat(formatRefreshRate(300)).isEqualTo("5m") // 5 mins
+        assertThat(formatRefreshRate(600)).isEqualTo("10m") // 10 mins
+        assertThat(formatRefreshRate(900)).isEqualTo("15m") // 15 mins
+        assertThat(formatRefreshRate(1800)).isEqualTo("30m") // 30 mins
+        assertThat(formatRefreshRate(2700)).isEqualTo("45m") // 45 mins
+        assertThat(formatRefreshRate(3600)).isEqualTo("1h") // 60 mins (1 hour)
+        assertThat(formatRefreshRate(5400)).isEqualTo("1.5h") // 90 mins (1.5 hours)
+        assertThat(formatRefreshRate(7200)).isEqualTo("2h") // 120 mins (2 hours)
+        assertThat(formatRefreshRate(14400)).isEqualTo("4h") // 240 mins (4 hours)
+        assertThat(formatRefreshRate(86400)).isEqualTo("24h") // 1440 mins (24 hours)
     }
 
     @Test
-    fun `formatRefreshRate formats minutes correctly`() {
-        assertThat(formatRefreshRate(60)).isEqualTo("1m")
-        assertThat(formatRefreshRate(120)).isEqualTo("2m")
-        assertThat(formatRefreshRate(300)).isEqualTo("5m")
-        assertThat(formatRefreshRate(1800)).isEqualTo("30m")
-        assertThat(formatRefreshRate(3599)).isEqualTo("59m")
+    fun `formatRefreshRate maps to closest TRMNL option for near matches`() {
+        // Test values that should map to closest option
+        assertThat(formatRefreshRate(912)).isEqualTo("15m") // 15.2 mins → closest to 15m
+        assertThat(formatRefreshRate(6812)).isEqualTo("2h") // 113.5 mins → closest to 120m (2h)
+        assertThat(formatRefreshRate(1500)).isEqualTo("30m") // 25 mins → closest to 30m
+        assertThat(formatRefreshRate(4000)).isEqualTo("1h") // 66.7 mins → closest to 60m (1h)
     }
 
     @Test
-    fun `formatRefreshRate formats hours correctly`() {
-        assertThat(formatRefreshRate(3600)).isEqualTo("1h")
-        assertThat(formatRefreshRate(7200)).isEqualTo("2h")
-        assertThat(formatRefreshRate(86400)).isEqualTo("24h")
+    fun `formatRefreshRate maps very small values to 5m`() {
+        // Values below 5 minutes should map to 5m option
+        assertThat(formatRefreshRate(1)).isEqualTo("5m")
+        assertThat(formatRefreshRate(30)).isEqualTo("5m")
+        assertThat(formatRefreshRate(60)).isEqualTo("5m") // 1 min
+        assertThat(formatRefreshRate(120)).isEqualTo("5m") // 2 mins
     }
 
     @Test
