@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Refresh rate display in Device Detail screen**: Added device refresh rate to Current Status Card alongside battery and WiFi metrics
+  - Displays refresh rate when device API token is configured and preview data is available
+  - Uses progress bar UI matching battery and WiFi design for visual consistency
+  - Dynamic mapping system that adapts to TRMNL's refresh rate options
+  - Finds closest predefined option using distance calculation for accurate representation
+  - Equal-weighted progress bar automatically adjusts to number of available options
+  - Currently supports 11 predefined options: 5, 10, 15, 30, 60, 120, 240, 360, 480, 720, 1440 minutes
+  - **Future-proof design**: Simply add new options to `TRMNL_REFRESH_RATE_OPTIONS` list to support them
+  - Smart label formatting matching TRMNL's UI: "Every 5 mins", "Hourly", "4x /day", "1x /day", etc.
+  - Material 3 design with refresh icon and themed progress indicator
+  - Conditionally rendered - only appears when refresh rate data is available
+  - Passed from device preview info to Device Detail screen via navigation parameters
+
+### Fixed
+
+- **Refresh rate display inconsistency**: Fixed discrepancy between device list and device details refresh rate display
+  - Device list was showing "1h" while details showed "2h" for the same device (e.g., 6812 seconds)
+  - Root cause: Device list used integer division (truncation), details used closest-match logic
+  - Solution: Updated `formatRefreshRate()` to use same closest-match algorithm as device details
+  - Now both screens consistently map to official TRMNL refresh rate options
+  - Example fixes:
+    - 6812s (113.5 mins) now correctly shows "2h" in both screens (closest to 120 mins)
+    - 912s (15.2 mins) now correctly shows "15m" in both screens (closest to 15 mins)
+  - Updated unit tests to verify closest-match behavior
+- **Refresh rate explanation toast inconsistency**: Fixed toast message showing incorrect refresh rate when tapping preview chip
+  - Toast was showing "every 1 hour" while chip displayed "2h" for the same device
+  - Root cause: `formatRefreshRateExplanation()` used integer division, chip used closest-match
+  - Solution: Updated explanation function to use same closest-match algorithm
+  - Now both chip display and toast message consistently show the same refresh rate
+  - Example fix: 6812s now shows "2h" chip and "every 2 hours" in toast (both mapped to 120 mins)
+
 ## [2.9.0] - 2026-02-01
 
 ### Added

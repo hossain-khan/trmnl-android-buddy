@@ -101,6 +101,7 @@ class DeviceDetailPresenter
                 currentVoltage = screen.currentVoltage,
                 wifiStrength = screen.wifiStrength,
                 rssi = screen.rssi,
+                refreshRate = screen.refreshRate,
                 batteryHistory = batteryHistory,
                 isLoading = isLoading,
                 isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,

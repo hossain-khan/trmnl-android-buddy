@@ -48,6 +48,7 @@ class DeviceDetailScreenTest {
                     currentVoltage = 3.7,
                     wifiStrength = 75.0,
                     rssi = -60,
+                    refreshRate = 300,
                 )
             val navigator = FakeNavigator(screen)
             val batteryRepo = FakeBatteryHistoryRepository()
@@ -608,6 +609,7 @@ class DeviceDetailScreenTest {
                     currentVoltage = null, // Null voltage
                     wifiStrength = 75.0,
                     rssi = -60,
+                    refreshRate = 300,
                 )
             val navigator = FakeNavigator(screen)
             val batteryRepo = FakeBatteryHistoryRepository()
@@ -642,6 +644,7 @@ class DeviceDetailScreenTest {
                     currentVoltage = 3.7,
                     wifiStrength = 75.0,
                     rssi = null, // Null RSSI
+                    refreshRate = null, // Null refresh rate
                 )
             val navigator = FakeNavigator(screen)
             val batteryRepo = FakeBatteryHistoryRepository()
@@ -675,6 +678,7 @@ class DeviceDetailScreenTest {
             currentVoltage = 3.7,
             wifiStrength = 75.0,
             rssi = -60,
+            refreshRate = 300,
         )
 
     /**

@@ -45,7 +45,21 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
+import ink.trmnl.android.buddy.ui.devicedetail.DeviceDetailScreen
 import ink.trmnl.android.buddy.ui.devicepreview.DevicePreviewScreen
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.BatteryAlertClicked
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.ContentItemClicked
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.DeviceClicked
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.DevicePreviewClicked
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.DeviceSettingsClicked
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.DismissSnackbar
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.Refresh
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.RefreshRateInfoClicked
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.ResetToken
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.SettingsClicked
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.TogglePrivacy
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.ViewAllContentClicked
+import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
@@ -291,7 +305,7 @@ class TrmnlDevicesPresenter
                 lowBatteryThresholdPercent = lowBatteryThresholdPercent,
             ) { event ->
                 when (event) {
-                    TrmnlDevicesScreen.Event.Refresh -> {
+                    Refresh -> {
                         isLoading = true
                         isContentLoading = true
                         errorMessage = null
@@ -329,11 +343,11 @@ class TrmnlDevicesPresenter
                         }
                     }
 
-                    is TrmnlDevicesScreen.Event.SettingsClicked -> {
+                    is SettingsClicked -> {
                         navigator.goTo(ink.trmnl.android.buddy.ui.settings.SettingsScreen)
                     }
 
-                    TrmnlDevicesScreen.Event.TogglePrivacy -> {
+                    TogglePrivacy -> {
                         isPrivacyEnabled = !isPrivacyEnabled
                         snackbarMessage =
                             if (isPrivacyEnabled) {
@@ -343,7 +357,7 @@ class TrmnlDevicesPresenter
                             }
                     }
 
-                    TrmnlDevicesScreen.Event.ResetToken -> {
+                    ResetToken -> {
                         coroutineScope.launch {
                             // Clear all token data from preferences
                             userPreferencesRepository.clearApiToken()
@@ -352,29 +366,30 @@ class TrmnlDevicesPresenter
                         }
                     }
 
-                    is TrmnlDevicesScreen.Event.DeviceClicked -> {
+                    is DeviceClicked -> {
                         navigator.goTo(
-                            ink.trmnl.android.buddy.ui.devicedetail.DeviceDetailScreen(
+                            DeviceDetailScreen(
                                 deviceId = event.device.friendlyId,
                                 deviceName = event.device.name,
                                 currentBattery = event.device.percentCharged,
                                 currentVoltage = event.device.batteryVoltage,
                                 wifiStrength = event.device.wifiStrength,
                                 rssi = event.device.rssi,
+                                refreshRate = devicePreviews[event.device.friendlyId]?.refreshRate,
                             ),
                         )
                     }
 
-                    is TrmnlDevicesScreen.Event.DeviceSettingsClicked -> {
+                    is DeviceSettingsClicked -> {
                         navigator.goTo(
-                            ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen(
+                            DeviceTokenScreen(
                                 deviceFriendlyId = event.device.friendlyId,
                                 deviceName = event.device.name,
                             ),
                         )
                     }
 
-                    is TrmnlDevicesScreen.Event.DevicePreviewClicked -> {
+                    is DevicePreviewClicked -> {
                         previewNavigator.goTo(
                             DevicePreviewScreen(
                                 deviceId = event.device.friendlyId,
@@ -384,11 +399,11 @@ class TrmnlDevicesPresenter
                         )
                     }
 
-                    is TrmnlDevicesScreen.Event.RefreshRateInfoClicked -> {
+                    is RefreshRateInfoClicked -> {
                         snackbarMessage = formatRefreshRateExplanation(event.refreshRate)
                     }
 
-                    is TrmnlDevicesScreen.Event.ContentItemClicked -> {
+                    is ContentItemClicked -> {
                         // Open content in Chrome Custom Tabs
                         BrowserUtils.openUrlInCustomTab(
                             context = context,
@@ -409,16 +424,16 @@ class TrmnlDevicesPresenter
                         }
                     }
 
-                    TrmnlDevicesScreen.Event.ViewAllContentClicked -> {
+                    ViewAllContentClicked -> {
                         navigator.goTo(ContentHubScreen)
                     }
 
-                    is TrmnlDevicesScreen.Event.BatteryAlertClicked -> {
+                    is BatteryAlertClicked -> {
                         snackbarMessage =
                             "Battery level (${event.device.percentCharged.toInt()}%) is below your threshold of ${event.thresholdPercent}%. Consider charging soon."
                     }
 
-                    TrmnlDevicesScreen.Event.DismissSnackbar -> {
+                    DismissSnackbar -> {
                         snackbarMessage = null
                     }
                 }
@@ -539,7 +554,7 @@ fun TrmnlDevicesContent(
     LaunchedEffect(state.snackbarMessage) {
         state.snackbarMessage?.let { message ->
             snackbarHostState.showSnackbar(message)
-            state.eventSink(TrmnlDevicesScreen.Event.DismissSnackbar)
+            state.eventSink(DismissSnackbar)
         }
     }
 
@@ -552,7 +567,7 @@ fun TrmnlDevicesContent(
             TopAppBar(
                 title = { TrmnlTitle("TRMNL Devices") },
                 actions = {
-                    IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.TogglePrivacy) }) {
+                    IconButton(onClick = { state.eventSink(TogglePrivacy) }) {
                         Icon(
                             painter =
                                 painterResource(
@@ -565,7 +580,7 @@ fun TrmnlDevicesContent(
                             contentDescription = if (state.isPrivacyEnabled) "Privacy enabled" else "Privacy disabled",
                         )
                     }
-                    IconButton(onClick = { state.eventSink(TrmnlDevicesScreen.Event.SettingsClicked) }) {
+                    IconButton(onClick = { state.eventSink(SettingsClicked) }) {
                         Icon(
                             painter = painterResource(R.drawable.settings_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                             contentDescription = "Settings",
@@ -584,7 +599,7 @@ fun TrmnlDevicesContent(
                 ErrorState(
                     errorMessage = state.errorMessage,
                     isUnauthorized = state.isUnauthorized,
-                    onResetToken = { state.eventSink(TrmnlDevicesScreen.Event.ResetToken) },
+                    onResetToken = { state.eventSink(ResetToken) },
                 )
             }
 
@@ -604,21 +619,21 @@ fun TrmnlDevicesContent(
                     isRssFeedContentEnabled = state.isRssFeedContentEnabled,
                     isLowBatteryNotificationEnabled = state.isLowBatteryNotificationEnabled,
                     lowBatteryThresholdPercent = state.lowBatteryThresholdPercent,
-                    onDeviceClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceClicked(device)) },
-                    onSettingsClick = { device -> state.eventSink(TrmnlDevicesScreen.Event.DeviceSettingsClicked(device)) },
+                    onDeviceClick = { device -> state.eventSink(DeviceClicked(device)) },
+                    onSettingsClick = { device -> state.eventSink(DeviceSettingsClicked(device)) },
                     onPreviewClick = { device, previewInfo ->
                         state.eventSink(
-                            TrmnlDevicesScreen.Event.DevicePreviewClicked(
+                            DevicePreviewClicked(
                                 device = device,
                                 previewInfo = previewInfo,
                             ),
                         )
                     },
                     onContentItemClick = { item ->
-                        state.eventSink(TrmnlDevicesScreen.Event.ContentItemClicked(item))
+                        state.eventSink(ContentItemClicked(item))
                     },
                     onViewAllContentClick = {
-                        state.eventSink(TrmnlDevicesScreen.Event.ViewAllContentClicked)
+                        state.eventSink(ViewAllContentClicked)
                     },
                     eventSink = state.eventSink,
                 )

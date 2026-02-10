@@ -83,6 +83,7 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.abs
 
 /**
  * UI content for DeviceDetailScreen.
@@ -170,6 +171,7 @@ fun DeviceDetailContent(
                 currentVoltage = state.currentVoltage,
                 wifiStrength = state.wifiStrength,
                 rssi = state.rssi,
+                refreshRate = state.refreshRate,
             )
 
             // Battery History Chart
@@ -269,6 +271,7 @@ private fun CurrentStatusCard(
     currentVoltage: Double?,
     wifiStrength: Double,
     rssi: Int?,
+    refreshRate: Int?,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -378,6 +381,51 @@ private fun CurrentStatusCard(
                                 text = "$rssiValue dBm",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+
+                    // Refresh Rate (if available)
+                    refreshRate?.let { rate ->
+                        val refreshProgress = getRefreshRateProgress(rate)
+                        val refreshLabel = getRefreshRateLabel(rate)
+
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                                        contentDescription = "Refresh Rate",
+                                        modifier = Modifier.size(16.dp),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                    Text(
+                                        text = "Refresh Rate",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                                Text(
+                                    text = refreshLabel,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
+                            LinearProgressIndicator(
+                                progress = { refreshProgress / 100f },
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(8.dp),
+                                color = MaterialTheme.colorScheme.primary,
                             )
                         }
                     }
@@ -754,6 +802,76 @@ private fun ManualBatteryRecordingCard(
     }
 }
 
+/**
+ * TRMNL refresh rate options (in minutes) with their display labels.
+ *
+ * To add new options in the future, simply add entries to this list.
+ * The progress bar will automatically recalculate based on the total number of options.
+ *
+ * Format: Pair(minutes, label)
+ */
+private val TRMNL_REFRESH_RATE_OPTIONS =
+    listOf(
+        5 to "Every 5 mins",
+        10 to "Every 10 mins",
+        15 to "Every 15 mins",
+        30 to "Every 30 mins",
+        45 to "Every 45 mins",
+        60 to "Hourly",
+        90 to "Every 90 mins",
+        120 to "Every 2 hrs",
+        240 to "Every 4 hrs",
+        360 to "4x/day",
+        480 to "3x/day",
+        720 to "2x/day",
+        1440 to "1x/day",
+    )
+
+/**
+ * Map refresh rate in seconds to the closest predefined TRMNL option and calculate progress percentage.
+ *
+ * Progress is calculated as: position / (options.size - 1) * 100
+ * This ensures equal visual weight for each option regardless of how many options exist.
+ *
+ * Example with 11 options: position 0 = 0%, position 5 = 50%, position 10 = 100%
+ * If a 12th option is added: position 0 = 0%, position 5.5 = 50%, position 11 = 100%
+ */
+private fun getRefreshRateProgress(refreshRateSeconds: Int): Float {
+    val refreshRateMinutes = refreshRateSeconds / 60
+
+    // Find the closest predefined option
+    val closestIndex =
+        TRMNL_REFRESH_RATE_OPTIONS
+            .mapIndexed { index, (minutes, _) ->
+                index to abs(minutes - refreshRateMinutes)
+            }.minByOrNull { it.second }
+            ?.first ?: 0
+
+    // Calculate progress with equal weight for each option
+    val maxIndex = TRMNL_REFRESH_RATE_OPTIONS.size - 1
+    return if (maxIndex > 0) {
+        (closestIndex.toFloat() / maxIndex) * 100f
+    } else {
+        0f
+    }
+}
+
+/**
+ * Get user-friendly label for refresh rate matching TRMNL's UI labels.
+ */
+private fun getRefreshRateLabel(refreshRateSeconds: Int): String {
+    val refreshRateMinutes = refreshRateSeconds / 60
+
+    // Find the closest predefined option
+    val closestOption =
+        TRMNL_REFRESH_RATE_OPTIONS
+            .minByOrNull { (minutes, _) ->
+                abs(minutes - refreshRateMinutes)
+            }
+
+    return closestOption?.second ?: "Unknown"
+}
+
 // Preview Composables
 @PreviewLightDark
 @Preview(
@@ -782,6 +900,7 @@ private fun CurrentStatusCardFullPreview() {
             currentVoltage = 3.7,
             wifiStrength = 85.0,
             rssi = -45,
+            refreshRate = 300, // 5 minutes
         )
     }
 }
@@ -798,6 +917,7 @@ private fun CurrentStatusCardLowPreview() {
             currentVoltage = 3.2,
             wifiStrength = 50.0,
             rssi = -70,
+            refreshRate = 600, // 10 minutes
         )
     }
 }
@@ -814,6 +934,24 @@ private fun CurrentStatusCardNoDataPreview() {
             currentVoltage = null,
             wifiStrength = 75.0,
             rssi = null,
+            refreshRate = null, // No refresh rate available
+        )
+    }
+}
+
+@Preview(
+    name = "Current Status Card - With Refresh Rate",
+    showBackground = true,
+)
+@Composable
+private fun CurrentStatusCardWithRefreshRatePreview() {
+    TrmnlBuddyAppTheme {
+        CurrentStatusCard(
+            currentBattery = 45.0,
+            currentVoltage = 3.55,
+            wifiStrength = 40.0,
+            rssi = -69,
+            refreshRate = 900, // 15 minutes
         )
     }
 }
