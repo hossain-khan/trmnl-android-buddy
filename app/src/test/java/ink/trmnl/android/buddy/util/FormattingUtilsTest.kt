@@ -39,44 +39,53 @@ class FormattingUtilsTest {
     }
 
     @Test
-    fun `formatRefreshRateExplanation formats seconds correctly`() {
-        assertThat(formatRefreshRateExplanation(1))
-            .isEqualTo("This device checks for new screen content every 1 seconds")
-        assertThat(formatRefreshRateExplanation(30))
-            .isEqualTo("This device checks for new screen content every 30 seconds")
-        assertThat(formatRefreshRateExplanation(59))
-            .isEqualTo("This device checks for new screen content every 59 seconds")
-    }
-
-    @Test
-    fun `formatRefreshRateExplanation formats single minute correctly`() {
-        assertThat(formatRefreshRateExplanation(60))
-            .isEqualTo("This device checks for new screen content every 1 minute")
-    }
-
-    @Test
-    fun `formatRefreshRateExplanation formats multiple minutes correctly`() {
-        assertThat(formatRefreshRateExplanation(120))
-            .isEqualTo("This device checks for new screen content every 2 minutes")
+    fun `formatRefreshRateExplanation maps to closest TRMNL option for exact matches`() {
+        // Test exact matches to TRMNL options
         assertThat(formatRefreshRateExplanation(300))
             .isEqualTo("This device checks for new screen content every 5 minutes")
+        assertThat(formatRefreshRateExplanation(600))
+            .isEqualTo("This device checks for new screen content every 10 minutes")
+        assertThat(formatRefreshRateExplanation(900))
+            .isEqualTo("This device checks for new screen content every 15 minutes")
         assertThat(formatRefreshRateExplanation(1800))
             .isEqualTo("This device checks for new screen content every 30 minutes")
-        assertThat(formatRefreshRateExplanation(3599))
-            .isEqualTo("This device checks for new screen content every 59 minutes")
-    }
-
-    @Test
-    fun `formatRefreshRateExplanation formats single hour correctly`() {
+        assertThat(formatRefreshRateExplanation(2700))
+            .isEqualTo("This device checks for new screen content every 45 minutes")
         assertThat(formatRefreshRateExplanation(3600))
             .isEqualTo("This device checks for new screen content every 1 hour")
+        assertThat(formatRefreshRateExplanation(5400))
+            .isEqualTo("This device checks for new screen content every 90 minutes")
+        assertThat(formatRefreshRateExplanation(7200))
+            .isEqualTo("This device checks for new screen content every 2 hours")
+        assertThat(formatRefreshRateExplanation(14400))
+            .isEqualTo("This device checks for new screen content every 4 hours")
+        assertThat(formatRefreshRateExplanation(86400))
+            .isEqualTo("This device checks for new screen content every 24 hours")
     }
 
     @Test
-    fun `formatRefreshRateExplanation formats multiple hours correctly`() {
-        assertThat(formatRefreshRateExplanation(7200))
-            .isEqualTo("This device checks for new screen content every 2 hours")
-        assertThat(formatRefreshRateExplanation(86400))
-            .isEqualTo("This device checks for new screen content every 24 hours")
+    fun `formatRefreshRateExplanation maps to closest TRMNL option for near matches`() {
+        // Test values that should map to closest option
+        assertThat(formatRefreshRateExplanation(912))
+            .isEqualTo("This device checks for new screen content every 15 minutes") // 15.2 mins → 15m
+        assertThat(formatRefreshRateExplanation(6812))
+            .isEqualTo("This device checks for new screen content every 2 hours") // 113.5 mins → 120m (2h)
+        assertThat(formatRefreshRateExplanation(1500))
+            .isEqualTo("This device checks for new screen content every 30 minutes") // 25 mins → 30m
+        assertThat(formatRefreshRateExplanation(4000))
+            .isEqualTo("This device checks for new screen content every 1 hour") // 66.7 mins → 60m (1h)
+    }
+
+    @Test
+    fun `formatRefreshRateExplanation maps very small values to 5 minutes`() {
+        // Values below 5 minutes should map to 5m option
+        assertThat(formatRefreshRateExplanation(1))
+            .isEqualTo("This device checks for new screen content every 5 minutes")
+        assertThat(formatRefreshRateExplanation(30))
+            .isEqualTo("This device checks for new screen content every 5 minutes")
+        assertThat(formatRefreshRateExplanation(60))
+            .isEqualTo("This device checks for new screen content every 5 minutes") // 1 min
+        assertThat(formatRefreshRateExplanation(120))
+            .isEqualTo("This device checks for new screen content every 5 minutes") // 2 mins
     }
 }

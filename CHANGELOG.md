@@ -33,6 +33,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - 6812s (113.5 mins) now correctly shows "2h" in both screens (closest to 120 mins)
     - 912s (15.2 mins) now correctly shows "15m" in both screens (closest to 15 mins)
   - Updated unit tests to verify closest-match behavior
+- **Refresh rate explanation toast inconsistency**: Fixed toast message showing incorrect refresh rate when tapping preview chip
+  - Toast was showing "every 1 hour" while chip displayed "2h" for the same device
+  - Root cause: `formatRefreshRateExplanation()` used integer division, chip used closest-match
+  - Solution: Updated explanation function to use same closest-match algorithm
+  - Now both chip display and toast message consistently show the same refresh rate
+  - Example fix: 6812s now shows "2h" chip and "every 2 hours" in toast (both mapped to 120 mins)
 
 ## [2.9.0] - 2026-02-01
 
