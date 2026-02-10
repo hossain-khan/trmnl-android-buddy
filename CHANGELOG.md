@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.0] - 2026-02-10
+
 ### Added
 
 - **Refresh rate display in Device Detail screen**: Added device refresh rate to Current Status Card alongside battery and WiFi metrics
@@ -15,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Dynamic mapping system that adapts to TRMNL's refresh rate options
   - Finds closest predefined option using distance calculation for accurate representation
   - Equal-weighted progress bar automatically adjusts to number of available options
-  - Currently supports 11 predefined options: 5, 10, 15, 30, 60, 120, 240, 360, 480, 720, 1440 minutes
+  - Currently supports 13 predefined options: 5, 10, 15, 30, 45, 60, 90, 120, 240, 360, 480, 720, 1440 minutes
   - **Future-proof design**: Simply add new options to `TRMNL_REFRESH_RATE_OPTIONS` list to support them
   - Smart label formatting matching TRMNL's UI: "Every 5 mins", "Hourly", "4x /day", "1x /day", etc.
   - Material 3 design with refresh icon and themed progress indicator
@@ -1353,7 +1355,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.8.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.10.0...HEAD
+[2.10.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.9.0...2.10.0
+[2.9.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.8.0...2.9.0
 [2.8.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.2...2.8.0
 [2.7.2]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.1...2.7.2
 [2.7.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.0...2.7.1
