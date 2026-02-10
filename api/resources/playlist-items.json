@@ -1,0 +1,329 @@
+{
+  "data": [
+    {
+      "created_at": "2026-02-09T15:15:47.444Z",
+      "device_id": 41448,
+      "id": 491784,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 241324,
+      "rendered_at": null,
+      "row_order": 2146435072,
+      "updated_at": "2026-02-09T15:15:47.444Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 241324,
+        "name": "Kung Fu Panda Quotes",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-02-07T22:29:09.740Z",
+      "device_id": 41448,
+      "id": 490127,
+      "mashup_id": 133326,
+      "mirror": false,
+      "plugin_setting_id": null,
+      "rendered_at": "2026-02-09T01:27:58.423Z",
+      "row_order": 2145386496,
+      "updated_at": "2026-02-09T01:27:58.423Z",
+      "visible": true
+    },
+    {
+      "created_at": "2026-02-09T15:18:34.013Z",
+      "device_id": 41448,
+      "id": 491790,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 241324,
+      "rendered_at": null,
+      "row_order": 2097152000,
+      "updated_at": "2026-02-09T15:22:10.730Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 241324,
+        "name": "Kung Fu Panda Quotes",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-02-07T22:28:59.952Z",
+      "device_id": 41448,
+      "id": 490125,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 240432,
+      "rendered_at": "2026-02-09T01:12:57.677Z",
+      "row_order": 2139095040,
+      "updated_at": "2026-02-09T01:12:57.677Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 240432,
+        "name": "Durham Waste Collection",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-01-30T19:40:05.942Z",
+      "device_id": 41448,
+      "id": 480470,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 228608,
+      "rendered_at": "2026-02-09T01:58:59.775Z",
+      "row_order": 2013265920,
+      "updated_at": "2026-02-09T01:58:59.775Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 228608,
+        "name": "Google Photos",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-02-07T22:22:52.318Z",
+      "device_id": 41448,
+      "id": 490118,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 224761,
+      "rendered_at": "2026-02-09T00:42:16.311Z",
+      "row_order": 2080374784,
+      "updated_at": "2026-02-09T00:42:16.311Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 224761,
+        "name": "Max Payne Quotes",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-02-07T22:23:07.805Z",
+      "device_id": 41448,
+      "id": 490119,
+      "mashup_id": 133323,
+      "mirror": false,
+      "plugin_setting_id": null,
+      "rendered_at": "2026-02-09T00:56:57.012Z",
+      "row_order": 2113929216,
+      "updated_at": "2026-02-09T00:56:57.012Z",
+      "visible": true
+    },
+    {
+      "created_at": "2026-01-30T19:38:55.559Z",
+      "device_id": 41448,
+      "id": 480463,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 227882,
+      "rendered_at": "2026-02-09T01:43:59.006Z",
+      "row_order": 1073741824,
+      "updated_at": "2026-02-09T01:43:59.006Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 227882,
+        "name": "Element of the Day",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-01-19T23:48:28.427Z",
+      "device_id": 13026,
+      "id": 466844,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 227882,
+      "rendered_at": "2026-02-10T20:54:05.478Z",
+      "row_order": 2143644933,
+      "updated_at": "2026-02-10T20:54:05.478Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 227882,
+        "name": "Element of the Day",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-02-07T22:28:36.445Z",
+      "device_id": 13026,
+      "id": 490123,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 240432,
+      "rendered_at": "2026-02-10T21:40:19.126Z",
+      "row_order": 2147003808,
+      "updated_at": "2026-02-10T21:40:19.126Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 240432,
+        "name": "Durham Waste Collection",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-02-09T15:18:39.313Z",
+      "device_id": 13026,
+      "id": 491791,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 241324,
+      "rendered_at": "2026-02-10T21:55:26.490Z",
+      "row_order": 2147243728,
+      "updated_at": "2026-02-10T21:55:26.490Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 241324,
+        "name": "Kung Fu Panda Quotes",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-01-19T23:47:54.108Z",
+      "device_id": 13026,
+      "id": 466842,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 224761,
+      "rendered_at": "2026-02-10T23:40:47.839Z",
+      "row_order": 2139806219,
+      "updated_at": "2026-02-10T23:40:47.839Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 224761,
+        "name": "Max Payne Quotes",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2025-10-21T20:21:23.201Z",
+      "device_id": 13026,
+      "id": 358339,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 169409,
+      "rendered_at": "2026-02-10T22:40:51.038Z",
+      "row_order": 182061890,
+      "updated_at": "2026-02-10T22:40:51.038Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 169409,
+        "name": "Denver Weather",
+        "plugin_id": 28
+      }
+    },
+    {
+      "created_at": "2026-01-30T19:41:21.170Z",
+      "device_id": 13026,
+      "id": 480474,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 235321,
+      "rendered_at": "2026-02-10T21:24:52.564Z",
+      "row_order": 2146523969,
+      "updated_at": "2026-02-10T21:24:52.564Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 235321,
+        "name": "Google Photos Canvas",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2026-01-21T04:36:22.391Z",
+      "device_id": 13026,
+      "id": 468226,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 228608,
+      "rendered_at": "2026-02-10T21:09:30.920Z",
+      "row_order": 2145564290,
+      "updated_at": "2026-02-10T21:09:30.920Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 228608,
+        "name": "Google Photos",
+        "plugin_id": 37
+      }
+    },
+    {
+      "created_at": "2025-10-27T00:48:34.731Z",
+      "device_id": 13026,
+      "id": 362857,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 171857,
+      "rendered_at": "2026-02-10T22:55:42.151Z",
+      "row_order": 1164772769,
+      "updated_at": "2026-02-10T22:55:42.151Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 171857,
+        "name": "Stonks",
+        "plugin_id": 5
+      }
+    },
+    {
+      "created_at": "2025-10-21T20:19:51.037Z",
+      "device_id": 13026,
+      "id": 358338,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 169408,
+      "rendered_at": "2026-02-10T22:25:57.657Z",
+      "row_order": -288216804,
+      "updated_at": "2026-02-10T22:25:57.657Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 169408,
+        "name": "Quote",
+        "plugin_id": 33
+      }
+    },
+    {
+      "created_at": "2025-10-27T00:50:38.964Z",
+      "device_id": 13026,
+      "id": 362860,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 171858,
+      "rendered_at": "2026-02-10T23:10:30.343Z",
+      "row_order": 1656128208,
+      "updated_at": "2026-02-10T23:10:30.343Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 171858,
+        "name": "Lunar Calendar",
+        "plugin_id": 63
+      }
+    },
+    {
+      "created_at": "2025-10-27T00:52:43.956Z",
+      "device_id": 13026,
+      "id": 362864,
+      "mashup_id": 103968,
+      "mirror": false,
+      "plugin_setting_id": null,
+      "rendered_at": "2026-02-10T23:25:28.828Z",
+      "row_order": 2086064218,
+      "updated_at": "2026-02-10T23:25:28.828Z",
+      "visible": true
+    },
+    {
+      "created_at": "2025-10-21T20:18:33.131Z",
+      "device_id": 13026,
+      "id": 358335,
+      "mashup_id": null,
+      "mirror": false,
+      "plugin_setting_id": 169406,
+      "rendered_at": "2026-02-10T22:10:30.991Z",
+      "row_order": -1463659038,
+      "updated_at": "2026-02-10T22:10:30.991Z",
+      "visible": true,
+      "plugin_setting": {
+        "id": 169406,
+        "name": "2025",
+        "plugin_id": 2
+      }
+    }
+  ]
+}

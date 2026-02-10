@@ -7,6 +7,7 @@ import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
+import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
@@ -172,6 +173,74 @@ interface TrmnlApiService {
     suspend fun getDisplayCurrent(
         @Header("Access-Token") deviceApiKey: String,
     ): ApiResult<Display, ApiError>
+
+    // ========================================
+    // Playlists API
+    // ========================================
+
+    /**
+     * Get playlist items for a specific device or all devices.
+     *
+     * Retrieves the list of content items (plugins and mashups) that are configured
+     * to display on the device(s). Each item includes visibility status, last rendered
+     * timestamp, and display order information.
+     *
+     * Requires authentication via Bearer token.
+     *
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @param deviceId Optional device ID to filter playlist items (null returns all devices)
+     * @return ApiResult containing list of playlist items or error
+     *
+     * Example response:
+     * ```json
+     * {
+     *   "data": [
+     *     {
+     *       "id": 491784,
+     *       "device_id": 41448,
+     *       "plugin_setting_id": 241324,
+     *       "mashup_id": null,
+     *       "visible": true,
+     *       "rendered_at": "2026-02-09T01:27:58.423Z",
+     *       "row_order": 2146435072,
+     *       "created_at": "2026-02-09T15:15:47.444Z",
+     *       "updated_at": "2026-02-09T15:15:47.444Z",
+     *       "mirror": false,
+     *       "plugin_setting": {
+     *         "id": 241324,
+     *         "name": "Kung Fu Panda Quotes",
+     *         "plugin_id": 37
+     *       }
+     *     }
+     *   ]
+     * }
+     * ```
+     *
+     * Example usage:
+     * ```kotlin
+     * // Get playlist items for a specific device
+     * when (val result = api.getPlaylistItems("Bearer user_abc123", deviceId = 12345)) {
+     *     is ApiResult.Success -> {
+     *         val items = result.value.data
+     *         val activeCount = items.count { it.visible }
+     *         println("Found $activeCount active items")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         401 -> println("Unauthorized")
+     *         404 -> println("Device not found")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("playlists/items")
+    suspend fun getPlaylistItems(
+        @Header("Authorization") authorization: String,
+        @Query("device_id") deviceId: Int? = null,
+    ): ApiResult<PlaylistItemsResponse, ApiError>
 
     // ========================================
     // Users API
