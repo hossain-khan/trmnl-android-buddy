@@ -17,11 +17,13 @@ import org.junit.Test
  * Unit tests for TrmnlApiService playlist items endpoints using MockWebServer.
  *
  * These tests verify playlist items API endpoints:
- * - GET /playlists/items - List playlist items for device(s)
+ * - GET /playlists/items - List all playlist items for user's devices
+ *
+ * Note: The API returns items for ALL devices. Filtering by device_id
+ * happens client-side in the repository layer.
  *
  * Tests cover:
  * - Successful responses with playlist items
- * - Filtering by device ID
  * - Items with plugin settings vs mashups
  * - Visible vs hidden items
  * - Rendered vs never rendered items
@@ -29,9 +31,9 @@ import org.junit.Test
  */
 class TrmnlPlaylistItemsApiTest : BaseApiTest() {
     @Test
-    fun `getPlaylistItems returns success with playlist items for device`() =
+    fun `getPlaylistItems returns success with playlist items`() =
         runTest {
-            // Given: Mock server returns playlist items for a device
+            // Given: Mock server returns playlist items
             val responseBody =
                 """
                 {
@@ -77,8 +79,8 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
                     .addHeader("Content-Type", "application/json"),
             )
 
-            // When: Call getPlaylistItems with device ID
-            val result = apiService.getPlaylistItems("Bearer test_token", deviceId = 41448)
+            // When: Call getPlaylistItems
+            val result = apiService.getPlaylistItems("Bearer test_token")
 
             // Then: Verify success result with correct data
             assertThat(result).isInstanceOf(ApiResult.Success::class)
@@ -109,7 +111,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
 
             // Verify request was made correctly
             val request = mockWebServer.takeRequest()
-            assertThat(request.path).isEqualTo("/playlists/items?device_id=41448")
+            assertThat(request.path).isEqualTo("/playlists/items")
             assertThat(request.method).isEqualTo("GET")
             assertThat(request.getHeader("Authorization")).isEqualTo("Bearer test_token")
         }
@@ -151,7 +153,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
             )
 
             // When: Call getPlaylistItems
-            val result = apiService.getPlaylistItems("Bearer test_token", deviceId = 41448)
+            val result = apiService.getPlaylistItems("Bearer test_token")
 
             // Then: Verify rendered_at is null
             assertThat(result).isInstanceOf(ApiResult.Success::class)
@@ -215,7 +217,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
             )
 
             // When: Call getPlaylistItems
-            val result = apiService.getPlaylistItems("Bearer test_token", deviceId = 41448)
+            val result = apiService.getPlaylistItems("Bearer test_token")
 
             // Then: Verify both visible and hidden items are returned
             assertThat(result).isInstanceOf(ApiResult.Success::class)
@@ -227,7 +229,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
         }
 
     @Test
-    fun `getPlaylistItems without device ID queries all devices`() =
+    fun `getPlaylistItems returns items from multiple devices`() =
         runTest {
             // Given: Mock server returns playlist items for multiple devices
             val responseBody =
@@ -279,8 +281,8 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
                     .addHeader("Content-Type", "application/json"),
             )
 
-            // When: Call getPlaylistItems without device ID
-            val result = apiService.getPlaylistItems("Bearer test_token", deviceId = null)
+            // When: Call getPlaylistItems
+            val result = apiService.getPlaylistItems("Bearer test_token")
 
             // Then: Verify items from multiple devices are returned
             assertThat(result).isInstanceOf(ApiResult.Success::class)
@@ -290,7 +292,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
             assertThat(successResult.value.data[0].deviceId).isEqualTo(41448)
             assertThat(successResult.value.data[1].deviceId).isEqualTo(13026)
 
-            // Verify request path has no device_id parameter
+            // Verify request path
             val request = mockWebServer.takeRequest()
             assertThat(request.path).isEqualTo("/playlists/items")
         }
@@ -307,7 +309,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
             )
 
             // When: Call getPlaylistItems with invalid token
-            val result = apiService.getPlaylistItems("Bearer invalid_token", deviceId = 41448)
+            val result = apiService.getPlaylistItems("Bearer invalid_token")
 
             // Then: Verify HTTP failure with 401
             assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
@@ -316,7 +318,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
         }
 
     @Test
-    fun `getPlaylistItems returns HTTP 404 for device not found`() =
+    fun `getPlaylistItems returns HTTP 404 when no playlists exist`() =
         runTest {
             // Given: Mock server returns 404 Not Found
             mockWebServer.enqueue(
@@ -326,8 +328,8 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
                     .addHeader("Content-Type", "application/json"),
             )
 
-            // When: Call getPlaylistItems with nonexistent device
-            val result = apiService.getPlaylistItems("Bearer test_token", deviceId = 99999)
+            // When: Call getPlaylistItems
+            val result = apiService.getPlaylistItems("Bearer test_token")
 
             // Then: Verify HTTP failure with 404
             assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)

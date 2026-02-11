@@ -179,17 +179,19 @@ interface TrmnlApiService {
     // ========================================
 
     /**
-     * Get playlist items for a specific device or all devices.
+     * Get all playlist items for the authenticated user's devices.
      *
-     * Retrieves the list of content items (plugins and mashups) that are configured
-     * to display on the device(s). Each item includes visibility status, last rendered
+     * Retrieves the list of content items (plugins and mashups) configured across
+     * all devices. Each item includes device_id, visibility status, last rendered
      * timestamp, and display order information.
+     *
+     * Note: This endpoint returns items for ALL devices. Use repository method
+     * to filter by specific device_id on the client side.
      *
      * Requires authentication via Bearer token.
      *
      * @param authorization Bearer token with format "Bearer user_xxxxxx"
-     * @param deviceId Optional device ID to filter playlist items (null returns all devices)
-     * @return ApiResult containing list of playlist items or error
+     * @return ApiResult containing list of playlist items for all devices or error
      *
      * Example response:
      * ```json
@@ -218,16 +220,15 @@ interface TrmnlApiService {
      *
      * Example usage:
      * ```kotlin
-     * // Get playlist items for a specific device
-     * when (val result = api.getPlaylistItems("Bearer user_abc123", deviceId = 12345)) {
+     * // Get all playlist items
+     * when (val result = api.getPlaylistItems("Bearer user_abc123")) {
      *     is ApiResult.Success -> {
      *         val items = result.value.data
      *         val activeCount = items.count { it.visible }
-     *         println("Found $activeCount active items")
+     *         println("Found $activeCount active items across all devices")
      *     }
      *     is ApiResult.Failure.HttpFailure -> when (result.code) {
      *         401 -> println("Unauthorized")
-     *         404 -> println("Device not found")
      *         else -> println("HTTP error: ${result.code}")
      *     }
      *     is ApiResult.Failure.NetworkFailure -> println("Network error")
@@ -239,7 +240,6 @@ interface TrmnlApiService {
     @GET("playlists/items")
     suspend fun getPlaylistItems(
         @Header("Authorization") authorization: String,
-        @Query("device_id") deviceId: Int? = null,
     ): ApiResult<PlaylistItemsResponse, ApiError>
 
     // ========================================

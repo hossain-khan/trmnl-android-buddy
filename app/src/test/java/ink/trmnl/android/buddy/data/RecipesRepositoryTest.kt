@@ -13,6 +13,7 @@ import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
+import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipeStats
@@ -190,5 +191,8 @@ class RecipesRepositoryTest {
         override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> = throw NotImplementedError()
 
         override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = throw NotImplementedError()
+
+        override suspend fun getPlaylistItems(authorization: String): ApiResult<PlaylistItemsResponse, ApiError> =
+            throw NotImplementedError()
     }
 }

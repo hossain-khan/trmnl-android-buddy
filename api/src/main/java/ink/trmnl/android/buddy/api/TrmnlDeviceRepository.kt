@@ -109,7 +109,8 @@ class TrmnlDeviceRepository(
      * Fetch playlist items for a specific device or all devices.
      *
      * Makes an API call to `/playlists/items` and returns the list of content items
-     * (plugins and mashups) configured for the device(s).
+     * (plugins and mashups) configured for the device(s). The API returns items for
+     * all devices, so this method filters client-side when deviceId is provided.
      *
      * @param deviceId Optional device ID to filter playlist items (null returns all devices)
      * @return ApiResult containing list of playlist items or error
@@ -117,6 +118,8 @@ class TrmnlDeviceRepository(
      * Example usage:
      * ```kotlin
      * val repository = TrmnlDeviceRepository(apiService, "user_abc123")
+     *
+     * // Get items for specific device
      * when (val result = repository.getPlaylistItems(deviceId = 12345)) {
      *     is ApiResult.Success -> {
      *         val items = result.value
@@ -126,7 +129,6 @@ class TrmnlDeviceRepository(
      *     }
      *     is ApiResult.Failure.HttpFailure -> {
      *         when (result.code) {
-     *             404 -> println("Device not found")
      *             401 -> println("Unauthorized")
      *             else -> println("HTTP Error: ${result.code}")
      *         }
@@ -145,8 +147,16 @@ class TrmnlDeviceRepository(
      */
     suspend fun getPlaylistItems(deviceId: Int? = null): ApiResult<List<ink.trmnl.android.buddy.api.models.PlaylistItem>, *> =
         withContext(Dispatchers.IO) {
-            when (val result = apiService.getPlaylistItems(authHeader, deviceId)) {
-                is ApiResult.Success -> ApiResult.success(result.value.data)
+            when (val result = apiService.getPlaylistItems(authHeader)) {
+                is ApiResult.Success -> {
+                    val items = result.value.data
+                    // Filter by device ID if provided
+                    val filteredItems =
+                        deviceId?.let { id ->
+                            items.filter { it.deviceId == id }
+                        } ?: items
+                    ApiResult.success(filteredItems)
+                }
                 is ApiResult.Failure -> result
             }
         }

@@ -442,4 +442,6 @@ private open class FakeApiService(
         throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = deviceModelsResponse
+
+    override suspend fun getPlaylistItems(authorization: String) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 }

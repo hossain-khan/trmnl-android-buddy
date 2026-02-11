@@ -8,6 +8,7 @@ import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
+import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
@@ -31,6 +32,7 @@ class FakeTrmnlApiService : TrmnlApiService {
     var getRecipeResult: ApiResult<RecipeDetailResponse, ApiError>? = null
     var getDeviceModelsResult: ApiResult<DeviceModelsResponse, ApiError>? = null
     var getDisplayCurrentResult: ApiResult<Display, ApiError>? = null
+    var getPlaylistItemsResult: ApiResult<PlaylistItemsResponse, ApiError>? = null
 
     var lastAuthorizationHeader: String? = null
     var getDevicesCallCount = 0
@@ -71,6 +73,11 @@ class FakeTrmnlApiService : TrmnlApiService {
 
     override suspend fun getDisplayCurrent(deviceApiKey: String): ApiResult<Display, ApiError> =
         getDisplayCurrentResult ?: throw NotImplementedError("getDisplayCurrentResult not implemented")
+
+    override suspend fun getPlaylistItems(authorization: String): ApiResult<PlaylistItemsResponse, ApiError> {
+        lastAuthorizationHeader = authorization
+        return getPlaylistItemsResult ?: throw NotImplementedError("getPlaylistItemsResult not implemented")
+    }
 
     override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
         throw NotImplementedError("getCategories not implemented")
