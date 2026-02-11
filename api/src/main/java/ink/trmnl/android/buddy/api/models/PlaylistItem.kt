@@ -29,13 +29,13 @@ data class PlaylistItem(
     @SerialName("device_id")
     val deviceId: Int,
     @SerialName("plugin_setting_id")
-    val pluginSettingId: Int?,
+    val pluginSettingId: Int? = null,
     @SerialName("mashup_id")
-    val mashupId: Int?,
+    val mashupId: Int? = null,
     @SerialName("visible")
-    val visible: Boolean,
+    val visible: Boolean = true,
     @SerialName("rendered_at")
-    val renderedAt: String?,
+    val renderedAt: String? = null,
     @SerialName("row_order")
     val rowOrder: Long,
     @SerialName("created_at")
@@ -43,9 +43,9 @@ data class PlaylistItem(
     @SerialName("updated_at")
     val updatedAt: String,
     @SerialName("mirror")
-    val mirror: Boolean,
+    val mirror: Boolean = false,
     @SerialName("plugin_setting")
-    val pluginSetting: PluginSetting?,
+    val pluginSetting: PluginSetting? = null,
 ) {
     /**
      * Get a human-readable display name for this playlist item.

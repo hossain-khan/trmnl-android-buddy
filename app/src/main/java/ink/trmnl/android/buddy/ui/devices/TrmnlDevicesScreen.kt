@@ -376,6 +376,7 @@ class TrmnlDevicesPresenter
                                 wifiStrength = event.device.wifiStrength,
                                 rssi = event.device.rssi,
                                 refreshRate = devicePreviews[event.device.friendlyId]?.refreshRate,
+                                deviceNumericId = event.device.id,
                             ),
                         )
                     }
