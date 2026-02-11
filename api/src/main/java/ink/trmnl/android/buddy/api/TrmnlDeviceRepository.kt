@@ -106,6 +106,62 @@ class TrmnlDeviceRepository(
         }
 
     /**
+     * Fetch playlist items for a specific device or all devices.
+     *
+     * Makes an API call to `/playlists/items` and returns the list of content items
+     * (plugins and mashups) configured for the device(s). The API returns items for
+     * all devices, so this method filters client-side when deviceId is provided.
+     *
+     * @param deviceId Optional device ID to filter playlist items (null returns all devices)
+     * @return ApiResult containing list of playlist items or error
+     *
+     * Example usage:
+     * ```kotlin
+     * val repository = TrmnlDeviceRepository(apiService, "user_abc123")
+     *
+     * // Get items for specific device
+     * when (val result = repository.getPlaylistItems(deviceId = 12345)) {
+     *     is ApiResult.Success -> {
+     *         val items = result.value
+     *         val activeCount = items.count { it.visible }
+     *         val hiddenCount = items.count { !it.visible }
+     *         println("Found $activeCount active, $hiddenCount hidden items")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> {
+     *         when (result.code) {
+     *             401 -> println("Unauthorized")
+     *             else -> println("HTTP Error: ${result.code}")
+     *         }
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> {
+     *         println("Network Error: ${result.error}")
+     *     }
+     *     is ApiResult.Failure.ApiFailure -> {
+     *         println("API Error: ${result.error}")
+     *     }
+     *     is ApiResult.Failure.UnknownFailure -> {
+     *         println("Unknown Error: ${result.error}")
+     *     }
+     * }
+     * ```
+     */
+    suspend fun getPlaylistItems(deviceId: Int? = null): ApiResult<List<ink.trmnl.android.buddy.api.models.PlaylistItem>, *> =
+        withContext(Dispatchers.IO) {
+            when (val result = apiService.getPlaylistItems(authHeader)) {
+                is ApiResult.Success -> {
+                    val items = result.value.data
+                    // Filter by device ID if provided
+                    val filteredItems =
+                        deviceId?.let { id ->
+                            items.filter { it.deviceId == id }
+                        } ?: items
+                    ApiResult.success(filteredItems)
+                }
+                is ApiResult.Failure -> result
+            }
+        }
+
+    /**
      * Get devices with low battery (below 20%).
      *
      * Convenience method to filter devices that need charging.

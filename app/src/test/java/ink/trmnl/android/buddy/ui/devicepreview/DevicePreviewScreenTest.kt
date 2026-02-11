@@ -302,4 +302,6 @@ private class FakeApiService(
 
     override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
         throw NotImplementedError("Not needed for DevicePreviewScreen tests")
+
+    override suspend fun getPlaylistItems(authorization: String) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 }
