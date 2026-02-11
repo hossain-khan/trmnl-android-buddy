@@ -15,7 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Navigates to PlaylistItemsScreen to view device's content rotation schedule
   - Added optional `deviceNumericId` parameter to DeviceDetailScreen for API integration
   - Added `ViewPlaylistItems` event to DeviceDetailScreen.Event
-  - Note: Currently shows all playlist items when navigating from current implementation; future update will filter by device when numeric ID is passed
+
+### Fixed
+
+- **Playlist Items device filtering**: Pass numeric device ID when navigating to Device Detail screen, enabling device-specific playlist filtering
+  - Playlist Items screen now shows only items for the selected device instead of all devices
+  - Update `DeviceClicked` event handler to pass `deviceNumericId = event.device.id`
 
 ## [2.10.0] - 2026-02-10
 
