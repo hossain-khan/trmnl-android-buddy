@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Made `plugin_setting` field truly optional by adding default value (`= null`)
   - API sometimes omits the field entirely for mashup items instead of setting it to null
   - Added test case to verify handling of missing `plugin_setting` field in JSON responses
+  - Added defensive defaults to other nullable/optional fields (`pluginSettingId`, `mashupId`, `renderedAt`, `visible`, `mirror`) to prevent future serialization errors
 
 ## [2.10.0] - 2026-02-10
 
