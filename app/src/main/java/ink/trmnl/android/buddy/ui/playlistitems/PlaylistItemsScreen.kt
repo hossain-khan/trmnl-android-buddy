@@ -3,7 +3,7 @@ package ink.trmnl.android.buddy.ui.playlistitems
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import ink.trmnl.android.buddy.api.models.PlaylistItem
+import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -33,7 +33,7 @@ data class PlaylistItemsScreen(
     data class State(
         val deviceId: Int?,
         val deviceName: String,
-        val items: List<PlaylistItem> = emptyList(),
+        val items: List<PlaylistItemUi> = emptyList(),
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
         val eventSink: (Event) -> Unit = {},
@@ -57,7 +57,7 @@ data class PlaylistItemsScreen(
          * User clicked on a playlist item for more details.
          */
         data class ItemClicked(
-            val item: PlaylistItem,
+            val item: PlaylistItemUi,
         ) : Event()
     }
 }
