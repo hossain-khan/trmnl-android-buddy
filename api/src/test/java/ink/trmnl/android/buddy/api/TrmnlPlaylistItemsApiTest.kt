@@ -338,6 +338,56 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
         }
 
     @Test
+    fun `getPlaylistItems handles missing plugin_setting field in JSON`() =
+        runTest {
+            // Given: Mock server returns playlist item WITHOUT plugin_setting field
+            // (not even null, field is completely omitted from JSON)
+            val responseBody =
+                """
+                {
+                  "data": [
+                    {
+                      "id": 490127,
+                      "device_id": 41448,
+                      "plugin_setting_id": null,
+                      "mashup_id": 133326,
+                      "visible": true,
+                      "rendered_at": "2026-02-09T01:27:58.423Z",
+                      "row_order": 2145386496,
+                      "created_at": "2026-02-07T22:29:09.740Z",
+                      "updated_at": "2026-02-09T01:27:58.423Z",
+                      "mirror": false
+                    }
+                  ]
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            // When: Call getPlaylistItems
+            val result = apiService.getPlaylistItems("Bearer test_token")
+
+            // Then: Verify success result with null plugin_setting
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val successResult = result as ApiResult.Success
+
+            assertThat(successResult.value.data).hasSize(1)
+
+            val item = successResult.value.data[0]
+            assertThat(item.id).isEqualTo(490127)
+            assertThat(item.mashupId).isEqualTo(133326)
+            assertThat(item.pluginSettingId).isNull()
+            assertThat(item.pluginSetting).isNull() // Field was omitted, should default to null
+            assertThat(item.isMashup()).isTrue()
+            assertThat(item.displayName()).isEqualTo("Mashup #133326")
+        }
+
+    @Test
     fun `PlaylistItem displayName returns plugin name when available`() {
         // Given: Playlist item with plugin setting
         val item =

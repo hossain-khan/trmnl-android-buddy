@@ -45,7 +45,7 @@ data class PlaylistItem(
     @SerialName("mirror")
     val mirror: Boolean,
     @SerialName("plugin_setting")
-    val pluginSetting: PluginSetting?,
+    val pluginSetting: PluginSetting? = null,
 ) {
     /**
      * Get a human-readable display name for this playlist item.

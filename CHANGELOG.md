@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Playlist Items device filtering**: Pass numeric device ID when navigating to Device Detail screen, enabling device-specific playlist filtering
   - Playlist Items screen now shows only items for the selected device instead of all devices
   - Update `DeviceClicked` event handler to pass `deviceNumericId = event.device.id`
+- **Playlist Items API serialization error**: Fixed `MissingFieldException` when `plugin_setting` field is omitted from API response
+  - Made `plugin_setting` field truly optional by adding default value (`= null`)
+  - API sometimes omits the field entirely for mashup items instead of setting it to null
+  - Added test case to verify handling of missing `plugin_setting` field in JSON responses
 
 ## [2.10.0] - 2026-02-10
 
