@@ -23,6 +23,7 @@ import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
+import ink.trmnl.android.buddy.ui.playlistitems.PlaylistItemsScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -117,6 +118,14 @@ class DeviceDetailPresenter
                         navigator.goTo(
                             DeviceTokenScreen(
                                 deviceFriendlyId = screen.deviceId,
+                                deviceName = screen.deviceName,
+                            ),
+                        )
+                    }
+                    DeviceDetailScreen.Event.ViewPlaylistItems -> {
+                        navigator.goTo(
+                            PlaylistItemsScreen(
+                                deviceId = screen.deviceNumericId,
                                 deviceName = screen.deviceName,
                             ),
                         )

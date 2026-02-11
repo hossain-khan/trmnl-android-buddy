@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Playlist Items navigation from Device Detail screen**: Added "View Playlist" button to navigate from Device Detail screen to Playlist Items screen
+  - New "Playlist Items" card in Device Detail screen with descriptive text and "View" button
+  - Uses Material 3 `ListItem` with playlist icon and primary color accent
+  - Navigates to PlaylistItemsScreen to view device's content rotation schedule
+  - Added optional `deviceNumericId` parameter to DeviceDetailScreen for API integration
+  - Added `ViewPlaylistItems` event to DeviceDetailScreen.Event
+  - Note: Currently shows all playlist items when navigating from current implementation; future update will filter by device when numeric ID is passed
+
 ## [2.10.0] - 2026-02-10
 
 ### Added

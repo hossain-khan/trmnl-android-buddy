@@ -19,6 +19,7 @@ data class DeviceDetailScreen(
     val wifiStrength: Double,
     val rssi: Int?,
     val refreshRate: Int?, // in seconds, null if not available
+    val deviceNumericId: Int? = null, // Numeric device ID for API calls, null if not available
 ) : Screen {
     data class State(
         val deviceId: String,
@@ -43,6 +44,8 @@ data class DeviceDetailScreen(
         data object BackClicked : Event()
 
         data object SettingsClicked : Event()
+
+        data object ViewPlaylistItems : Event()
 
         data class PopulateBatteryHistory(
             val minBatteryLevel: Float,

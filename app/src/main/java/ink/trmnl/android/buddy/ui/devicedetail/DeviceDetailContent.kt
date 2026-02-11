@@ -174,6 +174,11 @@ fun DeviceDetailContent(
                 refreshRate = state.refreshRate,
             )
 
+            // View Playlist Items Card (shown when device numeric ID is available)
+            PlaylistItemsCard(
+                onViewPlaylist = { state.eventSink(DeviceDetailScreen.Event.ViewPlaylistItems) },
+            )
+
             // Battery History Chart
             BatteryHistoryChart(
                 batteryHistory = state.batteryHistory,
@@ -704,6 +709,53 @@ private fun BatteryPredictionCard(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun PlaylistItemsCard(
+    onViewPlaylist: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Playlist Items",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            supportingContent = {
+                Text(
+                    text = "View the content rotation schedule and plugin configuration for this device",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
+            leadingContent = {
+                Icon(
+                    painter = painterResource(R.drawable.list_alt_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                    contentDescription = "Playlist",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            },
+            trailingContent = {
+                OutlinedButton(
+                    onClick = onViewPlaylist,
+                ) {
+                    Text("View")
+                }
+            },
+            colors =
+                ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+        )
     }
 }
 
