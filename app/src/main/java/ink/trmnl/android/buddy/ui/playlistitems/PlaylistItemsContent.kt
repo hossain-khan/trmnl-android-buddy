@@ -35,8 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
-import ink.trmnl.android.buddy.api.models.PlaylistItem
-import ink.trmnl.android.buddy.api.models.PluginSetting
+import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 
@@ -203,8 +202,8 @@ private fun EmptyState(modifier: Modifier = Modifier) {
  */
 @Composable
 private fun PlaylistItemsList(
-    items: List<PlaylistItem>,
-    onItemClick: (PlaylistItem) -> Unit,
+    items: List<PlaylistItemUi>,
+    onItemClick: (PlaylistItemUi) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -226,7 +225,7 @@ private fun PlaylistItemsList(
  */
 @Composable
 private fun PlaylistItemCard(
-    item: PlaylistItem,
+    item: PlaylistItemUi,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -250,7 +249,7 @@ private fun PlaylistItemCard(
         ) {
             // Plugin name / display name
             Text(
-                text = item.displayName(),
+                text = item.displayName,
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 2,
@@ -267,7 +266,7 @@ private fun PlaylistItemCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                if (item.visible) {
+                if (item.isVisible) {
                     Icon(
                         painter = painterResource(R.drawable.baseline_visibility_24),
                         contentDescription = "Visible",
@@ -305,7 +304,7 @@ private fun PlaylistItemCard(
             }
 
             // Mashup indicator
-            if (item.isMashup()) {
+            if (item.isMashup) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -325,7 +324,7 @@ private fun PlaylistItemCard(
             }
 
             // Never rendered indicator
-            if (item.isNeverRendered()) {
+            if (item.isNeverRendered) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -349,63 +348,47 @@ private fun PlaylistItemCard(
 
 // === Previews ===
 
-private val samplePlugin1 =
-    PluginSetting(
-        id = 1,
-        name = "Weather Forecast",
-        pluginId = 28,
-    )
-
-private val samplePlugin2 =
-    PluginSetting(
-        id = 2,
-        name = "Calendar Events",
-        pluginId = 37,
-    )
-
+// Sample data for previews using domain model
 private val sampleItem1 =
-    PlaylistItem(
+    PlaylistItemUi(
         id = 1,
         deviceId = 101,
-        pluginSettingId = 1,
-        mashupId = null,
-        visible = true,
+        displayName = "Weather Forecast",
+        isVisible = true,
+        isMashup = false,
+        isNeverRendered = false,
         renderedAt = "2025-02-10T10:00:00Z",
         rowOrder = 1,
-        createdAt = "2025-02-09T10:00:00Z",
-        updatedAt = "2025-02-10T09:00:00Z",
-        mirror = false,
-        pluginSetting = samplePlugin1,
+        pluginName = "Weather Forecast",
+        mashupId = null,
     )
 
 private val sampleItem2 =
-    PlaylistItem(
+    PlaylistItemUi(
         id = 2,
         deviceId = 101,
-        pluginSettingId = null,
-        mashupId = 42,
-        visible = false,
+        displayName = "Mashup #42",
+        isVisible = false,
+        isMashup = true,
+        isNeverRendered = true,
         renderedAt = null,
         rowOrder = 2,
-        createdAt = "2025-02-08T10:00:00Z",
-        updatedAt = "2025-02-09T15:00:00Z",
-        mirror = false,
-        pluginSetting = samplePlugin2,
+        pluginName = null,
+        mashupId = 42,
     )
 
 private val sampleItem3 =
-    PlaylistItem(
+    PlaylistItemUi(
         id = 3,
         deviceId = 102,
-        pluginSettingId = 1,
-        mashupId = null,
-        visible = true,
+        displayName = "Calendar Events",
+        isVisible = true,
+        isMashup = false,
+        isNeverRendered = false,
         renderedAt = "2025-02-10T08:00:00Z",
         rowOrder = 3,
-        createdAt = "2025-02-07T10:00:00Z",
-        updatedAt = "2025-02-10T08:00:00Z",
-        mirror = false,
-        pluginSetting = samplePlugin1,
+        pluginName = "Calendar Events",
+        mashupId = null,
     )
 
 @PreviewLightDark

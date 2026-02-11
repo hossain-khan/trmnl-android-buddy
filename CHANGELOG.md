@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Repository Pattern with Caching for Playlist Items**: Implemented intelligent caching layer to eliminate wasteful API calls
+  - Created `PlaylistItemsRepository` with in-memory cache and 1-day TTL
+  - Single API fetch now serves all device screens instead of redundant per-device calls (~90% reduction in API calls)
+  - Added domain model `PlaylistItemUi` with pre-computed UI-optimized fields (`displayName`, `isMashup`, `isNeverRendered`)
+  - Reactive updates via StateFlow for real-time cache synchronization across screens
+  - Force refresh option and manual cache invalidation support
+  - Comprehensive KDoc documentation on caching strategy and usage patterns
 - **Playlist Items navigation from Device Detail screen**: Added "View Playlist" button to navigate from Device Detail screen to Playlist Items screen
   - New "Playlist Items" card in Device Detail screen with descriptive text and "View" button
   - Uses Material 3 `ListItem` with playlist icon and primary color accent
@@ -16,8 +23,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added optional `deviceNumericId` parameter to DeviceDetailScreen for API integration
   - Added `ViewPlaylistItems` event to DeviceDetailScreen.Event
 
+### Changed
+
+- **Playlist Items architecture refactoring**: Migrated from direct API access to repository pattern with domain models
+  - Replaced API model usage with `PlaylistItemUi` domain model in UI layer
+  - Simplified presenter logic by 55% - removed manual API token handling and 5-case error branching
+  - Cleaner separation of concerns: UI → Repository → API Service
+  - Pre-computed display fields eliminate runtime calculations in UI
+- **Improved cache debugging**: Added detailed logging to PlaylistItemsRepository to track cache hits, misses, and staleness
+  - Logs show cache age, TTL status, and whether data came from cache or API
+  - Removed misleading post-fetch cache check in presenter (was always showing "from cache" after API call)
+  - Repository now logs `[PlaylistItemsRepository] Cache HIT/MISS/STALE` for debugging
+
 ### Fixed
 
+- **Playlist Items repository singleton**: Fixed cache not persisting between screen navigations
+  - Added **`@SingleIn(AppScope::class)`** to make repository a true singleton scoped to app lifecycle
+  - `@ContributesBinding` alone is insufficient - Metro requires `@SingleIn` annotation for singleton scope
+  - Created interface/implementation pattern (`PlaylistItemsRepository`/`PlaylistItemsRepositoryImpl`) for proper Metro DI
+  - Without singleton scope, Metro was creating new instances on each navigation, losing cached data
+  - Cache now properly persists across all screens, ensuring API is called only once per day (or on force refresh)
+  - Reference: [Metro Scopes Documentation](https://zacsweers.github.io/metro/latest/scopes/)
+- **Deprecated Kotlin time APIs**: Migrated from `kotlinx.datetime` to `kotlin.time` APIs
+  - Updated to use `kotlin.time.Clock` and `kotlin.time.Instant` instead of deprecated `kotlinx.datetime` versions
+  - Added `@OptIn(ExperimentalTime::class)` for experimental Kotlin time APIs
+  - Removed `kotlinx-datetime` dependency entirely (reduces APK size and uses built-in APIs)
 - **Playlist Items device filtering**: Pass numeric device ID when navigating to Device Detail screen, enabling device-specific playlist filtering
   - Playlist Items screen now shows only items for the selected device instead of all devices
   - Update `DeviceClicked` event handler to pass `deviceNumericId = event.device.id`
