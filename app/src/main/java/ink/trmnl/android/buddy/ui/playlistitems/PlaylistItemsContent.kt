@@ -38,6 +38,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import ink.trmnl.android.buddy.util.formatRelativeTime
 
 /**
  * Main UI content for the Playlist Items screen.
@@ -296,7 +297,7 @@ private fun PlaylistItemCard(
                         modifier = Modifier.size(16.dp),
                     )
                     Text(
-                        text = "Rendered: $renderedAt",
+                        text = "Displayed ${formatRelativeTime(renderedAt)}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
