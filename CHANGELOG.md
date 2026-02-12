@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Playlist items now display in correct order matching TRMNL website (sorted by row_order ascending)
+
 ### Added
 
 - **Comprehensive unit tests for PlaylistItemsPresenter**: Added 14 test cases covering all presenter functionality
