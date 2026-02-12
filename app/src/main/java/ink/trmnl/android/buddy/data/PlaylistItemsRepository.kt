@@ -189,7 +189,10 @@ class PlaylistItemsRepositoryImpl
 
             return when (val result = apiService.getPlaylistItems("Bearer $token")) {
                 is ApiResult.Success -> {
-                    val items = result.value.data.map { it.toUi() }
+                    val items =
+                        result.value.data
+                            .map { it.toUi() }
+                            .sortedBy { it.rowOrder } // Sort by row_order ascending (lower values first)
                     cache = CachedData(items, Clock.System.now())
                     _itemsFlow.value = items
                     Timber.d("[PlaylistItemsRepository] Fetched from API - cached ${items.size} items")
