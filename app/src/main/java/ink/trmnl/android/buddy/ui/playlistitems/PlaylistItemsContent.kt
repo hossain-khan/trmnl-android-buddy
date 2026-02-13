@@ -260,6 +260,140 @@ private fun getClockLoaderIconForItem(
 }
 
 /**
+ * Summary card showing playlist statistics and currently playing item.
+ *
+ * Displays:
+ * - Total number of items
+ * - Number of visible (active) items
+ * - Number of hidden items
+ * - Currently playing item name and position
+ */
+@Composable
+private fun PlaylistSummaryCard(
+    items: List<PlaylistItemUi>,
+    currentlyPlayingIndex: Int?,
+    modifier: Modifier = Modifier,
+) {
+    val totalItems = items.size
+    val activeItems = items.count { it.isVisible }
+    val hiddenItems = items.count { !it.isVisible }
+    val currentlyPlayingItem =
+        if (currentlyPlayingIndex != null && currentlyPlayingIndex >= 0 &&
+            currentlyPlayingIndex < items.size
+        ) {
+            items[currentlyPlayingIndex]
+        } else {
+            null
+        }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            // Stats row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Total items stat
+                StatItem(
+                    label = "Total",
+                    value = totalItems.toString(),
+                )
+                // Active items stat
+                StatItem(
+                    label = "Active",
+                    value = activeItems.toString(),
+                )
+                // Hidden items stat
+                StatItem(
+                    label = "Hidden",
+                    value = hiddenItems.toString(),
+                )
+            }
+
+            // Currently playing item
+            currentlyPlayingItem?.let { item ->
+                Divider(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f),
+                    thickness = 1.dp,
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Text(
+                            text = "Now Playing",
+                            style = MaterialTheme.typography.labelMedium,
+                            color =
+                                MaterialTheme.colorScheme.onPrimaryContainer.copy(
+                                    alpha = 0.7f,
+                                ),
+                        )
+                        Text(
+                            text = item.displayName,
+                            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    // Position indicator
+                    val position = items.indexOf(item) + 1
+                    Text(
+                        text = "$position/$totalItems",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Individual stat item in the summary card.
+ */
+@Composable
+private fun StatItem(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+        )
+    }
+}
+
+/**
  * List of playlist items with row numbers and status badges.
  */
 @Composable
@@ -281,6 +415,14 @@ private fun PlaylistItemsList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        // Summary card at the top
+        item {
+            PlaylistSummaryCard(
+                items = items,
+                currentlyPlayingIndex = mostRecentlyDisplayedIndex,
+            )
+        }
+
         itemsIndexed(items, key = { _, item -> item.id }) { index, item ->
             val rowNumber = index + 1
             val isCurrentlyDisplaying = index == mostRecentlyDisplayedIndex
