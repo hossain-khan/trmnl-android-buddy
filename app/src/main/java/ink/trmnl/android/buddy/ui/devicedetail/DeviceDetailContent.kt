@@ -178,6 +178,8 @@ fun DeviceDetailContent(
             PlaylistItemsCard(
                 onViewPlaylist = { state.eventSink(DeviceDetailScreen.Event.ViewPlaylistItems) },
                 isLoading = state.isPlaylistItemsLoading,
+                totalItems = state.playlistItemsCount,
+                nowPlayingItem = state.nowPlayingItem,
             )
 
             // Battery History Chart
@@ -717,6 +719,8 @@ private fun BatteryPredictionCard(
 private fun PlaylistItemsCard(
     onViewPlaylist: () -> Unit,
     isLoading: Boolean = false,
+    totalItems: Int = 0,
+    nowPlayingItem: String = "",
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -732,11 +736,29 @@ private fun PlaylistItemsCard(
                 )
             },
             supportingContent = {
-                Text(
-                    text = "View the content rotation schedule and plugin configuration for this device",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = "View the content rotation schedule and plugin configuration for this device",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    // Show additional info when playlist is loaded
+                    if (!isLoading && totalItems > 0) {
+                        Text(
+                            text =
+                                buildString {
+                                    append("Total items: $totalItems")
+                                    if (nowPlayingItem.isNotEmpty()) {
+                                        append(" • Now playing: $nowPlayingItem")
+                                    }
+                                },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
             },
             leadingContent = {
                 Icon(
@@ -748,16 +770,11 @@ private fun PlaylistItemsCard(
             },
             trailingContent = {
                 if (isLoading) {
-                    // Show a small circular progress indicator while loading, vertically centered
-                    Box(
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                    }
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
                 } else {
                     OutlinedButton(
                         onClick = onViewPlaylist,
@@ -784,6 +801,8 @@ private fun PlaylistItemsCardReadyPreview() {
         PlaylistItemsCard(
             onViewPlaylist = {},
             isLoading = false,
+            totalItems = 8,
+            nowPlayingItem = "Traffic Dashboard",
         )
     }
 }

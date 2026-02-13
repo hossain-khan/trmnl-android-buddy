@@ -86,6 +86,23 @@ interface PlaylistItemsRepository {
 }
 
 /**
+ * Get the currently playing/displayed item from a list.
+ * Returns the item with the most recent renderedAt timestamp (most recently displayed).
+ * Falls back to the first item if none have been rendered yet.
+ *
+ * @param items List of playlist items to search
+ * @return The currently playing item or null if list is empty
+ */
+internal fun getCurrentlyPlayingItem(items: List<PlaylistItemUi>): PlaylistItemUi? {
+    if (items.isEmpty()) return null
+    // Find item with most recent renderedAt timestamp (currently displayed)
+    // ISO 8601 timestamps are comparable as strings, filter out items with null renderedAt first
+    val itemsWithRenderedAt = items.filter { it.renderedAt != null }
+    if (itemsWithRenderedAt.isEmpty()) return items.firstOrNull()
+    return itemsWithRenderedAt.maxByOrNull { it.renderedAt!! } ?: items.firstOrNull()
+}
+
+/**
  * Implementation of PlaylistItemsRepository with in-memory caching.
  *
  * **Usage Example:**
