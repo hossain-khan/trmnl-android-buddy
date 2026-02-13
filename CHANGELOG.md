@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Disclaimer card visibility**: DisclaimerCard is now only shown when there is an actual battery prediction available
+  - Removed redundant UI element that appeared even when battery tracking was disabled or insufficient data existed
+  - Disclaimer now only displays alongside the battery prediction that it explains
+
 ## [2.12.0] - 2026-02-13
 
 ### Added

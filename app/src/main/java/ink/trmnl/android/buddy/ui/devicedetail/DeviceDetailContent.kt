@@ -195,8 +195,10 @@ fun DeviceDetailContent(
                 batteryHistory = state.batteryHistory,
             )
 
-            // Disclaimer
-            DisclaimerCard()
+            // Disclaimer (only shown if battery prediction is available)
+            if (BatteryHistoryAnalyzer.predictBatteryDepletion(state.batteryHistory) != null) {
+                DisclaimerCard()
+            }
 
             // Manual Battery Recording
             ManualBatteryRecordingCard(
