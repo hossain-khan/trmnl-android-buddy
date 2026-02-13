@@ -374,7 +374,7 @@ private fun PlaylistItemCard(
                         },
                         colors =
                             AssistChipDefaults.assistChipColors(
-                                containerColor = Color(0xFF4CAF50),
+                                containerColor = Color(0xFF268829),
                             ),
                     )
                 } else if (!item.isVisible) {
