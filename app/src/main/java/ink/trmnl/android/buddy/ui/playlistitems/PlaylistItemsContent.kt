@@ -115,6 +115,14 @@ fun PlaylistItemsContent(
                         onItemClick = { item ->
                             state.eventSink(PlaylistItemsScreen.Event.ItemClicked(item))
                         },
+                        onToggleItemVisibility = { itemId, newVisibility ->
+                            state.eventSink(
+                                PlaylistItemsScreen.Event.ToggleItemVisibility(
+                                    itemId = itemId,
+                                    newVisibility = newVisibility,
+                                ),
+                            )
+                        },
                     )
                 }
             }
@@ -399,6 +407,7 @@ private fun StatItem(
 private fun PlaylistItemsList(
     items: List<PlaylistItemUi>,
     onItemClick: (PlaylistItemUi) -> Unit,
+    onToggleItemVisibility: (itemId: Int, newVisibility: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Find the most recently displayed item (currently displaying)
@@ -431,6 +440,9 @@ private fun PlaylistItemsList(
                 rowNumber = rowNumber,
                 isCurrentlyDisplaying = isCurrentlyDisplaying,
                 onClick = { onItemClick(item) },
+                onToggleVisibility = { newVisibility ->
+                    onToggleItemVisibility(item.id, newVisibility)
+                },
             )
         }
     }
@@ -453,6 +465,7 @@ private fun PlaylistItemCard(
     rowNumber: Int,
     isCurrentlyDisplaying: Boolean,
     onClick: () -> Unit,
+    onToggleVisibility: (newVisibility: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -473,7 +486,7 @@ private fun PlaylistItemCard(
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            // Header section with row number and "Currently displaying" badge or visibility status
+            // Header section with row number and status indicators
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -501,42 +514,72 @@ private fun PlaylistItemCard(
                     )
                 }
 
-                // Status badge on the right
-                if (isCurrentlyDisplaying) {
-                    // Currently displaying badge - using theme secondary color
-                    AssistChip(
-                        onClick = {},
-                        label = {
-                            Text(
-                                text = "Now Showing",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSecondary,
-                            )
-                        },
-                        colors =
-                            AssistChipDefaults.assistChipColors(
-                                containerColor = MaterialTheme.colorScheme.secondary,
-                            ),
-                    )
-                } else if (!item.isVisible) {
-                    // Hidden indicator badge - only show if not visible
-                    AssistChip(
-                        onClick = {},
-                        label = {
-                            Text(
-                                text = "Hidden",
-                                style = MaterialTheme.typography.labelSmall,
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter =
-                                    painterResource(R.drawable.baseline_visibility_off_24),
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                            )
-                        },
-                    )
+                // Status badge and controls on the right
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    // Status badge
+                    if (isCurrentlyDisplaying) {
+                        // Currently displaying badge - using theme secondary color
+                        AssistChip(
+                            onClick = {},
+                            label = {
+                                Text(
+                                    text = "Now Showing",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSecondary,
+                                )
+                            },
+                            colors =
+                                AssistChipDefaults.assistChipColors(
+                                    containerColor = MaterialTheme.colorScheme.secondary,
+                                ),
+                        )
+                    } else if (!item.isVisible) {
+                        // Hidden indicator badge - only show if not visible
+                        AssistChip(
+                            onClick = {},
+                            label = {
+                                Text(
+                                    text = "Hidden",
+                                    style = MaterialTheme.typography.labelSmall,
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painter =
+                                        painterResource(R.drawable.baseline_visibility_off_24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                )
+                            },
+                        )
+                    }
+
+                    // Visibility toggle button
+                    IconButton(
+                        onClick = { onToggleVisibility(!item.isVisible) },
+                        modifier = Modifier.size(40.dp),
+                    ) {
+                        Icon(
+                            painter =
+                                painterResource(
+                                    if (item.isVisible) {
+                                        R.drawable.baseline_visibility_24
+                                    } else {
+                                        R.drawable.baseline_visibility_off_24
+                                    },
+                                ),
+                            contentDescription =
+                                if (item.isVisible) {
+                                    "Hide this item"
+                                } else {
+                                    "Show this item"
+                                },
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                 }
             }
 

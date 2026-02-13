@@ -11,8 +11,10 @@ import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -456,6 +458,43 @@ interface TrmnlApiService {
      */
     @GET("categories")
     suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError>
+
+    // ========================================
+    // Playlist Items API
+    // ========================================
+
+    /**
+     * Update a playlist item's visibility status.
+     *
+     * Toggles whether a playlist item is visible (active) or hidden.
+     * Requires authentication via Bearer token.
+     *
+     * @param id Playlist item ID to update
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @param visible New visibility status (true = visible/active, false = hidden)
+     * @return ApiResult with empty body on success (204) or error
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.updatePlaylistItemVisibility(12345, "Bearer user_abc123", visible = false)) {
+     *     is ApiResult.Success -> println("Item hidden successfully")
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         404 -> println("Playlist item not found")
+     *         401 -> println("Unauthorized")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @PATCH("playlists/items/{id}")
+    suspend fun updatePlaylistItemVisibility(
+        @Path("id") id: Int,
+        @Header("Authorization") authorization: String,
+        @Body body: Map<String, Boolean>,
+    ): ApiResult<Unit, ApiError>
 
     // ========================================
     // Models API

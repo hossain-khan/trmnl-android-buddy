@@ -103,6 +103,11 @@ class FakePlaylistItemsRepository(
         return isCacheStaleResult
     }
 
+    override suspend fun updatePlaylistItemVisibility(
+        itemId: Int,
+        visible: Boolean,
+    ): Result<PlaylistItemUi?> = Result.success(null)
+
     /**
      * Test helper to set the result for subsequent calls.
      */
