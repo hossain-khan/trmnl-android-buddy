@@ -9,25 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Test coverage for formatRelativeTime() function with 9 comprehensive test cases
+- **Playlist items prefetching on device screen load**: Now automatically prefetches playlist items when DeviceDetailScreen is displayed
+  - Reduces wait time when user navigates to playlist screen
+  - Shows loading spinner (CircularProgressIndicator) in playlist card while request is in-flight
+  - Caches data using PlaylistItemsRepository for instant access when user clicks "View"
+  - Gracefully handles errors without blocking UI interactions
 
 ### Changed
 - Playlist items now show relative time for rendered status (e.g., "Displayed 2 hours ago") instead of ISO timestamps
-
-### Fixed
-- Playlist items now display in correct order matching TRMNL website (sorted by row_order ascending)
-
-### Added
-
-- **Comprehensive unit tests for PlaylistItemsPresenter**: Added 14 test cases covering all presenter functionality
-  - Test coverage: initial loading, success scenarios (with/without device filtering), empty list handling
-  - Error handling tests for all failure types (generic, network, API errors)
-  - User interaction tests (refresh, item clicks, back navigation)
-  - State management tests (error clearing on refresh, empty filter results)
-  - Created `FakePlaylistItemsRepository` test double following project's fake-over-mock testing pattern
-- **Repository Pattern with Caching for Playlist Items**: Implemented intelligent caching layer to eliminate wasteful API calls
-  - Created `PlaylistItemsRepository` with in-memory cache and 1-day TTL
-  - Single API fetch now serves all device screens instead of redundant per-device calls (~90% reduction in API calls)
-  - Added domain model `PlaylistItemUi` with pre-computed UI-optimized fields (`displayName`, `isMashup`, `isNeverRendered`)
+- PlaylistItemsCard now displays loading indicator while prefetching playlist items
   - Reactive updates via StateFlow for real-time cache synchronization across screens
   - Force refresh option and manual cache invalidation support
   - Comprehensive KDoc documentation on caching strategy and usage patterns

@@ -37,6 +37,7 @@ data class DeviceDetailScreen(
         val clearHistoryReason: BatteryHistoryAnalyzer.ClearHistoryReason? = null,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
+        val isPlaylistItemsLoading: Boolean = true, // Tracks playlist items prefetch progress
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 

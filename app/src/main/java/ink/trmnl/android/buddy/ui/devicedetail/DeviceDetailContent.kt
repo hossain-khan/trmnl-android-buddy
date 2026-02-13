@@ -177,6 +177,7 @@ fun DeviceDetailContent(
             // View Playlist Items Card (shown when device numeric ID is available)
             PlaylistItemsCard(
                 onViewPlaylist = { state.eventSink(DeviceDetailScreen.Event.ViewPlaylistItems) },
+                isLoading = state.isPlaylistItemsLoading,
             )
 
             // Battery History Chart
@@ -715,6 +716,7 @@ private fun BatteryPredictionCard(
 @Composable
 private fun PlaylistItemsCard(
     onViewPlaylist: () -> Unit,
+    isLoading: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -745,10 +747,19 @@ private fun PlaylistItemsCard(
                 )
             },
             trailingContent = {
-                OutlinedButton(
-                    onClick = onViewPlaylist,
-                ) {
-                    Text("View")
+                if (isLoading) {
+                    // Show a small circular progress indicator while loading
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                } else {
+                    OutlinedButton(
+                        onClick = onViewPlaylist,
+                    ) {
+                        Text("View")
+                    }
                 }
             },
             colors =
