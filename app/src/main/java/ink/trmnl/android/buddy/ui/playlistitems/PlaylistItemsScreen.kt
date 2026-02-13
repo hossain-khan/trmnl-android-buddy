@@ -59,5 +59,13 @@ data class PlaylistItemsScreen(
         data class ItemClicked(
             val item: PlaylistItemUi,
         ) : Event()
+
+        /**
+         * User toggled the visibility of a playlist item.
+         */
+        data class ToggleItemVisibility(
+            val itemId: Int,
+            val newVisibility: Boolean,
+        ) : Event()
     }
 }

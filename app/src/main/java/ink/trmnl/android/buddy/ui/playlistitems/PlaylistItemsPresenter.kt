@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.ui.playlistitems
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,7 @@ class PlaylistItemsPresenter
             var isLoading by rememberRetained { mutableStateOf(true) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
             var shouldRefresh by remember { mutableStateOf(0) }
+            var toggleRequest by remember { mutableStateOf<Pair<Int, Boolean>?>(null) }
 
             // Load playlist items via repository (benefits from caching)
             LaunchedEffect(shouldRefresh) {
@@ -81,6 +83,36 @@ class PlaylistItemsPresenter
                 isLoading = false
             }
 
+            // Subscribe to repository's itemsFlow to receive cache updates
+            // (e.g., when visibility toggle succeeds)
+            val allItems by repository.itemsFlow.collectAsState()
+            LaunchedEffect(allItems) {
+                // Filter items based on device ID if specified
+                items =
+                    screen.deviceId?.let { deviceId ->
+                        allItems.filter { it.deviceId == deviceId }
+                    } ?: allItems
+                Timber.d("Updated items from repository flow: ${items.size} items")
+            }
+
+            // Handle visibility toggle requests asynchronously
+            LaunchedEffect(toggleRequest) {
+                val request = toggleRequest ?: return@LaunchedEffect
+                repository
+                    .updatePlaylistItemVisibility(
+                        itemId = request.first,
+                        visible = request.second,
+                    ).fold(
+                        onSuccess = {
+                            Timber.d("Successfully toggled item ${request.first} visibility to ${request.second}")
+                        },
+                        onFailure = { error ->
+                            Timber.e(error, "Failed to toggle item visibility")
+                            // Show error to user (would need to add error state to State)
+                        },
+                    )
+            }
+
             return PlaylistItemsScreen.State(
                 deviceId = screen.deviceId,
                 deviceName = screen.deviceName,
@@ -98,6 +130,10 @@ class PlaylistItemsPresenter
                         is PlaylistItemsScreen.Event.ItemClicked -> {
                             // TODO: Navigate to item detail screen if needed in future phases
                             Timber.d("Item clicked: ${event.item.id}")
+                        }
+                        is PlaylistItemsScreen.Event.ToggleItemVisibility -> {
+                            // Trigger visibility toggle via state change
+                            toggleRequest = event.itemId to event.newVisibility
                         }
                     }
                 },

@@ -444,4 +444,10 @@ private open class FakeApiService(
     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = deviceModelsResponse
 
     override suspend fun getPlaylistItems(authorization: String) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
+
+    override suspend fun updatePlaylistItemVisibility(
+        id: Int,
+        authorization: String,
+        body: Map<String, Boolean>,
+    ) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 }

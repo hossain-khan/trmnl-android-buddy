@@ -304,4 +304,10 @@ private class FakeApiService(
         throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
     override suspend fun getPlaylistItems(authorization: String) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
+
+    override suspend fun updatePlaylistItemVisibility(
+        id: Int,
+        authorization: String,
+        body: Map<String, Boolean>,
+    ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 }

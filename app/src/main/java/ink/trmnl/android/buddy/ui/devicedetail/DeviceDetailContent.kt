@@ -180,6 +180,7 @@ fun DeviceDetailContent(
                 isLoading = state.isPlaylistItemsLoading,
                 totalItems = state.playlistItemsCount,
                 nowPlayingItem = state.nowPlayingItem,
+                upNextItem = state.upNextItem,
             )
 
             // Battery History Chart
@@ -410,12 +411,12 @@ private fun CurrentStatusCard(
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                                        contentDescription = "Refresh Rate",
+                                        contentDescription = "Next refresh time",
                                         modifier = Modifier.size(16.dp),
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                     Text(
-                                        text = "Refresh Rate",
+                                        text = "Next refresh in",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
@@ -721,6 +722,7 @@ private fun PlaylistItemsCard(
     isLoading: Boolean = false,
     totalItems: Int = 0,
     nowPlayingItem: String = "",
+    upNextItem: String = "",
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -730,7 +732,12 @@ private fun PlaylistItemsCard(
         ListItem(
             headlineContent = {
                 Text(
-                    text = "Playlist Items",
+                    text =
+                        if (totalItems > 0) {
+                            "Playlist Items ($totalItems)"
+                        } else {
+                            "Playlist Items"
+                        },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
@@ -740,23 +747,30 @@ private fun PlaylistItemsCard(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "View the content rotation schedule and plugin configuration for this device",
+                        text = "View playlist items and manage visibility",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     // Show additional info when playlist is loaded
                     if (!isLoading && totalItems > 0) {
-                        Text(
-                            text =
-                                buildString {
-                                    append("Total items: $totalItems")
-                                    if (nowPlayingItem.isNotEmpty()) {
-                                        append(" • Now playing: $nowPlayingItem")
-                                    }
-                                },
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                        ) {
+                            if (nowPlayingItem.isNotEmpty()) {
+                                Text(
+                                    text = "• Now playing: $nowPlayingItem",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                            if (upNextItem.isNotEmpty()) {
+                                Text(
+                                    text = "• Up next: $upNextItem",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
                     }
                 }
             },
@@ -803,6 +817,7 @@ private fun PlaylistItemsCardReadyPreview() {
             isLoading = false,
             totalItems = 8,
             nowPlayingItem = "Traffic Dashboard",
+            upNextItem = "Weather Display",
         )
     }
 }
@@ -926,15 +941,15 @@ private fun ManualBatteryRecordingCard(
  */
 private val TRMNL_REFRESH_RATE_OPTIONS =
     listOf(
-        5 to "Every 5 mins",
-        10 to "Every 10 mins",
-        15 to "Every 15 mins",
-        30 to "Every 30 mins",
-        45 to "Every 45 mins",
-        60 to "Hourly",
-        90 to "Every 90 mins",
-        120 to "Every 2 hrs",
-        240 to "Every 4 hrs",
+        5 to "5 mins",
+        10 to "10 mins",
+        15 to "15 mins",
+        30 to "30 mins",
+        45 to "45 mins",
+        60 to "1 hour",
+        90 to "90 mins",
+        120 to "2 hrs",
+        240 to "4 hrs",
         360 to "4x/day",
         480 to "3x/day",
         720 to "2x/day",

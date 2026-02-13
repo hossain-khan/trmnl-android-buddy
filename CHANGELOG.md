@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Playlist item visibility toggle**: Added inline eye icon button to toggle visibility status of playlist items
+  - Click eye icon to hide/show items from playlist
+  - Optimistic UI updates with automatic revert on API failure
+  - Uses Material 3 filled/outlined visibility icons based on current state
+  - PATCH endpoint integration with `/playlists/items/{id}` API
+  - Repository-level caching with reactive updates via StateFlow
+
 ## [2.11.0] - 2026-02-13
 
 ### Added

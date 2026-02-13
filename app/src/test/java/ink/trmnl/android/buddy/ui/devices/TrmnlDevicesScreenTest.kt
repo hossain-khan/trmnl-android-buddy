@@ -395,4 +395,10 @@ private class FakeApiService(
     override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> = throw NotImplementedError()
 
     override suspend fun getPlaylistItems(authorization: String) = throw NotImplementedError()
+
+    override suspend fun updatePlaylistItemVisibility(
+        id: Int,
+        authorization: String,
+        body: Map<String, Boolean>,
+    ) = throw NotImplementedError()
 }

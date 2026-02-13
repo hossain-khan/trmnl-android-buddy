@@ -79,6 +79,12 @@ class FakeTrmnlApiService : TrmnlApiService {
         return getPlaylistItemsResult ?: throw NotImplementedError("getPlaylistItemsResult not implemented")
     }
 
+    override suspend fun updatePlaylistItemVisibility(
+        id: Int,
+        authorization: String,
+        body: Map<String, Boolean>,
+    ): ApiResult<Unit, ApiError> = ApiResult.success(Unit)
+
     override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
         throw NotImplementedError("getCategories not implemented")
 }

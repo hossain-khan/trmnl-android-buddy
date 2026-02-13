@@ -9,10 +9,12 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.PlaylistItem
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
@@ -83,6 +85,21 @@ interface PlaylistItemsRepository {
      * @return true if cache should be refreshed
      */
     fun isCacheStale(): Boolean
+
+    /**
+     * Update the visibility status of a playlist item.
+     *
+     * Makes a PATCH request to API and updates local cache optimistically.
+     * If the API call fails, the item is reverted to its original state.
+     *
+     * @param itemId ID of the playlist item to update
+     * @param visible New visibility status (true = show, false = hide)
+     * @return Result containing updated item or error
+     */
+    suspend fun updatePlaylistItemVisibility(
+        itemId: Int,
+        visible: Boolean,
+    ): Result<PlaylistItemUi?>
 }
 
 /**
@@ -289,6 +306,56 @@ class PlaylistItemsRepositoryImpl
             val age = Clock.System.now() - cached.timestamp
             return age >= cacheTtl
         }
+
+        override suspend fun updatePlaylistItemVisibility(
+            itemId: Int,
+            visible: Boolean,
+        ): Result<PlaylistItemUi?> =
+            withContext(Dispatchers.IO) {
+                try {
+                    val currentCache = cache?.items ?: emptyList()
+                    val itemToUpdate =
+                        currentCache.find { it.id == itemId }
+                            ?: return@withContext Result.success(null)
+
+                    // Optimistic update: update cache immediately
+                    val updatedItem = itemToUpdate.copy(isVisible = visible)
+                    val updatedItems = currentCache.map { if (it.id == itemId) updatedItem else it }
+                    cache = CachedData(updatedItems, cache?.timestamp ?: Clock.System.now())
+                    _itemsFlow.value = updatedItems
+                    Timber.d("Optimistically updated item $itemId visibility to $visible")
+
+                    // Make API call to persist the change
+                    val apiKey =
+                        userPreferencesRepository.userPreferencesFlow.first().apiToken
+                            ?: return@withContext Result.failure(Exception("API key not available"))
+
+                    val result =
+                        apiService.updatePlaylistItemVisibility(
+                            id = itemId,
+                            authorization = "Bearer $apiKey",
+                            body = mapOf("visible" to visible),
+                        )
+
+                    when (result) {
+                        is ApiResult.Success -> {
+                            Timber.d("API confirmed visibility update for item $itemId")
+                            Result.success(updatedItem)
+                        }
+                        is ApiResult.Failure -> {
+                            // Revert optimistic update on API failure
+                            val revertedItems = currentCache
+                            cache = CachedData(revertedItems, cache?.timestamp ?: Clock.System.now())
+                            _itemsFlow.value = revertedItems
+                            Timber.e("Failed to update visibility: $result")
+                            Result.failure(Exception("Failed to update visibility: $result"))
+                        }
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, "Error updating visibility")
+                    Result.failure(e)
+                }
+            }
     }
 
 /**

@@ -194,5 +194,11 @@ class RecipesRepositoryTest {
 
         override suspend fun getPlaylistItems(authorization: String): ApiResult<PlaylistItemsResponse, ApiError> =
             throw NotImplementedError()
+
+        override suspend fun updatePlaylistItemVisibility(
+            id: Int,
+            authorization: String,
+            body: Map<String, Boolean>,
+        ): ApiResult<Unit, ApiError> = throw NotImplementedError()
     }
 }
