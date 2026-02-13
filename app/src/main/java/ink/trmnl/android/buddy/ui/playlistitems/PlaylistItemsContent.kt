@@ -18,8 +18,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -322,7 +322,7 @@ private fun PlaylistSummaryCard(
 
             // Currently playing item
             currentlyPlayingItem?.let { item ->
-                Divider(
+                HorizontalDivider(
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f),
                     thickness = 1.dp,
                 )
@@ -542,7 +542,7 @@ private fun PlaylistItemCard(
 
             // Rendering status section
             item.renderedAt?.let { renderedAt ->
-                Divider(
+                HorizontalDivider(
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.12f),
                     thickness = 1.dp,
                 )
@@ -566,7 +566,7 @@ private fun PlaylistItemCard(
 
             // Status chips section
             if (item.isMashup || item.isNeverRendered) {
-                Divider(
+                HorizontalDivider(
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.12f),
                     thickness = 1.dp,
                 )

@@ -74,20 +74,19 @@ class DeviceDetailPresenter
             LaunchedEffect(screen.deviceNumericId) {
                 if (screen.deviceNumericId != null) {
                     isPlaylistItemsLoading = true
-                    coroutineScope.launch(Dispatchers.IO) {
-                        try {
+                    try {
+                        withContext(Dispatchers.IO) {
                             playlistItemsRepository.getPlaylistItemsForDevice(screen.deviceNumericId)
-                            // Cache is now populated, loading complete
-                            withContext(Dispatchers.Main) {
-                                isPlaylistItemsLoading = false
-                            }
-                        } catch (e: Exception) {
-                            // Silently handle error - playlist items will load when user clicks "View"
-                            withContext(Dispatchers.Main) {
-                                isPlaylistItemsLoading = false
-                            }
                         }
+                    } catch (e: Exception) {
+                        // Silently handle error - playlist items will load when user clicks "View"
+                    } finally {
+                        // Cache is now populated (or failed), loading complete
+                        isPlaylistItemsLoading = false
                     }
+                } else {
+                    // No numeric device ID; nothing to prefetch, ensure loading state is cleared
+                    isPlaylistItemsLoading = false
                 }
             }
 
