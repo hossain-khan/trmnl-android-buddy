@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.0] - 2026-02-13
+
 ### Added
 - Test coverage for formatRelativeTime() function with 9 comprehensive test cases
 - **Playlist items prefetching on device screen load**: Now automatically prefetches playlist items when DeviceDetailScreen is displayed
@@ -27,9 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Navigates to PlaylistItemsScreen to view device's content rotation schedule
   - Added optional `deviceNumericId` parameter to DeviceDetailScreen for API integration
   - Added `ViewPlaylistItems` event to DeviceDetailScreen.Event
-
-### Changed
-
 - **Playlist Items architecture refactoring**: Migrated from direct API access to repository pattern with domain models
   - Replaced API model usage with `PlaylistItemUi` domain model in UI layer
   - Simplified presenter logic by 55% - removed manual API token handling and 5-case error branching
@@ -1410,7 +1409,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.10.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.11.0...HEAD
+[2.11.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.10.0...2.11.0
 [2.10.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.9.0...2.10.0
 [2.9.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.8.0...2.9.0
 [2.8.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.7.2...2.8.0
