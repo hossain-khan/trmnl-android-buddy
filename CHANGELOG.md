@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.0] - 2026-02-13
+
 ### Added
 - **Playlist item visibility toggle**: Added inline eye icon button to toggle visibility status of playlist items
   - Click eye icon to hide/show items from playlist
@@ -1417,7 +1419,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.11.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.12.0...HEAD
+[2.12.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.11.0...2.12.0
 [2.11.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.10.0...2.11.0
 [2.10.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.9.0...2.10.0
 [2.9.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.8.0...2.9.0
