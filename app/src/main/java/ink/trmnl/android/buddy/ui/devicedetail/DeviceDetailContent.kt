@@ -180,6 +180,7 @@ fun DeviceDetailContent(
                 isLoading = state.isPlaylistItemsLoading,
                 totalItems = state.playlistItemsCount,
                 nowPlayingItem = state.nowPlayingItem,
+                upNextItem = state.upNextItem,
             )
 
             // Battery History Chart
@@ -721,6 +722,7 @@ private fun PlaylistItemsCard(
     isLoading: Boolean = false,
     totalItems: Int = 0,
     nowPlayingItem: String = "",
+    upNextItem: String = "",
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -730,7 +732,12 @@ private fun PlaylistItemsCard(
         ListItem(
             headlineContent = {
                 Text(
-                    text = "Playlist Items",
+                    text =
+                        if (totalItems > 0) {
+                            "Playlist Items ($totalItems)"
+                        } else {
+                            "Playlist Items"
+                        },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
@@ -746,17 +753,24 @@ private fun PlaylistItemsCard(
                     )
                     // Show additional info when playlist is loaded
                     if (!isLoading && totalItems > 0) {
-                        Text(
-                            text =
-                                buildString {
-                                    append("Total items: $totalItems")
-                                    if (nowPlayingItem.isNotEmpty()) {
-                                        append(" • Now playing: $nowPlayingItem")
-                                    }
-                                },
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                        ) {
+                            if (nowPlayingItem.isNotEmpty()) {
+                                Text(
+                                    text = "• Now playing: $nowPlayingItem",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                            if (upNextItem.isNotEmpty()) {
+                                Text(
+                                    text = "• Up next: $upNextItem",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
                     }
                 }
             },
@@ -803,6 +817,7 @@ private fun PlaylistItemsCardReadyPreview() {
             isLoading = false,
             totalItems = 8,
             nowPlayingItem = "Traffic Dashboard",
+            upNextItem = "Weather Display",
         )
     }
 }

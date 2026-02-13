@@ -40,6 +40,7 @@ data class DeviceDetailScreen(
         val isPlaylistItemsLoading: Boolean = true, // Tracks playlist items prefetch progress
         val playlistItemsCount: Int = 0, // Total playlist items for this device
         val nowPlayingItem: String = "", // Name of currently playing/displayed item
+        val upNextItem: String = "", // Name of next queue item to play
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
