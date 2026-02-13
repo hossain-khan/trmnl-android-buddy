@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.ui.playlistitems
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -80,6 +81,18 @@ class PlaylistItemsPresenter
                 )
 
                 isLoading = false
+            }
+
+            // Subscribe to repository's itemsFlow to receive cache updates
+            // (e.g., when visibility toggle succeeds)
+            val allItems by repository.itemsFlow.collectAsState()
+            LaunchedEffect(allItems) {
+                // Filter items based on device ID if specified
+                items =
+                    screen.deviceId?.let { deviceId ->
+                        allItems.filter { it.deviceId == deviceId }
+                    } ?: allItems
+                Timber.d("Updated items from repository flow: ${items.size} items")
             }
 
             // Handle visibility toggle requests asynchronously
