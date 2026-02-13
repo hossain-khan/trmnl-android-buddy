@@ -740,7 +740,7 @@ private fun PlaylistItemsCard(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "View the content rotation schedule and plugin configuration for this device",
+                        text = "View playlist items and manage visibility",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
