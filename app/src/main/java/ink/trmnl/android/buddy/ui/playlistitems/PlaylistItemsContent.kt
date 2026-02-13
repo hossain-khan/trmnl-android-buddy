@@ -470,7 +470,7 @@ private fun PlaylistItemCard(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(12.dp),
+                    .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             // Header section with row number and "Currently displaying" badge or visibility status
