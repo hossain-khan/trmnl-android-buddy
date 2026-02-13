@@ -11,22 +11,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,6 +44,7 @@ import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.formatRelativeTime
+import java.time.Instant
 
 /**
  * Main UI content for the Playlist Items screen.
@@ -199,7 +205,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 }
 
 /**
- * List of playlist items.
+ * List of playlist items with row numbers and status badges.
  */
 @Composable
 private fun PlaylistItemsList(
@@ -207,14 +213,26 @@ private fun PlaylistItemsList(
     onItemClick: (PlaylistItemUi) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Find the most recently displayed item (currently displaying)
+    val mostRecentlyDisplayedIndex =
+        items
+            .withIndex()
+            .maxByOrNull { (_, item) ->
+                item.renderedAt?.let { Instant.parse(it).epochSecond } ?: 0L
+            }?.index
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        items(items, key = { it.id }) { item ->
+        itemsIndexed(items, key = { _, item -> item.id }) { index, item ->
+            val rowNumber = index + 1
+            val isCurrentlyDisplaying = index == mostRecentlyDisplayedIndex
             PlaylistItemCard(
                 item = item,
+                rowNumber = rowNumber,
+                isCurrentlyDisplaying = isCurrentlyDisplaying,
                 onClick = { onItemClick(item) },
             )
         }
@@ -222,11 +240,20 @@ private fun PlaylistItemsList(
 }
 
 /**
- * Individual playlist item card.
+ * Individual playlist item card with row number, status indicators, and improved spacing.
+ *
+ * Features:
+ * - Row number display (1, 2, 3, etc.)
+ * - "Currently displaying" badge for the most recently rendered item
+ * - Material 3 chips for status indicators (mashup, never-rendered, etc.)
+ * - Visual dividers between sections
+ * - Improved typography hierarchy and spacing
  */
 @Composable
 private fun PlaylistItemCard(
     item: PlaylistItemUi,
+    rowNumber: Int,
+    isCurrentlyDisplaying: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -246,46 +273,81 @@ private fun PlaylistItemCard(
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Plugin name / display name
-            Text(
-                text = item.displayName,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-
-            // Device and visibility info
+            // Header section with row number and "Currently displaying" badge or visibility status
             Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                Text(
-                    text = "Device ID: ${item.deviceId}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                if (item.isVisible) {
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_visibility_24),
-                        contentDescription = "Visible",
-                        tint = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.size(16.dp),
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.weight(1f),
+                ) {
+                    // Row number
+                    Text(
+                        text = "$rowNumber.",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.primary,
                     )
-                } else {
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_visibility_off_24),
-                        contentDescription = "Hidden",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp),
+                    // Plugin name / display name
+                    Text(
+                        text = item.displayName,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false),
+                    )
+                }
+
+                // Status badge on the right
+                if (isCurrentlyDisplaying) {
+                    // Currently displaying badge - greenish theme
+                    AssistChip(
+                        onClick = {},
+                        label = {
+                            Text(
+                                text = "Now Showing",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.White,
+                            )
+                        },
+                        colors =
+                            AssistChipDefaults.assistChipColors(
+                                containerColor = Color(0xFF4CAF50),
+                            ),
+                    )
+                } else if (!item.isVisible) {
+                    // Hidden indicator badge - only show if not visible
+                    AssistChip(
+                        onClick = {},
+                        label = {
+                            Text(
+                                text = "Hidden",
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painter =
+                                    painterResource(R.drawable.baseline_visibility_off_24),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                        },
                     )
                 }
             }
 
-            // Rendering status
+            // Rendering status section
             item.renderedAt?.let { renderedAt ->
+                Divider(
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.12f),
+                    thickness = 1.dp,
+                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -294,53 +356,67 @@ private fun PlaylistItemCard(
                         painter = painterResource(R.drawable.check_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                         contentDescription = "Rendered",
                         tint = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(18.dp),
                     )
                     Text(
                         text = "Displayed ${formatRelativeTime(renderedAt)}",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
 
-            // Mashup indicator
-            if (item.isMashup) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                        contentDescription = "Mashup",
-                        tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Text(
-                        text = "Mashup Content",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.secondary,
-                    )
-                }
-            }
+            // Status chips section
+            if (item.isMashup || item.isNeverRendered) {
+                Divider(
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.12f),
+                    thickness = 1.dp,
+                )
 
-            // Never rendered indicator
-            if (item.isNeverRendered) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.info_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                        contentDescription = "Not rendered",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Text(
-                        text = "Not rendered yet",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    // Mashup chip
+                    if (item.isMashup) {
+                        SuggestionChip(
+                            onClick = {},
+                            label = {
+                                Text(
+                                    text = "Mashup Content",
+                                    style = MaterialTheme.typography.labelSmall,
+                                )
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                )
+                            },
+                        )
+                    }
+
+                    // Never rendered chip
+                    if (item.isNeverRendered) {
+                        SuggestionChip(
+                            onClick = {},
+                            label = {
+                                Text(
+                                    text = "Not rendered",
+                                    style = MaterialTheme.typography.labelSmall,
+                                )
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.info_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                )
+                            },
+                        )
+                    }
                 }
             }
         }
