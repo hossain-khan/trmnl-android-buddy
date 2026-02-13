@@ -770,18 +770,11 @@ private fun PlaylistItemsCard(
             },
             trailingContent = {
                 if (isLoading) {
-                    // Show a small circular progress indicator while loading, vertically centered
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        // TODO: Make this vertically centered with the text, currently it's aligned to the top of the ListItem
-                        modifier = Modifier.width(60.dp).height(60.dp),
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                    }
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
                 } else {
                     OutlinedButton(
                         onClick = onViewPlaylist,
