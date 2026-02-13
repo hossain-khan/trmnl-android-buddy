@@ -125,14 +125,30 @@ class DeviceDetailPresenter
                         val nowPlaying =
                             ink.trmnl.android.buddy.data
                                 .getCurrentlyPlayingItem(deviceItems)
-                        Pair(count, nowPlaying?.displayName ?: "")
+                        // Find up next item (next visible item after currently playing)
+                        val upNext =
+                            if (nowPlaying != null) {
+                                val currentIndex = deviceItems.indexOfFirst { it.id == nowPlaying.id }
+                                if (currentIndex >= 0) {
+                                    // Find the next visible item after currently playing
+                                    deviceItems.drop(currentIndex + 1)
+                                        .firstOrNull { it.isVisible }
+                                        ?.displayName ?: ""
+                                } else {
+                                    ""
+                                }
+                            } else {
+                                ""
+                            }
+                        Triple(count, nowPlaying?.displayName ?: "", upNext)
                     } else {
-                        Pair(0, "")
+                        Triple(0, "", "")
                     }
                 }
             }
             val playlistItemsCount = playlistItemsStats.first
             val nowPlayingItem = playlistItemsStats.second
+            val upNextItem = playlistItemsStats.third
 
             // Mark loading complete when we have data or after initial load
             LaunchedEffect(batteryHistory) {
@@ -158,6 +174,7 @@ class DeviceDetailPresenter
                 isPlaylistItemsLoading = isPlaylistItemsLoading,
                 playlistItemsCount = playlistItemsCount,
                 nowPlayingItem = nowPlayingItem,
+                upNextItem = upNextItem,
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
