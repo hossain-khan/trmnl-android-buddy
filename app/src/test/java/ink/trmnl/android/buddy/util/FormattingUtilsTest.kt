@@ -220,4 +220,3 @@ class FormattingUtilsTest {
         assertThat(result).isNotEqualTo("Never")
     }
 }
-
