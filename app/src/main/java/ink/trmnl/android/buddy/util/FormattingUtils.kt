@@ -1,5 +1,7 @@
 package ink.trmnl.android.buddy.util
 
+import java.time.Instant
+import java.time.format.DateTimeParseException
 import kotlin.math.abs
 
 /**
@@ -87,5 +89,59 @@ fun formatRefreshRateExplanation(seconds: Int): String {
             val minuteText = if (closestMinutes == 1) "minute" else "minutes"
             "This device checks for new screen content every $closestMinutes $minuteText"
         }
+    }
+}
+
+/**
+ * Formats an ISO 8601 timestamp to relative time.
+ *
+ * Shows compound time for recent items (e.g., "2 hours and 10 minutes ago"),
+ * and simplified format for older items (e.g., "3 days ago").
+ * Does not show seconds for cleaner display.
+ *
+ * Examples:
+ * - "2026-02-11T20:30:00Z" (2 hours 10 min ago) → "2 hours and 10 minutes ago"
+ * - "2026-02-11T22:00:00Z" (40 min ago) → "40 minutes ago"
+ * - "2026-02-09T10:00:00Z" (2 days ago) → "2 days ago"
+ * - Invalid/null → "Never"
+ *
+ * @param isoTimestamp ISO 8601 formatted timestamp string (nullable)
+ * @return Human-readable relative time string
+ */
+fun formatRelativeTime(isoTimestamp: String?): String {
+    if (isoTimestamp == null) return "Never"
+
+    return try {
+        val instant = Instant.parse(isoTimestamp)
+        val now = Instant.now()
+        val secondsDiff =
+            java.time.Duration
+                .between(instant, now)
+                .seconds
+
+        when {
+            secondsDiff < 0 -> "Just now" // Handle future dates
+            secondsDiff < 60 -> "Just now" // Less than 1 minute
+            secondsDiff < 3600 -> { // Less than 1 hour
+                val minutes = secondsDiff / 60
+                "$minutes minute${if (minutes == 1L) "" else "s"} ago"
+            }
+            secondsDiff < 86400 -> { // Less than 1 day
+                val hours = secondsDiff / 3600
+                val minutes = (secondsDiff % 3600) / 60
+
+                if (minutes > 0) {
+                    "$hours hour${if (hours == 1L) "" else "s"} and $minutes minute${if (minutes == 1L) "" else "s"} ago"
+                } else {
+                    "$hours hour${if (hours == 1L) "" else "s"} ago"
+                }
+            }
+            else -> { // 1 day or more
+                val days = secondsDiff / 86400
+                "$days day${if (days == 1L) "" else "s"} ago"
+            }
+        }
+    } catch (e: DateTimeParseException) {
+        "Unknown time"
     }
 }

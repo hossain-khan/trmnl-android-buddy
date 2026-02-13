@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Test coverage for formatRelativeTime() function with 9 comprehensive test cases
+
+### Changed
+- Playlist items now show relative time for rendered status (e.g., "Displayed 2 hours ago") instead of ISO timestamps
+
 ### Fixed
 - Playlist items now display in correct order matching TRMNL website (sorted by row_order ascending)
 
