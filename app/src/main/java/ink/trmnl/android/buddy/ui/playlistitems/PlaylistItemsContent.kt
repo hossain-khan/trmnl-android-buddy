@@ -546,14 +546,6 @@ private fun PlaylistItemCard(
                                     style = MaterialTheme.typography.labelSmall,
                                 )
                             },
-                            leadingIcon = {
-                                Icon(
-                                    painter =
-                                        painterResource(R.drawable.baseline_visibility_off_24),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(16.dp),
-                                )
-                            },
                         )
                     }
 
