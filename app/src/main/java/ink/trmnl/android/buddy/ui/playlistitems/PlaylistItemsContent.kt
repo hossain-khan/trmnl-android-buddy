@@ -31,7 +31,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -504,19 +503,19 @@ private fun PlaylistItemCard(
 
                 // Status badge on the right
                 if (isCurrentlyDisplaying) {
-                    // Currently displaying badge - greenish theme
+                    // Currently displaying badge - using theme secondary color
                     AssistChip(
                         onClick = {},
                         label = {
                             Text(
                                 text = "Now Showing",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSecondary,
                             )
                         },
                         colors =
                             AssistChipDefaults.assistChipColors(
-                                containerColor = Color(0xFF268829),
+                                containerColor = MaterialTheme.colorScheme.secondary,
                             ),
                     )
                 } else if (!item.isVisible) {
