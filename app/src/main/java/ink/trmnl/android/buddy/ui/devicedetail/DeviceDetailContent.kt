@@ -411,12 +411,12 @@ private fun CurrentStatusCard(
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                                        contentDescription = "Refresh Rate",
+                                        contentDescription = "Next refresh time",
                                         modifier = Modifier.size(16.dp),
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                     Text(
-                                        text = "Refresh Rate",
+                                        text = "Next refresh in",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
@@ -941,15 +941,15 @@ private fun ManualBatteryRecordingCard(
  */
 private val TRMNL_REFRESH_RATE_OPTIONS =
     listOf(
-        5 to "Every 5 mins",
-        10 to "Every 10 mins",
-        15 to "Every 15 mins",
-        30 to "Every 30 mins",
-        45 to "Every 45 mins",
-        60 to "Hourly",
-        90 to "Every 90 mins",
-        120 to "Every 2 hrs",
-        240 to "Every 4 hrs",
+        5 to "5 mins",
+        10 to "10 mins",
+        15 to "15 mins",
+        30 to "30 mins",
+        45 to "45 mins",
+        60 to "1 hour",
+        90 to "90 mins",
+        120 to "2 hrs",
+        240 to "4 hrs",
         360 to "4x/day",
         480 to "3x/day",
         720 to "2x/day",
