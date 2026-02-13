@@ -131,7 +131,8 @@ class DeviceDetailPresenter
                                 val currentIndex = deviceItems.indexOfFirst { it.id == nowPlaying.id }
                                 if (currentIndex >= 0) {
                                     // Find the next visible item after currently playing
-                                    deviceItems.drop(currentIndex + 1)
+                                    deviceItems
+                                        .drop(currentIndex + 1)
                                         .firstOrNull { it.isVisible }
                                         ?.displayName ?: ""
                                 } else {
