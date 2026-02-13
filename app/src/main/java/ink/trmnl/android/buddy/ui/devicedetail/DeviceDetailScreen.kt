@@ -38,6 +38,8 @@ data class DeviceDetailScreen(
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
         val isPlaylistItemsLoading: Boolean = true, // Tracks playlist items prefetch progress
+        val playlistItemsCount: Int = 0, // Total playlist items for this device
+        val nowPlayingItem: String = "", // Name of currently playing/displayed item
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 

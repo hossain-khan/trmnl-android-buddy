@@ -48,6 +48,7 @@ class DeviceDetailPresenter
             val batteryHistory by batteryHistoryRepository
                 .getBatteryHistoryForDevice(screen.deviceId)
                 .collectAsState(initial = emptyList())
+            val allPlaylistItems by playlistItemsRepository.itemsFlow.collectAsState()
             var isLoading by rememberRetained { mutableStateOf(true) }
             var isPlaylistItemsLoading by rememberRetained { mutableStateOf(true) }
             var hasDeviceToken by rememberRetained { mutableStateOf(false) }
@@ -114,6 +115,25 @@ class DeviceDetailPresenter
                 }
             }
 
+            // Calculate playlist items stats for this device
+            val playlistItemsStats by remember {
+                derivedStateOf {
+                    if (screen.deviceNumericId != null) {
+                        val deviceItems = allPlaylistItems.filter { it.deviceId == screen.deviceNumericId }
+                        val count = deviceItems.size
+                        // Use the utility function to find currently playing item
+                        val nowPlaying =
+                            ink.trmnl.android.buddy.data
+                                .getCurrentlyPlayingItem(deviceItems)
+                        Pair(count, nowPlaying?.displayName ?: "")
+                    } else {
+                        Pair(0, "")
+                    }
+                }
+            }
+            val playlistItemsCount = playlistItemsStats.first
+            val nowPlayingItem = playlistItemsStats.second
+
             // Mark loading complete when we have data or after initial load
             LaunchedEffect(batteryHistory) {
                 isLoading = false
@@ -136,6 +156,8 @@ class DeviceDetailPresenter
                 isLowBatteryNotificationEnabled = isLowBatteryNotificationEnabled,
                 lowBatteryThresholdPercent = lowBatteryThresholdPercent,
                 isPlaylistItemsLoading = isPlaylistItemsLoading,
+                playlistItemsCount = playlistItemsCount,
+                nowPlayingItem = nowPlayingItem,
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> navigator.pop()
