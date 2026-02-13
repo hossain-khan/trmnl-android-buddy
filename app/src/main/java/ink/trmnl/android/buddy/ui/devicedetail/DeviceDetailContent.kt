@@ -748,12 +748,16 @@ private fun PlaylistItemsCard(
             },
             trailingContent = {
                 if (isLoading) {
-                    // Show a small circular progress indicator while loading
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
+                    // Show a small circular progress indicator while loading, vertically centered
+                    Box(
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                 } else {
                     OutlinedButton(
                         onClick = onViewPlaylist,
@@ -766,6 +770,34 @@ private fun PlaylistItemsCard(
                 ListItemDefaults.colors(
                     containerColor = MaterialTheme.colorScheme.surface,
                 ),
+        )
+    }
+}
+
+@Preview(
+    name = "Playlist Items Card - Ready",
+    showBackground = true,
+)
+@Composable
+private fun PlaylistItemsCardReadyPreview() {
+    TrmnlBuddyAppTheme {
+        PlaylistItemsCard(
+            onViewPlaylist = {},
+            isLoading = false,
+        )
+    }
+}
+
+@Preview(
+    name = "Playlist Items Card - Loading",
+    showBackground = true,
+)
+@Composable
+private fun PlaylistItemsCardLoadingPreview() {
+    TrmnlBuddyAppTheme {
+        PlaylistItemsCard(
+            onViewPlaylist = {},
+            isLoading = true,
         )
     }
 }
