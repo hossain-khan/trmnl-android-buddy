@@ -205,6 +205,61 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 }
 
 /**
+ * Determines the clock loader icon based on when the item was rendered.
+ *
+ * Distribution:
+ * - Most recently rendered ("Now Showing"): clock_loader_10 (just started)
+ * - Oldest rendered: clock_loader_90 (most time elapsed)
+ * - Items in between: interpolated across 10, 20, 40, 60, 80, 90
+ *
+ * @param item The item to get the icon for
+ * @param allItems All items to determine the age distribution
+ * @return The drawable resource ID for the appropriate clock loader icon
+ */
+private fun getClockLoaderIconForItem(
+    item: PlaylistItemUi,
+    allItems: List<PlaylistItemUi>,
+): Int {
+    val renderedItems = allItems.filter { it.renderedAt != null }
+    if (renderedItems.isEmpty() || item.renderedAt == null) {
+        return R.drawable.clock_loader_10_24dp_999999_fill0_wght400_grad0_opsz24
+    }
+
+    val minTimestamp =
+        renderedItems.minOf { Instant.parse(it.renderedAt!!).epochSecond }
+    val maxTimestamp =
+        renderedItems.maxOf { Instant.parse(it.renderedAt!!).epochSecond }
+
+    if (minTimestamp == maxTimestamp) {
+        return R.drawable.clock_loader_10_24dp_999999_fill0_wght400_grad0_opsz24
+    }
+
+    val timeInSeconds = Instant.parse(item.renderedAt!!).epochSecond
+    val progress =
+        (maxTimestamp - timeInSeconds).toFloat() / (maxTimestamp - minTimestamp)
+    val percentage = (progress * 80 + 10).toInt()
+
+    val closestPercentage =
+        when {
+            percentage < 15 -> 10
+            percentage < 30 -> 20
+            percentage < 50 -> 40
+            percentage < 70 -> 60
+            percentage < 85 -> 80
+            else -> 90
+        }
+
+    return when (closestPercentage) {
+        10 -> R.drawable.clock_loader_10_24dp_999999_fill0_wght400_grad0_opsz24
+        20 -> R.drawable.clock_loader_20_24dp_999999_fill0_wght400_grad0_opsz24
+        40 -> R.drawable.clock_loader_40_24dp_999999_fill0_wght400_grad0_opsz24
+        60 -> R.drawable.clock_loader_60_24dp_999999_fill0_wght400_grad0_opsz24
+        80 -> R.drawable.clock_loader_80_24dp_999999_fill0_wght400_grad0_opsz24
+        else -> R.drawable.clock_loader_90_24dp_999999_fill0_wght400_grad0_opsz24
+    }
+}
+
+/**
  * List of playlist items with row numbers and status badges.
  */
 @Composable
@@ -231,6 +286,7 @@ private fun PlaylistItemsList(
             val isCurrentlyDisplaying = index == mostRecentlyDisplayedIndex
             PlaylistItemCard(
                 item = item,
+                items = items,
                 rowNumber = rowNumber,
                 isCurrentlyDisplaying = isCurrentlyDisplaying,
                 onClick = { onItemClick(item) },
@@ -252,6 +308,7 @@ private fun PlaylistItemsList(
 @Composable
 private fun PlaylistItemCard(
     item: PlaylistItemUi,
+    items: List<PlaylistItemUi>,
     rowNumber: Int,
     isCurrentlyDisplaying: Boolean,
     onClick: () -> Unit,
@@ -272,8 +329,8 @@ private fun PlaylistItemCard(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             // Header section with row number and "Currently displaying" badge or visibility status
             Row(
@@ -353,7 +410,7 @@ private fun PlaylistItemCard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.check_circle_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        painter = painterResource(getClockLoaderIconForItem(item, items)),
                         contentDescription = "Rendered",
                         tint = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.size(18.dp),
