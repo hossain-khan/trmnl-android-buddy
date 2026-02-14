@@ -1,12 +1,13 @@
 package ink.trmnl.android.buddy.data
 
-import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipesResponse
+import ink.trmnl.android.buddy.api.util.toResult
+import ink.trmnl.android.buddy.api.util.toResultDirect
 
 /**
  * Repository interface for TRMNL recipe catalog operations.
@@ -69,65 +70,17 @@ class RecipesRepositoryImpl(
         page: Int,
         perPage: Int,
     ): Result<RecipesResponse> =
-        when (val result = apiService.getRecipes(search, sortBy, page, perPage)) {
-            is ApiResult.Success -> Result.success(result.value)
-            is ApiResult.Failure.HttpFailure ->
-                Result.failure(
-                    Exception("HTTP ${result.code}: Failed to fetch recipes"),
-                )
-            is ApiResult.Failure.NetworkFailure ->
-                Result.failure(
-                    Exception("Network error: ${result.error.message}"),
-                )
-            is ApiResult.Failure.ApiFailure ->
-                Result.failure(
-                    Exception("API error: ${result.error}"),
-                )
-            is ApiResult.Failure.UnknownFailure ->
-                Result.failure(
-                    Exception("Unknown error: ${result.error.message}"),
-                )
-        }
+        apiService
+            .getRecipes(search, sortBy, page, perPage)
+            .toResultDirect("Failed to fetch recipes")
 
     override suspend fun getRecipe(id: Int): Result<Recipe> =
-        when (val result = apiService.getRecipe(id)) {
-            is ApiResult.Success -> Result.success(result.value.data)
-            is ApiResult.Failure.HttpFailure ->
-                Result.failure(
-                    Exception("HTTP ${result.code}: Failed to fetch recipe $id"),
-                )
-            is ApiResult.Failure.NetworkFailure ->
-                Result.failure(
-                    Exception("Network error: ${result.error.message}"),
-                )
-            is ApiResult.Failure.ApiFailure ->
-                Result.failure(
-                    Exception("API error: ${result.error}"),
-                )
-            is ApiResult.Failure.UnknownFailure ->
-                Result.failure(
-                    Exception("Unknown error: ${result.error.message}"),
-                )
-        }
+        apiService
+            .getRecipe(id)
+            .toResult("Failed to fetch recipe $id") { it.data }
 
     override suspend fun getCategories(): Result<List<String>> =
-        when (val result = apiService.getCategories()) {
-            is ApiResult.Success -> Result.success(result.value.data)
-            is ApiResult.Failure.HttpFailure ->
-                Result.failure(
-                    Exception("HTTP ${result.code}: Failed to fetch categories"),
-                )
-            is ApiResult.Failure.NetworkFailure ->
-                Result.failure(
-                    Exception("Network error: ${result.error.message}"),
-                )
-            is ApiResult.Failure.ApiFailure ->
-                Result.failure(
-                    Exception("API error: ${result.error}"),
-                )
-            is ApiResult.Failure.UnknownFailure ->
-                Result.failure(
-                    Exception("Unknown error: ${result.error.message}"),
-                )
-        }
+        apiService
+            .getCategories()
+            .toResult("Failed to fetch categories") { it.data }
 }

@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Consolidated `formatRelativeDate()` into shared utility**: Extracted duplicate `formatRelativeDate()` function from BlogPostsContent, AnnouncementsContent, and ContentCarouselComponents into `FormattingUtils.kt`
   - Reduces code duplication across 3 files
   - Added KDoc documentation and unit tests for the shared function
+- **Reduced ApiResult error handling duplication**: Created `ApiResultExt.kt` utility with `toResult()` and `toResultDirect()` extension functions
+  - Eliminates repetitive error handling across repositories and presenters
+  - Provides standardized error messages for HTTP, Network, API, and Unknown failures
+  - RecipesRepository now uses simplified extension functions (reduced from ~50 lines to ~10 lines of error handling)
 
 ### Fixed
 - **Disclaimer card visibility**: DisclaimerCard is now only shown when there is an actual battery prediction available
