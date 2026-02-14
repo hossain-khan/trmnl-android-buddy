@@ -8,7 +8,36 @@ import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import kotlinx.parcelize.Parcelize
 
 /**
- * Screen for displaying device details including battery history and health trajectory.
+ * Screen for displaying detailed information about a single TRMNL device.
+ *
+ * **Features:**
+ * - Battery history chart with health trajectory analysis
+ * - WiFi signal strength with RSSI details
+ * - Refresh rate information
+ * - Playlist items statistics (total count and currently playing)
+ * - Manual battery data recording
+ * - Battery history management (clear, populate test data)
+ * - Navigation to playlist items and device settings
+ *
+ * **Data Requirements:**
+ * This screen requires comprehensive device information passed as parameters:
+ * - Device identification (ID, name, numeric ID)
+ * - Current hardware status (battery, voltage, WiFi, RSSI)
+ * - Configuration (refresh rate)
+ *
+ * The screen also loads additional data:
+ * - Historical battery readings from local database
+ * - Playlist items from repository cache
+ * - User preferences (tracking settings, notifications)
+ *
+ * @property deviceId Unique friendly device ID (e.g., "abc123")
+ * @property deviceName User-assigned device name
+ * @property currentBattery Current battery percentage (0.0 to 100.0)
+ * @property currentVoltage Current battery voltage (may be null)
+ * @property wifiStrength WiFi signal strength percentage (0.0 to 100.0)
+ * @property rssi Raw WiFi signal strength in dBm (may be null)
+ * @property refreshRate Display refresh interval in seconds (may be null)
+ * @property deviceNumericId Numeric device ID for API calls (may be null)
  */
 @Parcelize
 data class DeviceDetailScreen(

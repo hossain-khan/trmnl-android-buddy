@@ -79,11 +79,44 @@ data class DevicePreviewInfo(
 )
 
 /**
- * Screen for displaying list of TRMNL devices.
- * Shows device status, battery level, and WiFi strength.
+ * Screen for displaying the list of TRMNL devices with status dashboard.
+ *
+ * This is the main screen of the app, showing:
+ * - All user devices with battery, WiFi, and refresh rate
+ * - Device preview images (current display content)
+ * - RSS content feed carousel (blog posts + announcements)
+ * - Quick access to device settings, previews, and details
+ *
+ * Supports privacy mode to blur sensitive information and uses Material You theming.
  */
 @Parcelize
 data object TrmnlDevicesScreen : Screen {
+    /**
+     * UI state for the devices dashboard.
+     *
+     * **State Composition:**
+     * - **Device data**: List of devices with hardware info
+     * - **Device tokens**: Map of device ID to access token (for preview API)
+     * - **Device previews**: Map of device ID to preview info (image URL + refresh rate)
+     * - **Content feed**: Latest blog posts and announcements
+     * - **User preferences**: Privacy, RSS feed, battery tracking settings
+     * - **UI state**: Loading, errors, snackbar messages
+     *
+     * @property devices List of user's TRMNL devices from API
+     * @property deviceTokens Map of device friendly ID to device access token
+     * @property devicePreviews Map of device friendly ID to preview information
+     * @property isLoading True when initially loading devices
+     * @property errorMessage Error message if device fetch failed
+     * @property isUnauthorized True if API token is invalid (401)
+     * @property isPrivacyEnabled True if privacy mode is enabled (blur sensitive info)
+     * @property snackbarMessage Message to show in snackbar (null if none)
+     * @property latestContent Latest blog posts and announcements for carousel
+     * @property isContentLoading True when loading RSS content feed
+     * @property isRssFeedContentEnabled True if user enabled RSS content feed in settings
+     * @property isLowBatteryNotificationEnabled True if user enabled low battery notifications
+     * @property lowBatteryThresholdPercent Battery percentage threshold for notifications (default 20%)
+     * @property eventSink Callback for handling user events
+     */
     data class State(
         val devices: List<Device> = emptyList(),
         val deviceTokens: Map<String, String?> = emptyMap(),
@@ -101,6 +134,25 @@ data object TrmnlDevicesScreen : Screen {
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
+    /**
+     * Events that can be triggered from the devices dashboard UI.
+     *
+     * **Event Categories:**
+     * - **Navigation**: Open device details, settings, content hub
+     * - **Device actions**: Preview device, configure device settings
+     * - **Refresh**: Reload devices and content
+     * - **Privacy**: Toggle blur mode
+     * - **Settings**: Reset API token
+     * - **Content**: Open blog post/announcement in browser
+     * - **Battery**: View low battery devices and configure alerts
+     * - **Feedback**: Dismiss snackbar messages
+     *
+     * All events are handled by the [Presenter] and may trigger:
+     * - Navigation to other screens
+     * - API calls for data updates
+     * - State mutations (privacy, loading states)
+     * - External browser launches (Custom Tabs)
+     */
     sealed class Event : CircuitUiEvent {
         data object Refresh : Event()
 
@@ -143,8 +195,56 @@ data object TrmnlDevicesScreen : Screen {
 }
 
 /**
- * Presenter for TrmnlDevicesScreen.
- * Fetches devices from API and manages state.
+ * Presenter for [TrmnlDevicesScreen] - the main dashboard displaying all user devices.
+ *
+ * **Responsibilities:**
+ * - Fetches and displays all TRMNL devices for the authenticated user
+ * - Loads device tokens for each device (for preview image access)
+ * - Fetches device preview images with refresh rates
+ * - Displays latest RSS content (blog posts + announcements) in carousel
+ * - Manages battery tracking settings and low battery notifications
+ * - Handles privacy mode (blurs sensitive device information)
+ * - Coordinates navigation to device detail, settings, and content screens
+ *
+ * **Complex State Management:**
+ * This is one of the most complex presenters in the app, managing:
+ * - Device list with API fetching and error handling
+ * - Device tokens (stored locally) mapped by device ID
+ * - Device preview images (requires separate API calls per device)
+ * - RSS content feed (announcements + blog posts)
+ * - User preferences (privacy, RSS feed enabled, battery settings)
+ * - Snackbar messages for user feedback
+ * - Navigation results from child screens (e.g., updated preview images)
+ *
+ * **Data Loading Strategy:**
+ * 1. **Parallel fetching**: Devices, content feeds loaded concurrently using `async`/`awaitAll`
+ * 2. **Device tokens**: Loaded from local storage (no API call)
+ * 3. **Preview images**: Loaded per-device using device tokens (rate-limited by API)
+ * 4. **Content feeds**: Merged announcements + blog posts, sorted by date
+ *
+ * **State Retention:**
+ * Uses `rememberRetained` for all state because:
+ * - This is the main screen users return to frequently
+ * - Data should persist across configuration changes
+ * - Prevents redundant API calls when returning from child screens
+ * - Maintains scroll position and UI state
+ *
+ * **Custom Tab Integration:**
+ * Opens external links (blog posts, announcements, refresh rate info) in Chrome Custom Tabs
+ * with Material You theming (uses primary color and surface color from theme).
+ *
+ * @property navigator Circuit navigator with answering support for receiving results from child screens
+ * @property context Android context for browser launching and preferences
+ * @property apiService TRMNL API service for device and preview data
+ * @property userPreferencesRepository Repository for API token and user settings
+ * @property deviceTokenRepository Repository for device-specific access tokens
+ * @property contentFeedRepository Repository for RSS content feed metadata
+ * @property announcementRepository Repository for TRMNL announcements
+ * @property blogPostRepository Repository for TRMNL blog posts
+ *
+ * @see TrmnlDevicesScreen Screen definition with State and Event sealed classes
+ * @see DeviceDetailScreen Destination screen for device-specific details
+ * @see ContentHubScreen Destination screen for viewing all content
  */
 @Inject
 class TrmnlDevicesPresenter

@@ -32,7 +32,52 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 /**
- * Presenter for DeviceDetailScreen.
+ * Presenter for [DeviceDetailScreen] with battery analytics and playlist management.
+ *
+ * **Responsibilities:**
+ * - Loads and displays historical battery data from local database
+ * - Analyzes battery health trends and predicts discharge rate
+ * - Monitors playlist items for the device (currently playing, total count)
+ * - Manages manual battery recording for data collection
+ * - Handles battery history lifecycle (clear, populate test data)
+ * - Coordinates navigation to playlist items and device settings
+ *
+ * **Data Sources:**
+ * - **Battery history**: Local Room database, auto-collected weekly by WorkManager
+ * - **Playlist items**: Repository cache (shared across app), prefetched from API
+ * - **User preferences**: DataStore for tracking settings and notification config
+ * - **Device token**: Local storage for device-specific API access
+ *
+ * **Smart State Management:**
+ * - Uses `rememberRetained` for UI state (survives config changes and back stack)
+ * - Uses `collectAsState` for reactive Flow subscriptions (database, repository cache)
+ * - Uses `derivedStateOf` for computed state (hasRecordedToday, clearHistoryReason)
+ * - Computed values are memoized and only recalculate when dependencies change
+ *
+ * **Battery History Analysis:**
+ * This presenter uses [BatteryHistoryAnalyzer] to:
+ * - Determine if battery history should be cleared (stale data, low battery detected)
+ * - Calculate battery health trajectory (improving, declining, stable)
+ * - Predict time until battery depletion based on historical trends
+ * - Identify anomalies (e.g., battery jumped back up after low reading)
+ *
+ * **Playlist Items Integration:**
+ * Subscribes to [PlaylistItemsRepository.itemsFlow] to reactively update:
+ * - Total playlist items count for this device
+ * - Currently playing item (item with most recent renderedAt timestamp)
+ * - Next item in queue (next visible item by row order)
+ * This enables real-time updates when items are added, removed, or reordered.
+ *
+ * @property screen Screen parameters with device identification and current status
+ * @property navigator Circuit navigator for screen transitions
+ * @property batteryHistoryRepository Repository for local battery history database
+ * @property userPreferencesRepository Repository for user settings and preferences
+ * @property deviceTokenRepository Repository for device-specific API tokens
+ * @property playlistItemsRepository Repository with cached playlist items
+ *
+ * @see DeviceDetailScreen Screen definition with State and Event sealed classes
+ * @see BatteryHistoryAnalyzer Battery health analysis and prediction logic
+ * @see PlaylistItemsRepository Shared repository with intelligent caching
  */
 @Inject
 class DeviceDetailPresenter

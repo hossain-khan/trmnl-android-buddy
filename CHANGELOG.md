@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Eliminates repetitive error handling across repositories and presenters
   - Provides standardized error messages for HTTP, Network, API, and Unknown failures
   - RecipesRepository now uses simplified extension functions (reduced from ~50 lines to ~10 lines of error handling)
+- **Enhanced Circuit presenter and screen documentation**: Added comprehensive KDoc to key presenters and screens
+  - Documented complex state management patterns (retention strategies, data loading)
+  - Added architecture explanations for TrmnlDevicesPresenter, DeviceDetailPresenter, and AuthenticationPresenter
+  - Documented state composition, event handling, and navigation patterns
+  - Improved understanding of Circuit best practices (remember vs rememberRetained vs rememberSaveable)
 
 ### Fixed
 - **Disclaimer card visibility**: DisclaimerCard is now only shown when there is an actual battery prediction available
