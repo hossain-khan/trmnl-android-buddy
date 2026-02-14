@@ -50,7 +50,7 @@ fun DeviceListItem(
                 DeviceKind.KINDLE -> R.drawable.amazon_kindle_logo
                 DeviceKind.SEEED_STUDIO -> R.drawable.seed_studio_color_logo
                 DeviceKind.KOBO -> R.drawable.kobo_logo
-                DeviceKind.BOOX -> R.drawable.boox_logo
+                DeviceKind.BOOX -> R.drawable.boox_logo_vector
                 DeviceKind.BYOD -> null
             }
         }
