@@ -72,6 +72,32 @@ class RecipesCatalogPresenter(
 
         val coroutineScope = rememberCoroutineScope()
         var searchJob by remember { mutableStateOf<Job?>(null) }
+        val applyFirstPage: (ink.trmnl.android.buddy.api.models.RecipesResponse) -> Unit =
+            { response ->
+                allRecipes = response.data.distinctBy { it.id }
+                currentPage = response.currentPage
+                hasMorePages = response.nextPageUrl != null
+                totalRecipes = response.total
+                error = null
+            }
+
+        suspend fun loadFirstPage(
+            search: String?,
+            sortOption: SortOption = selectedSort,
+        ) {
+            fetchRecipes(
+                repository = recipesRepository,
+                search = search,
+                sortBy = sortOption.apiValue,
+                page = 1,
+                onLoadingStart = { isLoading = true },
+                onLoadingEnd = { isLoading = false },
+                onSuccess = applyFirstPage,
+                onError = { errorMessage ->
+                    error = errorMessage
+                },
+            )
+        }
 
         // Apply client-side category filtering to recipes
         val filteredRecipes =
@@ -95,24 +121,7 @@ class RecipesCatalogPresenter(
 
         // Load initial recipes on first composition
         LaunchedEffect(Unit) {
-            fetchRecipes(
-                repository = recipesRepository,
-                search = null,
-                sortBy = selectedSort.apiValue,
-                page = 1,
-                onLoadingStart = { isLoading = true },
-                onLoadingEnd = { isLoading = false },
-                onSuccess = { response ->
-                    allRecipes = response.data.distinctBy { it.id }
-                    currentPage = response.currentPage
-                    hasMorePages = response.nextPageUrl != null
-                    totalRecipes = response.total
-                    error = null
-                },
-                onError = { errorMessage ->
-                    error = errorMessage
-                },
-            )
+            loadFirstPage(search = null)
         }
 
         return RecipesCatalogScreen.State(
@@ -151,23 +160,8 @@ class RecipesCatalogPresenter(
                         coroutineScope.launch {
                             delay(SEARCH_DEBOUNCE_MS)
                             // Trigger search after debounce delay
-                            fetchRecipes(
-                                repository = recipesRepository,
-                                search = if (event.query.isBlank()) null else event.query,
-                                sortBy = selectedSort.apiValue,
-                                page = 1,
-                                onLoadingStart = { isLoading = true },
-                                onLoadingEnd = { isLoading = false },
-                                onSuccess = { response ->
-                                    allRecipes = response.data.distinctBy { it.id }
-                                    currentPage = response.currentPage
-                                    hasMorePages = response.nextPageUrl != null
-                                    totalRecipes = response.total
-                                    error = null
-                                },
-                                onError = { errorMessage ->
-                                    error = errorMessage
-                                },
+                            loadFirstPage(
+                                search = event.query.takeIf { it.isNotBlank() },
                             )
                         }
                 }
@@ -182,24 +176,7 @@ class RecipesCatalogPresenter(
                     searchJob?.cancel()
 
                     coroutineScope.launch {
-                        fetchRecipes(
-                            repository = recipesRepository,
-                            search = null,
-                            sortBy = selectedSort.apiValue,
-                            page = 1,
-                            onLoadingStart = { isLoading = true },
-                            onLoadingEnd = { isLoading = false },
-                            onSuccess = { response ->
-                                allRecipes = response.data.distinctBy { it.id }
-                                currentPage = response.currentPage
-                                hasMorePages = response.nextPageUrl != null
-                                totalRecipes = response.total
-                                error = null
-                            },
-                            onError = { errorMessage ->
-                                error = errorMessage
-                            },
-                        )
+                        loadFirstPage(search = null)
                     }
                 }
 
@@ -207,23 +184,9 @@ class RecipesCatalogPresenter(
                     selectedSort = event.sort
 
                     coroutineScope.launch {
-                        fetchRecipes(
-                            repository = recipesRepository,
-                            search = if (searchQuery.isBlank()) null else searchQuery,
-                            sortBy = event.sort.apiValue,
-                            page = 1,
-                            onLoadingStart = { isLoading = true },
-                            onLoadingEnd = { isLoading = false },
-                            onSuccess = { response ->
-                                allRecipes = response.data.distinctBy { it.id }
-                                currentPage = response.currentPage
-                                hasMorePages = response.nextPageUrl != null
-                                totalRecipes = response.total
-                                error = null
-                            },
-                            onError = { errorMessage ->
-                                error = errorMessage
-                            },
+                        loadFirstPage(
+                            search = searchQuery.takeIf { it.isNotBlank() },
+                            sortOption = event.sort,
                         )
                     }
                 }
@@ -282,23 +245,8 @@ class RecipesCatalogPresenter(
 
                 RecipesCatalogScreen.Event.RetryClicked -> {
                     coroutineScope.launch {
-                        fetchRecipes(
-                            repository = recipesRepository,
-                            search = if (searchQuery.isBlank()) null else searchQuery,
-                            sortBy = selectedSort.apiValue,
-                            page = 1,
-                            onLoadingStart = { isLoading = true },
-                            onLoadingEnd = { isLoading = false },
-                            onSuccess = { response ->
-                                allRecipes = response.data.distinctBy { it.id }
-                                currentPage = response.currentPage
-                                hasMorePages = response.nextPageUrl != null
-                                totalRecipes = response.total
-                                error = null
-                            },
-                            onError = { errorMessage ->
-                                error = errorMessage
-                            },
+                        loadFirstPage(
+                            search = searchQuery.takeIf { it.isNotBlank() },
                         )
                     }
                 }
@@ -369,6 +317,15 @@ private fun filterRecipesByCategories(
  * Fetch recipes from the repository.
  *
  * This is a suspend function that handles the API call and callbacks.
+ *
+ * @param repository Source for retrieving recipes
+ * @param search Optional search query (null to disable search)
+ * @param sortBy API sort key (see [SortOption.apiValue])
+ * @param page 1-based page number for pagination
+ * @param onLoadingStart Called before the request starts (e.g., to toggle spinners)
+ * @param onLoadingEnd Always called after completion (success or failure)
+ * @param onSuccess Invoked with successful response payload
+ * @param onError Invoked with user-facing error message
  */
 private suspend fun fetchRecipes(
     repository: RecipesRepository,
