@@ -19,9 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Reduces code duplication across 3 files
   - Added KDoc documentation and unit tests for the shared function
 - **Reduced ApiResult error handling duplication**: Created `ApiResultExt.kt` utility with `toResult()` and `toResultDirect()` extension functions
-  - Eliminates repetitive error handling across repositories and presenters
   - Provides standardized error messages for HTTP, Network, API, and Unknown failures
-  - RecipesRepository now uses simplified extension functions (reduced from ~50 lines to ~10 lines of error handling)
+  - RecipesRepository updated to use simplified extension functions (reduced from ~50 lines to ~10 lines of error handling)
+  - This is the first step in a broader refactoring effort to reduce error handling duplication across the codebase
+  - Note: Presenters and workers with custom error handling logic (e.g., specific HTTP code handling) intentionally retain their existing patterns
   - Error handling is tested indirectly through existing repository integration tests
 - **Enhanced Circuit presenter and screen documentation**: Added comprehensive KDoc to key presenters and screens
   - Documented complex state management patterns (retention strategies, data loading)
