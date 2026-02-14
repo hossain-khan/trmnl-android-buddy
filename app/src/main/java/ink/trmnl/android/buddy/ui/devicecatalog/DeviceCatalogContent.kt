@@ -54,6 +54,7 @@ private data class FilterCounts(
     val byod: Int,
     val seeedStudio: Int,
     val kobo: Int,
+    val boox: Int,
 )
 
 /**
@@ -175,6 +176,7 @@ private fun DeviceListContent(
                 byod = devices.count { it.deviceKind == DeviceKind.BYOD },
                 seeedStudio = devices.count { it.deviceKind == DeviceKind.SEEED_STUDIO },
                 kobo = devices.count { it.deviceKind == DeviceKind.KOBO },
+                boox = devices.count { it.deviceKind == DeviceKind.BOOX },
             )
         }
 
@@ -217,6 +219,11 @@ private fun DeviceListContent(
                 selected = selectedFilter == DeviceKind.KOBO,
                 onClick = { onFilterSelected(DeviceKind.KOBO) },
                 label = { Text("Kobo (${filterCounts.kobo})") },
+            )
+            FilterChip(
+                selected = selectedFilter == DeviceKind.BOOX,
+                onClick = { onFilterSelected(DeviceKind.BOOX) },
+                label = { Text("BOOX (${filterCounts.boox})") },
             )
         }
 

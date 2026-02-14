@@ -17,5 +17,6 @@ val DeviceModel.deviceKind: DeviceKind
             kind == "kindle" -> DeviceKind.KINDLE
             name.startsWith("seeed_") -> DeviceKind.SEEED_STUDIO
             name.startsWith("kobo_") -> DeviceKind.KOBO
+            name.contains("boox") || name == "palma" -> DeviceKind.BOOX
             else -> DeviceKind.BYOD
         }

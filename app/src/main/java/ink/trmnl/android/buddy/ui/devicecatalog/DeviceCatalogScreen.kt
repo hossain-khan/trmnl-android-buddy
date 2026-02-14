@@ -99,6 +99,12 @@ enum class DeviceKind {
     KOBO,
 
     /**
+     * Onyx BOOX e-readers, tablets, and monitors using name id `boox_` (kind = "byod").
+     * - https://www.boox.com/
+     */
+    BOOX,
+
+    /**
      * Bring Your Own Device / Third-party (kind = "byod").
      */
     BYOD,
