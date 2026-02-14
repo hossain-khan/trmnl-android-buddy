@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Playlist item statistics in device detail card**: Display real-time statistics when viewing device details
+  - Shows total number of playlist items for the device
+  - Displays the currently playing/displayed item name
+  - Updates reactively when playlist cache changes
+  - Uses repository utility function to find item with most recent renderedAt timestamp
+
 ### Fixed
 - **Disclaimer card visibility**: DisclaimerCard is now only shown when there is an actual battery prediction available
   - Removed redundant UI element that appeared even when battery tracking was disabled or insufficient data existed

@@ -13,6 +13,7 @@ import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
+import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import ink.trmnl.android.buddy.fakes.FakeBatteryHistoryRepository
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakePlaylistItemsRepository
@@ -879,4 +880,32 @@ class DeviceDetailScreenTest {
             )
         }
     }
+
+    /**
+     * Helper function to create a test playlist item.
+     */
+    private fun createTestPlaylistItem(
+        id: Int = 1,
+        deviceId: Int = 1,
+        displayName: String = "Test Plugin $id",
+        isVisible: Boolean = true,
+        isMashup: Boolean = false,
+        isNeverRendered: Boolean = false,
+        renderedAt: String? = null,
+        rowOrder: Long = id.toLong(),
+        pluginName: String? = "Test Plugin $id",
+        mashupId: Int? = null,
+    ): PlaylistItemUi =
+        PlaylistItemUi(
+            id = id,
+            deviceId = deviceId,
+            displayName = displayName,
+            isVisible = isVisible,
+            isMashup = isMashup,
+            isNeverRendered = isNeverRendered,
+            renderedAt = renderedAt,
+            rowOrder = rowOrder,
+            pluginName = pluginName,
+            mashupId = mashupId,
+        )
 }
