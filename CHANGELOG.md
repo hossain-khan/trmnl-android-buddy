@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Disclaimer card visibility**: DisclaimerCard is now only shown when there is an actual battery prediction available
   - Removed redundant UI element that appeared even when battery tracking was disabled or insufficient data existed
   - Disclaimer now only displays alongside the battery prediction that it explains
+- **Playlist visibility toggle robustness improvements** (follow-up to PR #434 Copilot review feedback):
+  - **KDoc synchronization**: Updated TrmnlApiService KDoc to match actual method signature (body parameter instead of visible)
+  - **API key error handling**: Fetch API key before performing optimistic cache update to prevent inconsistent state on auth failure
+  - **Exception rollback**: Added automatic cache revert in catch block for unexpected exceptions during visibility toggle
+  - **Request state reset**: Added finally block to reset toggleRequest after completion, enabling proper retry of identical toggle requests
+  - **Error UI feedback**: Toggle failures now propagate error messages to UI state for user visibility
+  - **Unit test coverage**: Added 3 comprehensive tests for ToggleItemVisibility event (success, failure, and retry scenarios)
 
 ## [2.12.0] - 2026-02-13
 

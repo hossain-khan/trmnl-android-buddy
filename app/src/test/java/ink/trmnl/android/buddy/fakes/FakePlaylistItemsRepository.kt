@@ -64,6 +64,22 @@ class FakePlaylistItemsRepository(
      */
     var isCacheStaleResult = false
 
+    /**
+     * Test-visible property to track calls to updatePlaylistItemVisibility.
+     */
+    var updateVisibilityCalls = mutableListOf<Pair<Int, Boolean>>()
+        private set
+
+    /**
+     * Configurable result for updatePlaylistItemVisibility (success case).
+     */
+    private var updateVisibilityResult: Result<PlaylistItemUi?>? = null
+
+    /**
+     * Configurable error message for updatePlaylistItemVisibility (failure case).
+     */
+    private var updateVisibilityError: String? = null
+
     override suspend fun getPlaylistItems(forceRefresh: Boolean): Result<List<PlaylistItemUi>> {
         getPlaylistItemsCallCount++
         lastForceRefresh = forceRefresh
@@ -106,12 +122,49 @@ class FakePlaylistItemsRepository(
     override suspend fun updatePlaylistItemVisibility(
         itemId: Int,
         visible: Boolean,
-    ): Result<PlaylistItemUi?> = Result.success(null)
+    ): Result<PlaylistItemUi?> {
+        updateVisibilityCalls.add(itemId to visible)
+
+        return when {
+            updateVisibilityError != null -> {
+                Result.failure(Exception(updateVisibilityError))
+            }
+            updateVisibilityResult != null -> updateVisibilityResult!!
+            else -> Result.success(null)
+        }
+    }
 
     /**
      * Test helper to set the result for subsequent calls.
      */
     fun setResult(result: Result<List<PlaylistItemUi>>) {
         initialResult = result
+    }
+
+    /**
+     * Test helper to configure the result for updatePlaylistItemVisibility (success case).
+     */
+    fun setUpdateVisibilityResult(result: Result<PlaylistItemUi?>) {
+        updateVisibilityResult = result
+        updateVisibilityError = null
+    }
+
+    /**
+     * Test helper to configure an error for updatePlaylistItemVisibility (failure case).
+     */
+    fun setUpdateVisibilityError(error: String?) {
+        if (error != null) {
+            updateVisibilityError = error
+            updateVisibilityResult = null
+        } else {
+            updateVisibilityError = null
+        }
+    }
+
+    /**
+     * Test helper to reset tracking of visibility update calls.
+     */
+    fun resetUpdateVisibilityCalls() {
+        updateVisibilityCalls.clear()
     }
 }

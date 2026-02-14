@@ -98,19 +98,26 @@ class PlaylistItemsPresenter
             // Handle visibility toggle requests asynchronously
             LaunchedEffect(toggleRequest) {
                 val request = toggleRequest ?: return@LaunchedEffect
-                repository
-                    .updatePlaylistItemVisibility(
-                        itemId = request.first,
-                        visible = request.second,
-                    ).fold(
-                        onSuccess = {
-                            Timber.d("Successfully toggled item ${request.first} visibility to ${request.second}")
-                        },
-                        onFailure = { error ->
-                            Timber.e(error, "Failed to toggle item visibility")
-                            // Show error to user (would need to add error state to State)
-                        },
-                    )
+                try {
+                    repository
+                        .updatePlaylistItemVisibility(
+                            itemId = request.first,
+                            visible = request.second,
+                        ).fold(
+                            onSuccess = {
+                                Timber.d("Successfully toggled item ${request.first} visibility to ${request.second}")
+                            },
+                            onFailure = { error ->
+                                val errorMsg = "Failed to toggle visibility: ${error.message}"
+                                Timber.e(error, errorMsg)
+                                // Propagate error message to UI for user feedback
+                                errorMessage = errorMsg
+                            },
+                        )
+                } finally {
+                    // Clear the request so identical future toggles can retrigger this effect
+                    toggleRequest = null
+                }
             }
 
             return PlaylistItemsScreen.State(
