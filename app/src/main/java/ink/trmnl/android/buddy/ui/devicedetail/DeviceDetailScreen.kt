@@ -38,8 +38,19 @@ data class DeviceDetailScreen(
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
         val isPlaylistItemsLoading: Boolean = true, // Tracks playlist items prefetch progress
-        val playlistItemsCount: Int = 0, // Total playlist items for this device
-        val nowPlayingItem: String = "", // Name of currently playing/displayed item
+        /**
+         * Total number of playlist items for this device.
+         * Calculated from the device-specific filtered items in the repository cache.
+         * Updated reactively when the repository cache changes.
+         */
+        val playlistItemsCount: Int = 0,
+        /**
+         * Name of the currently playing/displayed item.
+         * Determined by finding the item with the most recent renderedAt timestamp.
+         * Falls back to the first item if none have been rendered yet.
+         * Updated reactively when the repository cache changes.
+         */
+        val nowPlayingItem: String = "",
         val upNextItem: String = "", // Name of next queue item to play
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState

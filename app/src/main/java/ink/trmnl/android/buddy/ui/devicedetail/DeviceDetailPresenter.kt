@@ -20,6 +20,7 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.data.PlaylistItemsRepository
 import ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
 import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
+import ink.trmnl.android.buddy.data.getCurrentlyPlayingItem
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
@@ -122,9 +123,7 @@ class DeviceDetailPresenter
                         val deviceItems = allPlaylistItems.filter { it.deviceId == screen.deviceNumericId }
                         val count = deviceItems.size
                         // Use the utility function to find currently playing item
-                        val nowPlaying =
-                            ink.trmnl.android.buddy.data
-                                .getCurrentlyPlayingItem(deviceItems)
+                        val nowPlaying = getCurrentlyPlayingItem(deviceItems)
                         // Find up next item (next visible item after currently playing)
                         val upNext =
                             if (nowPlaying != null) {
