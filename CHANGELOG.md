@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updates reactively when playlist cache changes
   - Uses repository utility function to find item with most recent renderedAt timestamp
 
+### Changed
+- **Consolidated `formatRelativeDate()` into shared utility**: Extracted duplicate `formatRelativeDate()` function from BlogPostsContent, AnnouncementsContent, and ContentCarouselComponents into `FormattingUtils.kt`
+  - Reduces code duplication across 3 files
+  - Added KDoc documentation and unit tests for the shared function
+
 ### Fixed
 - **Disclaimer card visibility**: DisclaimerCard is now only shown when there is an actual battery prediction available
   - Removed redundant UI element that appeared even when battery tracking was disabled or insufficient data existed

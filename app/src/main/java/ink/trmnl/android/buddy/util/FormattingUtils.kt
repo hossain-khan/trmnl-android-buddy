@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.util
 
 import java.time.Instant
 import java.time.format.DateTimeParseException
+import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
 /**
@@ -143,5 +144,34 @@ fun formatRelativeTime(isoTimestamp: String?): String {
         }
     } catch (e: DateTimeParseException) {
         "Unknown time"
+    }
+}
+
+/**
+ * Formats an [Instant] to a human-readable relative date string.
+ *
+ * Shows simplified relative time without compound formats (e.g., "2 days ago", not "2 days and 3 hours ago").
+ * Useful for displaying publication dates of blog posts, announcements, and content items.
+ *
+ * Examples:
+ * - 2 days ago → "2 days ago"
+ * - 5 hours ago → "5 hours ago"
+ * - 10 minutes ago → "10 minutes ago"
+ * - Just now → "Just now"
+ *
+ * @param instant The point in time to format relative to now
+ * @return Human-readable relative date string
+ */
+fun formatRelativeDate(instant: Instant): String {
+    val now = Instant.now()
+    val days = ChronoUnit.DAYS.between(instant, now)
+    val hours = ChronoUnit.HOURS.between(instant, now)
+    val minutes = ChronoUnit.MINUTES.between(instant, now)
+
+    return when {
+        days > 0 -> "$days day${if (days == 1L) "" else "s"} ago"
+        hours > 0 -> "$hours hour${if (hours == 1L) "" else "s"} ago"
+        minutes > 0 -> "$minutes minute${if (minutes == 1L) "" else "s"} ago"
+        else -> "Just now"
     }
 }

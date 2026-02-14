@@ -219,4 +219,53 @@ class FormattingUtilsTest {
         assertThat(result).isNotEqualTo("Unknown time")
         assertThat(result).isNotEqualTo("Never")
     }
+
+    // ============================================================================
+    // formatRelativeDate() tests
+    // ============================================================================
+
+    @Test
+    fun `formatRelativeDate returns Just now for very recent instant`() {
+        val now = Instant.now()
+        assertThat(formatRelativeDate(now)).isEqualTo("Just now")
+
+        val thirtySecondsAgo = Instant.now().minus(30, ChronoUnit.SECONDS)
+        assertThat(formatRelativeDate(thirtySecondsAgo)).isEqualTo("Just now")
+    }
+
+    @Test
+    fun `formatRelativeDate formats minutes correctly`() {
+        val oneMinuteAgo = Instant.now().minus(1, ChronoUnit.MINUTES)
+        assertThat(formatRelativeDate(oneMinuteAgo)).isEqualTo("1 minute ago")
+
+        val fiveMinutesAgo = Instant.now().minus(5, ChronoUnit.MINUTES)
+        assertThat(formatRelativeDate(fiveMinutesAgo)).isEqualTo("5 minutes ago")
+
+        val thirtyMinutesAgo = Instant.now().minus(30, ChronoUnit.MINUTES)
+        assertThat(formatRelativeDate(thirtyMinutesAgo)).isEqualTo("30 minutes ago")
+    }
+
+    @Test
+    fun `formatRelativeDate formats hours correctly`() {
+        val oneHourAgo = Instant.now().minus(1, ChronoUnit.HOURS)
+        assertThat(formatRelativeDate(oneHourAgo)).isEqualTo("1 hour ago")
+
+        val fiveHoursAgo = Instant.now().minus(5, ChronoUnit.HOURS)
+        assertThat(formatRelativeDate(fiveHoursAgo)).isEqualTo("5 hours ago")
+
+        val twentyThreeHoursAgo = Instant.now().minus(23, ChronoUnit.HOURS)
+        assertThat(formatRelativeDate(twentyThreeHoursAgo)).isEqualTo("23 hours ago")
+    }
+
+    @Test
+    fun `formatRelativeDate formats days correctly`() {
+        val oneDayAgo = Instant.now().minus(1, ChronoUnit.DAYS)
+        assertThat(formatRelativeDate(oneDayAgo)).isEqualTo("1 day ago")
+
+        val twoDaysAgo = Instant.now().minus(2, ChronoUnit.DAYS)
+        assertThat(formatRelativeDate(twoDaysAgo)).isEqualTo("2 days ago")
+
+        val thirtyDaysAgo = Instant.now().minus(30, ChronoUnit.DAYS)
+        assertThat(formatRelativeDate(thirtyDaysAgo)).isEqualTo("30 days ago")
+    }
 }
