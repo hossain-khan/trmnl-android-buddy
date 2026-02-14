@@ -72,32 +72,6 @@ class RecipesCatalogPresenter(
 
         val coroutineScope = rememberCoroutineScope()
         var searchJob by remember { mutableStateOf<Job?>(null) }
-        val applyFirstPage: (ink.trmnl.android.buddy.api.models.RecipesResponse) -> Unit =
-            { response ->
-                allRecipes = response.data.distinctBy { it.id }
-                currentPage = response.currentPage
-                hasMorePages = response.nextPageUrl != null
-                totalRecipes = response.total
-                error = null
-            }
-
-        suspend fun loadFirstPage(
-            search: String?,
-            sortOption: SortOption = selectedSort,
-        ) {
-            fetchRecipes(
-                repository = recipesRepository,
-                search = search,
-                sortBy = sortOption.apiValue,
-                page = 1,
-                onLoadingStart = { isLoading = true },
-                onLoadingEnd = { isLoading = false },
-                onSuccess = applyFirstPage,
-                onError = { errorMessage ->
-                    error = errorMessage
-                },
-            )
-        }
 
         // Apply client-side category filtering to recipes
         val filteredRecipes =
@@ -121,7 +95,16 @@ class RecipesCatalogPresenter(
 
         // Load initial recipes on first composition
         LaunchedEffect(Unit) {
-            loadFirstPage(search = null)
+            loadFirstPage(
+                search = null,
+                sortOption = selectedSort,
+                setRecipes = { allRecipes = it },
+                setCurrentPage = { currentPage = it },
+                setHasMorePages = { hasMorePages = it },
+                setTotalRecipes = { totalRecipes = it },
+                setError = { error = it },
+                setLoading = { isLoading = it },
+            )
         }
 
         return RecipesCatalogScreen.State(
@@ -162,6 +145,13 @@ class RecipesCatalogPresenter(
                             // Trigger search after debounce delay
                             loadFirstPage(
                                 search = event.query.takeIf { it.isNotBlank() },
+                                sortOption = selectedSort,
+                                setRecipes = { allRecipes = it },
+                                setCurrentPage = { currentPage = it },
+                                setHasMorePages = { hasMorePages = it },
+                                setTotalRecipes = { totalRecipes = it },
+                                setError = { error = it },
+                                setLoading = { isLoading = it },
                             )
                         }
                 }
@@ -176,7 +166,16 @@ class RecipesCatalogPresenter(
                     searchJob?.cancel()
 
                     coroutineScope.launch {
-                        loadFirstPage(search = null)
+                        loadFirstPage(
+                            search = null,
+                            sortOption = selectedSort,
+                            setRecipes = { allRecipes = it },
+                            setCurrentPage = { currentPage = it },
+                            setHasMorePages = { hasMorePages = it },
+                            setTotalRecipes = { totalRecipes = it },
+                            setError = { error = it },
+                            setLoading = { isLoading = it },
+                        )
                     }
                 }
 
@@ -187,6 +186,12 @@ class RecipesCatalogPresenter(
                         loadFirstPage(
                             search = searchQuery.takeIf { it.isNotBlank() },
                             sortOption = event.sort,
+                            setRecipes = { allRecipes = it },
+                            setCurrentPage = { currentPage = it },
+                            setHasMorePages = { hasMorePages = it },
+                            setTotalRecipes = { totalRecipes = it },
+                            setError = { error = it },
+                            setLoading = { isLoading = it },
                         )
                     }
                 }
@@ -247,6 +252,13 @@ class RecipesCatalogPresenter(
                     coroutineScope.launch {
                         loadFirstPage(
                             search = searchQuery.takeIf { it.isNotBlank() },
+                            sortOption = selectedSort,
+                            setRecipes = { allRecipes = it },
+                            setCurrentPage = { currentPage = it },
+                            setHasMorePages = { hasMorePages = it },
+                            setTotalRecipes = { totalRecipes = it },
+                            setError = { error = it },
+                            setLoading = { isLoading = it },
                         )
                     }
                 }
@@ -272,6 +284,36 @@ class RecipesCatalogPresenter(
                 }
             }
         }
+    }
+
+    private suspend fun loadFirstPage(
+        search: String?,
+        sortOption: SortOption,
+        setRecipes: (List<Recipe>) -> Unit,
+        setCurrentPage: (Int) -> Unit,
+        setHasMorePages: (Boolean) -> Unit,
+        setTotalRecipes: (Int) -> Unit,
+        setError: (String?) -> Unit,
+        setLoading: (Boolean) -> Unit,
+    ) {
+        fetchRecipes(
+            repository = recipesRepository,
+            search = search,
+            sortBy = sortOption.apiValue,
+            page = 1,
+            onLoadingStart = { setLoading(true) },
+            onLoadingEnd = { setLoading(false) },
+            onSuccess = { response ->
+                setRecipes(response.data.distinctBy { it.id })
+                setCurrentPage(response.currentPage)
+                setHasMorePages(response.nextPageUrl != null)
+                setTotalRecipes(response.total)
+                setError(null)
+            },
+            onError = { errorMessage ->
+                setError(errorMessage)
+            },
+        )
     }
 
     @CircuitInject(RecipesCatalogScreen::class, AppScope::class)
