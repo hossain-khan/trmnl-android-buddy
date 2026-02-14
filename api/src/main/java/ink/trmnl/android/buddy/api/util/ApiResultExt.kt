@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.api.util
 
 import com.slack.eithernet.ApiResult
 
-/**
+/*
  * Extension functions for converting [ApiResult] to Kotlin [Result] with standardized error handling.
  *
  * These utilities reduce code duplication across repositories and presenters that need to convert
