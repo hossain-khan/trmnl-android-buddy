@@ -22,7 +22,34 @@ import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import kotlinx.coroutines.launch
 
 /**
- * Presenter for AuthenticationScreen.
+ * Presenter for [AuthenticationScreen].
+ *
+ * **Responsibilities:**
+ * - Checks device biometric authentication availability (fingerprint/face unlock)
+ * - Triggers biometric authentication prompt on user request
+ * - Handles authentication success, error, and cancellation scenarios
+ * - Manages retry prompts when authentication fails
+ * - Allows users to bypass security if preferred
+ *
+ * **Authentication Flow:**
+ * 1. On screen load: Checks if biometric authentication is available on device
+ * 2. User taps authenticate button: Shows system biometric prompt
+ * 3. On success: Navigates to [TrmnlDevicesScreen] (main app screen)
+ * 4. On error/cancel: Shows retry prompt allowing user to try again or cancel
+ * 5. On cancel security: Disables security setting and proceeds to main screen
+ *
+ * **State Retention:**
+ * Uses `remember` (not `rememberRetained`) because:
+ * - This is a one-time authentication gate screen
+ * - State should reset if user navigates back (e.g., from settings)
+ * - No benefit to retaining authentication state across back stack
+ *
+ * @property navigator Circuit navigator for screen transitions
+ * @property userPreferencesRepository Repository for reading/updating security preferences
+ * @property biometricAuthHelper Helper for triggering biometric authentication
+ *
+ * @see AuthenticationScreen Screen definition with State and Event sealed classes
+ * @see BiometricAuthHelper Android biometric authentication wrapper
  */
 @Inject
 class AuthenticationPresenter

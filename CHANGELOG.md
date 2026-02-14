@@ -18,6 +18,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Consolidated `formatRelativeDate()` into shared utility**: Extracted duplicate `formatRelativeDate()` function from BlogPostsContent, AnnouncementsContent, and ContentCarouselComponents into `FormattingUtils.kt`
   - Reduces code duplication across 3 files
   - Added KDoc documentation and unit tests for the shared function
+- **Reduced ApiResult error handling duplication**: Created `ApiResultExt.kt` utility with `toResult()` and `toResultDirect()` extension functions
+  - Provides standardized error messages for HTTP, Network, API, and Unknown failures
+  - RecipesRepository updated to use simplified extension functions (reduced from ~50 lines to ~10 lines of error handling)
+  - This is the first step in a broader refactoring effort to reduce error handling duplication across the codebase
+  - Note: Presenters and workers with custom error handling logic (e.g., specific HTTP code handling) intentionally retain their existing patterns
+  - Error handling is tested indirectly through existing repository integration tests
+- **Enhanced Circuit presenter and screen documentation**: Added comprehensive KDoc to key presenters and screens
+  - Documented complex state management patterns (retention strategies, data loading)
+  - Added architecture explanations for TrmnlDevicesPresenter, DeviceDetailPresenter, and AuthenticationPresenter
+  - Documented state composition, event handling, and navigation patterns
+  - Improved understanding of Circuit best practices (remember vs rememberRetained vs rememberSaveable)
 - **Recipes catalog fetch flow reuse**: Extracted shared first-page fetch helper and updated KDoc to match current behavior, reducing duplicated loading/error handling code in the presenter
 
 ### Fixed
