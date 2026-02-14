@@ -78,6 +78,7 @@ import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
+import ink.trmnl.android.buddy.util.formatRelativeDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -537,23 +538,6 @@ private fun EmptyState(modifier: Modifier = Modifier) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-    }
-}
-
-/**
- * Format date as relative time (e.g., "2 days ago", "1 hour ago").
- */
-private fun formatRelativeDate(instant: Instant): String {
-    val now = Instant.now()
-    val days = ChronoUnit.DAYS.between(instant, now)
-    val hours = ChronoUnit.HOURS.between(instant, now)
-    val minutes = ChronoUnit.MINUTES.between(instant, now)
-
-    return when {
-        days > 0 -> "$days day${if (days == 1L) "" else "s"} ago"
-        hours > 0 -> "$hours hour${if (hours == 1L) "" else "s"} ago"
-        minutes > 0 -> "$minutes minute${if (minutes == 1L) "" else "s"} ago"
-        else -> "Just now"
     }
 }
 

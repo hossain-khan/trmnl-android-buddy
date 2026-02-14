@@ -63,6 +63,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.models.ContentItem
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import ink.trmnl.android.buddy.util.formatRelativeDate
 import kotlinx.coroutines.delay
 
 /**
@@ -633,31 +634,6 @@ internal fun LoadingSkeletonCard(modifier: Modifier = Modifier) {
                         .background(MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = shimmerAlpha)),
             )
         }
-    }
-}
-
-// ========== Helper Functions ==========
-
-/**
- * Format Instant as relative time string (e.g., "2 days ago").
- */
-private fun formatRelativeDate(instant: java.time.Instant): String {
-    val now = java.time.Instant.now()
-    val days =
-        java.time.temporal.ChronoUnit.DAYS
-            .between(instant, now)
-    val hours =
-        java.time.temporal.ChronoUnit.HOURS
-            .between(instant, now)
-    val minutes =
-        java.time.temporal.ChronoUnit.MINUTES
-            .between(instant, now)
-
-    return when {
-        days > 0 -> "$days day${if (days == 1L) "" else "s"} ago"
-        hours > 0 -> "$hours hour${if (hours == 1L) "" else "s"} ago"
-        minutes > 0 -> "$minutes minute${if (minutes == 1L) "" else "s"} ago"
-        else -> "Just now"
     }
 }
 
