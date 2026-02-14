@@ -467,6 +467,43 @@ class PlaylistItemsPresenterTest {
             }
         }
 
+    /**
+     * Test 15: Toggle Item Visibility - Failure Case
+     * Verify that toggle failure propagates error message to UI state
+     */
+    @Test
+    fun `toggle item visibility failure displays error message`() =
+        runTest {
+            // Given
+            val items = listOf(createTestPlaylistItem(id = 1, deviceId = 1, isVisible = true))
+            val repository = FakePlaylistItemsRepository(Result.success(items))
+            val updateError = "API Error: 500 Internal Server Error"
+            repository.setUpdateVisibilityError(updateError)
+
+            val screen = PlaylistItemsScreen(deviceId = null, deviceName = "All Devices")
+            val navigator = FakeNavigator(screen)
+            val presenter = createPresenter(screen = screen, navigator = navigator, repository = repository)
+
+            // When/Then
+            presenter.test {
+                // Wait for initial load
+                var state: PlaylistItemsScreen.State
+                do {
+                    state = awaitItem()
+                } while (state.isLoading)
+
+                // Send toggle event
+                state.eventSink(PlaylistItemsScreen.Event.ToggleItemVisibility(1, false))
+
+                // Wait for error state
+                do {
+                    state = awaitItem()
+                } while (state.errorMessage == null)
+
+                assertThat(state.errorMessage).isEqualTo("Failed to toggle visibility: $updateError")
+            }
+        }
+
     // Helper function to create presenter with dependencies
     private fun createPresenter(
         screen: PlaylistItemsScreen,

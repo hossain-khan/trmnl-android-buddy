@@ -471,12 +471,19 @@ interface TrmnlApiService {
      *
      * @param id Playlist item ID to update
      * @param authorization Bearer token with format "Bearer user_xxxxxx"
-     * @param visible New visibility status (true = visible/active, false = hidden)
+     * @param body Request body containing the new visibility status,
+     * with key "visible" (true = visible/active, false = hidden)
      * @return ApiResult with empty body on success (204) or error
      *
      * Example usage:
      * ```kotlin
-     * when (val result = api.updatePlaylistItemVisibility(12345, "Bearer user_abc123", visible = false)) {
+     * when (
+     *     val result = api.updatePlaylistItemVisibility(
+     *         id = 12345,
+     *         authorization = "Bearer user_abc123",
+     *         body = mapOf("visible" to false),
+     *     )
+     * ) {
      *     is ApiResult.Success -> println("Item hidden successfully")
      *     is ApiResult.Failure.HttpFailure -> when (result.code) {
      *         404 -> println("Playlist item not found")

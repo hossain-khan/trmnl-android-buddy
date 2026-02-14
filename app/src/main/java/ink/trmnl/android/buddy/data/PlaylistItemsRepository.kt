@@ -313,6 +313,11 @@ class PlaylistItemsRepositoryImpl
         ): Result<PlaylistItemUi?> =
             withContext(Dispatchers.IO) {
                 try {
+                    // Fetch API key first before performing optimistic update
+                    val apiKey =
+                        userPreferencesRepository.userPreferencesFlow.first().apiToken
+                            ?: return@withContext Result.failure(Exception("API key not available"))
+
                     val currentCache = cache?.items ?: emptyList()
                     val itemToUpdate =
                         currentCache.find { it.id == itemId }
@@ -326,9 +331,6 @@ class PlaylistItemsRepositoryImpl
                     Timber.d("Optimistically updated item $itemId visibility to $visible")
 
                     // Make API call to persist the change
-                    val apiKey =
-                        userPreferencesRepository.userPreferencesFlow.first().apiToken
-                            ?: return@withContext Result.failure(Exception("API key not available"))
 
                     val result =
                         apiService.updatePlaylistItemVisibility(
@@ -352,7 +354,12 @@ class PlaylistItemsRepositoryImpl
                         }
                     }
                 } catch (e: Exception) {
-                    Timber.e(e, "Error updating visibility")
+                    // Revert optimistic update on unexpected exceptions as well
+                    val currentCache = cache?.items ?: emptyList()
+                    val revertedItems = currentCache
+                    cache = CachedData(revertedItems, cache?.timestamp ?: Clock.System.now())
+                    _itemsFlow.value = revertedItems
+                    Timber.e(e, "Error updating visibility, reverted cache")
                     Result.failure(e)
                 }
             }
