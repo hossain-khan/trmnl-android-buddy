@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Consolidated `formatRelativeDate()` into shared utility**: Extracted duplicate `formatRelativeDate()` function from BlogPostsContent, AnnouncementsContent, and ContentCarouselComponents into `FormattingUtils.kt`
   - Reduces code duplication across 3 files
   - Added KDoc documentation and unit tests for the shared function
+- **Recipes catalog fetch flow reuse**: Extracted shared first-page fetch helper and updated KDoc to match current behavior, reducing duplicated loading/error handling code in the presenter
 
 ### Fixed
 - **Disclaimer card visibility**: DisclaimerCard is now only shown when there is an actual battery prediction available
