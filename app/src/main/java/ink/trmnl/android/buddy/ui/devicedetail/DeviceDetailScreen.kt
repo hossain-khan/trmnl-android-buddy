@@ -28,7 +28,10 @@ data class DeviceDetailScreen(
         val currentVoltage: Double?,
         val wifiStrength: Double,
         val rssi: Int?,
-        val refreshRate: Int?, // in seconds, null if not available
+        /**
+         * in seconds, null if not available
+         */
+        val refreshRate: Int?,
         val batteryHistory: List<BatteryHistoryEntity> = emptyList(),
         val isLoading: Boolean = true,
         val isBatteryTrackingEnabled: Boolean = true,
@@ -37,7 +40,10 @@ data class DeviceDetailScreen(
         val clearHistoryReason: BatteryHistoryAnalyzer.ClearHistoryReason? = null,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
-        val isPlaylistItemsLoading: Boolean = true, // Tracks playlist items prefetch progress
+        /**
+         * Tracks playlist items prefetch progress
+         */
+        val isPlaylistItemsLoading: Boolean = true,
         /**
          * Total number of playlist items for this device.
          * Calculated from the device-specific filtered items in the repository cache.
