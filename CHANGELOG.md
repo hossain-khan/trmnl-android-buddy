@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added architecture explanations for TrmnlDevicesPresenter, DeviceDetailPresenter, and AuthenticationPresenter
   - Documented state composition, event handling, and navigation patterns
   - Improved understanding of Circuit best practices (remember vs rememberRetained vs rememberSaveable)
+- **Recipes catalog fetch flow reuse**: Extracted shared first-page fetch helper and updated KDoc to match current behavior, reducing duplicated loading/error handling code in the presenter
 
 ### Fixed
 - **Disclaimer card visibility**: DisclaimerCard is now only shown when there is an actual battery prediction available
