@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Support for Onyx BOOX devices**: Added new device kind filter for BOOX e-readers, tablets, and monitors
+  - Devices with name prefix `boox_` are now categorized as BOOX instead of generic BYOD
+  - New filter chip in device catalog for easy filtering by BOOX brand
+  - Custom BOOX logo displayed in device lists and details
+  - https://www.boox.com/
 - **Playlist item statistics in device detail card**: Display real-time statistics when viewing device details
   - Shows total number of playlist items for the device
   - Displays the currently playing/displayed item name

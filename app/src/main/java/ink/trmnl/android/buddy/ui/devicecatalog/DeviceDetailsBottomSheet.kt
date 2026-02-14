@@ -102,6 +102,7 @@ fun DeviceDetailsBottomSheet(
                         DeviceKind.KINDLE -> R.drawable.amazon_kindle_logo
                         DeviceKind.SEEED_STUDIO -> R.drawable.seed_studio_color_logo
                         DeviceKind.KOBO -> R.drawable.kobo_logo
+                        DeviceKind.BOOX -> R.drawable.boox_logo
                         DeviceKind.BYOD -> null
                     }
 
@@ -306,6 +307,17 @@ private fun DeviceDetailsBottomSheetKindlePreview() {
 
 @PreviewLightDark
 @Composable
+private fun DeviceDetailsBottomSheetBooxPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceDetailsBottomSheet(
+            device = previewDeviceBoox,
+            onDismiss = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
 private fun DeviceDetailsBottomSheetByodPreview() {
     TrmnlBuddyAppTheme {
         DeviceDetailsBottomSheet(
@@ -357,6 +369,27 @@ private val previewDeviceKindle =
         kind = "kindle",
         paletteIds = listOf("gray-256"),
         imageSizeLimit = 524288, // 512 KB
+        imageUploadSupported = true,
+    )
+
+private val previewDeviceBoox =
+    DeviceModel(
+        name = "boox_palma",
+        label = "Palma",
+        description = "Palma",
+        width = 1648,
+        height = 824,
+        colors = 256,
+        bitDepth = 8,
+        scaleFactor = 2.06,
+        rotation = 0,
+        mimeType = "image/png",
+        offsetX = 0,
+        offsetY = 0,
+        publishedAt = "2024-01-01T00:00:00.000Z",
+        kind = "byod",
+        paletteIds = listOf("gray-256"),
+        imageSizeLimit = 92160,
         imageUploadSupported = true,
     )
 
