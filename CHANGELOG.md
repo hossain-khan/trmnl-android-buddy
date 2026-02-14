@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.0] - 2026-02-14
+
 ### Added
 - **Support for Onyx BOOX devices**: Added new device kind filter for BOOX e-readers, tablets, and monitors
-  - Devices with name prefix `boox_` are now categorized as BOOX instead of generic BYOD
+  - Devices with name containing `boox` are now categorized as BOOX instead of generic BYOD
   - New filter chip in device catalog for easy filtering by BOOX brand
   - Custom BOOX logo displayed in device lists and details
   - https://www.boox.com/
@@ -1460,7 +1462,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.12.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.13.0...HEAD
+[2.13.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.12.0...2.13.0
 [2.12.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.11.0...2.12.0
 [2.11.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.10.0...2.11.0
 [2.10.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.9.0...2.10.0
