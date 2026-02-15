@@ -1,0 +1,397 @@
+Diffuse Comparison: 2.12.0 → 2.13.0
+================================================================================
+
+OLD: 2.12.0.apk (signature: V2)
+NEW: 2.13.0.apk (signature: V2)
+
+          │            compressed            │           uncompressed           
+          ├───────────┬───────────┬──────────┼───────────┬───────────┬──────────
+ APK      │ old       │ new       │ diff     │ old       │ new       │ diff     
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+      dex │   4.6 MiB │   4.6 MiB │   +620 B │   4.6 MiB │   4.6 MiB │   +620 B 
+     arsc │ 902.3 KiB │ 902.5 KiB │   +116 B │ 902.2 KiB │ 902.3 KiB │   +116 B 
+ manifest │     3 KiB │     3 KiB │     +2 B │  12.5 KiB │  12.5 KiB │      0 B 
+      res │ 341.7 KiB │ 344.5 KiB │ +2.8 KiB │ 471.7 KiB │ 477.8 KiB │ +6.1 KiB 
+   native │ 202.4 KiB │ 201.2 KiB │ -1.2 KiB │  58.9 KiB │  58.9 KiB │      0 B 
+    asset │  50.3 KiB │  50.3 KiB │    +15 B │   138 KiB │   138 KiB │    +17 B 
+    other │  51.4 KiB │  51.4 KiB │      0 B │ 112.7 KiB │ 112.7 KiB │      0 B 
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+    total │   6.1 MiB │   6.1 MiB │ +2.3 KiB │   6.3 MiB │   6.3 MiB │ +6.8 KiB 
+
+ DEX     │ old   │ new   │ diff          
+─────────┼───────┼───────┼───────────────
+   files │     1 │     1 │   0           
+ strings │ 21653 │ 21665 │ +12 (+18 -6)  
+   types │  7062 │  7061 │  -1 (+1 -2)   
+ classes │  5829 │  5828 │  -1 (+0 -1)   
+ methods │ 30093 │ 30094 │  +1 (+52 -51) 
+  fields │ 19513 │ 19509 │  -4 (+66 -70) 
+
+ ARSC    │ old  │ new  │ diff       
+─────────┼──────┼──────┼────────────
+ configs │  133 │  133 │  0         
+ entries │ 1586 │ 1587 │ +1 (+1 -0) 
+
+=================
+====   APK   ====
+=================
+
+      compressed      │     uncompressed     │                                              
+───────────┬──────────┼───────────┬──────────┤                                              
+ size      │ diff     │ size      │ diff     │ path                                         
+───────────┼──────────┼───────────┼──────────┼──────────────────────────────────────────────
+   2.8 KiB │ +2.8 KiB │   6.1 KiB │ +6.1 KiB │ + res/Mz.xml                                 
+  33.6 KiB │ -1.2 KiB │   9.9 KiB │      0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so 
+   4.6 MiB │   +620 B │   4.6 MiB │   +620 B │ ∆ classes.dex                                
+ 902.5 KiB │   +116 B │ 902.3 KiB │   +116 B │ ∆ resources.arsc                             
+   7.7 KiB │    +17 B │   7.5 KiB │    +17 B │ ∆ assets/dexopt/baseline.prof                
+   2.5 KiB │     +6 B │   2.4 KiB │      0 B │ ∆ res/NA.9.png                               
+     379 B │     -4 B │     281 B │      0 B │ ∆ res/-B.png                                 
+     1 KiB │     -2 B │     891 B │      0 B │ ∆ assets/dexopt/baseline.profm               
+     3 KiB │     +2 B │  12.5 KiB │      0 B │ ∆ AndroidManifest.xml                        
+     322 B │     -2 B │     224 B │      0 B │ ∆ res/kp.png                                 
+     434 B │     +1 B │     816 B │      0 B │ ∆ res/kn.xml                                 
+───────────┼──────────┼───────────┼──────────┼──────────────────────────────────────────────
+   5.6 MiB │ +2.3 KiB │   5.5 MiB │ +6.8 KiB │ (total)                                      
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 30                      │ 31                      
+ version name │ 2.12.0                  │ 2.13.0                  
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="30"
+-    android:versionName="2.12.0"
++    android:versionCode="31"
++    android:versionName="2.13.0"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
+====   DEX   ====
+=================
+
+STRINGS:
+
+   old   │ new   │ diff         
+  ───────┼───────┼──────────────
+   21653 │ 21665 │ +12 (+18 -6) 
+  
+  + , boox=
+  + 2.13.0
+  + 2.13.0 (release)
+  + BOOX
+  + BOOX (
+  + Failed to toggle visibility: 
+  + LLLLLLLLLLL
+  + Palma
+  + Unexpected error occurred
+  + Unknown network issue
+  + [Lv9/s0;
+  + boox
+  + boox_palma
+  + instant
+  + palma
+  + r8-map-id-7738202e7cbb2185013ad72f48afd29eeb124482020534fcc2e9eed977227db9
+  + response
+  + ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"7738202e7cbb2185013ad72f48afd29eeb124482020534fcc2e9eed977227db9","r8-mode":"full","version":"8.13.6"}
+  
+  - 2.12.0
+  - 2.12.0 (release)
+  - Lv9/u0;
+  - [Lv9/u0;
+  - r8-map-id-700eba3ebeaa3f1d36772500fdb95476e5d6393b8e915c8a4f70f877c889d017
+  - ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"700eba3ebeaa3f1d36772500fdb95476e5d6393b8e915c8a4f70f877c889d017","r8-mode":"full","version":"8.13.6"}
+  
+
+TYPES:
+
+   old  │ new  │ diff       
+  ──────┼──────┼────────────
+   7062 │ 7061 │ -1 (+1 -2) 
+  
+  + [Lv9/s0;
+  
+  - Lv9/u0;
+  - [Lv9/u0;
+  
+
+METHODS:
+
+   old   │ new   │ diff         
+  ───────┼───────┼──────────────
+   30093 │ 30094 │ +1 (+52 -51) 
+  
+  + a0.n0 t(Object) → Object
+  + a0.n0 u(Object) → Object
+  + b9.c a(List) → a
+  + ca.a a(Instant) → String
+  + ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsPresenterFactory(y) → a
+  + ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsPresenterFactory(y) → a
+  + j9.z <init>(r1, g1, c)
+  + k9.g c(g, String, t0, c, c, c, c, c, c, i) → Object
+  + k9.g d(g, c, c, c, c) → Object
+  + p9.h0 <init>(int, int, int, int, int, int, int)
+  + v9.a0 createFromParcel(Parcel) → Object
+  + v9.a0 newArray(int) → Object[]
+  + v9.b0 <clinit>()
+  + v9.b0 equals(Object) → boolean
+  + v9.b0 hashCode() → int
+  + v9.b0 toString() → String
+  + v9.c0 <init>(Recipe)
+  + v9.d0 <clinit>()
+  + v9.e0 <init>(String)
+  + v9.g0 <clinit>()
+  + v9.i <init>(r0, int)
+  + v9.j <init>(r0, int)
+  + v9.k0 <init>(Recipe)
+  + v9.k <init>(r0, int)
+  + v9.l0 <clinit>()
+  + v9.l <init>(r0, int)
+  + v9.n0 <init>(String)
+  + v9.o0 <init>(t0)
+  + v9.p0 <clinit>()
+  + v9.q g(r0, s, t, int, int)
+  + v9.q j(t0, c, s, t, int)
+  + v9.r0 <init>(List, Set, String, t0, List, Set, boolean, boolean, boolean, String, int, boolean, int, Recipe, c)
+  + v9.r0 equals(Object) → boolean
+  + v9.r0 hashCode() → int
+  + v9.r0 toString() → String
+  + v9.s0 <clinit>()
+  + v9.s0 describeContents() → int
+  + v9.s0 writeToParcel(Parcel, int)
+  + v9.t0 <init>(String, int, String, String)
+  + v9.t0 valueOf(String) → t0
+  + v9.t0 values() → t0[]
+  + v9.u <init>(g, g1, g1, g1, g1, g1, g1, g1, c, int)
+  + v9.u c(c, Object) → c
+  + v9.u h(Object, Object) → Object
+  + v9.u p(Object) → Object
+  + v9.v <init>(g, q0, g1, g1, g1, g1, g1, g1, g1, c, int)
+  + v9.v <init>(q0, s0, e, Object, c)
+  + v9.w <init>(g1, int)
+  + v9.w j(Object) → Object
+  + v9.y <init>(t)
+  + v9.y a(a, d, a) → b
+  + v9.z p(Object) → Object
+  
+  - ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsPresenterFactory(z) → a
+  - ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsPresenterFactory(z) → a
+  - j9.z <init>(Object, g1, c, int)
+  - k9.g c(g, c, c, c, c) → Object
+  - k9.g d(g1, boolean)
+  - p9.h0 <init>(int, int, int, int, int, int)
+  - s9.g e(Instant) → String
+  - v9.a0 p(Object) → Object
+  - v9.b0 createFromParcel(Parcel) → Object
+  - v9.b0 newArray(int) → Object[]
+  - v9.c0 <clinit>()
+  - v9.d0 <init>(Recipe)
+  - v9.e0 <clinit>()
+  - v9.g0 <init>(String)
+  - v9.i <init>(s0, int)
+  - v9.j <init>(s0, int)
+  - v9.k0 <clinit>()
+  - v9.k <init>(s0, int)
+  - v9.l0 <init>(Recipe)
+  - v9.l <init>(s0, int)
+  - v9.n0 <clinit>()
+  - v9.o0 <init>(String)
+  - v9.p0 <init>(u0)
+  - v9.q0 <clinit>()
+  - v9.q0 equals(Object) → boolean
+  - v9.q0 hashCode() → int
+  - v9.q0 toString() → String
+  - v9.q g(s0, s, t, int, int)
+  - v9.q j(u0, c, s, t, int)
+  - v9.s0 <init>(List, Set, String, u0, List, Set, boolean, boolean, boolean, String, int, boolean, int, Recipe, c)
+  - v9.t0 describeContents() → int
+  - v9.t0 equals(Object) → boolean
+  - v9.t0 hashCode() → int
+  - v9.t0 toString() → String
+  - v9.t0 writeToParcel(Parcel, int)
+  - v9.u0 <clinit>()
+  - v9.u0 <init>(String, int, String, String)
+  - v9.u0 valueOf(String) → u0
+  - v9.u0 values() → u0[]
+  - v9.u <init>(g1, g1, g1, g1, g1, int)
+  - v9.u j(Object) → Object
+  - v9.v <init>(g, g1, g1, g1, g1, g1, g1, g1, c, int)
+  - v9.w <init>(g, r0, g1, g1, g1, g1, g1, g1, g1, c, int)
+  - v9.w <init>(q0, s0, e, Object, c)
+  - v9.w c(c, Object) → c
+  - v9.w h(Object, Object) → Object
+  - v9.w p(Object) → Object
+  - v9.y <init>(g1, int)
+  - v9.y invoke() → Object
+  - v9.z <init>(t)
+  - v9.z a(a, d, a) → b
+  
+
+FIELDS:
+
+   old   │ new   │ diff         
+  ───────┼───────┼──────────────
+   19513 │ 19509 │ -4 (+66 -70) 
+  
+  + p9.f0 j: f0
+  + p9.f0 k: f0[]
+  + p9.h0 g: int
+  + v9.b0 a: b0
+  + v9.c0 a: Recipe
+  + v9.d0 a: d0
+  + v9.e0 a: String
+  + v9.g0 a: g0
+  + v9.i f: r0
+  + v9.j f: r0
+  + v9.k0 a: Recipe
+  + v9.k f: r0
+  + v9.l0 a: l0
+  + v9.l f: r0
+  + v9.n0 a: String
+  + v9.o0 a: t0
+  + v9.p0 a: p0
+  + v9.r0 a: List
+  + v9.r0 b: Set
+  + v9.r0 c: String
+  + v9.r0 d: t0
+  + v9.r0 e: List
+  + v9.r0 f: Set
+  + v9.r0 g: boolean
+  + v9.r0 h: boolean
+  + v9.r0 i: boolean
+  + v9.r0 j: String
+  + v9.r0 k: int
+  + v9.r0 l: boolean
+  + v9.r0 m: int
+  + v9.r0 n: Recipe
+  + v9.r0 o: c
+  + v9.s0 CREATOR: Parcelable$Creator
+  + v9.s0 e: s0
+  + v9.t0 e: String
+  + v9.t0 f: String
+  + v9.t0 g: t0
+  + v9.t0 h: t0[]
+  + v9.t0 i: b
+  + v9.u i: int
+  + v9.u j: int
+  + v9.u k: g
+  + v9.u l: g1
+  + v9.u m: g1
+  + v9.u n: g1
+  + v9.u o: g1
+  + v9.u p: g1
+  + v9.u q: g1
+  + v9.u r: g1
+  + v9.v k: Object
+  + v9.v l: Object
+  + v9.v m: Object
+  + v9.v n: Object
+  + v9.v o: Object
+  + v9.v p: Object
+  + v9.v q: Object
+  + v9.v r: Object
+  + v9.v s: Object
+  + v9.w e: int
+  + v9.w f: g1
+  + v9.y a: t
+  + v9.z h: a
+  + v9.z i: c
+  + v9.z j: c
+  + v9.z k: Object
+  + v9.z l: int
+  
+  - p9.f0 j: f0[]
+  - v9.a0 h: a
+  - v9.a0 i: c
+  - v9.a0 j: c
+  - v9.a0 k: Object
+  - v9.a0 l: int
+  - v9.c0 a: c0
+  - v9.d0 a: Recipe
+  - v9.e0 a: e0
+  - v9.g0 a: String
+  - v9.i f: s0
+  - v9.j f: s0
+  - v9.k0 a: k0
+  - v9.k f: s0
+  - v9.l0 a: Recipe
+  - v9.l f: s0
+  - v9.n0 a: n0
+  - v9.o0 a: String
+  - v9.p0 a: u0
+  - v9.q0 a: q0
+  - v9.s0 a: List
+  - v9.s0 b: Set
+  - v9.s0 c: String
+  - v9.s0 d: u0
+  - v9.s0 e: List
+  - v9.s0 f: Set
+  - v9.s0 g: boolean
+  - v9.s0 h: boolean
+  - v9.s0 i: boolean
+  - v9.s0 j: String
+  - v9.s0 k: int
+  - v9.s0 l: boolean
+  - v9.s0 m: int
+  - v9.s0 n: Recipe
+  - v9.s0 o: c
+  - v9.t0 CREATOR: Parcelable$Creator
+  - v9.t0 e: t0
+  - v9.u0 e: String
+  - v9.u0 f: String
+  - v9.u0 g: u0
+  - v9.u0 h: u0[]
+  - v9.u0 i: b
+  - v9.u e: int
+  - v9.u f: g1
+  - v9.u g: g1
+  - v9.u h: g1
+  - v9.u i: g1
+  - v9.u j: g1
+  - v9.v k: g
+  - v9.v l: g1
+  - v9.v m: g1
+  - v9.v n: g1
+  - v9.v o: g1
+  - v9.v p: g1
+  - v9.v q: g1
+  - v9.v r: g1
+  - v9.w i: int
+  - v9.w j: int
+  - v9.w k: Object
+  - v9.w l: Object
+  - v9.w m: Object
+  - v9.w n: Object
+  - v9.w o: Object
+  - v9.w p: Object
+  - v9.w q: Object
+  - v9.w r: Object
+  - v9.w s: Object
+  - v9.y e: int
+  - v9.y f: g1
+  - v9.z a: t
+  
+
+
+==================
+====   ARSC   ====
+==================
+
+ENTRIES:
+
+   old  │ new  │ diff       
+  ──────┼──────┼────────────
+   1586 │ 1587 │ +1 (+1 -0) 
+  + drawable/boox_logo_vector
+  
+
+

@@ -1,0 +1,78 @@
+Diffuse Comparison: 2.12.0 → 2.13.0
+================================================================================
+
+OLD: 2.12.0.apk (signature: V2)
+NEW: 2.13.0.apk (signature: V2)
+
+          │            compressed            │           uncompressed           
+          ├───────────┬───────────┬──────────┼───────────┬───────────┬──────────
+ APK      │ old       │ new       │ diff     │ old       │ new       │ diff     
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+      dex │   4.6 MiB │   4.6 MiB │   +620 B │   4.6 MiB │   4.6 MiB │   +620 B 
+     arsc │ 902.3 KiB │ 902.5 KiB │   +116 B │ 902.2 KiB │ 902.3 KiB │   +116 B 
+ manifest │     3 KiB │     3 KiB │     +2 B │  12.5 KiB │  12.5 KiB │      0 B 
+      res │ 341.7 KiB │ 344.5 KiB │ +2.8 KiB │ 471.7 KiB │ 477.8 KiB │ +6.1 KiB 
+   native │ 202.4 KiB │ 201.2 KiB │ -1.2 KiB │  58.9 KiB │  58.9 KiB │      0 B 
+    asset │  50.3 KiB │  50.3 KiB │    +15 B │   138 KiB │   138 KiB │    +17 B 
+    other │  51.4 KiB │  51.4 KiB │      0 B │ 112.7 KiB │ 112.7 KiB │      0 B 
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+    total │   6.1 MiB │   6.1 MiB │ +2.3 KiB │   6.3 MiB │   6.3 MiB │ +6.8 KiB 
+
+ DEX     │ old   │ new   │ diff          
+─────────┼───────┼───────┼───────────────
+   files │     1 │     1 │   0           
+ strings │ 21653 │ 21665 │ +12 (+18 -6)  
+   types │  7062 │  7061 │  -1 (+1 -2)   
+ classes │  5829 │  5828 │  -1 (+0 -1)   
+ methods │ 30093 │ 30094 │  +1 (+52 -51) 
+  fields │ 19513 │ 19509 │  -4 (+66 -70) 
+
+ ARSC    │ old  │ new  │ diff       
+─────────┼──────┼──────┼────────────
+ configs │  133 │  133 │  0         
+ entries │ 1586 │ 1587 │ +1 (+1 -0) 
+
+=================
+====   APK   ====
+=================
+
+      compressed      │     uncompressed     │                                              
+───────────┬──────────┼───────────┬──────────┤                                              
+ size      │ diff     │ size      │ diff     │ path                                         
+───────────┼──────────┼───────────┼──────────┼──────────────────────────────────────────────
+   2.8 KiB │ +2.8 KiB │   6.1 KiB │ +6.1 KiB │ + res/Mz.xml                                 
+  33.6 KiB │ -1.2 KiB │   9.9 KiB │      0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so 
+   4.6 MiB │   +620 B │   4.6 MiB │   +620 B │ ∆ classes.dex                                
+ 902.5 KiB │   +116 B │ 902.3 KiB │   +116 B │ ∆ resources.arsc                             
+   7.7 KiB │    +17 B │   7.5 KiB │    +17 B │ ∆ assets/dexopt/baseline.prof                
+   2.5 KiB │     +6 B │   2.4 KiB │      0 B │ ∆ res/NA.9.png                               
+     379 B │     -4 B │     281 B │      0 B │ ∆ res/-B.png                                 
+     1 KiB │     -2 B │     891 B │      0 B │ ∆ assets/dexopt/baseline.profm               
+     3 KiB │     +2 B │  12.5 KiB │      0 B │ ∆ AndroidManifest.xml                        
+     322 B │     -2 B │     224 B │      0 B │ ∆ res/kp.png                                 
+     434 B │     +1 B │     816 B │      0 B │ ∆ res/kn.xml                                 
+───────────┼──────────┼───────────┼──────────┼──────────────────────────────────────────────
+   5.6 MiB │ +2.3 KiB │   5.5 MiB │ +6.8 KiB │ (total)                                      
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 30                      │ 31                      
+ version name │ 2.12.0                  │ 2.13.0                  
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="30"
+-    android:versionName="2.12.0"
++    android:versionCode="31"
++    android:versionName="2.13.0"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
