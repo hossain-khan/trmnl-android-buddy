@@ -1,0 +1,73 @@
+Diffuse Comparison: 2.11.0 → 2.12.0
+================================================================================
+
+OLD: 2.11.0.apk (signature: V2)
+NEW: 2.12.0.apk (signature: V2)
+
+          │            compressed            │           uncompressed           
+          ├───────────┬───────────┬──────────┼───────────┬───────────┬──────────
+ APK      │ old       │ new       │ diff     │ old       │ new       │ diff     
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+      dex │   4.6 MiB │   4.6 MiB │ +3.9 KiB │   4.6 MiB │   4.6 MiB │ +3.9 KiB 
+     arsc │ 902.3 KiB │ 902.3 KiB │      0 B │ 902.2 KiB │ 902.2 KiB │      0 B 
+ manifest │     3 KiB │     3 KiB │     -2 B │  12.5 KiB │  12.5 KiB │      0 B 
+      res │ 341.7 KiB │ 341.7 KiB │     +4 B │ 471.7 KiB │ 471.7 KiB │      0 B 
+   native │ 178.4 KiB │ 202.4 KiB │  +24 KiB │  58.9 KiB │  58.9 KiB │      0 B 
+    asset │  50.2 KiB │  50.3 KiB │    +38 B │   138 KiB │   138 KiB │    +34 B 
+    other │  51.4 KiB │  51.4 KiB │      0 B │ 112.7 KiB │ 112.7 KiB │      0 B 
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+    total │   6.1 MiB │   6.1 MiB │  +28 KiB │   6.3 MiB │   6.3 MiB │   +4 KiB 
+
+ DEX     │ old   │ new   │ diff            
+─────────┼───────┼───────┼─────────────────
+   files │     1 │     1 │   0             
+ strings │ 21636 │ 21653 │ +17 (+48 -31)   
+   types │  7058 │  7062 │  +4 (+13 -9)    
+ classes │  5825 │  5829 │  +4 (+7 -3)     
+ methods │ 30076 │ 30093 │ +17 (+493 -476) 
+  fields │ 19507 │ 19513 │  +6 (+675 -669) 
+
+ ARSC    │ old  │ new  │ diff 
+─────────┼──────┼──────┼──────
+ configs │  133 │  133 │  0   
+ entries │ 1586 │ 1586 │  0   
+
+=================
+====   APK   ====
+=================
+
+     compressed      │    uncompressed     │                                              
+──────────┬──────────┼──────────┬──────────┤                                              
+ size     │ diff     │ size     │ diff     │ path                                         
+──────────┼──────────┼──────────┼──────────┼──────────────────────────────────────────────
+ 34.9 KiB │  +24 KiB │  9.9 KiB │      0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so 
+  4.6 MiB │ +3.9 KiB │  4.6 MiB │ +3.9 KiB │ ∆ classes.dex                                
+  7.7 KiB │    +30 B │  7.5 KiB │    +30 B │ ∆ assets/dexopt/baseline.prof                
+    1 KiB │     +8 B │    891 B │     +4 B │ ∆ assets/dexopt/baseline.profm               
+    383 B │     +4 B │    281 B │      0 B │ ∆ res/-B.png                                 
+    3 KiB │     -2 B │ 12.5 KiB │      0 B │ ∆ AndroidManifest.xml                        
+──────────┼──────────┼──────────┼──────────┼──────────────────────────────────────────────
+  4.7 MiB │  +28 KiB │  4.7 MiB │   +4 KiB │ (total)                                      
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 29                      │ 30                      
+ version name │ 2.11.0                  │ 2.12.0                  
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="29"
+-    android:versionName="2.11.0"
++    android:versionCode="30"
++    android:versionName="2.12.0"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================

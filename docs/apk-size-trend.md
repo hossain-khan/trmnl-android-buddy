@@ -2,11 +2,11 @@
 
 This report shows the APK size evolution across releases using [Diffuse](https://github.com/JakeWharton/diffuse).
 
-**Generated**: 2026-02-01 21:41:30
+**Generated**: 2026-02-15 17:20:55
 
 **Repository**: `hossain-khan/trmnl-android-buddy`
 
-**Releases Analyzed**: 27
+**Releases Analyzed**: 31
 
 ## Release History
 
@@ -39,6 +39,10 @@ This report shows the APK size evolution across releases using [Diffuse](https:/
 | 2.7.2 | 2025-12-28 | 5.98 MB |
 | 2.8.0 | 2026-01-21 | 6.01 MB |
 | 2.9.0 | 2026-02-02 | 6.01 MB |
+| 2.10.0 | 2026-02-10 | 6.01 MB |
+| 2.11.0 | 2026-02-13 | 6.06 MB |
+| 2.12.0 | 2026-02-13 | 6.08 MB |
+| 2.13.0 | 2026-02-14 | 6.08 MB |
 
 ## Size Changes Between Releases
 
@@ -351,6 +355,54 @@ This report shows the APK size evolution across releases using [Diffuse](https:/
 **Class Count Change**: +2
 
 [View detailed Diffuse report](apk-diffs/2.8.0_to_2.9.0.txt)
+
+---
+
+### 2.9.0 → 2.10.0
+
+**APK Size**: 6.01 MB → 6.01 MB (➡️ +0.00 MB, +0.0%)
+
+**Method Count Change**: +2
+
+**Class Count Change**: +2
+
+[View detailed Diffuse report](apk-diffs/2.9.0_to_2.10.0.txt)
+
+---
+
+### 2.10.0 → 2.11.0
+
+**APK Size**: 6.01 MB → 6.06 MB (📈 +0.05 MB, +0.8%)
+
+**Method Count Change**: +263
+
+**Class Count Change**: +57
+
+[View detailed Diffuse report](apk-diffs/2.10.0_to_2.11.0.txt)
+
+---
+
+### 2.11.0 → 2.12.0
+
+**APK Size**: 6.06 MB → 6.08 MB (📈 +0.02 MB, +0.3%)
+
+**Method Count Change**: +17
+
+**Class Count Change**: +4
+
+[View detailed Diffuse report](apk-diffs/2.11.0_to_2.12.0.txt)
+
+---
+
+### 2.12.0 → 2.13.0
+
+**APK Size**: 6.08 MB → 6.08 MB (📈 +0.00 MB, +0.0%)
+
+**Method Count Change**: +1
+
+**Class Count Change**: -1
+
+[View detailed Diffuse report](apk-diffs/2.12.0_to_2.13.0.txt)
 
 ---
 

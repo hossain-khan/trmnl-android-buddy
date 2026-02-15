@@ -1,0 +1,970 @@
+Diffuse Comparison: 2.9.0 → 2.10.0
+================================================================================
+
+OLD: 2.9.0.apk (signature: V2)
+NEW: 2.10.0.apk (signature: V2)
+
+          │            compressed            │           uncompressed           
+          ├───────────┬───────────┬──────────┼───────────┬───────────┬──────────
+ APK      │ old       │ new       │ diff     │ old       │ new       │ diff     
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+      dex │   4.6 MiB │   4.6 MiB │ +3.5 KiB │   4.6 MiB │   4.6 MiB │ +3.5 KiB 
+     arsc │ 901.4 KiB │ 901.4 KiB │      0 B │ 901.3 KiB │ 901.3 KiB │      0 B 
+ manifest │     3 KiB │     3 KiB │      0 B │  12.5 KiB │  12.5 KiB │     +4 B 
+      res │ 338.4 KiB │ 338.4 KiB │      0 B │ 466.8 KiB │ 466.8 KiB │      0 B 
+   native │   197 KiB │   190 KiB │   -7 KiB │  58.9 KiB │  58.9 KiB │      0 B 
+    asset │  50.2 KiB │  50.2 KiB │     +4 B │ 137.9 KiB │ 137.9 KiB │     +4 B 
+    other │  51.4 KiB │  51.4 KiB │     -1 B │ 112.7 KiB │ 112.7 KiB │      0 B 
+──────────┼───────────┼───────────┼──────────┼───────────┼───────────┼──────────
+    total │   6.1 MiB │   6.1 MiB │ -3.5 KiB │   6.2 MiB │   6.2 MiB │ +3.5 KiB 
+
+ DEX     │ old   │ new   │ diff            
+─────────┼───────┼───────┼─────────────────
+   files │     1 │     1 │   0             
+ strings │ 21418 │ 21446 │ +28 (+41 -13)   
+   types │  6996 │  6998 │  +2 (+5 -3)     
+ classes │  5766 │  5768 │  +2 (+3 -1)     
+ methods │ 29811 │ 29813 │  +2 (+168 -166) 
+  fields │ 19256 │ 19265 │  +9 (+235 -226) 
+
+ ARSC    │ old  │ new  │ diff 
+─────────┼──────┼──────┼──────
+ configs │  133 │  133 │  0   
+ entries │ 1580 │ 1580 │  0   
+
+=================
+====   APK   ====
+=================
+
+     compressed      │    uncompressed     │                                              
+──────────┬──────────┼──────────┬──────────┤                                              
+ size     │ diff     │ size     │ diff     │ path                                         
+──────────┼──────────┼──────────┼──────────┼──────────────────────────────────────────────
+ 22.5 KiB │   -7 KiB │  9.9 KiB │      0 B │ ∆ lib/arm64-v8a/libandroidx.graphics.path.so 
+  4.6 MiB │ +3.5 KiB │  4.6 MiB │ +3.5 KiB │ ∆ classes.dex                                
+  7.6 KiB │     +3 B │  7.5 KiB │     +1 B │ ∆ assets/dexopt/baseline.prof                
+    271 B │     -1 B │    120 B │      0 B │ ∆ META-INF/version-control-info.textproto    
+  1,011 B │     +1 B │    879 B │     +3 B │ ∆ assets/dexopt/baseline.profm               
+    3 KiB │      0 B │ 12.5 KiB │     +4 B │ ∆ AndroidManifest.xml                        
+──────────┼──────────┼──────────┼──────────┼──────────────────────────────────────────────
+  4.6 MiB │ -3.5 KiB │  4.6 MiB │ +3.5 KiB │ (total)                                      
+
+
+======================
+====   MANIFEST   ====
+======================
+
+              │ old                     │ new                     
+──────────────┼─────────────────────────┼─────────────────────────
+ package      │ ink.trmnl.android.buddy │ ink.trmnl.android.buddy 
+ version code │ 27                      │ 28                      
+ version name │ 2.9.0                   │ 2.10.0                  
+
+@@ -3,4 +3,4 @@
+     android:compileSdkVersionCodename="16"
+-    android:versionCode="27"
+-    android:versionName="2.9.0"
++    android:versionCode="28"
++    android:versionName="2.10.0"
+     package="ink.trmnl.android.buddy"
+
+
+
+=================
+====   DEX   ====
+=================
+
+STRINGS:
+
+   old   │ new   │ diff          
+  ───────┼───────┼───────────────
+   21418 │ 21446 │ +28 (+41 -13) 
+  
+  + 1.5h
+  + 10m
+  + 12h
+  + 15m
+  + 1h
+  + 1x/day
+  + 2.10.0
+  + 2.10.0 (release)
+  + 24h
+  + 2h
+  + 2x/day
+  + 30m
+  + 3x/day
+  + 45m
+  + 4h
+  + 4x/day
+  + 5m
+  + 6h
+  + 8h
+  + Every 10 mins
+  + Every 15 mins
+  + Every 2 hrs
+  + Every 30 mins
+  + Every 4 hrs
+  + Every 45 mins
+  + Every 5 mins
+  + Every 90 mins
+  + Hourly
+  + Laa/c;
+  + Lp9/g0;
+  + Lp9/h0;
+  + Refresh Rate
+  + VDLDLLLLI
+  + VLDLDL
+  + VLLDLDLL
+  + VLLDLDLLLZZZZLZIL
+  + VLLLIILLLLLLLL
+  + [Lp9/h0;
+  + [Lr9/e1;
+  + r8-map-id-3e39d71cfe6edde083b1efba65d6965fa2b19440a7b9e8cab6845b0a1d9f3fe5
+  + ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"3e39d71cfe6edde083b1efba65d6965fa2b19440a7b9e8cab6845b0a1d9f3fe5","r8-mode":"full","version":"8.13.6"}
+  
+  -  seconds
+  - 2.9.0
+  - 2.9.0 (release)
+  - Lr9/k1;
+  - VDLDL
+  - VDLDLLI
+  - VLLDLDL
+  - VLLDLDLLZZZZLZIL
+  - VLLLIILLLLLLL
+  - [Lp9/f0;
+  - [Lr9/f1;
+  - r8-map-id-f9f282d07e556b331da32b719775407bf28a362051ff0873d04d6cd46328dece
+  - ~~R8{"backend":"dex","compilation-mode":"release","has-checksums":false,"min-api":28,"pg-map-id":"f9f282d07e556b331da32b719775407bf28a362051ff0873d04d6cd46328dece","r8-mode":"full","version":"8.13.6"}
+  
+
+TYPES:
+
+   old  │ new  │ diff       
+  ──────┼──────┼────────────
+   6996 │ 6998 │ +2 (+5 -3) 
+  
+  + Laa/c;
+  + Lp9/g0;
+  + Lp9/h0;
+  + [Lp9/h0;
+  + [Lr9/e1;
+  
+  - Lr9/k1;
+  - [Lp9/f0;
+  - [Lr9/f1;
+  
+
+METHODS:
+
+   old   │ new   │ diff           
+  ───────┼───────┼────────────────
+   29811 │ 29813 │ +2 (+168 -166) 
+  
+  + a0.o <init>(m0, c)
+  + a1.s0 <init>(n0, h1, h1, h1, h1, h1, c)
+  + aa.a <clinit>()
+  + aa.b <init>(c, c)
+  + aa.b p(Object) → Object
+  + aa.c <clinit>()
+  + aa.c a(Context, Bitmap, String) → Uri
+  + aa.c b(Context, String, String, c) → Object
+  + aa.c c(String) → String
+  + i9.c0 <init>(h0, d, d, i, a)
+  + ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsPresenterFactory(z) → a
+  + ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsPresenterFactory(o0) → a
+  + ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsUiFactory(c0) → a
+  + ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsPresenterFactory(z) → a
+  + ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsPresenterFactory(o0) → a
+  + ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsUiFactory(c0) → a
+  + p9.a0 createFromParcel(Parcel) → Object
+  + p9.a0 newArray(int) → Object[]
+  + p9.a a(b, a, s, t, int)
+  + p9.a b(b, a, a, t, int)
+  + p9.d0 <clinit>()
+  + p9.d0 equals(Object) → boolean
+  + p9.d0 hashCode() → int
+  + p9.d0 toString() → String
+  + p9.e0 <clinit>()
+  + p9.e <init>(g0, int)
+  + p9.f <init>(g0, int)
+  + p9.g0 <init>(String, String, double, Double, double, Integer, Integer, List, boolean, boolean, boolean, boolean, b, boolean, int, c)
+  + p9.g0 equals(Object) → boolean
+  + p9.g0 hashCode() → int
+  + p9.g0 toString() → String
+  + p9.g <init>(g0, int)
+  + p9.h0 <clinit>()
+  + p9.h0 <init>(String, String, double, Double, double, Integer, Integer)
+  + p9.h0 describeContents() → int
+  + p9.h0 equals(Object) → boolean
+  + p9.h0 hashCode() → int
+  + p9.h0 toString() → String
+  + p9.h0 writeToParcel(Parcel, int)
+  + p9.l <init>(Integer, double, Double, double, Integer)
+  + p9.m <init>(double, Double, double, Integer, Integer, s, int)
+  + p9.n <init>(Integer, double, Double, double, Integer)
+  + p9.p <init>(int, float)
+  + p9.p invoke() → Object
+  + p9.q <init>(List, SimpleDateFormat)
+  + p9.q a(g, double) → String
+  + p9.r <init>(s, a, boolean, int)
+  + p9.r <init>(boolean, a, s, int)
+  + p9.s <init>(List, j, c, int)
+  + p9.s h(Object, Object) → Object
+  + p9.s m(c, Object) → c
+  + p9.s p(Object) → Object
+  + p9.t compare(Object, Object) → int
+  + p9.u <init>(h1, c, int)
+  + p9.u h(Object, Object) → Object
+  + p9.u m(c, Object) → c
+  + p9.u p(Object) → Object
+  + p9.v <clinit>()
+  + p9.v a(List, s, t, int)
+  + p9.v b(List, boolean, boolean, s, t, int)
+  + p9.v c(List, s, t, int)
+  + p9.v d(double, Double, double, Integer, Integer, s, t, int)
+  + p9.v e(g0, s, t, int)
+  + p9.v f(s, t, int)
+  + p9.v g(double, int, s, t, int)
+  + p9.v h(int, t, s, a, boolean)
+  + p9.w <init>(h, h, h)
+  + p9.x <init>(w)
+  + p9.y <init>(c0, c, int)
+  + p9.y h(Object, Object) → Object
+  + p9.y m(c, Object) → c
+  + p9.y p(Object) → Object
+  + p9.z <init>(x)
+  + p9.z a(a, d, a) → b
+  + r9.a0 invoke() → Object
+  + r9.b0 a(b, s, t, int)
+  + r9.c0 a(a, a) → b
+  + r9.d0 <init>(Provider, Provider, h, h, Provider, Provider, Provider)
+  + r9.d1 <init>(List, Map, Map, boolean, String, boolean, boolean, String, List, boolean, boolean, boolean, int, c)
+  + r9.d1 equals(Object) → boolean
+  + r9.d1 hashCode() → int
+  + r9.d1 toString() → String
+  + r9.e0 <init>(z, n0, c, int, int, h1, h1, h1, h1, h1, h1, h1, h1)
+  + r9.e0 i(Object) → Object
+  + r9.e1 <clinit>()
+  + r9.e1 describeContents() → int
+  + r9.e1 writeToParcel(Parcel, int)
+  + r9.f0 <init>(d0)
+  + r9.f1 <init>(d1, int)
+  + r9.f1 h(Object, Object) → Object
+  + r9.g0 <init>(n0, c)
+  + r9.g0 p(Object) → Object
+  + r9.g1 <init>(d1, int)
+  + r9.g1 f(Object, Object, Object) → Object
+  + r9.h0 <init>(n0, c)
+  + r9.h1 <init>(d1, int)
+  + r9.h1 invoke() → Object
+  + r9.h <init>(boolean, s, Device, a, c, int, boolean, a, boolean, c3, c3)
+  + r9.i0 <init>(n0, c)
+  + r9.i1 <init>(d1, int)
+  + r9.i1 i(Object) → Object
+  + r9.i <init>(s, String, String, a, c, int)
+  + r9.j0 <init>(n0, c, int)
+  + r9.j0 h(Object, Object) → Object
+  + r9.j0 m(c, Object) → c
+  + r9.j1 <clinit>()
+  + r9.j1 a(d1, s, t, int, int)
+  + r9.j <init>(boolean, s, String, String, a, c, s, int)
+  + r9.k0 <init>(h1, h1, h1, int)
+  + r9.l0 <init>(n0, h1, c, int)
+  + r9.l0 m(c, Object) → c
+  + r9.l0 p(Object) → Object
+  + r9.m0 <init>(int, c)
+  + r9.m0 <init>(h1, c)
+  + r9.m0 f(Object, Object, Object) → Object
+  + r9.n0 <init>(d, Context, b, i, a, f, c, e)
+  + r9.n0 a(int, t) → b
+  + r9.n0 b(n0, List, Map, t3, c) → Object
+  + r9.n0 c(n0, List, o2, c) → Object
+  + r9.n0 d(n0, c, e, c) → Object
+  + r9.n0 e(h1, boolean)
+  + r9.n <init>(Device, boolean, s, boolean, boolean, int, a, a, a, c, s, int)
+  + r9.o0 <init>(f0)
+  + r9.o0 a(a, d, a) → b
+  + r9.p0 createFromParcel(Parcel) → Object
+  + r9.p0 newArray(int) → Object[]
+  + r9.p <init>(double, Number, float, s, int, int)
+  + r9.p h(Object, Object) → Object
+  + r9.q0 <init>(Device, int)
+  + r9.q0 equals(Object) → boolean
+  + r9.q0 hashCode() → int
+  + r9.q0 toString() → String
+  + r9.q <init>(int, boolean)
+  + r9.r0 <init>(c)
+  + r9.r <clinit>()
+  + r9.r a(double, Double, float, s, t, int)
+  + r9.r b(Device, boolean, s, boolean, boolean, int, a, a, a, c, s, t, int)
+  + r9.r c(int, String, String, String, s, t, int)
+  + r9.r d(boolean, s, String, String, a, c, s, t, int)
+  + r9.r e(int, c, s, t, int, int)
+  + r9.r f(double, Integer, float, s, t, int)
+  + r9.s0 <init>(Device)
+  + r9.s <init>(String, int)
+  + r9.s equals(Object) → boolean
+  + r9.s hashCode() → int
+  + r9.s toString() → String
+  + r9.t0 <init>(Device, s)
+  + r9.t <init>(boolean, List, List, boolean, c, a, Map, Map, boolean, boolean, int, c, c, e, c)
+  + r9.t i(Object) → Object
+  + r9.u0 <init>(Device)
+  + r9.u <init>(List, Map, Map, boolean, c1, List, boolean, boolean, boolean, int, c, c, e, c, a, c, s, int, int)
+  + r9.u h(Object, Object) → Object
+  + r9.v0 <clinit>()
+  + r9.v <init>(List, boolean, c, a)
+  + r9.v <init>(boolean, o, c3, h1)
+  + r9.v f(Object, Object, Object) → Object
+  + r9.w <init>(c, Device, int)
+  + r9.w invoke() → Object
+  + r9.x0 <init>(int)
+  + r9.x <init>(Map, Device, e)
+  + r9.y0 <clinit>()
+  + r9.y <init>(List, Map, Map, boolean, boolean, int, c, c, e, c)
+  + r9.y k(Object, Object, Object, Object) → Object
+  + r9.z <clinit>()
+  + r9.z a(List, Map, Map, boolean, c1, List, boolean, boolean, boolean, int, c, c, e, c, a, c, s, t, int, int)
+  + r9.z b(s, t, int)
+  + r9.z c(String, boolean, a, s, t, int)
+  + r9.z d(s, t, int)
+  
+  - a0.o <init>(n0, c)
+  - a1.s0 <init>(o0, h1, h1, h1, h1, h1, c)
+  - aa.a <init>(b, c)
+  - aa.a p(Object) → Object
+  - aa.b <clinit>()
+  - aa.b a(Context, Bitmap, String) → Uri
+  - aa.b b(Context, String, String, c) → Object
+  - aa.b c(String) → String
+  - i9.c0 <init>(f0, d, d, i, a)
+  - ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsPresenterFactory(x) → a
+  - ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsPresenterFactory(p0) → a
+  - ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph bindIntoSetAsUiFactory(d0) → a
+  - ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsPresenterFactory(x) → a
+  - ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsPresenterFactory(p0) → a
+  - ink.trmnl.android.buddy.di.AppGraph bindIntoSetAsUiFactory(d0) → a
+  - p9.a0 <clinit>()
+  - p9.a0 equals(Object) → boolean
+  - p9.a0 hashCode() → int
+  - p9.a0 toString() → String
+  - p9.a a(List, s, t, int)
+  - p9.a b(List, boolean, boolean, s, t, int)
+  - p9.a c(List, s, t, int)
+  - p9.a d(b, a, s, t, int)
+  - p9.a e(b, a, a, t, int)
+  - p9.a f(double, Double, double, Integer, s, t, int)
+  - p9.a g(e0, s, t, int)
+  - p9.a h(s, t, int)
+  - p9.a i(double, int, s, t, int)
+  - p9.a j(int, t, s, a, boolean)
+  - p9.e0 <init>(String, String, double, Double, double, Integer, List, boolean, boolean, boolean, boolean, b, boolean, int, c)
+  - p9.e <init>(e0, int)
+  - p9.f0 <clinit>()
+  - p9.f0 <init>(String, String, double, Double, double, Integer)
+  - p9.f0 describeContents() → int
+  - p9.f0 equals(Object) → boolean
+  - p9.f0 hashCode() → int
+  - p9.f0 toString() → String
+  - p9.f0 writeToParcel(Parcel, int)
+  - p9.f <init>(e0, int)
+  - p9.g <init>(e0, int)
+  - p9.l <init>(double, Double, double, Integer)
+  - p9.m <init>(double, Double, double, Integer, s, int)
+  - p9.n <init>(double, Double, double, Integer)
+  - p9.p <init>(List, SimpleDateFormat)
+  - p9.p a(g, double) → String
+  - p9.q <init>(s, a, boolean, int)
+  - p9.q <init>(boolean, a, s, int)
+  - p9.q h(Object, Object) → Object
+  - p9.r <init>(List, j, c, int)
+  - p9.r m(c, Object) → c
+  - p9.r p(Object) → Object
+  - p9.s compare(Object, Object) → int
+  - p9.t <init>(h1, c, int)
+  - p9.t h(Object, Object) → Object
+  - p9.t m(c, Object) → c
+  - p9.t p(Object) → Object
+  - p9.u <init>(h, h, h)
+  - p9.v <init>(u)
+  - p9.w <init>(c0, c, int)
+  - p9.w h(Object, Object) → Object
+  - p9.w m(c, Object) → c
+  - p9.w p(Object) → Object
+  - p9.x <init>(v)
+  - p9.x a(a, d, a) → b
+  - p9.y createFromParcel(Parcel) → Object
+  - p9.y newArray(int) → Object[]
+  - p9.z <clinit>()
+  - p9.z equals(Object) → boolean
+  - p9.z hashCode() → int
+  - p9.z toString() → String
+  - r9.a0 a(List, Map, Map, boolean, c1, List, boolean, boolean, boolean, int, c, c, e, c, a, c, s, t, int, int)
+  - r9.a0 b(s, t, int)
+  - r9.a0 c(String, boolean, a, s, t, int)
+  - r9.a0 d(s, t, int)
+  - r9.b0 <clinit>()
+  - r9.b0 invoke() → Object
+  - r9.c0 a(b, s, t, int)
+  - r9.c1 <clinit>()
+  - r9.c1 equals(Object) → boolean
+  - r9.c1 hashCode() → int
+  - r9.c1 toString() → String
+  - r9.d0 a(a, a) → b
+  - r9.e0 <init>(Provider, Provider, h, h, Provider, Provider, Provider)
+  - r9.e1 <init>(List, Map, Map, boolean, String, boolean, boolean, String, List, boolean, boolean, boolean, int, c)
+  - r9.f0 <init>(z, o0, c, int, int, h1, h1, h1, h1, h1, h1, h1)
+  - r9.f0 i(Object) → Object
+  - r9.f1 <clinit>()
+  - r9.f1 describeContents() → int
+  - r9.f1 equals(Object) → boolean
+  - r9.f1 hashCode() → int
+  - r9.f1 toString() → String
+  - r9.f1 writeToParcel(Parcel, int)
+  - r9.g0 <init>(e0)
+  - r9.g1 <init>(e1, int)
+  - r9.g1 h(Object, Object) → Object
+  - r9.h0 <init>(o0, c)
+  - r9.h1 <init>(e1, int)
+  - r9.h1 f(Object, Object, Object) → Object
+  - r9.h <init>(boolean, t, Device, a, c, int, boolean, a, boolean, c3, c3)
+  - r9.i0 <init>(o0, c)
+  - r9.i1 <init>(e1, int)
+  - r9.i1 invoke() → Object
+  - r9.i <init>(t, String, String, a, c, int)
+  - r9.j0 <init>(o0, c)
+  - r9.j1 <init>(e1, int)
+  - r9.j1 i(Object) → Object
+  - r9.j <init>(boolean, t, String, String, a, c, s, int)
+  - r9.k0 <init>(o0, c, int)
+  - r9.k0 m(c, Object) → c
+  - r9.k0 p(Object) → Object
+  - r9.k1 <clinit>()
+  - r9.k1 a(e1, s, t, int, int)
+  - r9.l0 <init>(h1, h1, h1, int)
+  - r9.m0 <init>(o0, h1, c, int)
+  - r9.m0 h(Object, Object) → Object
+  - r9.m0 m(c, Object) → c
+  - r9.n0 <init>(int, c)
+  - r9.n0 <init>(h1, c)
+  - r9.n0 f(Object, Object, Object) → Object
+  - r9.n0 p(Object) → Object
+  - r9.n <init>(Device, boolean, t, boolean, boolean, int, a, a, a, c, s, int)
+  - r9.o0 <init>(d, Context, b, i, a, f, c, e)
+  - r9.o0 a(int, t) → b
+  - r9.o0 b(o0, List, Map, t3, c) → Object
+  - r9.o0 c(o0, List, o2, c) → Object
+  - r9.o0 d(o0, c, e, c) → Object
+  - r9.o0 e(h1, boolean)
+  - r9.p0 <init>(g0)
+  - r9.p0 a(a, d, a) → b
+  - r9.p <init>(float)
+  - r9.p invoke() → Object
+  - r9.q0 createFromParcel(Parcel) → Object
+  - r9.q0 newArray(int) → Object[]
+  - r9.q <init>(double, Number, float, s, int, int)
+  - r9.r0 <init>(Device, int)
+  - r9.r <init>(int, boolean)
+  - r9.r h(Object, Object) → Object
+  - r9.s0 <init>(c)
+  - r9.s <clinit>()
+  - r9.s a(double, Double, float, s, t, int)
+  - r9.s b(Device, boolean, t, boolean, boolean, int, a, a, a, c, s, t, int)
+  - r9.s c(int, String, String, String, s, t, int)
+  - r9.s d(boolean, t, String, String, a, c, s, t, int)
+  - r9.s e(int, c, s, t, int, int)
+  - r9.s f(double, Integer, float, s, t, int)
+  - r9.t0 <init>(Device)
+  - r9.t <init>(String, int)
+  - r9.t equals(Object) → boolean
+  - r9.t hashCode() → int
+  - r9.t toString() → String
+  - r9.u0 <init>(Device, t)
+  - r9.u <init>(boolean, List, List, boolean, c, a, Map, Map, boolean, boolean, int, c, c, e, c)
+  - r9.u i(Object) → Object
+  - r9.v0 <init>(Device)
+  - r9.v <init>(List, Map, Map, boolean, c1, List, boolean, boolean, boolean, int, c, c, e, c, a, c, s, int, int)
+  - r9.v h(Object, Object) → Object
+  - r9.w <init>(List, boolean, c, a)
+  - r9.w <init>(boolean, o, c3, h1)
+  - r9.w f(Object, Object, Object) → Object
+  - r9.x0 <clinit>()
+  - r9.x <init>(c, Device, int)
+  - r9.y0 <init>(int)
+  - r9.y <init>(Map, Device, e)
+  - r9.y invoke() → Object
+  - r9.z <init>(List, Map, Map, boolean, boolean, int, c, c, e, c)
+  - r9.z k(Object, Object, Object, Object) → Object
+  
+
+FIELDS:
+
+   old   │ new   │ diff           
+  ───────┼───────┼────────────────
+   19256 │ 19265 │ +9 (+235 -226) 
+  
+  + aa.a a: List
+  + aa.b h: Object
+  + aa.b i: c
+  + aa.b j: int
+  + aa.c a: c
+  + ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph deviceDetailPresenterFactory: w
+  + ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph trmnlDevicesPresenterFactory: d0
+  + p9.d0 a: d0
+  + p9.e0 a: e0
+  + p9.e f: g0
+  + p9.f f: g0
+  + p9.g0 a: String
+  + p9.g0 b: String
+  + p9.g0 c: double
+  + p9.g0 d: Double
+  + p9.g0 e: double
+  + p9.g0 f: Integer
+  + p9.g0 g: Integer
+  + p9.g0 h: List
+  + p9.g0 i: boolean
+  + p9.g0 j: boolean
+  + p9.g0 k: boolean
+  + p9.g0 l: boolean
+  + p9.g0 m: b
+  + p9.g0 n: boolean
+  + p9.g0 o: int
+  + p9.g0 p: c
+  + p9.g f: g0
+  + p9.h0 CREATOR: Parcelable$Creator
+  + p9.h0 e: String
+  + p9.h0 f: String
+  + p9.h0 g: double
+  + p9.h0 h: Double
+  + p9.h0 i: double
+  + p9.h0 j: Integer
+  + p9.h0 k: Integer
+  + p9.l e: Integer
+  + p9.l f: double
+  + p9.l g: Double
+  + p9.l h: double
+  + p9.l i: Integer
+  + p9.m i: Integer
+  + p9.m j: s
+  + p9.m k: int
+  + p9.n e: Integer
+  + p9.n f: double
+  + p9.n g: Double
+  + p9.n h: double
+  + p9.n i: Integer
+  + p9.p e: int
+  + p9.p f: float
+  + p9.q b: List
+  + p9.q c: SimpleDateFormat
+  + p9.r e: int
+  + p9.r f: s
+  + p9.r g: a
+  + p9.r h: boolean
+  + p9.s i: int
+  + p9.s j: int
+  + p9.s k: List
+  + p9.s l: j
+  + p9.u i: int
+  + p9.u j: h1
+  + p9.v a: List
+  + p9.w a: h
+  + p9.w b: h
+  + p9.w c: h
+  + p9.x a: w
+  + p9.y i: int
+  + p9.y j: int
+  + p9.y k: c0
+  + p9.z a: x
+  + r9.a0 e: a0
+  + r9.d0 a: Provider
+  + r9.d0 b: Provider
+  + r9.d0 c: h
+  + r9.d0 d: h
+  + r9.d0 e: Provider
+  + r9.d0 f: Provider
+  + r9.d0 g: Provider
+  + r9.d1 a: List
+  + r9.d1 b: Map
+  + r9.d1 c: Map
+  + r9.d1 d: boolean
+  + r9.d1 e: String
+  + r9.d1 f: boolean
+  + r9.d1 g: boolean
+  + r9.d1 h: String
+  + r9.d1 i: List
+  + r9.d1 j: boolean
+  + r9.d1 k: boolean
+  + r9.d1 l: boolean
+  + r9.d1 m: int
+  + r9.d1 n: c
+  + r9.e0 e: z
+  + r9.e0 f: n0
+  + r9.e0 g: c
+  + r9.e0 h: int
+  + r9.e0 i: int
+  + r9.e0 j: h1
+  + r9.e0 k: h1
+  + r9.e0 l: h1
+  + r9.e0 m: h1
+  + r9.e0 n: h1
+  + r9.e0 o: h1
+  + r9.e0 p: h1
+  + r9.e0 q: h1
+  + r9.e1 CREATOR: Parcelable$Creator
+  + r9.e1 e: e1
+  + r9.f0 a: d0
+  + r9.f1 e: int
+  + r9.f1 f: d1
+  + r9.g0 h: Map
+  + r9.g0 i: c
+  + r9.g0 j: Map
+  + r9.g0 k: Iterator
+  + r9.g0 l: Map
+  + r9.g0 m: Device
+  + r9.g0 n: int
+  + r9.g0 o: int
+  + r9.g0 p: int
+  + r9.g0 q: Object
+  + r9.g0 r: n0
+  + r9.g0 s: int
+  + r9.g1 f: d1
+  + r9.h0 h: c
+  + r9.h0 i: Map
+  + r9.h0 j: Iterator
+  + r9.h0 k: Map
+  + r9.h0 l: String
+  + r9.h0 m: int
+  + r9.h0 p: Object
+  + r9.h0 q: n0
+  + r9.h0 r: int
+  + r9.h1 f: d1
+  + r9.h f: s
+  + r9.i0 i: e
+  + r9.i0 j: Object
+  + r9.i0 k: n0
+  + r9.i0 l: int
+  + r9.i1 f: d1
+  + r9.i f: s
+  + r9.j0 i: int
+  + r9.j0 j: int
+  + r9.j0 k: n0
+  + r9.j f: s
+  + r9.k0 e: int
+  + r9.k0 f: h1
+  + r9.k0 g: h1
+  + r9.k0 h: h1
+  + r9.l0 i: int
+  + r9.l0 j: int
+  + r9.l0 k: n0
+  + r9.l0 l: h1
+  + r9.m0 j: Object
+  + r9.m0 k: Object
+  + r9.n0 a: d
+  + r9.n0 b: Context
+  + r9.n0 c: b
+  + r9.n0 d: i
+  + r9.n0 e: a
+  + r9.n0 f: f
+  + r9.n0 g: c
+  + r9.n0 h: e
+  + r9.n g: s
+  + r9.o0 a: f0
+  + r9.p e: int
+  + r9.p f: double
+  + r9.p g: float
+  + r9.p h: s
+  + r9.p i: int
+  + r9.p j: Number
+  + r9.q0 a: Device
+  + r9.q0 b: int
+  + r9.q f: boolean
+  + r9.r0 a: c
+  + r9.r a: int
+  + r9.s0 a: Device
+  + r9.s a: String
+  + r9.s b: int
+  + r9.t0 b: s
+  + r9.t e: boolean
+  + r9.t f: List
+  + r9.t g: List
+  + r9.t h: boolean
+  + r9.t i: c
+  + r9.t j: a
+  + r9.t k: Map
+  + r9.t l: Map
+  + r9.t m: boolean
+  + r9.t n: boolean
+  + r9.t o: int
+  + r9.t p: c
+  + r9.t q: c
+  + r9.t r: e
+  + r9.t s: c
+  + r9.u e: List
+  + r9.u f: Map
+  + r9.u g: Map
+  + r9.u i: c1
+  + r9.u j: List
+  + r9.u k: boolean
+  + r9.u l: boolean
+  + r9.u n: int
+  + r9.u o: c
+  + r9.u q: e
+  + r9.u r: c
+  + r9.u s: a
+  + r9.u t: c
+  + r9.u u: s
+  + r9.u v: int
+  + r9.u w: int
+  + r9.v0 a: v0
+  + r9.v e: int
+  + r9.v f: boolean
+  + r9.v g: Object
+  + r9.v h: Object
+  + r9.v i: Object
+  + r9.w f: c
+  + r9.w g: Device
+  + r9.x0 a: int
+  + r9.x e: Map
+  + r9.x f: Device
+  + r9.x g: e
+  + r9.y0 a: y0
+  + r9.y e: List
+  + r9.y f: Map
+  + r9.y g: Map
+  + r9.y h: boolean
+  + r9.y i: boolean
+  + r9.y j: int
+  + r9.y k: c
+  + r9.y l: c
+  + r9.y m: e
+  + r9.y n: c
+  
+  - aa.a h: Object
+  - aa.a i: b
+  - aa.a j: int
+  - aa.b a: b
+  - ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph deviceDetailPresenterFactory: u
+  - ink.trmnl.android.buddy.di.AppGraph$$$MetroGraph trmnlDevicesPresenterFactory: e0
+  - p9.a0 a: a0
+  - p9.e0 a: String
+  - p9.e0 b: String
+  - p9.e0 c: double
+  - p9.e0 d: Double
+  - p9.e0 e: double
+  - p9.e0 f: Integer
+  - p9.e0 g: List
+  - p9.e0 h: boolean
+  - p9.e0 i: boolean
+  - p9.e0 j: boolean
+  - p9.e0 k: boolean
+  - p9.e0 l: b
+  - p9.e0 m: boolean
+  - p9.e0 n: int
+  - p9.e0 o: c
+  - p9.e f: e0
+  - p9.f0 CREATOR: Parcelable$Creator
+  - p9.f0 e: String
+  - p9.f0 f: String
+  - p9.f0 g: double
+  - p9.f0 h: Double
+  - p9.f0 i: double
+  - p9.f0 j: Integer
+  - p9.f f: e0
+  - p9.g f: e0
+  - p9.l e: double
+  - p9.l f: Double
+  - p9.l g: double
+  - p9.l h: Integer
+  - p9.m i: s
+  - p9.m j: int
+  - p9.n e: double
+  - p9.n f: Double
+  - p9.n g: double
+  - p9.n h: Integer
+  - p9.p b: List
+  - p9.p c: SimpleDateFormat
+  - p9.q e: int
+  - p9.q f: s
+  - p9.q g: a
+  - p9.q h: boolean
+  - p9.q i: int
+  - p9.r j: int
+  - p9.r k: List
+  - p9.r l: j
+  - p9.t i: int
+  - p9.t j: h1
+  - p9.u a: h
+  - p9.u b: h
+  - p9.u c: h
+  - p9.v a: u
+  - p9.w i: int
+  - p9.w j: int
+  - p9.w k: c0
+  - p9.x a: v
+  - p9.z a: z
+  - r9.b0 e: b0
+  - r9.c1 a: c1
+  - r9.e0 a: Provider
+  - r9.e0 b: Provider
+  - r9.e0 c: h
+  - r9.e0 d: h
+  - r9.e0 e: Provider
+  - r9.e0 f: Provider
+  - r9.e0 g: Provider
+  - r9.e1 a: List
+  - r9.e1 b: Map
+  - r9.e1 c: Map
+  - r9.e1 d: boolean
+  - r9.e1 e: String
+  - r9.e1 f: boolean
+  - r9.e1 g: boolean
+  - r9.e1 h: String
+  - r9.e1 i: List
+  - r9.e1 j: boolean
+  - r9.e1 k: boolean
+  - r9.e1 l: boolean
+  - r9.e1 m: int
+  - r9.e1 n: c
+  - r9.f0 e: z
+  - r9.f0 f: o0
+  - r9.f0 g: c
+  - r9.f0 h: int
+  - r9.f0 i: int
+  - r9.f0 j: h1
+  - r9.f0 k: h1
+  - r9.f0 l: h1
+  - r9.f0 m: h1
+  - r9.f0 n: h1
+  - r9.f0 o: h1
+  - r9.f0 p: h1
+  - r9.f1 CREATOR: Parcelable$Creator
+  - r9.f1 e: f1
+  - r9.g0 a: e0
+  - r9.g1 f: e1
+  - r9.h0 h: Map
+  - r9.h0 i: c
+  - r9.h0 j: Map
+  - r9.h0 k: Iterator
+  - r9.h0 l: Map
+  - r9.h0 m: Device
+  - r9.h0 p: int
+  - r9.h0 q: Object
+  - r9.h0 r: o0
+  - r9.h0 s: int
+  - r9.h1 f: e1
+  - r9.h f: t
+  - r9.i0 i: Map
+  - r9.i0 j: Iterator
+  - r9.i0 k: Map
+  - r9.i0 l: String
+  - r9.i0 m: int
+  - r9.i0 n: int
+  - r9.i0 o: int
+  - r9.i0 p: Object
+  - r9.i0 q: o0
+  - r9.i0 r: int
+  - r9.i1 f: e1
+  - r9.i f: t
+  - r9.j0 h: c
+  - r9.j0 i: e
+  - r9.j0 j: Object
+  - r9.j0 k: o0
+  - r9.j0 l: int
+  - r9.j1 e: int
+  - r9.j1 f: e1
+  - r9.j f: t
+  - r9.k0 i: int
+  - r9.k0 j: int
+  - r9.k0 k: o0
+  - r9.l0 e: int
+  - r9.l0 f: h1
+  - r9.l0 g: h1
+  - r9.l0 h: h1
+  - r9.m0 j: int
+  - r9.m0 k: o0
+  - r9.m0 l: h1
+  - r9.n0 i: int
+  - r9.n0 j: Object
+  - r9.n0 k: Object
+  - r9.n g: t
+  - r9.o0 a: d
+  - r9.o0 b: Context
+  - r9.o0 c: b
+  - r9.o0 d: i
+  - r9.o0 e: a
+  - r9.o0 f: f
+  - r9.o0 g: c
+  - r9.o0 h: e
+  - r9.p0 a: g0
+  - r9.p e: float
+  - r9.q f: double
+  - r9.q g: float
+  - r9.q h: s
+  - r9.q i: int
+  - r9.q j: Number
+  - r9.r0 a: Device
+  - r9.r0 b: int
+  - r9.r e: int
+  - r9.r f: boolean
+  - r9.s0 a: c
+  - r9.s a: int
+  - r9.t a: String
+  - r9.t b: int
+  - r9.u0 b: t
+  - r9.u e: boolean
+  - r9.u f: List
+  - r9.u g: List
+  - r9.u i: c
+  - r9.u j: a
+  - r9.u k: Map
+  - r9.u l: Map
+  - r9.u n: boolean
+  - r9.u o: int
+  - r9.u q: c
+  - r9.u r: e
+  - r9.u s: c
+  - r9.v0 a: Device
+  - r9.v e: List
+  - r9.v f: Map
+  - r9.v g: Map
+  - r9.v h: boolean
+  - r9.v i: c1
+  - r9.v j: List
+  - r9.v k: boolean
+  - r9.v l: boolean
+  - r9.v m: boolean
+  - r9.v n: int
+  - r9.v o: c
+  - r9.v p: c
+  - r9.v q: e
+  - r9.v r: c
+  - r9.v s: a
+  - r9.v t: c
+  - r9.v u: s
+  - r9.v v: int
+  - r9.v w: int
+  - r9.w f: boolean
+  - r9.w g: Object
+  - r9.w h: Object
+  - r9.w i: Object
+  - r9.x0 a: x0
+  - r9.x e: int
+  - r9.x f: c
+  - r9.x g: Device
+  - r9.y0 a: int
+  - r9.y e: Map
+  - r9.y f: Device
+  - r9.y g: e
+  - r9.z e: List
+  - r9.z f: Map
+  - r9.z g: Map
+  - r9.z h: boolean
+  - r9.z i: boolean
+  - r9.z j: int
+  - r9.z k: c
+  - r9.z l: c
+  - r9.z m: e
+  - r9.z n: c
+  
+
+
