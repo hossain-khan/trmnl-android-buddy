@@ -112,7 +112,7 @@
       "css": {
         "classes": {
           "device": "screen--amazon_kindle_oasis_2",
-          "size": "screen--lg"
+          "size": "screen--md"
         },
         "variables": [
           [
@@ -267,6 +267,50 @@
       }
     },
     {
+      "name": "amazon_kindle_voyage",
+      "label": "Amazon Kindle Voyage",
+      "description": "Amazon Kindle Voyage",
+      "width": 1448,
+      "height": 1072,
+      "colors": 256,
+      "bit_depth": 8,
+      "scale_factor": 1.4,
+      "rotation": 90,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "kind": "kindle",
+      "palette_ids": [
+        "gray-256"
+      ],
+      "image_size_limit": 512000,
+      "image_upload_supported": true,
+      "css": {
+        "classes": {
+          "device": "screen--amazon_kindle_voyage",
+          "size": "screen--lg"
+        },
+        "variables": [
+          [
+            "--screen-w",
+            "1034px"
+          ],
+          [
+            "--screen-h",
+            "766px"
+          ],
+          [
+            "--ui-scale",
+            "1.0"
+          ],
+          [
+            "--gap-scale",
+            "1.0"
+          ]
+        ]
+      }
+    },
+    {
       "name": "generic_16_9",
       "label": "Generic 16:9 Display",
       "description": "Generic 16:9 Display",
@@ -291,7 +335,7 @@
       "css": {
         "classes": {
           "device": "screen--generic_16_9",
-          "size": "screen--lg"
+          "size": "screen--md"
         },
         "variables": [
           [
@@ -346,6 +390,52 @@
           [
             "--screen-h",
             "547px"
+          ],
+          [
+            "--ui-scale",
+            "1.0"
+          ],
+          [
+            "--gap-scale",
+            "1.0"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "inkplate_5_2",
+      "label": "Inkplate 5.2",
+      "description": "Inkplate 5.2",
+      "width": 1280,
+      "height": 720,
+      "colors": 16,
+      "bit_depth": 4,
+      "scale_factor": 1.2,
+      "rotation": 0,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "kind": "byod",
+      "palette_ids": [
+        "bw",
+        "gray-4",
+        "gray-16"
+      ],
+      "image_size_limit": 92160,
+      "image_upload_supported": true,
+      "css": {
+        "classes": {
+          "device": "screen--inkplate_5_2",
+          "size": "screen--lg"
+        },
+        "variables": [
+          [
+            "--screen-w",
+            "1067px"
+          ],
+          [
+            "--screen-h",
+            "600px"
           ],
           [
             "--ui-scale",
@@ -595,7 +685,7 @@
       "height": 1264,
       "colors": 256,
       "bit_depth": 8,
-      "scale_factor": 2.1,
+      "scale_factor": 2.0,
       "rotation": 90,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -611,16 +701,16 @@
       "css": {
         "classes": {
           "device": "screen--kobo_libra_2",
-          "size": "screen--lg"
+          "size": "screen--md"
         },
         "variables": [
           [
             "--screen-w",
-            "800px"
+            "840px"
           ],
           [
             "--screen-h",
-            "602px"
+            "632px"
           ],
           [
             "--ui-scale",
@@ -760,6 +850,50 @@
           [
             "--screen-h",
             "600px"
+          ],
+          [
+            "--ui-scale",
+            "1.0"
+          ],
+          [
+            "--gap-scale",
+            "1.0"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "og_bwry",
+      "label": "TRMNL OG (B/W/R/Y)",
+      "description": "TRMNL OG (B/W/R/Y)",
+      "width": 800,
+      "height": 480,
+      "colors": 2,
+      "bit_depth": 1,
+      "scale_factor": 1.0,
+      "rotation": 0,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "kind": "trmnl",
+      "palette_ids": [
+        "color-4bwry"
+      ],
+      "image_size_limit": 92160,
+      "image_upload_supported": true,
+      "css": {
+        "classes": {
+          "device": "screen--og",
+          "size": "screen--md"
+        },
+        "variables": [
+          [
+            "--screen-w",
+            "800px"
+          ],
+          [
+            "--screen-h",
+            "480px"
           ],
           [
             "--ui-scale",
@@ -963,7 +1097,7 @@
       "height": 824,
       "colors": 256,
       "bit_depth": 8,
-      "scale_factor": 2.06,
+      "scale_factor": 2.0,
       "rotation": 0,
       "mime_type": "image/png",
       "offset_x": 0,
@@ -977,20 +1111,64 @@
       "css": {
         "classes": {
           "device": "screen--palma",
+          "size": "screen--md"
+        },
+        "variables": [
+          [
+            "--screen-w",
+            "824px"
+          ],
+          [
+            "--screen-h",
+            "412px"
+          ],
+          [
+            "--ui-scale",
+            "0.8"
+          ],
+          [
+            "--gap-scale",
+            "1.0"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "raspberry_pi_touch_2",
+      "label": "Raspberry Pi Touch 2",
+      "description": "Raspberry Pi Touch 2",
+      "width": 1280,
+      "height": 720,
+      "colors": 16777216,
+      "bit_depth": 24,
+      "scale_factor": 1.2,
+      "rotation": 0,
+      "mime_type": "image/png",
+      "offset_x": 0,
+      "offset_y": 0,
+      "kind": "byod",
+      "palette_ids": [
+        "color-24bit"
+      ],
+      "image_size_limit": 92160,
+      "image_upload_supported": true,
+      "css": {
+        "classes": {
+          "device": "screen--raspberry_pi_touch_2",
           "size": "screen--lg"
         },
         "variables": [
           [
             "--screen-w",
-            "800px"
+            "1067px"
           ],
           [
             "--screen-h",
-            "400px"
+            "600px"
           ],
           [
             "--ui-scale",
-            "0.8"
+            "1.0"
           ],
           [
             "--gap-scale",
