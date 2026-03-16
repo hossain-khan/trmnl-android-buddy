@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.api.util
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.ApiError
 import org.junit.Test
 import java.io.IOException
 
@@ -16,12 +17,12 @@ class ErrorMapperTest {
     // region mapToUserMessage
 
     @Test
-    fun `mapToUserMessage - HttpFailure 401 returns unauthorized message`() {
+    fun `mapToUserMessage - HttpFailure 401 returns neutral unauthorized message`() {
         val failure = ApiResult.httpFailure<Nothing>(code = 401)
 
         val message = ErrorMapper.mapToUserMessage(failure)
 
-        assertThat(message).isEqualTo("Unauthorized. Please check your API token.")
+        assertThat(message).isEqualTo("Unauthorized. Please check your access credentials.")
     }
 
     @Test
@@ -88,7 +89,16 @@ class ErrorMapperTest {
     }
 
     @Test
-    fun `mapToUserMessage - ApiFailure with error returns error string`() {
+    fun `mapToUserMessage - ApiFailure with ApiError uses human-readable error field`() {
+        val failure = ApiResult.apiFailure(ApiError("Unauthorized - Invalid API key"))
+
+        val message = ErrorMapper.mapToUserMessage(failure)
+
+        assertThat(message).isEqualTo("Unauthorized - Invalid API key")
+    }
+
+    @Test
+    fun `mapToUserMessage - ApiFailure with non-ApiError error returns toString`() {
         val failure = ApiResult.apiFailure("Bad request body")
 
         val message = ErrorMapper.mapToUserMessage(failure)
@@ -119,10 +129,10 @@ class ErrorMapperTest {
     // region mapHttpError
 
     @Test
-    fun `mapHttpError - 401 returns unauthorized message`() {
+    fun `mapHttpError - 401 returns neutral unauthorized message`() {
         val message = ErrorMapper.mapHttpError(401)
 
-        assertThat(message).isEqualTo("Unauthorized. Please check your API token.")
+        assertThat(message).isEqualTo("Unauthorized. Please check your access credentials.")
     }
 
     @Test
@@ -172,12 +182,12 @@ class ErrorMapperTest {
     // region toUserMessage extension function
 
     @Test
-    fun `toUserMessage extension - HttpFailure 401 returns unauthorized message`() {
+    fun `toUserMessage extension - HttpFailure 401 returns neutral unauthorized message`() {
         val failure = ApiResult.httpFailure<Nothing>(code = 401)
 
         val message = failure.toUserMessage()
 
-        assertThat(message).isEqualTo("Unauthorized. Please check your API token.")
+        assertThat(message).isEqualTo("Unauthorized. Please check your access credentials.")
     }
 
     @Test

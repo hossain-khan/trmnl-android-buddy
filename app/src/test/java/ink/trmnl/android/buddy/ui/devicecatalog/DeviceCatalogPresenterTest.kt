@@ -217,7 +217,7 @@ class DeviceCatalogPresenterTest {
 
                 assertThat(errorState.isLoading).isFalse()
                 assertThat(errorState.error).isNotNull()
-                assertThat(errorState.error).isEqualTo("Unauthorized. Please log in again.")
+                assertThat(errorState.error).isEqualTo("Unauthorized. Please check your access credentials.")
             }
         }
 

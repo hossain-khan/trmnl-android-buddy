@@ -136,7 +136,13 @@ class DeviceCatalogPresenter
                     }
 
                     is ApiResult.Failure -> {
-                        Timber.e("Error fetching device models: $result")
+                        val throwable =
+                            when (result) {
+                                is ApiResult.Failure.NetworkFailure -> result.error
+                                is ApiResult.Failure.UnknownFailure -> result.error
+                                else -> null
+                            }
+                        Timber.e(throwable, "Error fetching device models: $result")
                         onError(result.toUserMessage())
                     }
                 }

@@ -117,7 +117,7 @@ class TrmnlDevicesScreenTest {
                     errorState = awaitItem()
                 } while (errorState.errorMessage == null)
 
-                assertThat(errorState.errorMessage).isEqualTo("Unauthorized. Please check your API token.")
+                assertThat(errorState.errorMessage).isEqualTo("Unauthorized. Please check your access credentials.")
                 assertThat(errorState.isUnauthorized).isTrue()
             }
         }
@@ -138,7 +138,7 @@ class TrmnlDevicesScreenTest {
                     errorState = awaitItem()
                 } while (errorState.errorMessage == null)
 
-                assertThat(errorState.errorMessage).isEqualTo("API endpoint not found.")
+                assertThat(errorState.errorMessage).isEqualTo("Resource not found.")
             }
         }
 
