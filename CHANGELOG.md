@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Refactored `DeviceDetailPresenter` to improve separation of concerns**: Extracted battery history management into a dedicated `BatteryChartPresenter`
+  - Created `BatteryChartScreen` with its own `State` and `Event` sealed classes for battery-specific data
+  - Created `BatteryChartPresenter` handling battery history loading, analysis, recording and clearing
+  - Created `BatteryChartContent` composable with `@CircuitInject(BatteryChartScreen::class)` for the battery UI
+  - `DeviceDetailPresenter` now focuses solely on playlist items, device token, and user preferences
+  - `DeviceDetailContent` embeds `BatteryChartScreen` via `CircuitContent` for inline rendering
+  - Battery-related events (`RecordBatteryManually`, `ClearBatteryHistory`, `PopulateBatteryHistory`) moved from `DeviceDetailScreen` to `BatteryChartScreen`
+  - Added comprehensive unit tests for `BatteryChartPresenter` in `BatteryChartScreenTest`
 - **Simplified API response wrapper pattern**: Replaced individual response wrapper classes with generic `ApiResponse<T>` wrapper
   - Created `ApiResponse<T>` generic wrapper class as a single source of truth for the TRMNL API's `{ "data": ... }` response pattern
   - Converted `DeviceResponse`, `DevicesResponse`, `UserResponse`, `RecipeDetailResponse`, `CategoriesResponse`, and `PlaylistItemsResponse` to type aliases

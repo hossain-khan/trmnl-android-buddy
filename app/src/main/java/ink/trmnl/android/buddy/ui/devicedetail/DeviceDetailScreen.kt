@@ -3,20 +3,16 @@ package ink.trmnl.android.buddy.ui.devicedetail
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
-import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import kotlinx.parcelize.Parcelize
 
 /**
  * Screen for displaying detailed information about a single TRMNL device.
  *
  * **Features:**
- * - Battery history chart with health trajectory analysis
+ * - Battery history chart with health trajectory analysis (via embedded [BatteryChartScreen])
  * - WiFi signal strength with RSSI details
  * - Refresh rate information
  * - Playlist items statistics (total count and currently playing)
- * - Manual battery data recording
- * - Battery history management (clear, populate test data)
  * - Navigation to playlist items and device settings
  *
  * **Data Requirements:**
@@ -25,10 +21,10 @@ import kotlinx.parcelize.Parcelize
  * - Current hardware status (battery, voltage, WiFi, RSSI)
  * - Configuration (refresh rate)
  *
- * The screen also loads additional data:
- * - Historical battery readings from local database
- * - Playlist items from repository cache
- * - User preferences (tracking settings, notifications)
+ * The screen loads additional data via its presenter and sub-screens:
+ * - Playlist items from repository cache (managed by [DeviceDetailPresenter])
+ * - Battery history from local database (managed by the embedded [BatteryChartScreen])
+ * - User preferences (managed by [DeviceDetailPresenter])
  *
  * @property deviceId Unique friendly device ID (e.g., "abc123")
  * @property deviceName User-assigned device name
@@ -57,12 +53,6 @@ data class DeviceDetailScreen(
      * - Device identification and current hardware status (passed from parent screen)
      * - Includes battery, WiFi, refresh rate, and device tokens
      *
-     * **Battery Analytics:**
-     * - Historical data loaded from local Room database
-     * - Battery health trajectory analysis (improving/declining/stable)
-     * - Automatic history clearing when anomalies detected
-     * - Manual recording capability for data collection
-     *
      * **Playlist Integration:**
      * - Real-time statistics from repository cache
      * - Currently playing item (most recent renderedAt timestamp)
@@ -70,9 +60,12 @@ data class DeviceDetailScreen(
      * - Reactive updates when cache changes
      *
      * **User Preferences:**
-     * - Battery tracking enabled/disabled
      * - Low battery notification settings
      * - Device token availability for preview access
+     *
+     * **Battery Analytics:**
+     * Battery history and analysis are delegated to the embedded [BatteryChartScreen],
+     * which is rendered via `CircuitContent` within [DeviceDetailContent].
      *
      * @property deviceId Unique friendly device ID
      * @property deviceName User-assigned device name
@@ -81,14 +74,9 @@ data class DeviceDetailScreen(
      * @property wifiStrength WiFi signal percentage (0.0-100.0)
      * @property rssi Raw WiFi signal in dBm (nullable)
      * @property refreshRate Display refresh interval in seconds (nullable)
-     * @property batteryHistory Historical battery readings from database
-     * @property isLoading Loading state for initial data fetch
-     * @property isBatteryTrackingEnabled User preference for battery tracking
-     * @property hasRecordedToday Whether battery was manually recorded today
-     * @property hasDeviceToken Whether device has API token configured
-     * @property clearHistoryReason Reason to suggest clearing history (nullable)
      * @property isLowBatteryNotificationEnabled Notification preference
      * @property lowBatteryThresholdPercent Threshold for low battery alerts
+     * @property hasDeviceToken Whether device has API token configured
      * @property isPlaylistItemsLoading Loading state for playlist prefetch
      * @property playlistItemsCount Total items for this device
      * @property nowPlayingItem Currently displayed item name
@@ -106,14 +94,9 @@ data class DeviceDetailScreen(
          * in seconds, null if not available
          */
         val refreshRate: Int?,
-        val batteryHistory: List<BatteryHistoryEntity> = emptyList(),
-        val isLoading: Boolean = true,
-        val isBatteryTrackingEnabled: Boolean = true,
-        val hasRecordedToday: Boolean = false,
-        val hasDeviceToken: Boolean = false,
-        val clearHistoryReason: BatteryHistoryAnalyzer.ClearHistoryReason? = null,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
+        val hasDeviceToken: Boolean = false,
         /**
          * Tracks playlist items prefetch progress
          */
@@ -143,15 +126,12 @@ data class DeviceDetailScreen(
      * - [SettingsClicked]: Navigate to device token settings
      * - [ViewPlaylistItems]: Navigate to playlist items screen
      *
-     * **Battery Management Events:**
-     * - [PopulateBatteryHistory]: Generate test data for development/testing
-     * - [ClearBatteryHistory]: Remove all historical data for this device
-     * - [RecordBatteryManually]: Add current battery reading to history
-     *
      * **Event Handling:**
      * All events are processed by [DeviceDetailPresenter] which updates state
-     * or triggers navigation accordingly. Battery events interact with the
-     * local Room database through [BatteryHistoryRepository].
+     * or triggers navigation accordingly.
+     *
+     * Battery management events (record, clear, populate) are handled by the
+     * embedded [BatteryChartScreen] presenter.
      *
      * @see DeviceDetailPresenter Handles event processing and state management
      */
@@ -170,27 +150,5 @@ data class DeviceDetailScreen(
          * User tapped to view playlist items. Opens full playlist items screen.
          */
         data object ViewPlaylistItems : Event()
-
-        /**
-         * Developer action to populate battery history with test data.
-         * Creates synthetic battery readings with declining trend.
-         *
-         * @property minBatteryLevel Minimum battery level for generated data (0.0-100.0)
-         */
-        data class PopulateBatteryHistory(
-            val minBatteryLevel: Float,
-        ) : Event()
-
-        /**
-         * User confirmed clearing all battery history for this device.
-         * Removes all historical readings from local database.
-         */
-        data object ClearBatteryHistory : Event()
-
-        /**
-         * User tapped to manually record current battery reading.
-         * Adds current battery level and voltage to historical data.
-         */
-        data object RecordBatteryManually : Event()
     }
 }

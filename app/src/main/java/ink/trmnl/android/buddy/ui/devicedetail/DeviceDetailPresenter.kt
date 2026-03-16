@@ -18,8 +18,6 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.data.PlaylistItemsRepository
-import ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
-import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
 import ink.trmnl.android.buddy.data.getCurrentlyPlayingItem
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
@@ -27,39 +25,31 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
 import ink.trmnl.android.buddy.ui.playlistitems.PlaylistItemsScreen
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
 
 /**
- * Presenter for [DeviceDetailScreen] with battery analytics and playlist management.
+ * Presenter for [DeviceDetailScreen] managing playlist and preference concerns.
  *
  * **Responsibilities:**
- * - Loads and displays historical battery data from local database
- * - Analyzes battery health trends and predicts discharge rate
  * - Monitors playlist items for the device (currently playing, total count)
- * - Manages manual battery recording for data collection
- * - Handles battery history lifecycle (clear, populate test data)
+ * - Manages low battery notification preference display
+ * - Checks device token availability
  * - Coordinates navigation to playlist items and device settings
  *
+ * **Battery Analytics (extracted):**
+ * Battery history loading, analysis, recording and clearing are now handled by
+ * the separate [BatteryChartPresenter], embedded via `CircuitContent` in [DeviceDetailContent].
+ * This separation improves testability and adheres to single-responsibility principle.
+ *
  * **Data Sources:**
- * - **Battery history**: Local Room database, auto-collected weekly by WorkManager
  * - **Playlist items**: Repository cache (shared across app), prefetched from API
- * - **User preferences**: DataStore for tracking settings and notification config
+ * - **User preferences**: DataStore for notification config
  * - **Device token**: Local storage for device-specific API access
  *
  * **Smart State Management:**
  * - Uses `rememberRetained` for UI state (survives config changes and back stack)
- * - Uses `collectAsState` for reactive Flow subscriptions (database, repository cache)
- * - Uses `derivedStateOf` for computed state (hasRecordedToday, clearHistoryReason)
- * - Computed values are memoized and only recalculate when dependencies change
- *
- * **Battery History Analysis:**
- * This presenter uses [BatteryHistoryAnalyzer] to:
- * - Determine if battery history should be cleared (stale data, low battery detected)
- * - Calculate battery health trajectory (improving, declining, stable)
- * - Predict time until battery depletion based on historical trends
- * - Identify anomalies (e.g., battery jumped back up after low reading)
+ * - Uses `collectAsState` for reactive Flow subscriptions (repository cache)
+ * - Uses `derivedStateOf` for computed playlist stats
  *
  * **Playlist Items Integration:**
  * Subscribes to [PlaylistItemsRepository.itemsFlow] to reactively update:
@@ -70,13 +60,12 @@ import java.util.concurrent.TimeUnit
  *
  * @property screen Screen parameters with device identification and current status
  * @property navigator Circuit navigator for screen transitions
- * @property batteryHistoryRepository Repository for local battery history database
  * @property userPreferencesRepository Repository for user settings and preferences
  * @property deviceTokenRepository Repository for device-specific API tokens
  * @property playlistItemsRepository Repository with cached playlist items
  *
  * @see DeviceDetailScreen Screen definition with State and Event sealed classes
- * @see BatteryHistoryAnalyzer Battery health analysis and prediction logic
+ * @see BatteryChartPresenter Separate presenter for battery history management
  * @see PlaylistItemsRepository Shared repository with intelligent caching
  */
 @Inject
@@ -84,18 +73,13 @@ class DeviceDetailPresenter
     constructor(
         @Assisted private val screen: DeviceDetailScreen,
         @Assisted private val navigator: Navigator,
-        private val batteryHistoryRepository: BatteryHistoryRepository,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val deviceTokenRepository: DeviceTokenRepository,
         private val playlistItemsRepository: PlaylistItemsRepository,
     ) : Presenter<DeviceDetailScreen.State> {
         @Composable
         override fun present(): DeviceDetailScreen.State {
-            val batteryHistory by batteryHistoryRepository
-                .getBatteryHistoryForDevice(screen.deviceId)
-                .collectAsState(initial = emptyList())
             val allPlaylistItems by playlistItemsRepository.itemsFlow.collectAsState()
-            var isLoading by rememberRetained { mutableStateOf(true) }
             var isPlaylistItemsLoading by rememberRetained { mutableStateOf(true) }
             var hasDeviceToken by rememberRetained { mutableStateOf(false) }
             var isLowBatteryNotificationEnabled by rememberRetained { mutableStateOf(false) }
@@ -137,30 +121,6 @@ class DeviceDetailPresenter
                 }
             }
 
-            // Check if battery has been recorded today
-            val hasRecordedToday by remember {
-                derivedStateOf {
-                    val today =
-                        java.util.Calendar
-                            .getInstance()
-                            .apply {
-                                set(java.util.Calendar.HOUR_OF_DAY, 0)
-                                set(java.util.Calendar.MINUTE, 0)
-                                set(java.util.Calendar.SECOND, 0)
-                                set(java.util.Calendar.MILLISECOND, 0)
-                            }.timeInMillis
-
-                    batteryHistory.any { it.timestamp >= today }
-                }
-            }
-
-            // Check if battery history should be cleared
-            val clearHistoryReason by remember {
-                derivedStateOf {
-                    BatteryHistoryAnalyzer.getClearHistoryReason(batteryHistory)
-                }
-            }
-
             // Calculate playlist items stats for this device
             val playlistItemsStats by remember {
                 derivedStateOf {
@@ -195,11 +155,6 @@ class DeviceDetailPresenter
             val nowPlayingItem = playlistItemsStats.second
             val upNextItem = playlistItemsStats.third
 
-            // Mark loading complete when we have data or after initial load
-            LaunchedEffect(batteryHistory) {
-                isLoading = false
-            }
-
             return DeviceDetailScreen.State(
                 deviceId = screen.deviceId,
                 deviceName = screen.deviceName,
@@ -208,14 +163,9 @@ class DeviceDetailPresenter
                 wifiStrength = screen.wifiStrength,
                 rssi = screen.rssi,
                 refreshRate = screen.refreshRate,
-                batteryHistory = batteryHistory,
-                isLoading = isLoading,
-                isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
-                hasRecordedToday = hasRecordedToday,
-                hasDeviceToken = hasDeviceToken,
-                clearHistoryReason = clearHistoryReason,
                 isLowBatteryNotificationEnabled = isLowBatteryNotificationEnabled,
                 lowBatteryThresholdPercent = lowBatteryThresholdPercent,
+                hasDeviceToken = hasDeviceToken,
                 isPlaylistItemsLoading = isPlaylistItemsLoading,
                 playlistItemsCount = playlistItemsCount,
                 nowPlayingItem = nowPlayingItem,
@@ -238,47 +188,6 @@ class DeviceDetailPresenter
                                 deviceName = screen.deviceName,
                             ),
                         )
-                    }
-                    is DeviceDetailScreen.Event.PopulateBatteryHistory -> {
-                        // Generate simulated battery history data
-                        coroutineScope.launch(Dispatchers.IO) {
-                            val currentTime = System.currentTimeMillis()
-                            val weeksToGenerate = 12 // Generate 12 weeks of history
-                            val currentBattery = screen.currentBattery
-                            val minBattery = event.minBatteryLevel.toDouble()
-
-                            // Calculate battery drop per week
-                            val totalDrop = currentBattery - minBattery
-                            val dropPerWeek = totalDrop / weeksToGenerate
-
-                            for (week in 0 until weeksToGenerate) {
-                                val weeklyBattery = currentBattery - (dropPerWeek * week)
-                                val timestamp = currentTime - TimeUnit.DAYS.toMillis((weeksToGenerate - week) * 7L)
-
-                                batteryHistoryRepository.recordBatteryReading(
-                                    deviceId = screen.deviceId,
-                                    percentCharged = weeklyBattery,
-                                    batteryVoltage = screen.currentVoltage,
-                                    timestamp = timestamp,
-                                )
-                            }
-                        }
-                    }
-                    DeviceDetailScreen.Event.ClearBatteryHistory -> {
-                        // Clear all battery history for this device
-                        coroutineScope.launch(Dispatchers.IO) {
-                            batteryHistoryRepository.deleteHistoryForDevice(screen.deviceId)
-                        }
-                    }
-                    DeviceDetailScreen.Event.RecordBatteryManually -> {
-                        // Record current battery level manually
-                        coroutineScope.launch(Dispatchers.IO) {
-                            batteryHistoryRepository.recordBatteryReading(
-                                deviceId = screen.deviceId,
-                                percentCharged = screen.currentBattery,
-                                batteryVoltage = screen.currentVoltage,
-                            )
-                        }
                     }
                 }
             }
