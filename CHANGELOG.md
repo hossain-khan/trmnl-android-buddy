@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Eliminated boilerplate serialization code across API models (~100 lines of duplicate code removed)
   - Maintained backward compatibility with existing Retrofit integration and repositories
   - Simplified adding new API endpoints - only need to define the data type and create a type alias
-  - Serialization/deserialization is tested through existing Retrofit MockWebServer tests (TrmnlApiServiceTest)
+  - Serialization/deserialization is covered by existing Retrofit MockWebServer tests in the API module (for example, `TrmnlDeviceApiTest`)
 ### Added
 - **Expanded test coverage for app module**: Significantly increased unit test coverage across presenters, repositories, and workers
   - Added comprehensive presenter tests for `TrmnlDevicesPresenter`, `DeviceDetailPresenter`, `AuthenticationPresenter`, and all other key presenters
