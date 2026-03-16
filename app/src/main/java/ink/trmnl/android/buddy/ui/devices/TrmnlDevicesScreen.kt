@@ -39,6 +39,7 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
+import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.content.models.ContentItem
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
@@ -607,24 +608,9 @@ class TrmnlDevicesPresenter
                         onSuccess(result.value.data)
                     }
 
-                    is ApiResult.Failure.HttpFailure -> {
-                        when (result.code) {
-                            401 -> onError("Unauthorized. Please check your API token.", true)
-                            404 -> onError("API endpoint not found.", false)
-                            else -> onError("HTTP Error: ${result.code}", false)
-                        }
-                    }
-
-                    is ApiResult.Failure.NetworkFailure -> {
-                        onError("Network error. Please check your connection.", false)
-                    }
-
-                    is ApiResult.Failure.ApiFailure -> {
-                        onError("API Error: ${result.error}", false)
-                    }
-
-                    is ApiResult.Failure.UnknownFailure -> {
-                        onError("Unknown error: ${result.error.message}", false)
+                    is ApiResult.Failure -> {
+                        val isUnauthorized = result is ApiResult.Failure.HttpFailure && result.code == 401
+                        onError(result.toUserMessage(), isUnauthorized)
                     }
                 }
             } catch (e: Exception) {

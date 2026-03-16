@@ -17,6 +17,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.DeviceModel
+import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -134,30 +135,15 @@ class DeviceCatalogPresenter
                         onSuccess(result.value.data)
                     }
 
-                    is ApiResult.Failure.HttpFailure -> {
-                        val errorMsg =
-                            when (result.code) {
-                                401 -> "Unauthorized. Please log in again."
-                                404 -> "Device models not found."
-                                else -> "HTTP error: ${result.code}"
+                    is ApiResult.Failure -> {
+                        val throwable =
+                            when (result) {
+                                is ApiResult.Failure.NetworkFailure -> result.error
+                                is ApiResult.Failure.UnknownFailure -> result.error
+                                else -> null
                             }
-                        Timber.e("HTTP error fetching device models: ${result.code}")
-                        onError(errorMsg)
-                    }
-
-                    is ApiResult.Failure.NetworkFailure -> {
-                        Timber.e(result.error, "Network error fetching device models")
-                        onError("Network error. Please check your connection.")
-                    }
-
-                    is ApiResult.Failure.ApiFailure -> {
-                        Timber.e("API error fetching device models: ${result.error}")
-                        onError("API error: ${result.error?.error ?: "Unknown error"}")
-                    }
-
-                    is ApiResult.Failure.UnknownFailure -> {
-                        Timber.e(result.error, "Unknown error fetching device models")
-                        onError("Unknown error: ${result.error.message}")
+                        Timber.e(throwable, "Error fetching device models: $result")
+                        onError(result.toUserMessage())
                     }
                 }
             } catch (e: Exception) {

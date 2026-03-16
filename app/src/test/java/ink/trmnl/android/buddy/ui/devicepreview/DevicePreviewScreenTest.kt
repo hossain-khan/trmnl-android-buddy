@@ -156,7 +156,7 @@ class DevicePreviewScreenTest {
                 assertThat(errorState.refreshState).isInstanceOf(DevicePreviewScreen.RefreshState.Error::class)
 
                 val error = errorState.refreshState as DevicePreviewScreen.RefreshState.Error
-                assertThat(error.message).isEqualTo("Server error occurred. Please try again later.")
+                assertThat(error.message).isEqualTo("Server error. Please try again later.")
             }
         }
 

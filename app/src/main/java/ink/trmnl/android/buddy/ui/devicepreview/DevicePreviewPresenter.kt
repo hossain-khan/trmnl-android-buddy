@@ -15,6 +15,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.api.TrmnlApiService
+import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import kotlinx.coroutines.launch
 
@@ -92,32 +93,10 @@ class DevicePreviewPresenter
                                                     )
                                             }
                                         }
-                                        is ApiResult.Failure.HttpFailure -> {
-                                            val errorMessage =
-                                                when (result.code) {
-                                                    429 -> "Too many requests. Please try again later."
-                                                    500 -> "Server error occurred. Please try again later."
-                                                    401 -> "Unauthorized. Please check device API key."
-                                                    else -> "Failed to refresh image (HTTP ${result.code})"
-                                                }
-                                            refreshState = DevicePreviewScreen.RefreshState.Error(message = errorMessage)
-                                        }
-                                        is ApiResult.Failure.NetworkFailure -> {
+                                        is ApiResult.Failure -> {
                                             refreshState =
                                                 DevicePreviewScreen.RefreshState.Error(
-                                                    message = "Network error. Please check your connection.",
-                                                )
-                                        }
-                                        is ApiResult.Failure.ApiFailure -> {
-                                            refreshState =
-                                                DevicePreviewScreen.RefreshState.Error(
-                                                    message = "API error: ${result.error}",
-                                                )
-                                        }
-                                        is ApiResult.Failure.UnknownFailure -> {
-                                            refreshState =
-                                                DevicePreviewScreen.RefreshState.Error(
-                                                    message = "Unknown error occurred",
+                                                    message = result.toUserMessage(),
                                                 )
                                         }
                                     }

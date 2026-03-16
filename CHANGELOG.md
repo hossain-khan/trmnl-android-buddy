@@ -15,7 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Maintained backward compatibility with existing Retrofit integration and repositories
   - Simplified adding new API endpoints - only need to define the data type and create a type alias
   - Serialization/deserialization is covered by existing Retrofit MockWebServer tests in the API module (for example, `TrmnlDeviceApiTest`)
+- **Standardized error handling across presenters**: Refactored `TrmnlDevicesPresenter`, `UserAccountPresenter`, `DevicePreviewPresenter`, and `DeviceCatalogPresenter` to use the new `ErrorMapper` utility
+  - Removed duplicated `ApiResult.Failure.*` when-expression boilerplate from each presenter
+  - Ensures consistent error messages for the same failure types across all screens
 ### Added
+- **Centralized error mapping utility**: Created `ErrorMapper` in the api module for consistent user-friendly error messages
+  - Maps all `ApiResult.Failure` types (`HttpFailure`, `NetworkFailure`, `ApiFailure`, `UnknownFailure`) to user-friendly messages
+  - Provides standard HTTP status code handling (401, 403, 404, 429, 5xx) with clear, actionable messages
+  - Added `toUserMessage()` extension function on `ApiResult.Failure<*>` for ergonomic usage in presenters
+  - Added unit tests for `ErrorMapper` covering all failure types and HTTP status codes
 - **Expanded test coverage for app module**: Significantly increased unit test coverage across presenters, repositories, and workers
   - Added comprehensive presenter tests for `TrmnlDevicesPresenter`, `DeviceDetailPresenter`, `AuthenticationPresenter`, and all other key presenters
   - Added repository tests for `BatteryHistoryRepository`, `BookmarkRepository`, `PlaylistItemsRepository`, `RecipesRepository`, `DeviceTokenRepository`, and `UserPreferencesRepository`

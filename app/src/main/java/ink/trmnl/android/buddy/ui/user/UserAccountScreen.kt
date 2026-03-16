@@ -67,6 +67,7 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlDeviceRepository
 import ink.trmnl.android.buddy.api.models.User
+import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
@@ -213,21 +214,9 @@ class UserAccountPresenter(
                 onSuccess(result.value)
                 onLoading(false)
             }
-            is ApiResult.Failure.HttpFailure -> {
+            is ApiResult.Failure -> {
                 onLoading(false)
-                onError("HTTP Error: ${result.code}")
-            }
-            is ApiResult.Failure.NetworkFailure -> {
-                onLoading(false)
-                onError("Network error. Please check your connection.")
-            }
-            is ApiResult.Failure.ApiFailure -> {
-                onLoading(false)
-                onError("API Error: ${result.error}")
-            }
-            is ApiResult.Failure.UnknownFailure -> {
-                onLoading(false)
-                onError("Unknown error occurred")
+                onError(result.toUserMessage())
             }
         }
     }
