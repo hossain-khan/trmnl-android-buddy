@@ -1,8 +1,5 @@
 package ink.trmnl.android.buddy.api.models
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
 /**
  * Response wrapper for the `/categories` API endpoint.
  *
@@ -44,10 +41,6 @@ import kotlinx.serialization.Serializable
  * }
  * ```
  *
- * @property data List of category identifiers (strings)
+ * @see ApiResponse
  */
-@Serializable
-data class CategoriesResponse(
-    @SerialName("data")
-    val data: List<String>,
-)
+typealias CategoriesResponse = ApiResponse<List<String>>

@@ -1,8 +1,5 @@
 package ink.trmnl.android.buddy.api.models
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
 /**
  * Response wrapper for the `/devices` API endpoint.
  *
@@ -26,10 +23,6 @@ import kotlinx.serialization.Serializable
  * }
  * ```
  *
- * @property data List of devices belonging to the authenticated user
+ * @see ApiResponse
  */
-@Serializable
-data class DevicesResponse(
-    @SerialName("data")
-    val data: List<Device>,
-)
+typealias DevicesResponse = ApiResponse<List<Device>>
