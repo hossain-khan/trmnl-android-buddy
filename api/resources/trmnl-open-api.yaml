@@ -22,6 +22,12 @@ paths:
         description: Device battery voltage (eg. 3.7)
         schema:
           type: number
+      - name: Percent-Charged
+        in: header
+        required: false
+        description: Device percent charged (eg. 69.4)
+        schema:
+          type: number
       - name: FW-Version
         in: header
         required: false
@@ -72,7 +78,7 @@ paths:
                   image_url:
                     type: string
                     nullable: true
-                    example: https://trmnl.com/images/setup/setup-logo.bmp
+                    example: https://trmnl.com/images/screens/setup_logo/og_plus.png
                   filename:
                     type: string
                     nullable: true
@@ -127,7 +133,7 @@ paths:
                   image_url:
                     type: string
                     nullable: true
-                    example: https://trmnl.com/images/setup/setup-logo.bmp
+                    example: https://trmnl.com/images/screens/setup_logo/og_plus.png
                   filename:
                     type: string
                     nullable: true
@@ -207,10 +213,10 @@ paths:
                   image_url:
                     type: string
                     nullable: true
-                    example: https://trmnl.com/images/setup/setup-logo.bmp
+                    example: https://trmnl.com/images/screens/setup_logo/og_plus.png
                   message:
                     type: string
-                    example: Register at trmnl.com/signup with Device ID 'ABC-123'
+                    example: Register at trmnl.com/start with Device ID 'ABC-123'
   "/api/categories":
     get:
       summary: List all plugin categories
