@@ -123,9 +123,6 @@ data class RecipesResponse(
 /**
  * Response wrapper for a single recipe.
  *
- * @property data The recipe data
+ * @see ApiResponse
  */
-@Serializable
-data class RecipeDetailResponse(
-    val data: Recipe,
-)
+typealias RecipeDetailResponse = ApiResponse<Recipe>

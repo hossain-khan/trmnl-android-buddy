@@ -1,8 +1,5 @@
 package ink.trmnl.android.buddy.api.models
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
 /**
  * Response wrapper for the `/playlists/items` API endpoint.
  *
@@ -33,10 +30,6 @@ import kotlinx.serialization.Serializable
  * }
  * ```
  *
- * @property data List of playlist items for a device
+ * @see ApiResponse
  */
-@Serializable
-data class PlaylistItemsResponse(
-    @SerialName("data")
-    val data: List<PlaylistItem>,
-)
+typealias PlaylistItemsResponse = ApiResponse<List<PlaylistItem>>
