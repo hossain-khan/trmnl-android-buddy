@@ -15,6 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Maintained backward compatibility with existing Retrofit integration and repositories
   - Simplified adding new API endpoints - only need to define the data type and create a type alias
   - Serialization/deserialization is tested through existing Retrofit MockWebServer tests (TrmnlApiServiceTest)
+### Added
+- **Expanded test coverage for app module**: Significantly increased unit test coverage across presenters, repositories, and workers
+  - Added comprehensive presenter tests for `TrmnlDevicesPresenter`, `DeviceDetailPresenter`, `AuthenticationPresenter`, and all other key presenters
+  - Added repository tests for `BatteryHistoryRepository`, `BookmarkRepository`, `PlaylistItemsRepository`, `RecipesRepository`, `DeviceTokenRepository`, and `UserPreferencesRepository`
+  - Added worker tests for `BatteryCollectionWorker`, `AnnouncementSyncWorker`, `BlogPostSyncWorker`, and `LowBatteryNotificationWorker`
+  - All tests use AssertK for fluent, Kotlin-native assertions (no JUnit assertions)
+  - All tests use fake implementations instead of mocks following Android testing best practices
+- **Testing documentation**: Added `docs/TESTING.md` with comprehensive guide covering test patterns, available fakes, Circuit presenter testing, repository testing, worker testing, Flow testing with Turbine, and code coverage with Kover
+- **Code coverage reporting**: Kover is configured in CI/CD to generate XML coverage reports and upload them to Codecov on every push and pull request
 
 ## [2.13.0] - 2026-02-14
 
