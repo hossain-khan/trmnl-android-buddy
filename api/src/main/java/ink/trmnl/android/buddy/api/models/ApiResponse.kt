@@ -28,7 +28,6 @@ import kotlinx.serialization.Serializable
  * @param T The type of data being wrapped
  * @property data The response payload (can be a single object, list, or any serializable type)
  *
- * @sample ApiResponse sample
  * <pre>
  * // API Response JSON:
  * {
