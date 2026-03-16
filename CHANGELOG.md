@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Simplified API response wrapper pattern**: Replaced individual response wrapper classes with generic `ApiResponse<T>` wrapper
   - Created `ApiResponse<T>` generic wrapper class as a single source of truth for the TRMNL API's `{ "data": ... }` response pattern
-  - Converted `DeviceResponse`, `DevicesResponse`, `UserResponse`, `RecipeDetailResponse`, `CategoriesResponse`, `DeviceModelsResponse`, and `PlaylistItemsResponse` to type aliases
+  - Converted `DeviceResponse`, `DevicesResponse`, `UserResponse`, `RecipeDetailResponse`, `CategoriesResponse`, and `PlaylistItemsResponse` to type aliases
   - Eliminated boilerplate serialization code across API models (~100 lines of duplicate code removed)
   - Maintained backward compatibility with existing Retrofit integration and repositories
   - Simplified adding new API endpoints - only need to define the data type and create a type alias
