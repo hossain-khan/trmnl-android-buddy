@@ -1,6 +1,5 @@
 package ink.trmnl.android.buddy.ui.devicedetail
 import assertk.assertThat
-import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
@@ -8,34 +7,27 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
-import ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
-import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
-import ink.trmnl.android.buddy.data.database.BatteryHistoryRepository
-import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
-import ink.trmnl.android.buddy.fakes.FakeBatteryHistoryRepository
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakePlaylistItemsRepository
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import java.util.concurrent.TimeUnit
 
 /**
- * Unit tests for DeviceDetailScreen presenter.
+ * Unit tests for [DeviceDetailPresenter].
  *
  * Tests cover:
  * - Initial state composition and device data display
- * - Battery history loading and display
- * - Battery tracking state management
- * - User interactions (back, settings navigation)
- * - Manual battery recording
- * - Clear battery history logic
+ * - Device token detection
  * - Low battery notification settings
- * - Edge cases (null values, empty history, no device token)
+ * - Navigation events (back, settings)
+ * - Playlist items prefetching and loading states
+ * - Edge cases (null values)
+ *
+ * Battery history loading, analysis, and recording are tested separately in
+ * [BatteryChartScreenTest] which covers [BatteryChartPresenter].
  */
 class DeviceDetailScreenTest {
     @Test
@@ -53,16 +45,15 @@ class DeviceDetailScreenTest {
                     refreshRate = 300,
                 )
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
                 // Wait for initial state
-                var state = awaitItem()
+                val state = awaitItem()
 
                 // Verify device information is correctly displayed
                 assertThat(state.deviceId).isEqualTo("ABC-123")
@@ -77,140 +68,23 @@ class DeviceDetailScreenTest {
         }
 
     @Test
-    fun `presenter loads battery history on composition`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val batteryHistory = createTestBatteryHistory(screen.deviceId, count = 5)
-            val batteryRepo = FakeBatteryHistoryRepository(initialHistory = batteryHistory)
-            val userPrefsRepo = FakeUserPreferencesRepository()
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait until battery history is loaded
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify battery history is loaded
-                assertThat(state.isLoading).isFalse()
-                assertThat(state.batteryHistory).hasSize(5)
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter shows empty battery history when none exists`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
-            val userPrefsRepo = FakeUserPreferencesRepository()
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for loading to complete
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify empty battery history
-                assertThat(state.batteryHistory).hasSize(0)
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter respects battery tracking enabled preference`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
-            val userPrefsRepo =
-                FakeUserPreferencesRepository(
-                    initialPreferences = UserPreferences(isBatteryTrackingEnabled = true),
-                )
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for state to stabilize
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify battery tracking is enabled
-                assertThat(state.isBatteryTrackingEnabled).isTrue()
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter respects battery tracking disabled preference`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
-            val userPrefsRepo =
-                FakeUserPreferencesRepository(
-                    initialPreferences = UserPreferences(isBatteryTrackingEnabled = false),
-                )
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for state to stabilize
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify battery tracking is disabled
-                assertThat(state.isBatteryTrackingEnabled).isFalse()
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
     fun `presenter detects device token presence`() =
         runTest {
             // Given
             val screen = createTestScreen()
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository(hasToken = true)
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
-                // Wait for state to stabilize
+                // Wait for state to stabilize (playlist loading completes)
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Verify device token is detected
                 assertThat(state.hasDeviceToken).isTrue()
@@ -225,11 +99,10 @@ class DeviceDetailScreenTest {
             // Given
             val screen = createTestScreen()
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository(hasToken = false)
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -237,196 +110,10 @@ class DeviceDetailScreenTest {
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Verify no device token
                 assertThat(state.hasDeviceToken).isFalse()
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter calculates hasRecordedToday correctly when recording exists`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val todayTimestamp = System.currentTimeMillis()
-            val batteryHistory =
-                listOf(
-                    BatteryHistoryEntity(
-                        deviceId = screen.deviceId,
-                        percentCharged = 80.0,
-                        batteryVoltage = 3.7,
-                        timestamp = todayTimestamp,
-                    ),
-                )
-            val batteryRepo = FakeBatteryHistoryRepository(initialHistory = batteryHistory)
-            val userPrefsRepo = FakeUserPreferencesRepository()
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for state to stabilize
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify hasRecordedToday is true
-                assertThat(state.hasRecordedToday).isTrue()
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter calculates hasRecordedToday correctly when no recording today`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val yesterdayTimestamp = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1)
-            val batteryHistory =
-                listOf(
-                    BatteryHistoryEntity(
-                        deviceId = screen.deviceId,
-                        percentCharged = 80.0,
-                        batteryVoltage = 3.7,
-                        timestamp = yesterdayTimestamp,
-                    ),
-                )
-            val batteryRepo = FakeBatteryHistoryRepository(initialHistory = batteryHistory)
-            val userPrefsRepo = FakeUserPreferencesRepository()
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for state to stabilize
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify hasRecordedToday is false
-                assertThat(state.hasRecordedToday).isFalse()
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter detects charging event in battery history`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val now = System.currentTimeMillis()
-            // Create history with charging event (battery jump > 50%)
-            val batteryHistory =
-                listOf(
-                    BatteryHistoryEntity(
-                        deviceId = screen.deviceId,
-                        percentCharged = 30.0,
-                        batteryVoltage = 3.5,
-                        timestamp = now - TimeUnit.DAYS.toMillis(2),
-                    ),
-                    BatteryHistoryEntity(
-                        deviceId = screen.deviceId,
-                        percentCharged = 90.0, // Jump of 60% indicates charging
-                        batteryVoltage = 4.1,
-                        timestamp = now - TimeUnit.DAYS.toMillis(1),
-                    ),
-                )
-            val batteryRepo = FakeBatteryHistoryRepository(initialHistory = batteryHistory)
-            val userPrefsRepo = FakeUserPreferencesRepository()
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for state to stabilize
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify clear history reason is set for charging
-                assertThat(state.clearHistoryReason).isNotNull()
-                assertThat(state.clearHistoryReason).isEqualTo(BatteryHistoryAnalyzer.ClearHistoryReason.CHARGING_DETECTED)
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter detects stale battery history data`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val now = System.currentTimeMillis()
-            // Create history with data older than 6 months
-            val batteryHistory =
-                listOf(
-                    BatteryHistoryEntity(
-                        deviceId = screen.deviceId,
-                        percentCharged = 80.0,
-                        batteryVoltage = 3.7,
-                        timestamp = now - TimeUnit.DAYS.toMillis(200), // > 6 months
-                    ),
-                )
-            val batteryRepo = FakeBatteryHistoryRepository(initialHistory = batteryHistory)
-            val userPrefsRepo = FakeUserPreferencesRepository()
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for state to stabilize
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify clear history reason is set for stale data
-                assertThat(state.clearHistoryReason).isNotNull()
-                assertThat(state.clearHistoryReason).isEqualTo(BatteryHistoryAnalyzer.ClearHistoryReason.STALE_DATA)
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter shows no clear history reason for clean data`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val batteryHistory = createTestBatteryHistory(screen.deviceId, count = 3)
-            val batteryRepo = FakeBatteryHistoryRepository(initialHistory = batteryHistory)
-            val userPrefsRepo = FakeUserPreferencesRepository()
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for state to stabilize
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify no clear history reason
-                assertThat(state.clearHistoryReason).isNull()
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -438,7 +125,6 @@ class DeviceDetailScreenTest {
             // Given
             val screen = createTestScreen()
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo =
                 FakeUserPreferencesRepository(
                     initialPreferences =
@@ -449,7 +135,7 @@ class DeviceDetailScreenTest {
                 )
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -457,7 +143,7 @@ class DeviceDetailScreenTest {
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Verify low battery settings
                 assertThat(state.isLowBatteryNotificationEnabled).isTrue()
@@ -473,11 +159,10 @@ class DeviceDetailScreenTest {
             // Given
             val screen = createTestScreen()
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -485,7 +170,7 @@ class DeviceDetailScreenTest {
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Send back event
                 state.eventSink(DeviceDetailScreen.Event.BackClicked)
@@ -503,11 +188,10 @@ class DeviceDetailScreenTest {
             // Given
             val screen = createTestScreen()
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -515,7 +199,7 @@ class DeviceDetailScreenTest {
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Send settings event
                 state.eventSink(DeviceDetailScreen.Event.SettingsClicked)
@@ -523,94 +207,6 @@ class DeviceDetailScreenTest {
                 // Verify navigation to device token screen
                 val nextScreen = navigator.awaitNextScreen()
                 assertThat(nextScreen).isNotNull()
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter records battery manually`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
-            val userPrefsRepo = FakeUserPreferencesRepository()
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for state to stabilize
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Initially no recordings
-                assertThat(state.batteryHistory).hasSize(0)
-
-                // Send record battery event
-                state.eventSink(DeviceDetailScreen.Event.RecordBatteryManually)
-
-                // Advance time to allow the IO coroutine to complete
-                testScheduler.advanceUntilIdle()
-
-                // Wait for state update with new battery history
-                var updatedState: DeviceDetailScreen.State
-                do {
-                    updatedState = awaitItem()
-                } while (updatedState.batteryHistory.isEmpty())
-
-                // Verify battery was recorded
-                assertThat(updatedState.batteryHistory).hasSize(1)
-                val recording = updatedState.batteryHistory.first()
-                assertThat(recording.deviceId).isEqualTo(screen.deviceId)
-                assertThat(recording.percentCharged).isEqualTo(screen.currentBattery)
-                assertThat(recording.batteryVoltage).isEqualTo(screen.currentVoltage)
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `presenter clears battery history`() =
-        runTest {
-            // Given
-            val screen = createTestScreen()
-            val navigator = FakeNavigator(screen)
-            val batteryHistory = createTestBatteryHistory(screen.deviceId, count = 5)
-            val batteryRepo = FakeBatteryHistoryRepository(initialHistory = batteryHistory)
-            val userPrefsRepo = FakeUserPreferencesRepository()
-            val deviceTokenRepo = FakeDeviceTokenRepository()
-            val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
-
-            // When/Then
-            presenter.test {
-                // Wait for state to stabilize
-                var state: DeviceDetailScreen.State
-                do {
-                    state = awaitItem()
-                } while (state.isLoading)
-
-                // Verify initial history
-                assertThat(state.batteryHistory).hasSize(5)
-
-                // Send clear history event
-                state.eventSink(DeviceDetailScreen.Event.ClearBatteryHistory)
-
-                // Advance time to allow the IO coroutine to complete
-                testScheduler.advanceUntilIdle()
-
-                // Wait for updated state after clearing
-                do {
-                    state = awaitItem()
-                } while (state.batteryHistory.isNotEmpty())
-
-                // Verify history was cleared
-                assertThat(state.batteryHistory).hasSize(0)
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -631,11 +227,10 @@ class DeviceDetailScreenTest {
                     refreshRate = 300,
                 )
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -643,7 +238,7 @@ class DeviceDetailScreenTest {
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Verify null voltage is handled
                 assertThat(state.currentVoltage).isNull()
@@ -667,11 +262,10 @@ class DeviceDetailScreenTest {
                     refreshRate = null, // Null refresh rate
                 )
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -679,7 +273,7 @@ class DeviceDetailScreenTest {
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Verify null RSSI is handled
                 assertThat(state.rssi).isNull()
@@ -704,11 +298,10 @@ class DeviceDetailScreenTest {
                     deviceNumericId = 12345,
                 )
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -719,7 +312,7 @@ class DeviceDetailScreenTest {
                 // Wait for loading to complete
                 do {
                     state = awaitItem()
-                } while (state.isLoading || state.isPlaylistItemsLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Verify prefetch completed
                 assertThat(state.isPlaylistItemsLoading).isFalse()
@@ -746,14 +339,13 @@ class DeviceDetailScreenTest {
                     deviceNumericId = 12345,
                 )
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo =
                 FakePlaylistItemsRepository(
                     initialResult = Result.failure(Exception("Network error")),
                 )
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -761,7 +353,7 @@ class DeviceDetailScreenTest {
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isLoading || state.isPlaylistItemsLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Verify loading completes even on error
                 assertThat(state.isPlaylistItemsLoading).isFalse()
@@ -786,11 +378,10 @@ class DeviceDetailScreenTest {
                     deviceNumericId = null,
                 )
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -798,7 +389,7 @@ class DeviceDetailScreenTest {
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isLoading)
+                } while (state.isPlaylistItemsLoading)
 
                 // Verify no prefetch attempt and loading state is cleared
                 assertThat(state.isPlaylistItemsLoading).isFalse()
@@ -824,11 +415,10 @@ class DeviceDetailScreenTest {
                     deviceNumericId = 12345,
                 )
             val navigator = FakeNavigator(screen)
-            val batteryRepo = FakeBatteryHistoryRepository()
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, batteryRepo, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
 
             // When/Then
             presenter.test {
@@ -862,24 +452,6 @@ class DeviceDetailScreenTest {
             rssi = -60,
             refreshRate = 300,
         )
-
-    /**
-     * Helper function to create test battery history.
-     */
-    private fun createTestBatteryHistory(
-        deviceId: String,
-        count: Int,
-    ): List<BatteryHistoryEntity> {
-        val now = System.currentTimeMillis()
-        return (0 until count).map { index ->
-            BatteryHistoryEntity(
-                deviceId = deviceId,
-                percentCharged = 90.0 - (index * 5.0), // Declining battery
-                batteryVoltage = 3.8 - (index * 0.1),
-                timestamp = now - TimeUnit.DAYS.toMillis(index * 7L), // Weekly readings
-            )
-        }
-    }
 
     /**
      * Helper function to create a test playlist item.
