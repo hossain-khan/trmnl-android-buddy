@@ -306,5 +306,13 @@ class SettingsScreenTest {
         override fun cancelBlogPostSync() {
             isBlogPostSyncScheduled = false
         }
+
+        override fun scheduleCalendarSync() {
+            // No-op for testing
+        }
+
+        override fun cancelCalendarSync() {
+            // No-op for testing
+        }
     }
 }

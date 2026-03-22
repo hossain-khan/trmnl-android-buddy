@@ -530,4 +530,143 @@ class WorkerSchedulerTest {
             assertThat(blogPostConstraints.requiresCharging()).isTrue()
             assertThat(blogPostConstraints.requiresDeviceIdle()).isTrue()
         }
+
+    // ========================================
+    // Calendar Sync Worker Tests
+    // ========================================
+
+    @Test
+    fun `scheduleCalendarSync enqueues worker with correct name`() =
+        runTest {
+            // When: Schedule calendar sync
+            scheduler.scheduleCalendarSync()
+
+            // Then: Worker is enqueued with correct name
+            val workInfos = workManager.getWorkInfosForUniqueWork(CalendarSyncWorker.WORK_NAME).get()
+            assertThat(workInfos).isNotEmpty()
+            assertThat(workInfos).hasSize(1)
+            assertThat(workInfos.first().state).isEqualTo(WorkInfo.State.ENQUEUED)
+        }
+
+    @Test
+    fun `scheduleCalendarSync applies network connectivity constraint`() =
+        runTest {
+            // When: Schedule calendar sync
+            scheduler.scheduleCalendarSync()
+
+            // Then: Worker has network connectivity constraint only
+            val workInfos = workManager.getWorkInfosForUniqueWork(CalendarSyncWorker.WORK_NAME).get()
+            val workInfo = workInfos.first()
+
+            assertThat(workInfo.constraints.requiredNetworkType).isEqualTo(NetworkType.CONNECTED)
+            assertThat(workInfo.constraints.requiresCharging()).isFalse()
+            assertThat(workInfo.constraints.requiresDeviceIdle()).isFalse()
+        }
+
+    @Test
+    fun `scheduleCalendarSync creates periodic work`() =
+        runTest {
+            // When: Schedule calendar sync
+            scheduler.scheduleCalendarSync()
+
+            // Then: Worker is scheduled as periodic work
+            val workInfos = workManager.getWorkInfosForUniqueWork(CalendarSyncWorker.WORK_NAME).get()
+            assertThat(workInfos).hasSize(1)
+            assertThat(workInfos.first().state).isEqualTo(WorkInfo.State.ENQUEUED)
+        }
+
+    @Test
+    fun `scheduleCalendarSync uses REPLACE policy`() =
+        runTest {
+            // Given: Worker is already scheduled
+            scheduler.scheduleCalendarSync()
+
+            // When: Schedule again
+            scheduler.scheduleCalendarSync()
+
+            // Then: Only one work item exists (replaced)
+            val workInfos =
+                workManager
+                    .getWorkInfosForUniqueWork(CalendarSyncWorker.WORK_NAME)
+                    .get()
+                    .filter { it.state == WorkInfo.State.ENQUEUED }
+            assertThat(workInfos).hasSize(1)
+        }
+
+    @Test
+    fun `cancelCalendarSync removes scheduled worker`() =
+        runTest {
+            // Given: Worker is scheduled
+            scheduler.scheduleCalendarSync()
+            val workInfos = workManager.getWorkInfosForUniqueWork(CalendarSyncWorker.WORK_NAME).get()
+            assertThat(workInfos).hasSize(1)
+
+            // When: Cancel the worker
+            scheduler.cancelCalendarSync()
+
+            // Then: Worker is cancelled
+            val cancelledInfos = workManager.getWorkInfosForUniqueWork(CalendarSyncWorker.WORK_NAME).get()
+            assertThat(cancelledInfos.first().state).isEqualTo(WorkInfo.State.CANCELLED)
+        }
+
+    @Test
+    fun `cancelCalendarSync is safe when no work is scheduled`() =
+        runTest {
+            // When: Cancel without scheduling first
+            scheduler.cancelCalendarSync()
+
+            // Then: No error occurs
+            val workInfos = workManager.getWorkInfosForUniqueWork(CalendarSyncWorker.WORK_NAME).get()
+            assertThat(workInfos).isEmpty()
+        }
+
+    @Test
+    fun `all workers including calendar can be scheduled independently`() =
+        runTest {
+            // When: Schedule all workers including calendar sync
+            scheduler.scheduleLowBatteryNotification()
+            scheduler.scheduleAnnouncementSync()
+            scheduler.scheduleBlogPostSync()
+            scheduler.scheduleCalendarSync()
+
+            // Then: All workers are scheduled
+            val lowBatteryWork = workManager.getWorkInfosForUniqueWork(LowBatteryNotificationWorker.WORK_NAME).get()
+            val announcementWork = workManager.getWorkInfosForUniqueWork("announcement_sync").get()
+            val blogPostWork = workManager.getWorkInfosForUniqueWork("blog_post_sync").get()
+            val calendarWork = workManager.getWorkInfosForUniqueWork(CalendarSyncWorker.WORK_NAME).get()
+
+            assertThat(lowBatteryWork).hasSize(1)
+            assertThat(announcementWork).hasSize(1)
+            assertThat(blogPostWork).hasSize(1)
+            assertThat(calendarWork).hasSize(1)
+
+            assertThat(lowBatteryWork.first().state).isEqualTo(WorkInfo.State.ENQUEUED)
+            assertThat(announcementWork.first().state).isEqualTo(WorkInfo.State.ENQUEUED)
+            assertThat(blogPostWork.first().state).isEqualTo(WorkInfo.State.ENQUEUED)
+            assertThat(calendarWork.first().state).isEqualTo(WorkInfo.State.ENQUEUED)
+        }
+
+    @Test
+    fun `cancelling calendar sync does not affect other workers`() =
+        runTest {
+            // Given: All workers are scheduled
+            scheduler.scheduleLowBatteryNotification()
+            scheduler.scheduleAnnouncementSync()
+            scheduler.scheduleBlogPostSync()
+            scheduler.scheduleCalendarSync()
+
+            // When: Cancel calendar sync
+            scheduler.cancelCalendarSync()
+
+            // Then: Only calendar sync is cancelled, others remain
+            val lowBatteryWork = workManager.getWorkInfosForUniqueWork(LowBatteryNotificationWorker.WORK_NAME).get()
+            val announcementWork = workManager.getWorkInfosForUniqueWork("announcement_sync").get()
+            val blogPostWork = workManager.getWorkInfosForUniqueWork("blog_post_sync").get()
+            val calendarWork = workManager.getWorkInfosForUniqueWork(CalendarSyncWorker.WORK_NAME).get()
+
+            assertThat(lowBatteryWork.first().state).isEqualTo(WorkInfo.State.ENQUEUED)
+            assertThat(announcementWork.first().state).isEqualTo(WorkInfo.State.ENQUEUED)
+            assertThat(blogPostWork.first().state).isEqualTo(WorkInfo.State.ENQUEUED)
+            assertThat(calendarWork.first().state).isEqualTo(WorkInfo.State.CANCELLED)
+        }
 }

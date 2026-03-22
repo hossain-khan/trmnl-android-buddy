@@ -19,6 +19,7 @@ import ink.trmnl.android.buddy.calendar.repository.CalendarSyncRepositoryInterfa
  * @param initialLastSyncError Last sync error message. Defaults to null.
  * @param shouldThrowOnGetCalendars If true, [getAvailableCalendars] throws an exception.
  * @param shouldThrowOnGetEvents If true, [getEventsForSync] throws an exception.
+ * @param eventsToReturn Events returned by [getEventsForSync]. Defaults to empty list.
  */
 class FakeCalendarSyncRepository(
     private val initialCalendars: List<SyncCalendar> = emptyList(),
@@ -27,6 +28,7 @@ class FakeCalendarSyncRepository(
     private val initialLastSyncError: String? = null,
     private val shouldThrowOnGetCalendars: Boolean = false,
     private val shouldThrowOnGetEvents: Boolean = false,
+    private val eventsToReturn: List<SyncEvent> = emptyList(),
 ) : CalendarSyncRepositoryInterface {
     // ============================================================
     // In-memory state
@@ -109,7 +111,7 @@ class FakeCalendarSyncRepository(
         if (shouldThrowOnGetEvents) {
             throw Exception("Simulated sync failure")
         }
-        return emptyList()
+        return eventsToReturn
     }
 
     override fun isSyncEnabled(): Boolean = syncEnabled

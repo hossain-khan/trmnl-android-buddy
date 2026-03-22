@@ -34,9 +34,12 @@ class FakeTrmnlApiService : TrmnlApiService {
     var getDeviceModelsResult: ApiResult<DeviceModelsResponse, ApiError>? = null
     var getDisplayCurrentResult: ApiResult<Display, ApiError>? = null
     var getPlaylistItemsResult: ApiResult<PlaylistItemsResponse, ApiError>? = null
+    var syncCalendarEventsResult: ApiResult<Unit, ApiError>? = null
 
     var lastAuthorizationHeader: String? = null
     var getDevicesCallCount = 0
+    var syncCalendarEventsCallCount = 0
+    var lastSyncCalendarEventsRequest: CalendarSyncRequest? = null
 
     override suspend fun getDevices(authorization: String): ApiResult<DevicesResponse, ApiError> {
         lastAuthorizationHeader = authorization
@@ -92,5 +95,10 @@ class FakeTrmnlApiService : TrmnlApiService {
     override suspend fun syncCalendarEvents(
         authorization: String,
         request: CalendarSyncRequest,
-    ): ApiResult<Unit, ApiError> = throw NotImplementedError("syncCalendarEvents not set")
+    ): ApiResult<Unit, ApiError> {
+        lastAuthorizationHeader = authorization
+        syncCalendarEventsCallCount++
+        lastSyncCalendarEventsRequest = request
+        return syncCalendarEventsResult ?: throw IllegalStateException("syncCalendarEventsResult not set")
+    }
 }
