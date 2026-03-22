@@ -23,3 +23,4 @@ rootProject.name = "TRMNL Buddy"
 include(":app")
 include(":api")
 include(":content")
+include(":calendar-sync")

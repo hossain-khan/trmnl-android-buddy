@@ -107,6 +107,7 @@ kotlin {
 dependencies {
     // Modules
     implementation(project(":api"))
+    implementation(project(":calendar-sync"))
     implementation(project(":content"))
 
     implementation(platform(libs.androidx.compose.bom))

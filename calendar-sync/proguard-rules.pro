@@ -1,0 +1,2 @@
+-keepattributes *Annotation*
+-keep class ink.trmnl.android.buddy.calendar.** { *; }
