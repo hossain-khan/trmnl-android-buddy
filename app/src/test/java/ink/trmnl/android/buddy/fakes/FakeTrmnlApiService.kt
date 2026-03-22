@@ -10,6 +10,7 @@ import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
+import ink.trmnl.android.buddy.api.models.PluginSettingsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
@@ -34,11 +35,15 @@ class FakeTrmnlApiService : TrmnlApiService {
     var getDeviceModelsResult: ApiResult<DeviceModelsResponse, ApiError>? = null
     var getDisplayCurrentResult: ApiResult<Display, ApiError>? = null
     var getPlaylistItemsResult: ApiResult<PlaylistItemsResponse, ApiError>? = null
+    var getPluginSettingsResult: ApiResult<PluginSettingsResponse, ApiError>? = null
     var syncCalendarEventsResult: ApiResult<Unit, ApiError>? = null
 
     var lastAuthorizationHeader: String? = null
     var getDevicesCallCount = 0
+    var getPluginSettingsCallCount = 0
+    var lastPluginSettingsPluginId: String? = null
     var syncCalendarEventsCallCount = 0
+    var lastSyncCalendarSettingId: Int? = null
     var lastSyncCalendarEventsRequest: CalendarSyncRequest? = null
 
     override suspend fun getDevices(authorization: String): ApiResult<DevicesResponse, ApiError> {
@@ -92,11 +97,23 @@ class FakeTrmnlApiService : TrmnlApiService {
     override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
         throw NotImplementedError("getCategories not implemented")
 
+    override suspend fun getPluginSettings(
+        pluginId: String,
+        authorization: String,
+    ): ApiResult<PluginSettingsResponse, ApiError> {
+        lastAuthorizationHeader = authorization
+        lastPluginSettingsPluginId = pluginId
+        getPluginSettingsCallCount++
+        return getPluginSettingsResult ?: throw IllegalStateException("getPluginSettingsResult not set")
+    }
+
     override suspend fun syncCalendarEvents(
+        settingId: Int,
         authorization: String,
         request: CalendarSyncRequest,
     ): ApiResult<Unit, ApiError> {
         lastAuthorizationHeader = authorization
+        lastSyncCalendarSettingId = settingId
         syncCalendarEventsCallCount++
         lastSyncCalendarEventsRequest = request
         return syncCalendarEventsResult ?: throw IllegalStateException("syncCalendarEventsResult not set")

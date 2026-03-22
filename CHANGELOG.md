@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Calendar Sync API — Companion App Specification** (Phase 3 Refactoring)
+  - Implemented 3-step sync workflow matching TRMNL iOS Companion app specification:
+    1. **Step 1**: Validate API key via `GET /me`
+    2. **Step 2**: Fetch calendar plugin setting ID via `GET /plugin_settings?plugin_id=calendars`
+    3. **Step 3**: Sync events via `POST /plugin_settings/{id}/data`
+  - Added `getPluginSettings(pluginId: String, authorization: String)` endpoint to `TrmnlApiService`
+  - Updated `syncCalendarEvents()` to use `POST /plugin_settings/{id}/data` with path parameter `settingId: Int`
+  - Updated `CalendarEvent` API model to match Companion spec fields: `summary`, `start` (HH:mm), `start_full` (ISO8601), `date_time` (ISO8601), `end` (HH:mm), `end_full` (ISO8601), `all_day`, `description`, `status`, `calendar_identifier`
+  - Updated `CalendarSyncRequest` to wrap events in `merge_variables: MergeVariables` per Companion spec
+  - Added `MergeVariables` model as the events wrapper inside `CalendarSyncRequest`
+  - Created `PluginSettingsResponse` type alias for `GET /plugin_settings` endpoint responses
+  - Added plugin setting ID caching (`getCachedPluginSettingId()`, `cachePluginSettingId()`) to `CalendarSyncRepositoryInterface` and `CalendarSyncRepository` to avoid repeated API calls
+  - Updated base URL from `https://trmnl.com/api` to `https://usetrmnl.com/api` matching Companion app
+  - Updated `CalendarSyncWorker` with 3-step workflow; events are now sent with full Companion spec mapping (`calendarIdentifier` from `calendarName`, HH:mm times, ISO8601 full timestamps)
+  - Updated `FakeTrmnlApiService` with `getPluginSettings()` support and new `syncCalendarEvents()` signature
+  - Updated `FakeCalendarSyncRepository` with plugin setting ID caching support and `initialPluginSettingId` parameter
+  - Updated `TrmnlCalendarSyncApiTest` with tests for new endpoints and request format (including `merge_variables` wrapper validation)
+  - Updated `CalendarSyncWorkerTest` with 3-step workflow tests including caching verification, plugin ID query validation, and new field assertions
 - **Background Sync Scheduling — WorkManager Integration** (Phase 4 of Calendar Sync Implementation)
   - Created `CalendarSyncWorker.kt` in `app/work/` following the Metro DI pattern used by existing workers
   - Worker uses `@Inject`, `@Assisted`, `@AssistedFactory`, `@ContributesIntoMap`, and `@WorkerKey` annotations for automatic Metro DI registration

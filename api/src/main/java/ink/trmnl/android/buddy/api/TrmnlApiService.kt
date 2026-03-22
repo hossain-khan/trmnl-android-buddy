@@ -9,6 +9,7 @@ import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
+import ink.trmnl.android.buddy.api.models.PluginSettingsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
@@ -34,7 +35,7 @@ import retrofit2.http.Query
  * ```
  *
  * ## Base URL
- * Production: `https://trmnl.com/api`
+ * Production: `https://usetrmnl.com/api`
  *
  * ## Error Handling
  * Uses EitherNet's ApiResult for type-safe error handling:
@@ -566,30 +567,76 @@ interface TrmnlApiService {
     // ========================================
 
     /**
-     * Sync calendar events to the TRMNL server.
+     * Get plugin settings filtered by plugin identifier.
+     *
+     * Used in step 2 of the calendar sync 3-step workflow to retrieve the plugin setting ID
+     * needed for sending calendar event data.
+     *
+     * Requires authentication via Bearer token.
+     *
+     * @param pluginId Plugin identifier string (e.g., "calendars" for the calendar plugin)
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @return ApiResult containing the list of plugin settings or error
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.getPluginSettings("calendars", "Bearer user_abc123")) {
+     *     is ApiResult.Success -> {
+     *         val settingId = result.value.data.firstOrNull()?.id
+     *         println("Plugin setting ID: $settingId")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         401 -> println("Unauthorized")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("plugin_settings")
+    suspend fun getPluginSettings(
+        @Query("plugin_id") pluginId: String,
+        @Header("Authorization") authorization: String,
+    ): ApiResult<PluginSettingsResponse, ApiError>
+
+    /**
+     * Sync calendar events to the TRMNL server via the plugin settings data endpoint.
      *
      * Sends calendar data from the Android device to the TRMNL server so that
      * it can be displayed on TRMNL devices via the calendar plugin.
      *
+     * This is step 3 of the calendar sync 3-step workflow:
+     * 1. GET /me - Validate API key
+     * 2. GET /plugin_settings?plugin_id=calendars - Get plugin setting ID
+     * 3. POST /plugin_settings/{id}/data - Sync events (this endpoint)
+     *
      * Requires authentication via Bearer token.
      *
+     * @param settingId The plugin setting ID obtained from [getPluginSettings]
      * @param authorization Bearer token with format "Bearer user_xxxxxx"
-     * @param request Request body containing the list of calendar events to sync
+     * @param request Request body containing calendar events wrapped in merge_variables
      * @return ApiResult with empty body on success (204) or error
      *
      * Example usage:
      * ```kotlin
      * val request = CalendarSyncRequest(
-     *     events = listOf(
-     *         CalendarEvent(
-     *             title = "Team Meeting",
-     *             startTime = "2025-01-15T09:00:00Z",
-     *             endTime = "2025-01-15T10:00:00Z",
-     *             location = "Conference Room A",
+     *     mergeVariables = MergeVariables(
+     *         events = listOf(
+     *             CalendarEvent(
+     *                 summary = "Team Meeting",
+     *                 start = "09:00",
+     *                 startFull = "2025-01-15T09:00:00.000-05:00",
+     *                 dateTime = "2025-01-15T09:00:00.000-05:00",
+     *                 end = "10:00",
+     *                 endFull = "2025-01-15T10:00:00.000-05:00",
+     *                 calendarIdentifier = "user@example.com",
+     *             )
      *         )
      *     )
      * )
-     * when (val result = api.syncCalendarEvents("Bearer user_abc123", request)) {
+     * when (val result = api.syncCalendarEvents(12345, "Bearer user_abc123", request)) {
      *     is ApiResult.Success -> println("Calendar synced successfully")
      *     is ApiResult.Failure.HttpFailure -> when (result.code) {
      *         401 -> println("Unauthorized")
@@ -602,8 +649,9 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @POST("calendar/sync")
+    @POST("plugin_settings/{id}/data")
     suspend fun syncCalendarEvents(
+        @Path("id") settingId: Int,
         @Header("Authorization") authorization: String,
         @Body request: CalendarSyncRequest,
     ): ApiResult<Unit, ApiError>

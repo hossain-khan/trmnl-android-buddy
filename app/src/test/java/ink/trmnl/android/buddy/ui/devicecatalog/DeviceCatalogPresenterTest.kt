@@ -19,6 +19,8 @@ import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
+import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
+import ink.trmnl.android.buddy.api.models.PluginSettingsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
@@ -453,7 +455,13 @@ private open class FakeApiService(
     ) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
     override suspend fun syncCalendarEvents(
+        settingId: Int,
         authorization: String,
         request: CalendarSyncRequest,
     ): ApiResult<Unit, ApiError> = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
+
+    override suspend fun getPluginSettings(
+        pluginId: String,
+        authorization: String,
+    ): ApiResult<PluginSettingsResponse, ApiError> = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 }

@@ -13,6 +13,9 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.ApiResponse
+import ink.trmnl.android.buddy.api.models.PluginSetting
+import ink.trmnl.android.buddy.api.models.User
 import ink.trmnl.android.buddy.calendar.models.SyncEvent
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.fakes.FakeCalendarSyncRepository
@@ -28,16 +31,22 @@ import java.io.IOException
 /**
  * Unit tests for [CalendarSyncWorker].
  *
- * Tests cover:
+ * Tests cover the 3-step sync workflow:
+ * 1. Validate API key (GET /me)
+ * 2. Get plugin setting ID (GET /plugin_settings?plugin_id=calendars)
+ * 3. Sync events (POST /plugin_settings/{id}/data)
+ *
+ * Additional tests:
  * - Sync disabled → returns success without calling API
  * - No API token → returns success without calling API
- * - No events → returns success and records success
+ * - No events → returns success and records success (no API calls)
  * - Successful sync with events → returns success, records success, calls API
  * - API 401 authentication failure → returns failure
  * - API HTTP error (non-401) → returns retry (up to 2 attempts), then failure
  * - Network error → returns retry (up to 2 attempts), then failure
  * - Unknown/API failure → returns failure
  * - Exception during event fetch → returns retry (up to 2 attempts), then failure
+ * - Plugin setting ID is cached to avoid repeated calls
  *
  * Uses fake implementations following project testing guidelines:
  * - [FakeCalendarSyncRepository] for repository testing
@@ -127,8 +136,8 @@ class CalendarSyncWorkerTest {
     fun `no events returns success and records sync success`() =
         runTest {
             // Given: Sync enabled, API token set, but no events to sync
+            // Note: No API calls expected when there are no events to sync
             fakeCalendarSyncRepository = FakeCalendarSyncRepository(initialSyncEnabled = true)
-            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
 
             // When: Worker executes
             val worker = createWorker()
@@ -154,7 +163,7 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = events,
                 )
-            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+            setupSuccessfulApiResponses()
 
             // When: Worker executes
             val worker = createWorker()
@@ -174,7 +183,7 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = events,
                 )
-            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+            setupSuccessfulApiResponses()
 
             // When: Worker executes
             val worker = createWorker()
@@ -198,7 +207,7 @@ class CalendarSyncWorkerTest {
                 FakeUserPreferencesRepository(
                     initialPreferences = UserPreferences(apiToken = "my_secret_token"),
                 )
-            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+            setupSuccessfulApiResponses()
 
             // When: Worker executes
             val worker = createWorker()
@@ -223,7 +232,7 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = events,
                 )
-            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+            setupSuccessfulApiResponses()
 
             // When: Worker executes
             val worker = createWorker()
@@ -232,23 +241,212 @@ class CalendarSyncWorkerTest {
             // Then: API called with all 3 events
             assertThat(fakeTrmnlApiService.syncCalendarEventsCallCount).isEqualTo(1)
             assertThat(fakeTrmnlApiService.lastSyncCalendarEventsRequest).isNotNull()
-            assertThat(fakeTrmnlApiService.lastSyncCalendarEventsRequest!!.events.size).isEqualTo(3)
+            assertThat(
+                fakeTrmnlApiService.lastSyncCalendarEventsRequest!!
+                    .mergeVariables.events.size,
+            ).isEqualTo(3)
         }
 
-    // ========================================
-    // API failure scenarios
-    // ========================================
-
     @Test
-    fun `http 401 failure returns failure without retry`() =
+    fun `successful sync uses plugin setting id from step 2`() =
         runTest {
-            // Given: API returns 401 unauthorized
+            // Given: Sync enabled, events available, plugin setting ID = 42
             val events = listOf(createSyncEvent("Event"))
             fakeCalendarSyncRepository =
                 FakeCalendarSyncRepository(
                     initialSyncEnabled = true,
                     eventsToReturn = events,
                 )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = 42)
+            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+
+            // When: Worker executes
+            val worker = createWorker()
+            worker.doWork()
+
+            // Then: syncCalendarEvents called with the correct setting ID
+            assertThat(fakeTrmnlApiService.lastSyncCalendarSettingId).isEqualTo(42)
+        }
+
+    // ========================================
+    // 3-step workflow: Step 1 (validate API key) failure scenarios
+    // ========================================
+
+    @Test
+    fun `validate api key step - http 401 returns failure without retry`() =
+        runTest {
+            // Given: Events available, but GET /me returns 401
+            val events = listOf(createSyncEvent("Event"))
+            fakeCalendarSyncRepository =
+                FakeCalendarSyncRepository(
+                    initialSyncEnabled = true,
+                    eventsToReturn = events,
+                )
+            fakeTrmnlApiService.userInfoResult =
+                ApiResult.httpFailure(401, ApiError(error = "Unauthorized"))
+
+            // When: Worker executes
+            val worker = createWorker()
+            val result = worker.doWork()
+
+            // Then: Failure returned (auth error, no retry)
+            assertThat(result).isInstanceOf(ListenableWorker.Result.Failure::class.java)
+            assertThat(fakeTrmnlApiService.syncCalendarEventsCallCount).isEqualTo(0)
+        }
+
+    @Test
+    fun `validate api key step - http 500 returns retry`() =
+        runTest {
+            // Given: Events available, but GET /me returns 500
+            val events = listOf(createSyncEvent("Event"))
+            fakeCalendarSyncRepository =
+                FakeCalendarSyncRepository(
+                    initialSyncEnabled = true,
+                    eventsToReturn = events,
+                )
+            fakeTrmnlApiService.userInfoResult =
+                ApiResult.httpFailure(500, ApiError(error = "Server Error"))
+
+            // When: Worker executes on first attempt
+            val worker = createWorker(runAttemptCount = 0)
+            val result = worker.doWork()
+
+            // Then: Retry returned
+            assertThat(result).isInstanceOf(ListenableWorker.Result.Retry::class.java)
+        }
+
+    @Test
+    fun `validate api key step - network failure returns retry`() =
+        runTest {
+            // Given: Events available, but GET /me has network failure
+            val events = listOf(createSyncEvent("Event"))
+            fakeCalendarSyncRepository =
+                FakeCalendarSyncRepository(
+                    initialSyncEnabled = true,
+                    eventsToReturn = events,
+                )
+            fakeTrmnlApiService.userInfoResult =
+                ApiResult.networkFailure(IOException("No internet"))
+
+            // When: Worker executes on first attempt
+            val worker = createWorker(runAttemptCount = 0)
+            val result = worker.doWork()
+
+            // Then: Retry returned
+            assertThat(result).isInstanceOf(ListenableWorker.Result.Retry::class.java)
+        }
+
+    // ========================================
+    // 3-step workflow: Step 2 (get plugin settings) failure scenarios
+    // ========================================
+
+    @Test
+    fun `get plugin settings step - no plugin settings found returns failure`() =
+        runTest {
+            // Given: Events available, API key valid, but no calendar plugin setting found
+            val events = listOf(createSyncEvent("Event"))
+            fakeCalendarSyncRepository =
+                FakeCalendarSyncRepository(
+                    initialSyncEnabled = true,
+                    eventsToReturn = events,
+                )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(emptyList())
+
+            // When: Worker executes
+            val worker = createWorker()
+            val result = worker.doWork()
+
+            // Then: Failure returned
+            assertThat(result).isInstanceOf(ListenableWorker.Result.Failure::class.java)
+            assertThat(fakeCalendarSyncRepository.recordSyncErrorCallCount).isEqualTo(1)
+            assertThat(fakeTrmnlApiService.syncCalendarEventsCallCount).isEqualTo(0)
+        }
+
+    @Test
+    fun `get plugin settings step - cached id skips api call`() =
+        runTest {
+            // Given: Events available, plugin setting ID already cached
+            val events = listOf(createSyncEvent("Event"))
+            fakeCalendarSyncRepository =
+                FakeCalendarSyncRepository(
+                    initialSyncEnabled = true,
+                    eventsToReturn = events,
+                    initialPluginSettingId = 99,
+                )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+
+            // When: Worker executes
+            val worker = createWorker()
+            worker.doWork()
+
+            // Then: getPluginSettings NOT called (used cached ID), sync called with cached ID
+            assertThat(fakeTrmnlApiService.getPluginSettingsCallCount).isEqualTo(0)
+            assertThat(fakeTrmnlApiService.lastSyncCalendarSettingId).isEqualTo(99)
+        }
+
+    @Test
+    fun `get plugin settings step - caches plugin setting id for future use`() =
+        runTest {
+            // Given: Events available, no cached plugin setting ID
+            val events = listOf(createSyncEvent("Event"))
+            fakeCalendarSyncRepository =
+                FakeCalendarSyncRepository(
+                    initialSyncEnabled = true,
+                    eventsToReturn = events,
+                )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = 77)
+            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+
+            // When: Worker executes
+            val worker = createWorker()
+            worker.doWork()
+
+            // Then: Plugin setting ID is cached in repository
+            assertThat(fakeCalendarSyncRepository.lastCachedPluginSettingId).isEqualTo(77)
+        }
+
+    @Test
+    fun `get plugin settings step - queries with calendars plugin id`() =
+        runTest {
+            // Given: Events available, API key valid
+            val events = listOf(createSyncEvent("Event"))
+            fakeCalendarSyncRepository =
+                FakeCalendarSyncRepository(
+                    initialSyncEnabled = true,
+                    eventsToReturn = events,
+                )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = 1)
+            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+
+            // When: Worker executes
+            val worker = createWorker()
+            worker.doWork()
+
+            // Then: getPluginSettings called with "calendars" plugin ID
+            assertThat(fakeTrmnlApiService.lastPluginSettingsPluginId).isEqualTo("calendars")
+        }
+
+    // ========================================
+    // 3-step workflow: Step 3 (sync events) failure scenarios
+    // ========================================
+
+    @Test
+    fun `http 401 failure returns failure without retry`() =
+        runTest {
+            // Given: API returns 401 unauthorized at sync step
+            val events = listOf(createSyncEvent("Event"))
+            fakeCalendarSyncRepository =
+                FakeCalendarSyncRepository(
+                    initialSyncEnabled = true,
+                    eventsToReturn = events,
+                )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = 1)
             fakeTrmnlApiService.syncCalendarEventsResult =
                 ApiResult.httpFailure(401, ApiError(error = "Unauthorized"))
 
@@ -270,6 +468,8 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = events,
                 )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = 1)
             fakeTrmnlApiService.syncCalendarEventsResult =
                 ApiResult.httpFailure(401, ApiError(error = "Unauthorized"))
 
@@ -291,6 +491,8 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = events,
                 )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = 1)
             fakeTrmnlApiService.syncCalendarEventsResult =
                 ApiResult.httpFailure(500, ApiError(error = "Internal Server Error"))
 
@@ -312,6 +514,8 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = events,
                 )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = 1)
             fakeTrmnlApiService.syncCalendarEventsResult =
                 ApiResult.networkFailure(IOException("No internet connection"))
 
@@ -333,6 +537,8 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = events,
                 )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = 1)
             fakeTrmnlApiService.syncCalendarEventsResult =
                 ApiResult.networkFailure(IOException("No internet"))
 
@@ -354,6 +560,8 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = events,
                 )
+            fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+            fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = 1)
             fakeTrmnlApiService.syncCalendarEventsResult =
                 ApiResult.unknownFailure(RuntimeException("Unexpected error"))
 
@@ -424,7 +632,7 @@ class CalendarSyncWorkerTest {
         }
 
     // ========================================
-    // Event conversion scenario
+    // Event conversion scenarios
     // ========================================
 
     @Test
@@ -444,21 +652,55 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = listOf(event),
                 )
-            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+            setupSuccessfulApiResponses()
 
             // When: Worker executes
             val worker = createWorker()
             worker.doWork()
 
-            // Then: API called with correctly converted event
+            // Then: API called with correctly converted event matching Companion spec
             val sentRequest = fakeTrmnlApiService.lastSyncCalendarEventsRequest
             assertThat(sentRequest).isNotNull()
-            val calendarEvent = sentRequest!!.events.first()
-            assertThat(calendarEvent.title).isEqualTo("Important Meeting")
-            assertThat(calendarEvent.startTime).isEqualTo("2025-06-15T09:00:00.000Z")
-            assertThat(calendarEvent.endTime).isEqualTo("2025-06-15T10:00:00.000Z")
+            val calendarEvent = sentRequest!!.mergeVariables.events.first()
+            assertThat(calendarEvent.summary).isEqualTo("Important Meeting")
+            assertThat(calendarEvent.startFull).isEqualTo("2025-06-15T09:00:00.000Z")
+            assertThat(calendarEvent.endFull).isEqualTo("2025-06-15T10:00:00.000Z")
             assertThat(calendarEvent.description).isEqualTo("Quarterly review")
             assertThat(calendarEvent.allDay).isEqualTo(false)
+        }
+
+    @Test
+    fun `sync event has correct time and identifier fields`() =
+        runTest {
+            // Given: Sync enabled with a specific event
+            val event =
+                createSyncEvent(
+                    summary = "Stand-up",
+                    startFull = "2025-06-15T09:00:00.000Z",
+                    endFull = "2025-06-15T09:15:00.000Z",
+                    endTime = "09:15",
+                    calendarName = "work@company.com",
+                )
+            fakeCalendarSyncRepository =
+                FakeCalendarSyncRepository(
+                    initialSyncEnabled = true,
+                    eventsToReturn = listOf(event),
+                )
+            setupSuccessfulApiResponses()
+
+            // When: Worker executes
+            val worker = createWorker()
+            worker.doWork()
+
+            // Then: API event has correct HH:mm times and calendar_identifier
+            val calendarEvent =
+                fakeTrmnlApiService.lastSyncCalendarEventsRequest!!
+                    .mergeVariables.events
+                    .first()
+            assertThat(calendarEvent.start).isEqualTo("09:00")
+            assertThat(calendarEvent.end).isEqualTo("09:15")
+            assertThat(calendarEvent.dateTime).isEqualTo("2025-06-15T09:00:00.000Z")
+            assertThat(calendarEvent.calendarIdentifier).isEqualTo("work@company.com")
         }
 
     @Test
@@ -471,7 +713,7 @@ class CalendarSyncWorkerTest {
                     initialSyncEnabled = true,
                     eventsToReturn = listOf(event),
                 )
-            fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+            setupSuccessfulApiResponses()
 
             // When: Worker executes
             val worker = createWorker()
@@ -479,12 +721,62 @@ class CalendarSyncWorkerTest {
 
             // Then: API event has allDay = true
             val sentRequest = fakeTrmnlApiService.lastSyncCalendarEventsRequest
-            assertThat(sentRequest!!.events.first().allDay).isTrue()
+            assertThat(
+                sentRequest!!
+                    .mergeVariables.events
+                    .first()
+                    .allDay,
+            ).isTrue()
         }
 
     // ========================================
     // Helper methods
     // ========================================
+
+    /**
+     * Sets up the fake API service with successful responses for all 3 steps.
+     * Uses plugin setting ID 1 by default.
+     */
+    private fun setupSuccessfulApiResponses(settingId: Int = 1) {
+        fakeTrmnlApiService.userInfoResult = createUserInfoResult()
+        fakeTrmnlApiService.getPluginSettingsResult = createPluginSettingsResult(settingId = settingId)
+        fakeTrmnlApiService.syncCalendarEventsResult = ApiResult.success(Unit)
+    }
+
+    /**
+     * Creates a successful UserResponse for the GET /me endpoint.
+     */
+    private fun createUserInfoResult(): ApiResult<ApiResponse<User>, ApiError> =
+        ApiResult.success(
+            ApiResponse(
+                data =
+                    User(
+                        name = "Test User",
+                        email = "test@example.com",
+                        firstName = "Test",
+                        lastName = "User",
+                        locale = "en",
+                        timeZone = "Eastern Time (US & Canada)",
+                        timeZoneIana = "America/New_York",
+                        utcOffset = -14400,
+                        apiKey = "user_test_key",
+                    ),
+            ),
+        )
+
+    /**
+     * Creates a successful PluginSettingsResponse with a single plugin setting entry.
+     */
+    private fun createPluginSettingsResult(settingId: Int): ApiResult<ApiResponse<List<PluginSetting>>, ApiError> =
+        createPluginSettingsResult(
+            listOf(PluginSetting(id = settingId, name = "My Calendar", pluginId = 42)),
+        )
+
+    /**
+     * Creates a PluginSettingsResponse with the given list of plugin settings.
+     */
+    private fun createPluginSettingsResult(settings: List<PluginSetting>): ApiResult<ApiResponse<List<PluginSetting>>, ApiError> =
+        ApiResult.success(ApiResponse(data = settings))
 
     /**
      * Creates a test worker instance with fake dependencies.
@@ -522,12 +814,14 @@ class CalendarSyncWorkerTest {
         description: String? = null,
         startFull: String = "2025-06-15T09:00:00.000Z",
         endFull: String = "2025-06-15T10:00:00.000Z",
+        startTime: String = "09:00",
+        endTime: String = "10:00",
         allDay: Boolean = false,
         calendarName: String = "test@example.com",
     ): SyncEvent =
         SyncEvent(
-            startTime = "09:00",
-            endTime = "10:00",
+            startTime = startTime,
+            endTime = endTime,
             startFull = startFull,
             endFull = endFull,
             dateTime = startFull,
