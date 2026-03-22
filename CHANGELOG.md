@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Calendar Sync API Endpoint** (Phase 3 of Calendar Sync Implementation)
+  - Added `POST /calendar/sync` endpoint (`syncCalendarEvents()`) to `TrmnlApiService.kt` for syncing calendar events to TRMNL server
+  - Added `CalendarSyncRequest` model with a list of `CalendarEvent` objects as the request body
+  - Added `CalendarEvent` model with fields: `title`, `startTime`, `endTime`, `location` (optional), `description` (optional), `allDay`
+  - Added `TrmnlCalendarSyncApiTest` with 8 unit tests covering success, HTTP errors, network timeout, and header verification
 - **Calendar Management UI — Calendar Sync Screen** (Phase 2 of Calendar Sync Implementation)
   - Created `CalendarSyncScreen.kt` Circuit screen with `State` and `Event` sealed classes for calendar sync management
   - Created `CalendarSyncPresenter.kt` to handle business logic: calendar loading, selection persistence, sync triggering, and disconnect flow

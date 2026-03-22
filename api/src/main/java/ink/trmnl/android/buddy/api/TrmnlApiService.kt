@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.api
 
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.CalendarSyncRequest
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
@@ -15,6 +16,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -558,4 +560,51 @@ interface TrmnlApiService {
     suspend fun getDeviceModels(
         @Header("Authorization") authorization: String,
     ): ApiResult<DeviceModelsResponse, ApiError>
+
+    // ========================================
+    // Calendar Sync API
+    // ========================================
+
+    /**
+     * Sync calendar events to the TRMNL server.
+     *
+     * Sends calendar data from the Android device to the TRMNL server so that
+     * it can be displayed on TRMNL devices via the calendar plugin.
+     *
+     * Requires authentication via Bearer token.
+     *
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @param request Request body containing the list of calendar events to sync
+     * @return ApiResult with empty body on success (204) or error
+     *
+     * Example usage:
+     * ```kotlin
+     * val request = CalendarSyncRequest(
+     *     events = listOf(
+     *         CalendarEvent(
+     *             title = "Team Meeting",
+     *             startTime = "2025-01-15T09:00:00Z",
+     *             endTime = "2025-01-15T10:00:00Z",
+     *             location = "Conference Room A",
+     *         )
+     *     )
+     * )
+     * when (val result = api.syncCalendarEvents("Bearer user_abc123", request)) {
+     *     is ApiResult.Success -> println("Calendar synced successfully")
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         401 -> println("Unauthorized")
+     *         422 -> println("Validation error")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @POST("calendar/sync")
+    suspend fun syncCalendarEvents(
+        @Header("Authorization") authorization: String,
+        @Body request: CalendarSyncRequest,
+    ): ApiResult<Unit, ApiError>
 }
