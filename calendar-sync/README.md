@@ -199,7 +199,86 @@ Key test coverage:
 
 - [Android Calendar Provider API](https://developer.android.com/guide/topics/providers/calendar-provider)
 - [TRMNL Companion iOS Calendar Sync](https://help.trmnl.com/en/articles/12294875-trmnl-companion-for-ios-calendar-sync)
-- [TRMNL API Documentation](https://trmnl.com/api-docs/index.html)
+- [TRMNL Calendar Sync Implementation Plan](../docs/CALENDAR_SYNC_IMPLEMENTATION_PLAN.md)
+
+## TRMNL API Integration
+
+This module integrates with the TRMNL API to send calendar events to TRMNL displays.
+
+### API Workflow (3-Step Process)
+
+The sync process follows the TRMNL Companion app pattern:
+
+#### 1. Validate API Key
+```http
+GET https://usetrmnl.com/api/me
+Authorization: Bearer {api_key}
+```
+
+#### 2. Get Plugin Settings
+```http
+GET https://usetrmnl.com/api/plugin_settings?plugin_id=calendars
+Authorization: Bearer {api_key}
+```
+Response includes plugin setting ID required for next step.
+
+#### 3. Sync Events
+```http
+POST https://usetrmnl.com/api/plugin_settings/{setting_id}/data
+Authorization: Bearer {api_key}
+Content-Type: application/json
+
+{
+  "merge_variables": {
+    "events": [
+      {
+        "summary": "Team Meeting",
+        "start": "14:30",
+        "start_full": "2025-08-24T14:30:00.000-04:00",
+        "date_time": "2025-08-24T14:30:00.000-04:00",
+        "end": "15:30",
+        "end_full": "2025-08-24T15:30:00.000-04:00",
+        "all_day": false,
+        "description": "Discuss Q3 roadmap",
+        "status": "confirmed",
+        "calendar_identifier": "user@gmail.com"
+      }
+    ]
+  }
+}
+```
+
+### Event Transformation
+
+Events are transformed from Android Calendar Provider format to TRMNL API format:
+
+| Android Provider | TRMNL API | Example |
+|------------------|-----------|---------|
+| Event title | `summary` | "Team Meeting" |
+| Start time | `start` + `start_full` | "14:30" + "2025-08-24T14:30:00.000-04:00" |
+| End time | `end` + `end_full` | "15:30" + "2025-08-24T15:30:00.000-04:00" |
+| Description | `description` | "Discuss Q3 roadmap" |
+| Status | `status` | "confirmed" or "tentative" |
+| Calendar ID | `calendar_identifier` | "user@gmail.com" or calendar unique ID |
+| All-day flag | `all_day` | true/false |
+
+### Date/Time Formatting
+
+- **ISO8601 with timezone**: `2025-08-24T14:30:00.000-04:00`
+  - Use device timezone
+  - Include milliseconds
+  - Include timezone offset
+
+- **Time-only (HH:mm)**: `14:30`
+  - 24-hour format
+  - No timezone info
+
+### Sync Characteristics
+
+- **Full Sync** (not delta): Send complete event list for entire window every sync
+- **Time Window**: 6 days in past + 30 days in future
+- **Event Merging**: Multiple calendars merged into single request per plugin
+- **Server Deduplication**: Server deduplicates based on calendar_identifier + start_full + summary
 
 ## Notes
 

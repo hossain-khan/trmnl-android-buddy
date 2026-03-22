@@ -423,6 +423,252 @@ Total: ~936 lines of code + documentation
 
 ---
 
+## TRMNL Companion API Specification (Actual Implementation)
+
+This section details the **actual API specification** used by the TRMNL Companion iOS app. The Android Buddy implementation must align with these endpoints and data formats.
+
+### API Base URL
+```
+https://usetrmnl.com/api
+```
+
+### Authentication
+All endpoints require Bearer token authentication:
+```
+Authorization: Bearer {api_key}
+```
+
+### Calendar Sync Workflow (3-Step Process)
+
+#### Step 1: Validate API Key - GET /me
+**Purpose**: Validate the user's API key and retrieve user information.
+
+**Request**:
+```http
+GET /me HTTP/1.1
+Authorization: Bearer {api_key}
+Accept: application/json
+```
+
+**Response (200 OK)**:
+```json
+{
+  "data": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "locale": "en",
+    "time_zone": "America/New_York",
+    "time_zone_iana": "America/New_York",
+    "utc_offset": -300,
+    "api_key": "user_..."
+  }
+}
+```
+
+**Error Responses**:
+- `401 Unauthorized`: Invalid or expired API key
+
+---
+
+#### Step 2: Get Plugin Settings - GET /plugin_settings
+**Purpose**: Retrieve plugin settings for the calendar plugin to get the plugin setting ID.
+
+**Request**:
+```http
+GET /plugin_settings?plugin_id=calendars HTTP/1.1
+Authorization: Bearer {api_key}
+Accept: application/json
+```
+
+**Query Parameters**:
+- `plugin_id` (string): Must be `"calendars"` for calendar plugin
+
+**Response (200 OK)**:
+```json
+{
+  "data": [
+    {
+      "id": 12345,
+      "name": "Calendar",
+      "plugin_id": 58
+    }
+  ]
+}
+```
+
+**Response Fields**:
+- `id` (integer): **Plugin setting ID** - Required for Step 3
+- `name` (string): Display name of the plugin setting
+- `plugin_id` (integer): Plugin identifier
+
+**Error Responses**:
+- `401 Unauthorized`: Invalid API key
+- `404 Not Found`: Plugin not found or user doesn't have access
+
+---
+
+#### Step 3: Sync Events - POST /plugin_settings/{id}/data
+**Purpose**: Send calendar events to TRMNL for display on the calendar plugin.
+
+**Request**:
+```http
+POST /plugin_settings/{plugin_setting_id}/data HTTP/1.1
+Authorization: Bearer {api_key}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "merge_variables": {
+    "events": [
+      {
+        "summary": "Team Meeting",
+        "start": "14:30",
+        "start_full": "2025-08-24T14:30:00.000-04:00",
+        "date_time": "2025-08-24T14:30:00.000-04:00",
+        "end": "15:30",
+        "end_full": "2025-08-24T15:30:00.000-04:00",
+        "all_day": false,
+        "description": "Discuss Q3 roadmap",
+        "status": "confirmed",
+        "calendar_identifier": "unique-calendar-id-123"
+      }
+    ]
+  }
+}
+```
+
+**Path Parameters**:
+- `plugin_setting_id` (integer): From Step 2 response
+
+**Request Body Format**:
+```
+{
+  "merge_variables": {
+    "events": CalendarEvent[]
+  }
+}
+```
+
+**CalendarEvent Structure**:
+```typescript
+{
+  "summary": string,              // Event title (required)
+  "start": string,                // Time only HH:mm format: "14:30" (required)
+  "start_full": string,           // ISO8601 with timezone: "2025-08-24T14:30:00.000-04:00" (required)
+  "date_time": string,            // ISO8601 with timezone (duplicate of start_full) (required)
+  "end": string,                  // Time only HH:mm format: "15:30" (required)
+  "end_full": string,             // ISO8601 with timezone: "2025-08-24T15:30:00.000-04:00" (required)
+  "all_day": boolean,             // Whether event is all-day (required)
+  "description": string,          // Event notes/description (optional)
+  "status": string,               // "confirmed" or "tentative" (required)
+  "calendar_identifier": string   // Unique calendar ID (required)
+}
+```
+
+**Response (200-299 Any 2xx)**:
+```json
+{
+  "success": true,
+  "message": "Events synced successfully"
+}
+```
+
+**Response Notes**:
+- Any HTTP status code in 200-299 range indicates success
+- Server returns confirmation of successful sync
+
+**Error Responses**:
+- `400 Bad Request`: Invalid payload format
+- `401 Unauthorized`: Invalid API key
+- `404 Not Found`: Plugin setting not found
+- `422 Unprocessable Entity`: Data cannot be modified (permission or configuration issue)
+- `500-599 Server Error`: Server error - retry with exponential backoff recommended
+
+---
+
+### Key Implementation Details
+
+#### Date/Time Formatting
+- **ISO8601 with timezone**: `2025-08-24T14:30:00.000-04:00`
+  - Format: `YYYY-MM-DDTHH:mm:ss.sssZ±HH:mm`
+  - Include milliseconds (`.000`)
+  - Include timezone offset
+  - Example: `2025-08-24T14:30:00.000-04:00` for EDT (UTC-4)
+
+- **Time-only (HH:mm)**: `14:30`
+  - 24-hour format
+  - No timezone info in time-only fields
+  - Example: `14:30` or `09:00`
+
+- **All-day events**: 
+  - `start`: "00:00", `end`: "23:59" (or use midnight + 1 second)
+  - Full datetime: Include full day with timezone
+  - Example end: `2025-08-24T23:59:59.999-04:00`
+
+#### Time Window
+- **Sync range**: 6 days in the past to 30 days in the future
+- Example: If today is 2025-08-24, sync events from 2025-08-18 to 2025-09-23
+
+#### Event Merging
+- If syncing multiple calendars to one plugin: **merge all events into single request**
+- Send one `POST /plugin_settings/{id}/data` request with all merged events
+- Server handles deduplication based on: calendar_identifier + start_full + summary
+
+#### Sync Type
+- **Full Sync** (not delta): Always send the complete event list for the date range
+- Do **not** send only changed events - send all events every time
+- Server-side deduplication handles duplicates
+
+#### Calendar Identifier
+- Use event's `calendarItemExternalIdentifier` if available
+- Fallback to `calendarItemIdentifier` if external ID not available
+- Must be unique per calendar and consistent across syncs
+
+---
+
+### Error Handling Strategy
+
+| Status | Meaning | Action |
+|--------|---------|--------|
+| `401` | Invalid API key | Ask user to re-authenticate |
+| `404` | Plugin not found | Verify plugin enabled in TRMNL account |
+| `422` | Validation error | Check event data format and retry |
+| `500-599` | Server error | Retry with exponential backoff (recommended: max 5 retries) |
+
+---
+
+### Typical Sync Flow (Complete Example)
+
+```
+1. User presses "Sync Now" button or scheduled sync triggers
+   ↓
+2. Get API token from UserPreferencesRepository
+   ↓
+3. Call GET /me to validate token
+   ├─ Success: Continue to step 4
+   └─ 401: Show auth error, clear token, ask to re-authenticate
+   ↓
+4. Call GET /plugin_settings?plugin_id=calendars
+   ├─ Success: Extract setting ID from response, continue to step 5
+   └─ 404: User must enable calendar plugin in TRMNL account
+   ↓
+5. Fetch calendar events from Android Calendar Provider
+   - 6 days past to 30 days future
+   - Transform to CalendarEvent format
+   - Merge multiple calendars
+   ↓
+6. Call POST /plugin_settings/{id}/data with merged events
+   ├─ Success (200-299): Show "Sync complete"
+   ├─ 422: Show validation error
+   └─ 500-599: Retry with exponential backoff
+   ↓
+7. Record sync timestamp and status
+```
+
+---
+
 ## References
 
 - [Android Calendar Provider API](https://developer.android.com/guide/topics/providers/calendar-provider)
