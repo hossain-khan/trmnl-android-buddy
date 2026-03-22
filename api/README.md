@@ -241,6 +241,111 @@ Test files:
 - `TrmnlDeviceApiTest.kt` - Tests for Devices API endpoints
 - `TrmnlDisplayApiTest.kt` - Tests for Display API endpoints  
 - `TrmnlUserApiTest.kt` - Tests for User API endpoints
+- `TrmnlCalendarSyncApiTest.kt` - Tests for Calendar Sync API endpoints
+
+## Calendar Sync API
+
+The Calendar Sync API allows syncing calendar events from an Android device to TRMNL displays for display on the calendar plugin.
+
+### Overview
+
+Calendar syncing uses a **3-step workflow**:
+1. **Validate API key** - `GET /me`
+2. **Get plugin settings** - `GET /plugin_settings?plugin_id=calendars`
+3. **Sync events** - `POST /plugin_settings/{id}/data`
+
+### Base URL
+```
+https://usetrmnl.com/api
+```
+
+### Example: Complete Sync Flow
+
+```kotlin
+// Step 1: Validate API key
+when (val result = api.getMe("Bearer user_abc123")) {
+    is ApiResult.Success -> println("API key valid: ${result.value.data.name}")
+    is ApiResult.Failure.HttpFailure -> when (result.code) {
+        401 -> println("Invalid API key")
+        else -> println("HTTP error: ${result.code}")
+    }
+    is ApiResult.Failure -> println("Request failed")
+}
+
+// Step 2: Get plugin settings
+when (val result = api.getPluginSettings("calendars", "Bearer user_abc123")) {
+    is ApiResult.Success -> {
+        val pluginSettingId = result.value.data.first().id
+        println("Plugin setting ID: $pluginSettingId")
+        // Continue to step 3
+    }
+    is ApiResult.Failure.HttpFailure -> {
+        when (result.code) {
+            404 -> println("Calendar plugin not enabled in user's account")
+            else -> println("HTTP error: ${result.code}")
+        }
+    }
+    is ApiResult.Failure -> println("Request failed")
+}
+
+// Step 3: Sync events
+val request = CalendarSyncRequest(
+    merge_variables = MergeVariables(
+        events = listOf(
+            CalendarEvent(
+                summary = "Team Meeting",
+                start = "14:30",
+                start_full = "2025-08-24T14:30:00.000-04:00",
+                date_time = "2025-08-24T14:30:00.000-04:00",
+                end = "15:30",
+                end_full = "2025-08-24T15:30:00.000-04:00",
+                all_day = false,
+                description = "Discuss Q3 roadmap",
+                status = "confirmed",
+                calendar_identifier = "user@gmail.com"
+            )
+        )
+    )
+)
+
+when (val result = api.syncCalendarEvents("Bearer user_abc123", 12345, request)) {
+    is ApiResult.Success -> println("Events synced successfully")
+    is ApiResult.Failure.HttpFailure -> when (result.code) {
+        401 -> println("Unauthorized")
+        404 -> println("Plugin setting not found")
+        422 -> println("Validation error - check event format")
+        else -> println("HTTP error: ${result.code}")
+    }
+    is ApiResult.Failure -> println("Request failed")
+}
+```
+
+### API Endpoints
+
+#### GET /me
+Validates API key and retrieves user information
+
+#### GET /plugin_settings
+Fetches plugin settings for a given plugin ID
+
+#### POST /plugin_settings/{id}/data
+Sends calendar events to the TRMNL server
+
+### Data Models
+
+- `CalendarSyncRequest` - Request body wrapper
+- `MergeVariables` - Events wrapper
+- `CalendarEvent` - Individual event data
+- `PluginSettingsResponse` - Plugin settings response
+- `UserResponse` - User information response
+
+### Date/Time Formats
+
+- **ISO8601 with timezone**: `2025-08-24T14:30:00.000-04:00`
+- **Time-only (HH:mm)**: `14:30`
+- **All-day events**: Use midnight end time with timezone
+
+See [CALENDAR_SYNC_IMPLEMENTATION_PLAN.md](../docs/CALENDAR_SYNC_IMPLEMENTATION_PLAN.md) for detailed API specification and implementation details.
 
 ## ProGuard
 
