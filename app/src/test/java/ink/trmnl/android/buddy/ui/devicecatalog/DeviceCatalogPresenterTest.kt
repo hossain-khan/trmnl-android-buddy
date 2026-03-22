@@ -12,6 +12,7 @@ import com.slack.circuit.test.test
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.CalendarSyncRequest
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
@@ -450,4 +451,9 @@ private open class FakeApiService(
         authorization: String,
         body: Map<String, Boolean>,
     ) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
+
+    override suspend fun syncCalendarEvents(
+        authorization: String,
+        request: CalendarSyncRequest,
+    ): ApiResult<Unit, ApiError> = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 }

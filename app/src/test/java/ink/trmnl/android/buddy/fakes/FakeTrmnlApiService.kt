@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.fakes
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.CalendarSyncRequest
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
@@ -87,4 +88,9 @@ class FakeTrmnlApiService : TrmnlApiService {
 
     override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
         throw NotImplementedError("getCategories not implemented")
+
+    override suspend fun syncCalendarEvents(
+        authorization: String,
+        request: CalendarSyncRequest,
+    ): ApiResult<Unit, ApiError> = throw NotImplementedError("syncCalendarEvents not set")
 }

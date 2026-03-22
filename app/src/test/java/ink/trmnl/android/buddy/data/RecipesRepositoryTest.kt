@@ -8,6 +8,7 @@ import assertk.assertions.isSuccess
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.CalendarSyncRequest
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
@@ -199,6 +200,11 @@ class RecipesRepositoryTest {
             id: Int,
             authorization: String,
             body: Map<String, Boolean>,
+        ): ApiResult<Unit, ApiError> = throw NotImplementedError()
+
+        override suspend fun syncCalendarEvents(
+            authorization: String,
+            request: CalendarSyncRequest,
         ): ApiResult<Unit, ApiError> = throw NotImplementedError()
     }
 }
