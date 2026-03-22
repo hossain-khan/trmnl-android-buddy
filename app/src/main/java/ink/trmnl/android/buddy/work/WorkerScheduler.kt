@@ -56,6 +56,19 @@ interface WorkerScheduler {
      * Cancels the blog post sync worker.
      */
     fun cancelBlogPostSync()
+
+    /**
+     * Schedules or reschedules the calendar sync worker.
+     * The worker sends calendar events to the TRMNL API periodically.
+     * Requires network connectivity. Uses REPLACE policy to update existing schedules.
+     */
+    fun scheduleCalendarSync()
+
+    /**
+     * Cancels the calendar sync worker.
+     * Called when user disables calendar sync in settings.
+     */
+    fun cancelCalendarSync()
 }
 
 /**
@@ -204,8 +217,44 @@ class WorkerSchedulerImpl(
         workManager.cancelUniqueWork(BLOG_POST_SYNC_WORK_NAME)
     }
 
+    /**
+     * Schedules or reschedules the calendar sync worker.
+     * The worker sends calendar events to the TRMNL API every 6 hours.
+     * Requires network connectivity. Uses REPLACE policy to update existing schedules.
+     */
+    override fun scheduleCalendarSync() {
+        Timber.d("Scheduling calendar sync worker (every 6 hours, network required)")
+
+        val calendarSyncWorkRequest =
+            PeriodicWorkRequestBuilder<CalendarSyncWorker>(
+                repeatInterval = 6,
+                repeatIntervalTimeUnit = TimeUnit.HOURS,
+            ).setConstraints(
+                Constraints
+                    .Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build(),
+            ).build()
+
+        workManager.enqueueUniquePeriodicWork(
+            CALENDAR_SYNC_WORK_NAME,
+            ExistingPeriodicWorkPolicy.REPLACE,
+            calendarSyncWorkRequest,
+        )
+    }
+
+    /**
+     * Cancels the calendar sync worker.
+     * Called when user disables calendar sync in settings.
+     */
+    override fun cancelCalendarSync() {
+        Timber.d("Cancelling calendar sync worker")
+        workManager.cancelUniqueWork(CALENDAR_SYNC_WORK_NAME)
+    }
+
     companion object {
         private const val ANNOUNCEMENT_SYNC_WORK_NAME = "announcement_sync"
         private const val BLOG_POST_SYNC_WORK_NAME = "blog_post_sync"
+        private const val CALENDAR_SYNC_WORK_NAME = CalendarSyncWorker.WORK_NAME
     }
 }

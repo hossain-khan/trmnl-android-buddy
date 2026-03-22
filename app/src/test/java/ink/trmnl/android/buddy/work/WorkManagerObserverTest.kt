@@ -430,4 +430,12 @@ class FakeWorkerScheduler : WorkerScheduler {
         blogPostCancelled = true
         if (trackingEnabled) callOrder.add("cancelBlogPostSync")
     }
+
+    override fun scheduleCalendarSync() {
+        if (trackingEnabled) callOrder.add("scheduleCalendarSync")
+    }
+
+    override fun cancelCalendarSync() {
+        if (trackingEnabled) callOrder.add("cancelCalendarSync")
+    }
 }

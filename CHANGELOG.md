@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Background Sync Scheduling — WorkManager Integration** (Phase 4 of Calendar Sync Implementation)
+  - Created `CalendarSyncWorker.kt` in `app/work/` following the Metro DI pattern used by existing workers
+  - Worker uses `@Inject`, `@Assisted`, `@AssistedFactory`, `@ContributesIntoMap`, and `@WorkerKey` annotations for automatic Metro DI registration
+  - Worker dependencies: `CalendarSyncRepositoryInterface`, `UserPreferencesRepository`, `TrmnlApiService`
+  - Full calendar sync implementation: checks sync enabled state, reads API token, fetches calendar events, converts and sends to TRMNL API
+  - Proper error handling: 401 returns failure (no retry), network/HTTP errors retry up to 2 times, unknown errors return failure
+  - Added `scheduleCalendarSync()` and `cancelCalendarSync()` to `WorkerScheduler` interface and `WorkerSchedulerImpl`
+  - Calendar sync runs every 6 hours with network connectivity constraint
+  - Added `CalendarSyncWorkerTest` with 19 unit tests covering all success and error scenarios
+  - Added calendar sync scheduler tests to `WorkerSchedulerTest`
+  - Updated `FakeCalendarSyncRepository` to support configurable events via `eventsToReturn` parameter
+  - Updated `FakeTrmnlApiService` to support configurable `syncCalendarEvents` responses for testing
 - **Calendar Sync API Endpoint** (Phase 3 of Calendar Sync Implementation)
   - Added `POST /calendar/sync` endpoint (`syncCalendarEvents()`) to `TrmnlApiService.kt` for syncing calendar events to TRMNL server
   - Added `CalendarSyncRequest` model with a list of `CalendarEvent` objects as the request body
