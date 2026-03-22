@@ -25,7 +25,7 @@ class CalendarSyncRepository
     @Inject
     constructor(
         context: Context,
-    ) {
+    ) : CalendarSyncRepositoryInterface {
         private val calendarProvider = CalendarProvider(context)
         private val sharedPrefs: SharedPreferences =
             context.getSharedPreferences(
@@ -45,7 +45,7 @@ class CalendarSyncRepository
         /**
          * Get all available calendars on the device.
          */
-        suspend fun getAvailableCalendars(): List<SyncCalendar> =
+        override suspend fun getAvailableCalendars(): List<SyncCalendar> =
             withContext(Dispatchers.IO) {
                 val calendars = calendarProvider.getAllCalendars()
                 val selectedIds = getSelectedCalendarIds()
@@ -60,7 +60,7 @@ class CalendarSyncRepository
          *
          * @param selectedCalendarIds List of calendar IDs user wants to sync
          */
-        suspend fun updateCalendarSelection(selectedCalendarIds: List<Long>) =
+        override suspend fun updateCalendarSelection(selectedCalendarIds: List<Long>) =
             withContext(Dispatchers.IO) {
                 sharedPrefs.edit().apply {
                     putString(
@@ -91,9 +91,9 @@ class CalendarSyncRepository
          * @param endTime Events before this timestamp (milliseconds since epoch)
          * @return List of events in TRMNL sync format
          */
-        suspend fun getEventsForSync(
-            startTime: Long = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000), // 7 days ago
-            endTime: Long = System.currentTimeMillis() + (30 * 24 * 60 * 60 * 1000), // 30 days from now
+        override suspend fun getEventsForSync(
+            startTime: Long,
+            endTime: Long,
         ): List<SyncEvent> =
             withContext(Dispatchers.IO) {
                 val selectedIds = getSelectedCalendarIds()
@@ -117,14 +117,14 @@ class CalendarSyncRepository
         /**
          * Check if calendar sync is enabled by user.
          */
-        fun isSyncEnabled(): Boolean = sharedPrefs.getBoolean(KEY_SYNC_ENABLED, false)
+        override fun isSyncEnabled(): Boolean = sharedPrefs.getBoolean(KEY_SYNC_ENABLED, false)
 
         /**
          * Enable or disable calendar sync.
          *
          * @param enabled True to enable sync, false to disable
          */
-        fun setSyncEnabled(enabled: Boolean) {
+        override fun setSyncEnabled(enabled: Boolean) {
             sharedPrefs.edit().apply {
                 putBoolean(KEY_SYNC_ENABLED, enabled)
                 apply()
@@ -137,12 +137,12 @@ class CalendarSyncRepository
          *
          * @return Milliseconds since epoch, or 0 if never synced
          */
-        fun getLastSyncTime(): Long = sharedPrefs.getLong(KEY_LAST_SYNC_TIME, 0)
+        override fun getLastSyncTime(): Long = sharedPrefs.getLong(KEY_LAST_SYNC_TIME, 0)
 
         /**
          * Record successful sync completion.
          */
-        fun recordSyncSuccess() {
+        override fun recordSyncSuccess() {
             sharedPrefs.edit().apply {
                 putLong(KEY_LAST_SYNC_TIME, System.currentTimeMillis())
                 putString(KEY_LAST_SYNC_ERROR, null)
@@ -156,7 +156,7 @@ class CalendarSyncRepository
          *
          * @param error Error message
          */
-        fun recordSyncError(error: String) {
+        override fun recordSyncError(error: String) {
             sharedPrefs.edit().apply {
                 putString(KEY_LAST_SYNC_ERROR, error)
                 apply()
@@ -169,12 +169,12 @@ class CalendarSyncRepository
          *
          * @return Error message, or null if no error
          */
-        fun getLastSyncError(): String? = sharedPrefs.getString(KEY_LAST_SYNC_ERROR, null)
+        override fun getLastSyncError(): String? = sharedPrefs.getString(KEY_LAST_SYNC_ERROR, null)
 
         /**
          * Disconnect calendar sync (disable and clear selection).
          */
-        fun disconnect() {
+        override fun disconnect() {
             sharedPrefs.edit().apply {
                 putBoolean(KEY_SYNC_ENABLED, false)
                 putString(KEY_SELECTED_CALENDARS, "")

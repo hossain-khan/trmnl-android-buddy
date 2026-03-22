@@ -40,6 +40,7 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.dev.DevelopmentScreen
 import ink.trmnl.android.buddy.security.BiometricAuthHelper
+import ink.trmnl.android.buddy.ui.calendarsync.CalendarSyncScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicecatalog.DeviceCatalogScreen
@@ -102,6 +103,8 @@ data object SettingsScreen : Screen {
         data object RecipesCatalogClicked : Event()
 
         data object ContentHubClicked : Event()
+
+        data object CalendarSyncClicked : Event()
     }
 }
 
@@ -199,6 +202,9 @@ class SettingsPresenter(
                 }
                 SettingsScreen.Event.ContentHubClicked -> {
                     navigator.goTo(ContentHubScreen)
+                }
+                SettingsScreen.Event.CalendarSyncClicked -> {
+                    navigator.goTo(CalendarSyncScreen)
                 }
             }
         }
@@ -310,6 +316,9 @@ fun SettingsContent(
                 },
                 onContentHubClick = {
                     state.eventSink(SettingsScreen.Event.ContentHubClicked)
+                },
+                onCalendarSyncClick = {
+                    state.eventSink(SettingsScreen.Event.CalendarSyncClicked)
                 },
             )
 

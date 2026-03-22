@@ -13,6 +13,8 @@ import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.api.TrmnlApiClient
 import ink.trmnl.android.buddy.api.TrmnlApiService
+import ink.trmnl.android.buddy.calendar.repository.CalendarSyncRepository
+import ink.trmnl.android.buddy.calendar.repository.CalendarSyncRepositoryInterface
 import ink.trmnl.android.buddy.config.ImageCacheConfig
 import ink.trmnl.android.buddy.content.db.AnnouncementDao
 import ink.trmnl.android.buddy.content.db.BlogPostDao
@@ -26,6 +28,12 @@ import okio.Path.Companion.toOkioPath
 
 @ContributesTo(AppScope::class)
 interface AppBindings {
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideCalendarSyncRepository(
+        @ApplicationContext context: Context,
+    ): CalendarSyncRepositoryInterface = CalendarSyncRepository(context)
+
     @Provides
     @SingleIn(AppScope::class)
     fun provideTrmnlApiService(

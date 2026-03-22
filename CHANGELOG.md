@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Calendar Management UI — Calendar Sync Screen** (Phase 2 of Calendar Sync Implementation)
+  - Created `CalendarSyncScreen.kt` Circuit screen with `State` and `Event` sealed classes for calendar sync management
+  - Created `CalendarSyncPresenter.kt` to handle business logic: calendar loading, selection persistence, sync triggering, and disconnect flow
+  - Created `CalendarSyncContent.kt` with full Material You UI including:
+    - Runtime `READ_CALENDAR` permission request via Accompanist Permissions API
+    - `CalendarPermissionHandler` composable handling three permission states: granted (show calendar list), rationale needed (show `PermissionRationaleDialog`), and initial request button
+    - `PermissionRationaleDialog` composable explaining why READ_CALENDAR is needed
+    - Calendar list with color indicators, account names/types, and selection checkboxes
+    - Sync status card showing last sync time, current status (idle/syncing/error), and error messages
+    - "Sync Now", "Refresh Calendars", and "Disconnect Sync" action buttons
+    - Loading state, empty state, and error state handling
+    - Disconnect confirmation `AlertDialog`
+  - Added "Calendar Sync" menu item to Settings screen Extras section navigating to `CalendarSyncScreen`
+  - Extracted `CalendarSyncRepositoryInterface` from `CalendarSyncRepository` class for testability
+  - Added `CalendarSyncRepository` provider in `AppBindings.kt` using `@ApplicationContext` for correct DI
+  - Added `FakeCalendarSyncRepository` for unit testing following project fake pattern
+  - Added `CalendarSyncScreenTest` with 10 presenter tests covering: initial state, calendar loading, selection toggling, sync enabled auto-management, SyncNow success/failure, disconnect flow, back navigation, and error handling
+  - All tests use AssertK assertions (no JUnit assertions)
+
 ### Changed
 - **Refactored `DeviceDetailPresenter` to improve separation of concerns**: Extracted battery history management into a dedicated `BatteryChartPresenter`
   - Created `BatteryChartScreen` with its own `State` and `Event` sealed classes for battery-specific data
