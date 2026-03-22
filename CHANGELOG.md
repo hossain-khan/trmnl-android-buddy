@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Calendar sync feature** for syncing device calendars to TRMNL displays
+  - Access to Android system calendars (Google Calendar, Outlook, Exchange, CalDAV)
+  - Configurable periodic background sync via WorkManager (1, 6, 24, or 168 hour intervals)
+  - User-selectable calendars with READ-ONLY access (no modifications)
+  - 7 days past + 30 days future event window filtering
+  - Comprehensive sync error handling with user feedback
+  - Manual "Sync Now" button for immediate calendar synchronization
+  - Sync status tracking and history
 - **Calendar Sync API — Companion App Specification** (Phase 3 Refactoring)
   - Implemented 3-step sync workflow matching TRMNL iOS Companion app specification:
     1. **Step 1**: Validate API key via `GET /me`
@@ -80,7 +88,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Standardized error handling across presenters**: Refactored `TrmnlDevicesPresenter`, `UserAccountPresenter`, `DevicePreviewPresenter`, and `DeviceCatalogPresenter` to use the new `ErrorMapper` utility
   - Removed duplicated `ApiResult.Failure.*` when-expression boilerplate from each presenter
   - Ensures consistent error messages for the same failure types across all screens
-### Added
 - **Centralized error mapping utility**: Created `ErrorMapper` in the api module for consistent user-friendly error messages
   - Maps all `ApiResult.Failure` types (`HttpFailure`, `NetworkFailure`, `ApiFailure`, `UnknownFailure`) to user-friendly messages
   - Provides standard HTTP status code handling (401, 403, 404, 429, 5xx) with clear, actionable messages
