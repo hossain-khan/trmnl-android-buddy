@@ -35,7 +35,7 @@ import retrofit2.http.Query
  * ```
  *
  * ## Base URL
- * Production: `https://usetrmnl.com/api`
+ * Production: `https://trmnl.com/api`
  *
  * ## Error Handling
  * Uses EitherNet's ApiResult for type-safe error handling:

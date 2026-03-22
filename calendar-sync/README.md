@@ -211,20 +211,20 @@ The sync process follows the TRMNL Companion app pattern:
 
 #### 1. Validate API Key
 ```http
-GET https://usetrmnl.com/api/me
+GET https://trmnl.com/api/me
 Authorization: Bearer {api_key}
 ```
 
 #### 2. Get Plugin Settings
 ```http
-GET https://usetrmnl.com/api/plugin_settings?plugin_id=calendars
+GET https://trmnl.com/api/plugin_settings?plugin_id=calendars
 Authorization: Bearer {api_key}
 ```
 Response includes plugin setting ID required for next step.
 
 #### 3. Sync Events
 ```http
-POST https://usetrmnl.com/api/plugin_settings/{setting_id}/data
+POST https://trmnl.com/api/plugin_settings/{setting_id}/data
 Authorization: Bearer {api_key}
 Content-Type: application/json
 

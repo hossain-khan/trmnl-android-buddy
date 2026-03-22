@@ -136,7 +136,7 @@ class TrmnlApiClientTest {
         val retrofit = TrmnlApiClient.createRetrofit()
 
         // Then: Retrofit is configured with correct base URL
-        assertThat(retrofit.baseUrl().toString()).isEqualTo("https://usetrmnl.com/api/")
+        assertThat(retrofit.baseUrl().toString()).isEqualTo("https://trmnl.com/api/")
     }
 
     @Test
@@ -148,7 +148,7 @@ class TrmnlApiClientTest {
         val retrofit = TrmnlApiClient.createRetrofit(customClient)
 
         // Then: Retrofit uses the custom client
-        assertThat(retrofit.baseUrl().toString()).isEqualTo("https://usetrmnl.com/api/")
+        assertThat(retrofit.baseUrl().toString()).isEqualTo("https://trmnl.com/api/")
     }
 
     @Test

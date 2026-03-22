@@ -429,7 +429,7 @@ This section details the **actual API specification** used by the TRMNL Companio
 
 ### API Base URL
 ```
-https://usetrmnl.com/api
+https://trmnl.com/api
 ```
 
 ### Authentication

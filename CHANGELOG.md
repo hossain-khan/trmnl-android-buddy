@@ -20,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `MergeVariables` model as the events wrapper inside `CalendarSyncRequest`
   - Created `PluginSettingsResponse` type alias for `GET /plugin_settings` endpoint responses
   - Added plugin setting ID caching (`getCachedPluginSettingId()`, `cachePluginSettingId()`) to `CalendarSyncRepositoryInterface` and `CalendarSyncRepository` to avoid repeated API calls
-  - Updated base URL from `https://trmnl.com/api` to `https://usetrmnl.com/api` matching Companion app
   - Updated `CalendarSyncWorker` with 3-step workflow; events are now sent with full Companion spec mapping (`calendarIdentifier` from `calendarName`, HH:mm times, ISO8601 full timestamps)
   - Updated `FakeTrmnlApiService` with `getPluginSettings()` support and new `syncCalendarEvents()` signature
   - Updated `FakeCalendarSyncRepository` with plugin setting ID caching support and `initialPluginSettingId` parameter

@@ -256,7 +256,7 @@ Calendar syncing uses a **3-step workflow**:
 
 ### Base URL
 ```
-https://usetrmnl.com/api
+https://trmnl.com/api
 ```
 
 ### Example: Complete Sync Flow
