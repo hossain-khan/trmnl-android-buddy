@@ -20,6 +20,7 @@ import ink.trmnl.android.buddy.calendar.repository.CalendarSyncRepositoryInterfa
  * @param shouldThrowOnGetCalendars If true, [getAvailableCalendars] throws an exception.
  * @param shouldThrowOnGetEvents If true, [getEventsForSync] throws an exception.
  * @param eventsToReturn Events returned by [getEventsForSync]. Defaults to empty list.
+ * @param initialPluginSettingId Initial cached plugin setting ID. Defaults to null (not cached).
  */
 class FakeCalendarSyncRepository(
     private val initialCalendars: List<SyncCalendar> = emptyList(),
@@ -29,6 +30,7 @@ class FakeCalendarSyncRepository(
     private val shouldThrowOnGetCalendars: Boolean = false,
     private val shouldThrowOnGetEvents: Boolean = false,
     private val eventsToReturn: List<SyncEvent> = emptyList(),
+    initialPluginSettingId: Int? = null,
 ) : CalendarSyncRepositoryInterface {
     // ============================================================
     // In-memory state
@@ -81,6 +83,10 @@ class FakeCalendarSyncRepository(
 
     /** Whether [disconnect] was called. */
     var wasDisconnected = false
+        private set
+
+    /** The plugin setting ID that was last cached via [cachePluginSettingId]. */
+    var lastCachedPluginSettingId: Int? = initialPluginSettingId
         private set
 
     // ============================================================
@@ -144,5 +150,12 @@ class FakeCalendarSyncRepository(
         selectedCalendarIds.clear()
         lastSyncTime = 0L
         lastSyncError = null
+        lastCachedPluginSettingId = null
+    }
+
+    override fun getCachedPluginSettingId(): Int? = lastCachedPluginSettingId
+
+    override fun cachePluginSettingId(id: Int) {
+        lastCachedPluginSettingId = id
     }
 }

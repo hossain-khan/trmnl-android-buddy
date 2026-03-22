@@ -81,4 +81,20 @@ interface CalendarSyncRepositoryInterface {
      * Disconnect calendar sync (disable and clear selection).
      */
     fun disconnect()
+
+    /**
+     * Get cached plugin setting ID for the calendar plugin.
+     *
+     * Used to avoid repeated calls to GET /plugin_settings in the sync workflow.
+     *
+     * @return Cached plugin setting ID, or null if not cached
+     */
+    fun getCachedPluginSettingId(): Int?
+
+    /**
+     * Cache the plugin setting ID for the calendar plugin.
+     *
+     * @param id Plugin setting ID returned by GET /plugin_settings?plugin_id=calendars
+     */
+    fun cachePluginSettingId(id: Int)
 }

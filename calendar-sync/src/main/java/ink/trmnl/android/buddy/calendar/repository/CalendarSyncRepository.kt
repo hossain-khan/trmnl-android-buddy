@@ -40,6 +40,8 @@ class CalendarSyncRepository
             private const val KEY_LAST_SYNC_TIME = "last_sync_time"
             private const val KEY_LAST_SYNC_ERROR = "last_sync_error"
             private const val KEY_SYNC_ENABLED = "sync_enabled"
+            private const val KEY_PLUGIN_SETTING_ID = "plugin_setting_id"
+            private const val PLUGIN_SETTING_ID_UNSET = -1
         }
 
         /**
@@ -178,8 +180,32 @@ class CalendarSyncRepository
             sharedPrefs.edit().apply {
                 putBoolean(KEY_SYNC_ENABLED, false)
                 putString(KEY_SELECTED_CALENDARS, "")
+                putInt(KEY_PLUGIN_SETTING_ID, PLUGIN_SETTING_ID_UNSET)
                 apply()
             }
             Timber.d("[$TAG] Calendar sync disconnected")
+        }
+
+        /**
+         * Get cached plugin setting ID for the calendar plugin.
+         *
+         * @return Cached plugin setting ID, or null if not cached
+         */
+        override fun getCachedPluginSettingId(): Int? {
+            val id = sharedPrefs.getInt(KEY_PLUGIN_SETTING_ID, PLUGIN_SETTING_ID_UNSET)
+            return if (id == PLUGIN_SETTING_ID_UNSET) null else id
+        }
+
+        /**
+         * Cache the plugin setting ID for the calendar plugin.
+         *
+         * @param id Plugin setting ID returned by GET /plugin_settings?plugin_id=calendars
+         */
+        override fun cachePluginSettingId(id: Int) {
+            sharedPrefs.edit().apply {
+                putInt(KEY_PLUGIN_SETTING_ID, id)
+                apply()
+            }
+            Timber.d("[$TAG] Cached plugin setting ID: $id")
         }
     }

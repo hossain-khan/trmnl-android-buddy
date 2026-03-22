@@ -11,6 +11,7 @@ import ink.trmnl.android.buddy.api.models.ApiError
 import ink.trmnl.android.buddy.api.models.CalendarSyncRequest
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.Display
+import ink.trmnl.android.buddy.api.models.PluginSettingsResponse
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import kotlinx.coroutines.test.runTest
@@ -313,7 +314,13 @@ private class FakeApiService(
     ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
     override suspend fun syncCalendarEvents(
+        settingId: Int,
         authorization: String,
         request: CalendarSyncRequest,
     ): ApiResult<Unit, ApiError> = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
+
+    override suspend fun getPluginSettings(
+        pluginId: String,
+        authorization: String,
+    ): ApiResult<PluginSettingsResponse, ApiError> = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 }
