@@ -141,12 +141,16 @@ class SettingsPresenter(
         // Check biometric availability using the injected helper.
         val isAuthenticationAvailable = biometricAuthHelper.isBiometricAvailable()
 
-        // Fetch recipes analytics on screen load
-        androidx.compose.runtime.LaunchedEffect(Unit) {
-            if (!preferences.apiToken.isNullOrEmpty()) {
+        // Fetch recipes analytics when the API token becomes available
+        androidx.compose.runtime.LaunchedEffect(preferences.apiToken) {
+            val apiToken = preferences.apiToken
+            if (apiToken.isNullOrEmpty()) {
+                recipesAnalyticsState.value = null
+                isLoadingAnalyticsState.value = false
+            } else {
                 isLoadingAnalyticsState.value = true
                 try {
-                    val result = apiService.getRecipesAnalytics("Bearer ${preferences.apiToken}")
+                    val result = apiService.getRecipesAnalytics("Bearer $apiToken")
                     when (result) {
                         is ApiResult.Success -> {
                             recipesAnalyticsState.value = convertToAnalyticsUi(result.value.data)

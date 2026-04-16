@@ -6,7 +6,6 @@ import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
-import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.fakes.FakeTrmnlApiService
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
@@ -14,7 +13,6 @@ import ink.trmnl.android.buddy.security.FakeBiometricAuthHelper
 import ink.trmnl.android.buddy.work.WorkerScheduler
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import java.io.IOException
 
 /**
  * Tests for SettingsScreen presenter.

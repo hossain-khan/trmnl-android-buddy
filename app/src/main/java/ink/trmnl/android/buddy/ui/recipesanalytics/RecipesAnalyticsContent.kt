@@ -411,12 +411,12 @@ private fun PluginListItem(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Text(
-                    text = "📥 ${plugin.installs}",
+                    text = "Installs: ${plugin.installs}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = "🔀 ${plugin.forks}",
+                    text = "Forks: ${plugin.forks}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
