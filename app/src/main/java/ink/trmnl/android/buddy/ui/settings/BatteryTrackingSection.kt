@@ -39,7 +39,7 @@ fun BatteryTrackingSection(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
-                painter = painterResource(R.drawable.chart_data_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                painter = painterResource(R.drawable.chart_data_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp),
