@@ -30,14 +30,13 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
-import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
-import ink.trmnl.android.buddy.api.TrmnlApiService
+import ink.trmnl.android.buddy.data.RecipesAnalyticsRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.dev.DevelopmentScreen
@@ -126,7 +125,7 @@ class SettingsPresenter(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val workerScheduler: WorkerScheduler,
     private val biometricAuthHelper: BiometricAuthHelper,
-    private val apiService: TrmnlApiService,
+    private val recipesAnalyticsRepository: RecipesAnalyticsRepository,
 ) : Presenter<SettingsScreen.State> {
     @Composable
     override fun present(): SettingsScreen.State {
@@ -144,24 +143,21 @@ class SettingsPresenter(
         // Fetch recipes analytics when the API token becomes available
         androidx.compose.runtime.LaunchedEffect(preferences.apiToken) {
             val apiToken = preferences.apiToken
-            if (apiToken.isNullOrEmpty()) {
-                recipesAnalyticsState.value = null
-                isLoadingAnalyticsState.value = false
-            } else {
-                isLoadingAnalyticsState.value = true
-                try {
-                    val result = apiService.getRecipesAnalytics("Bearer $apiToken")
-                    when (result) {
-                        is ApiResult.Success -> {
-                            recipesAnalyticsState.value = convertToAnalyticsUi(result.value.data)
-                        }
-                        is ApiResult.Failure -> {
-                            // Silently handle error - just don't show analytics
-                        }
+            try {
+                if (apiToken.isNullOrEmpty()) {
+                    recipesAnalyticsState.value = null
+                } else {
+                    isLoadingAnalyticsState.value = true
+                    val result = recipesAnalyticsRepository.getRecipesAnalytics("Bearer $apiToken")
+                    result.onSuccess { analytics ->
+                        recipesAnalyticsState.value = convertToAnalyticsUi(analytics)
                     }
-                } catch (e: Exception) {
-                    // Silently handle any exceptions during API call
+                    result.onFailure { error ->
+                        // Silently handle errors - analytics just won't be displayed
+                        recipesAnalyticsState.value = null
+                    }
                 }
+            } finally {
                 isLoadingAnalyticsState.value = false
             }
         }
