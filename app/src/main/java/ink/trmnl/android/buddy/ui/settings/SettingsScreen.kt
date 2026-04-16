@@ -30,12 +30,14 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.dev.DevelopmentScreen
@@ -43,6 +45,10 @@ import ink.trmnl.android.buddy.security.BiometricAuthHelper
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicecatalog.DeviceCatalogScreen
+import ink.trmnl.android.buddy.ui.recipesanalytics.GrowthDataPointUi
+import ink.trmnl.android.buddy.ui.recipesanalytics.PluginAnalyticsUi
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
 import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.user.UserAccountScreen
@@ -63,6 +69,8 @@ data object SettingsScreen : Screen {
         val isRssFeedContentNotificationEnabled: Boolean = false,
         val isSecurityEnabled: Boolean = false,
         val isAuthenticationAvailable: Boolean = false,
+        val recipesAnalytics: RecipesAnalyticsUi? = null,
+        val isLoadingAnalytics: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -102,6 +110,10 @@ data object SettingsScreen : Screen {
         data object RecipesCatalogClicked : Event()
 
         data object ContentHubClicked : Event()
+
+        data class RecipesAnalyticsClicked(
+            val analytics: RecipesAnalyticsUi,
+        ) : Event()
     }
 }
 
@@ -114,6 +126,7 @@ class SettingsPresenter(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val workerScheduler: WorkerScheduler,
     private val biometricAuthHelper: BiometricAuthHelper,
+    private val apiService: TrmnlApiService,
 ) : Presenter<SettingsScreen.State> {
     @Composable
     override fun present(): SettingsScreen.State {
@@ -122,9 +135,36 @@ class SettingsPresenter(
                 UserPreferences(),
         )
         val coroutineScope = rememberCoroutineScope()
+        val recipesAnalyticsState = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<RecipesAnalyticsUi?>(null) }
+        val isLoadingAnalyticsState = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
 
         // Check biometric availability using the injected helper.
         val isAuthenticationAvailable = biometricAuthHelper.isBiometricAvailable()
+
+        // Fetch recipes analytics when the API token becomes available
+        androidx.compose.runtime.LaunchedEffect(preferences.apiToken) {
+            val apiToken = preferences.apiToken
+            if (apiToken.isNullOrEmpty()) {
+                recipesAnalyticsState.value = null
+                isLoadingAnalyticsState.value = false
+            } else {
+                isLoadingAnalyticsState.value = true
+                try {
+                    val result = apiService.getRecipesAnalytics("Bearer $apiToken")
+                    when (result) {
+                        is ApiResult.Success -> {
+                            recipesAnalyticsState.value = convertToAnalyticsUi(result.value.data)
+                        }
+                        is ApiResult.Failure -> {
+                            // Silently handle error - just don't show analytics
+                        }
+                    }
+                } catch (e: Exception) {
+                    // Silently handle any exceptions during API call
+                }
+                isLoadingAnalyticsState.value = false
+            }
+        }
 
         return SettingsScreen.State(
             isBatteryTrackingEnabled = preferences.isBatteryTrackingEnabled,
@@ -134,6 +174,8 @@ class SettingsPresenter(
             isRssFeedContentNotificationEnabled = preferences.isRssFeedContentNotificationEnabled,
             isSecurityEnabled = preferences.isSecurityEnabled,
             isAuthenticationAvailable = isAuthenticationAvailable,
+            recipesAnalytics = recipesAnalyticsState.value,
+            isLoadingAnalytics = isLoadingAnalyticsState.value,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
@@ -200,9 +242,41 @@ class SettingsPresenter(
                 SettingsScreen.Event.ContentHubClicked -> {
                     navigator.goTo(ContentHubScreen)
                 }
+                is SettingsScreen.Event.RecipesAnalyticsClicked -> {
+                    navigator.goTo(RecipesAnalyticsScreen(event.analytics))
+                }
             }
         }
     }
+
+    /**
+     * Convert [ink.trmnl.android.buddy.api.models.RecipesAnalytics] to [RecipesAnalyticsUi].
+     */
+    private fun convertToAnalyticsUi(analytics: ink.trmnl.android.buddy.api.models.RecipesAnalytics): RecipesAnalyticsUi =
+        RecipesAnalyticsUi(
+            totalPlugins = analytics.plugins.size,
+            totalConnections = analytics.stats.connections,
+            totalPageviews = analytics.stats.pageviews,
+            healthyPercent = analytics.health.healthy.percent ?: 0.0,
+            degradedPercent = analytics.health.degraded.percent ?: 0.0,
+            erroringPercent = analytics.health.erroring.percent ?: 0.0,
+            growthData =
+                analytics.growth.map { point ->
+                    GrowthDataPointUi(
+                        date = point.date,
+                        value = point.value,
+                    )
+                },
+            plugins =
+                analytics.plugins.map { plugin ->
+                    PluginAnalyticsUi(
+                        name = plugin.name,
+                        state = plugin.state,
+                        installs = plugin.installs,
+                        forks = plugin.forks,
+                    )
+                },
+        )
 
     @CircuitInject(SettingsScreen::class, AppScope::class)
     @AssistedFactory
@@ -310,6 +384,12 @@ fun SettingsContent(
                 },
                 onContentHubClick = {
                     state.eventSink(SettingsScreen.Event.ContentHubClicked)
+                },
+                recipesAnalytics = state.recipesAnalytics,
+                onRecipesAnalyticsClick = {
+                    state.recipesAnalytics?.let { analytics ->
+                        state.eventSink(SettingsScreen.Event.RecipesAnalyticsClicked(analytics))
+                    }
                 },
             )
 

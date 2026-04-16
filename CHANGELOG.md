@@ -18,6 +18,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Tests for unauthenticated responses with empty data and null health percentages
     - Tests for custom serializer with varying growth data points
     - Tests for plugins with varying health states (healthy, degraded, erroring)
+- **Recipes Analytics UI Screen**: Added comprehensive Material 3 dashboard for viewing recipes analytics
+  - Created `RecipesAnalyticsScreen` with Circuit-based UDF architecture
+  - Implemented `RecipesAnalyticsContent` composable with 5 distinct sections:
+    - **Health Status Section**: Three-column health card layout showing healthy, degraded, and erroring plugin percentages with semantic colors
+    - **Metrics Card**: Displays key metrics (total plugins, connections, pageviews)
+    - **Growth Chart**: Bar chart showing page view trend over time
+    - **Plugins List**: LazyColumn showing individual plugin analytics with health status badges using AssistChip
+    - **Empty State**: Gracefully handles case when user has no plugins
+  - Added `RecipesAnalyticsUi` Parcelable DTOs for safe Circuit screen navigation (RecipesAnalyticsUi, GrowthDataPointUi, PluginAnalyticsUi)
+  - Implemented Compose previews for both light and dark theme variants
+- **Upfront Analytics Fetch in Settings Screen**: Integrated analytics fetching into SettingsScreen presenter
+  - Implemented `LaunchedEffect` to fetch analytics on screen load (only when API token is available)
+  - Silently handles API failures - analytics displays only when successfully fetched
+  - Converts full `RecipesAnalyticsResponse` to simplified `RecipesAnalyticsUi` DTO for safe serialization
+- **Conditional Analytics Option in Extras Section**: Added "Recipes Analytics" navigation option in Settings
+  - Only displays when user has plugins (totalPlugins > 0)
+  - Uses chart_data icon for visual distinction
+  - Navigates to new RecipesAnalyticsScreen with pre-fetched analytics data
   - Includes full documentation with example responses and usage examples
 
 ## [2.13.0] - 2026-02-14

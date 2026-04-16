@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 
 /**
@@ -34,6 +35,8 @@ fun ExtrasSection(
     onDeviceCatalogClick: () -> Unit,
     onRecipesCatalogClick: () -> Unit,
     onContentHubClick: () -> Unit,
+    recipesAnalytics: RecipesAnalyticsUi? = null,
+    onRecipesAnalyticsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -133,6 +136,45 @@ fun ExtrasSection(
                         ),
                     modifier = Modifier.clickable { onRecipesCatalogClick() },
                 )
+
+                // Recipes Analytics (only if user has plugins)
+                if (recipesAnalytics != null && recipesAnalytics.totalPlugins > 0) {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = "Recipes Analytics",
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = "View statistics for your published plugins",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.chart_data_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.tertiary,
+                                modifier = Modifier.size(26.dp),
+                            )
+                        },
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.arrow_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Navigate to Recipes Analytics",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                        colors =
+                            ListItemDefaults.colors(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                            ),
+                        modifier = Modifier.clickable { onRecipesAnalyticsClick() },
+                    )
+                }
 
                 // Content Hub
                 ListItem(

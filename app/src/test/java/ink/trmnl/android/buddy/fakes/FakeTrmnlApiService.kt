@@ -83,7 +83,7 @@ class FakeTrmnlApiService : TrmnlApiService {
 
     override suspend fun getRecipesAnalytics(authorization: String): ApiResult<RecipesAnalyticsResponse, ApiError> {
         lastAuthorizationHeader = authorization
-        return getRecipesAnalyticsResult ?: throw NotImplementedError("getRecipesAnalyticsResult not implemented")
+        return getRecipesAnalyticsResult ?: throw NotImplementedError("getRecipesAnalyticsResult not set")
     }
 
     override suspend fun updatePlaylistItemVisibility(
