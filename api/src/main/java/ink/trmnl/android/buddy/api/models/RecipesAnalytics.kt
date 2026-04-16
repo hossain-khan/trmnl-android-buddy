@@ -115,11 +115,11 @@ data class RecipeAnalyticsHealth(
 /**
  * Health status percentage.
  *
- * @property percent Percentage value
+ * @property percent Percentage value (nullable for unauthenticated responses)
  */
 @Serializable
 data class RecipeAnalyticsHealthStatus(
-    val percent: Double,
+    val percent: Double?,
 )
 
 /**
