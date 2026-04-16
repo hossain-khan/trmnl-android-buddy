@@ -401,4 +401,6 @@ private class FakeApiService(
         authorization: String,
         body: Map<String, Boolean>,
     ) = throw NotImplementedError()
+
+    override suspend fun getRecipesAnalytics(authorization: String) = throw NotImplementedError()
 }

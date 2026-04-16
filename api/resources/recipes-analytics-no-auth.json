@@ -1,0 +1,58 @@
+{
+    "X-REQUEST-URL": "https://trmnl.com/analytics.json",
+    "X-REQUEST-METHOD": "GET",
+    "X-NOTE": "Default data when no auth is provided. This endpoint requires authentication.",
+    "data": {
+        "plugins": [],
+        "stats": {
+            "plugins": 0,
+            "connections": 0,
+            "pageviews": 0
+        },
+        "health": {
+            "healthy": {
+                "percent": null
+            },
+            "degraded": {
+                "percent": null
+            },
+            "erroring": {
+                "percent": null
+            }
+        },
+        "growth": [
+            [
+                "2026-04-09",
+                0
+            ],
+            [
+                "2026-04-10",
+                0
+            ],
+            [
+                "2026-04-11",
+                0
+            ],
+            [
+                "2026-04-12",
+                0
+            ],
+            [
+                "2026-04-13",
+                0
+            ],
+            [
+                "2026-04-14",
+                0
+            ],
+            [
+                "2026-04-15",
+                0
+            ],
+            [
+                "2026-04-16",
+                0
+            ]
+        ]
+    }
+}

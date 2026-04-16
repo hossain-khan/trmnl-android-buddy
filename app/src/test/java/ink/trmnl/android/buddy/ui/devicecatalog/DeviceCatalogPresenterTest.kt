@@ -19,6 +19,7 @@ import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
+import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
@@ -450,4 +451,7 @@ private open class FakeApiService(
         authorization: String,
         body: Map<String, Boolean>,
     ) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
+
+    override suspend fun getRecipesAnalytics(authorization: String) =
+        throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 }
