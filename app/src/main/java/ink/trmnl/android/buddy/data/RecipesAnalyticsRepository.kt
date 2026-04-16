@@ -3,12 +3,12 @@ package ink.trmnl.android.buddy.data
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.RecipesAnalytics
 import ink.trmnl.android.buddy.api.util.toResult
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import javax.inject.Singleton
 
 /**
  * Repository interface for TRMNL recipes analytics operations.
@@ -42,9 +42,10 @@ interface RecipesAnalyticsRepository {
  * The cache stores the last fetched analytics data along with the token
  * it was fetched with. If the token changes, the cache is invalidated.
  *
- * Marked as @Singleton to ensure only one instance exists across the entire app.
+ * Scoped to AppScope via @SingleIn to ensure only one instance exists
+ * across the entire application lifetime.
  */
-@Singleton
+@SingleIn(AppScope::class)
 @Inject
 @ContributesBinding(AppScope::class)
 class RecipesAnalyticsRepositoryImpl(
