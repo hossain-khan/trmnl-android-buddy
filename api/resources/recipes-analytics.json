@@ -1,5 +1,5 @@
 {
-    "X-REQUEST-URL": "analytics.json",
+    "X-REQUEST-URL": "https://trmnl.com/analytics.json",
     "X-REQUEST-METHOD": "GET",
     "X-REQUEST-HEADER": {
         "Accept": "application/json",

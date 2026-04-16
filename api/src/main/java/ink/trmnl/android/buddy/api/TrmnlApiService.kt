@@ -9,6 +9,7 @@ import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
+import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import retrofit2.http.Body
@@ -396,6 +397,67 @@ interface TrmnlApiService {
     suspend fun getRecipe(
         @Path("id") id: Int,
     ): ApiResult<RecipeDetailResponse, ApiError>
+
+    /**
+     * Get analytics data for recipes and plugins in the TRMNL catalog.
+     *
+     * This endpoint provides aggregated statistics about the health, popularity,
+     * and growth trends of plugins available in the TRMNL catalog.
+     *
+     * Requires authentication via Bearer token.
+     *
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @return ApiResult containing analytics data or error
+     *
+     * Example response:
+     * ```json
+     * {
+     *   "data": {
+     *     "plugins": [
+     *       {
+     *         "name": "Calendar XL",
+     *         "state": "healthy",
+     *         "installs": 0,
+     *         "forks": 43
+     *       }
+     *     ],
+     *     "stats": {
+     *       "plugins": 9,
+     *       "connections": 423,
+     *       "pageviews": 28
+     *     },
+     *     "health": {
+     *       "healthy": {"percent": 121.33},
+     *       "degraded": {"percent": 0.67},
+     *       "erroring": {"percent": 0.33}
+     *     },
+     *     "growth": [
+     *       ["2026-04-09", 0],
+     *       ["2026-04-10", 0]
+     *     ]
+     *   }
+     * }
+     * ```
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.getRecipesAnalytics("Bearer user_abc123")) {
+     *     is ApiResult.Success -> {
+     *         val analytics = result.value.data
+     *         println("Total plugins: ${analytics.stats.plugins}")
+     *         println("Total installs: ${analytics.plugins.sumOf { it.installs }}")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> println("HTTP error: ${result.code}")
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("https://trmnl.com/analytics.json")
+    suspend fun getRecipesAnalytics(
+        @Header("Authorization") authorization: String,
+    ): ApiResult<RecipesAnalyticsResponse, ApiError>
 
     // ========================================
     // Categories API
