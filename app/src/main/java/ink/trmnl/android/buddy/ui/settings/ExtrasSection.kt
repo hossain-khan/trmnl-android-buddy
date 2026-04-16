@@ -148,16 +148,16 @@ fun ExtrasSection(
                         },
                         supportingContent = {
                             Text(
-                                text = "View statistics for your published plugins",
+                                text = "View statistics and status of your published TRMNL recipes",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.chart_data_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                painter = painterResource(R.drawable.chart_data_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.tertiary,
+                                tint = MaterialTheme.colorScheme.secondary,
                                 modifier = Modifier.size(26.dp),
                             )
                         },

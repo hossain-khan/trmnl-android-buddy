@@ -33,6 +33,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -58,6 +59,8 @@ fun RecipesAnalyticsContent(
     state: RecipesAnalyticsScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val uriHandler = LocalUriHandler.current
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -68,6 +71,18 @@ fun RecipesAnalyticsContent(
                         Icon(
                             painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                             contentDescription = "Back",
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            uriHandler.openUri("https://trmnl.com/analytics")
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.open_in_new_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Open Analytics Dashboard",
                         )
                     }
                 },
@@ -331,7 +346,8 @@ private fun SimpleGrowthChart(
                             .width(24.dp)
                             .fillMaxHeight(
                                 fraction =
-                                    if (maxValue > 0) point.value / maxValue else 0f,
+                                    (if (maxValue > 0) point.value / maxValue else 0f)
+                                        .coerceAtMost(0.8f),
                             ).background(
                                 color = MaterialTheme.colorScheme.primary,
                                 shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp),
@@ -478,6 +494,90 @@ private fun HealthBadge(
 // ============================================
 // Preview Composables
 // ============================================
+
+@PreviewLightDark
+@Composable
+private fun SimpleGrowthChartPreview() {
+    TrmnlBuddyAppTheme {
+        GrowthChartCard(
+            growthData =
+                listOf(
+                    GrowthDataPointUi("2026-04-09", 0),
+                    GrowthDataPointUi("2026-04-10", 0),
+                    GrowthDataPointUi("2026-04-11", 0),
+                    GrowthDataPointUi("2026-04-12", 0),
+                    GrowthDataPointUi("2026-04-13", 2),
+                    GrowthDataPointUi("2026-04-14", 1),
+                    GrowthDataPointUi("2026-04-15", 3),
+                    GrowthDataPointUi("2026-04-16", 0),
+                ),
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun SimpleGrowthChartFlatPreview() {
+    TrmnlBuddyAppTheme {
+        GrowthChartCard(
+            growthData =
+                listOf(
+                    GrowthDataPointUi("2026-04-09", 0),
+                    GrowthDataPointUi("2026-04-10", 0),
+                    GrowthDataPointUi("2026-04-11", 0),
+                    GrowthDataPointUi("2026-04-12", 0),
+                    GrowthDataPointUi("2026-04-13", 0),
+                    GrowthDataPointUi("2026-04-14", 0),
+                    GrowthDataPointUi("2026-04-15", 0),
+                    GrowthDataPointUi("2026-04-16", 0),
+                ),
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun SimpleGrowthChartSpikePreview() {
+    TrmnlBuddyAppTheme {
+        GrowthChartCard(
+            growthData =
+                listOf(
+                    GrowthDataPointUi("2026-04-09", 1),
+                    GrowthDataPointUi("2026-04-10", 2),
+                    GrowthDataPointUi("2026-04-11", 3),
+                    GrowthDataPointUi("2026-04-12", 5),
+                    GrowthDataPointUi("2026-04-13", 12),
+                    GrowthDataPointUi("2026-04-14", 8),
+                    GrowthDataPointUi("2026-04-15", 15),
+                    GrowthDataPointUi("2026-04-16", 4),
+                ),
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun SimpleGrowthChartMixedPreview() {
+    TrmnlBuddyAppTheme {
+        GrowthChartCard(
+            growthData =
+                listOf(
+                    GrowthDataPointUi("2026-04-09", 5),
+                    GrowthDataPointUi("2026-04-10", 0),
+                    GrowthDataPointUi("2026-04-11", 3),
+                    GrowthDataPointUi("2026-04-12", 10),
+                    GrowthDataPointUi("2026-04-13", 2),
+                    GrowthDataPointUi("2026-04-14", 7),
+                    GrowthDataPointUi("2026-04-15", 1),
+                    GrowthDataPointUi("2026-04-16", 6),
+                ),
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
 
 @PreviewLightDark
 @Composable
