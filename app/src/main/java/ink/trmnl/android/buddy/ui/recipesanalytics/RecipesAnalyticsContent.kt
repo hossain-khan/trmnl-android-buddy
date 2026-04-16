@@ -1,5 +1,7 @@
 package ink.trmnl.android.buddy.ui.recipesanalytics
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +35,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -58,6 +61,8 @@ fun RecipesAnalyticsContent(
     state: RecipesAnalyticsScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -68,6 +73,19 @@ fun RecipesAnalyticsContent(
                         Icon(
                             painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                             contentDescription = "Back",
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://trmnl.com/analytics"))
+                            context.startActivity(intent)
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.open_in_new_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Open Analytics Dashboard",
                         )
                     }
                 },
