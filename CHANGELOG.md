@@ -33,6 +33,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Created comprehensive data models: `RecipesAnalytics`, `RecipeAnalyticsPlugin`, `RecipeAnalyticsStats`, `RecipeAnalyticsHealth`, `GrowthDataPoint`, and `RecipesAnalyticsResponse`
   - Implemented custom `GrowthDataPointSerializer` to deserialize JSON array format `["2026-04-09", 0]` into typed data objects
   - Added comprehensive unit tests covering success responses, authorization failures, server errors, and growth data deserialization
+  - Added serialization/deserialization tests in `RecipesAnalyticsJsonParsingTest` with:
+    - Tests for authenticated responses with full plugin data
+    - Tests for unauthenticated responses with empty data and null health percentages
+    - Tests for custom serializer with varying growth data points
+    - Tests for plugins with varying health states (healthy, degraded, erroring)
   - Includes full documentation with example responses and usage examples
   - Maps all `ApiResult.Failure` types (`HttpFailure`, `NetworkFailure`, `ApiFailure`, `UnknownFailure`) to user-friendly messages
   - Provides standard HTTP status code handling (401, 403, 404, 429, 5xx) with clear, actionable messages
