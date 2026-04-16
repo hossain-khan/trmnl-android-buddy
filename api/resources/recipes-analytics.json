@@ -1,0 +1,117 @@
+{
+    "X-REQUEST-URL": "analytics.json",
+    "X-REQUEST-METHOD": "GET",
+    "X-REQUEST-HEADER": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer USER_ACCESS_TOKEN"
+    },
+    "data": {
+        "plugins": [
+            {
+                "name": "Calendar XL",
+                "state": "healthy",
+                "installs": 0,
+                "forks": 43
+            },
+            {
+                "name": "Durham Waste Collection",
+                "state": "healthy",
+                "installs": 9,
+                "forks": 7
+            },
+            {
+                "name": "Element of the Day",
+                "state": "healthy",
+                "installs": 9,
+                "forks": 73
+            },
+            {
+                "name": "Google Photos",
+                "state": "healthy",
+                "installs": 1,
+                "forks": 124
+            },
+            {
+                "name": "Google Photos Canvas",
+                "state": "healthy",
+                "installs": 0,
+                "forks": 65
+            },
+            {
+                "name": "GO Transit Schedule",
+                "state": "healthy",
+                "installs": 0,
+                "forks": 14
+            },
+            {
+                "name": "Islamic Prayer Times",
+                "state": "healthy",
+                "installs": 5,
+                "forks": 17
+            },
+            {
+                "name": "Kung Fu Panda Quotes",
+                "state": "healthy",
+                "installs": 5,
+                "forks": 23
+            },
+            {
+                "name": "Max Payne Quotes",
+                "state": "healthy",
+                "installs": 27,
+                "forks": 1
+            }
+        ],
+        "stats": {
+            "plugins": 9,
+            "connections": 423,
+            "pageviews": 28
+        },
+        "health": {
+            "healthy": {
+                "percent": 121.3333333333333
+            },
+            "degraded": {
+                "percent": 0.6666666666666666
+            },
+            "erroring": {
+                "percent": 0.3333333333333333
+            }
+        },
+        "growth": [
+            [
+                "2026-04-09",
+                0
+            ],
+            [
+                "2026-04-10",
+                0
+            ],
+            [
+                "2026-04-11",
+                0
+            ],
+            [
+                "2026-04-12",
+                0
+            ],
+            [
+                "2026-04-13",
+                2
+            ],
+            [
+                "2026-04-14",
+                1
+            ],
+            [
+                "2026-04-15",
+                3
+            ],
+            [
+                "2026-04-16",
+                0
+            ]
+        ]
+    }
+}
