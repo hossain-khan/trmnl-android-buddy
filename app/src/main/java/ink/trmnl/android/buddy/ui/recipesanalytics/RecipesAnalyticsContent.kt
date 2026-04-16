@@ -491,9 +491,9 @@ private fun RecipesAnalyticsContentPreview() {
                             totalPlugins = 9,
                             totalConnections = 423,
                             totalPageviews = 28,
-                            healthyPercent = 121.33,
-                            degradedPercent = 0.67,
-                            erroringPercent = 0.33,
+                            healthyPercent = 98.5,
+                            degradedPercent = 1.2,
+                            erroringPercent = 0.3,
                             growthData =
                                 listOf(
                                     GrowthDataPointUi("2026-04-09", 0),
