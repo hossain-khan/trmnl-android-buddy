@@ -314,7 +314,7 @@ private fun SimpleGrowthChart(
     val maxValue = growthData.maxOfOrNull { it.value }?.toFloat() ?: 1f
 
     Row(
-        modifier = modifier,
+        modifier = modifier.padding(horizontal = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.Bottom,
     ) {
