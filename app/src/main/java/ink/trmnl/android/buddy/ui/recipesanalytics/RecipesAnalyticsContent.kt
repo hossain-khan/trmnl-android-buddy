@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,9 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
@@ -75,38 +74,48 @@ fun RecipesAnalyticsContent(
             )
         },
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                    .padding(innerPadding),
+            contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Health Status Cards
-            HealthStatusSection(
-                healthyPercent = state.analytics.healthyPercent,
-                degradedPercent = state.analytics.degradedPercent,
-                erroringPercent = state.analytics.erroringPercent,
-            )
+            item {
+                HealthStatusSection(
+                    healthyPercent = state.analytics.healthyPercent,
+                    degradedPercent = state.analytics.degradedPercent,
+                    erroringPercent = state.analytics.erroringPercent,
+                )
+            }
 
             // Key Metrics Card
-            MetricsCard(
-                totalPlugins = state.analytics.totalPlugins,
-                totalConnections = state.analytics.totalConnections,
-                totalPageviews = state.analytics.totalPageviews,
-            )
+            item {
+                MetricsCard(
+                    totalPlugins = state.analytics.totalPlugins,
+                    totalConnections = state.analytics.totalConnections,
+                    totalPageviews = state.analytics.totalPageviews,
+                )
+            }
 
             // Growth Trend Chart
-            GrowthChartCard(growthData = state.analytics.growthData)
+            item {
+                GrowthChartCard(growthData = state.analytics.growthData)
+            }
 
             // Plugins List
             if (state.analytics.plugins.isNotEmpty()) {
-                PluginsListSection(plugins = state.analytics.plugins)
+                item {
+                    PluginsListSection(plugins = state.analytics.plugins)
+                }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            // Bottom spacer
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
     }
 }
@@ -364,14 +373,14 @@ private fun PluginsListSection(
                 ),
             shape = RoundedCornerShape(12.dp),
         ) {
-            LazyColumn(
+            Column(
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(0.dp),
             ) {
-                items(plugins) { plugin ->
+                plugins.forEach { plugin ->
                     PluginListItem(plugin)
                 }
             }
