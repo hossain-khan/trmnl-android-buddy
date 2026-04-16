@@ -8,6 +8,7 @@ import ink.trmnl.android.buddy.api.models.RecipesAnalytics
 import ink.trmnl.android.buddy.api.util.toResult
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Singleton
 
 /**
  * Repository interface for TRMNL recipes analytics operations.
@@ -40,7 +41,10 @@ interface RecipesAnalyticsRepository {
  * Uses a mutex to ensure thread-safe cache access and modification.
  * The cache stores the last fetched analytics data along with the token
  * it was fetched with. If the token changes, the cache is invalidated.
+ *
+ * Marked as @Singleton to ensure only one instance exists across the entire app.
  */
+@Singleton
 @Inject
 @ContributesBinding(AppScope::class)
 class RecipesAnalyticsRepositoryImpl(
