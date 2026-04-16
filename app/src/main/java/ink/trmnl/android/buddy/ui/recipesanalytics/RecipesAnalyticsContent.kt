@@ -331,7 +331,8 @@ private fun SimpleGrowthChart(
                             .width(24.dp)
                             .fillMaxHeight(
                                 fraction =
-                                    if (maxValue > 0) point.value / maxValue else 0f,
+                                    (if (maxValue > 0) point.value / maxValue else 0f)
+                                        .coerceAtMost(0.8f),
                             ).background(
                                 color = MaterialTheme.colorScheme.primary,
                                 shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp),
@@ -478,6 +479,90 @@ private fun HealthBadge(
 // ============================================
 // Preview Composables
 // ============================================
+
+@PreviewLightDark
+@Composable
+private fun SimpleGrowthChartPreview() {
+    TrmnlBuddyAppTheme {
+        GrowthChartCard(
+            growthData =
+                listOf(
+                    GrowthDataPointUi("2026-04-09", 0),
+                    GrowthDataPointUi("2026-04-10", 0),
+                    GrowthDataPointUi("2026-04-11", 0),
+                    GrowthDataPointUi("2026-04-12", 0),
+                    GrowthDataPointUi("2026-04-13", 2),
+                    GrowthDataPointUi("2026-04-14", 1),
+                    GrowthDataPointUi("2026-04-15", 3),
+                    GrowthDataPointUi("2026-04-16", 0),
+                ),
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun SimpleGrowthChartFlatPreview() {
+    TrmnlBuddyAppTheme {
+        GrowthChartCard(
+            growthData =
+                listOf(
+                    GrowthDataPointUi("2026-04-09", 0),
+                    GrowthDataPointUi("2026-04-10", 0),
+                    GrowthDataPointUi("2026-04-11", 0),
+                    GrowthDataPointUi("2026-04-12", 0),
+                    GrowthDataPointUi("2026-04-13", 0),
+                    GrowthDataPointUi("2026-04-14", 0),
+                    GrowthDataPointUi("2026-04-15", 0),
+                    GrowthDataPointUi("2026-04-16", 0),
+                ),
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun SimpleGrowthChartSpikePreview() {
+    TrmnlBuddyAppTheme {
+        GrowthChartCard(
+            growthData =
+                listOf(
+                    GrowthDataPointUi("2026-04-09", 1),
+                    GrowthDataPointUi("2026-04-10", 2),
+                    GrowthDataPointUi("2026-04-11", 3),
+                    GrowthDataPointUi("2026-04-12", 5),
+                    GrowthDataPointUi("2026-04-13", 12),
+                    GrowthDataPointUi("2026-04-14", 8),
+                    GrowthDataPointUi("2026-04-15", 15),
+                    GrowthDataPointUi("2026-04-16", 4),
+                ),
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun SimpleGrowthChartMixedPreview() {
+    TrmnlBuddyAppTheme {
+        GrowthChartCard(
+            growthData =
+                listOf(
+                    GrowthDataPointUi("2026-04-09", 5),
+                    GrowthDataPointUi("2026-04-10", 0),
+                    GrowthDataPointUi("2026-04-11", 3),
+                    GrowthDataPointUi("2026-04-12", 10),
+                    GrowthDataPointUi("2026-04-13", 2),
+                    GrowthDataPointUi("2026-04-14", 7),
+                    GrowthDataPointUi("2026-04-15", 1),
+                    GrowthDataPointUi("2026-04-16", 6),
+                ),
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
 
 @PreviewLightDark
 @Composable
