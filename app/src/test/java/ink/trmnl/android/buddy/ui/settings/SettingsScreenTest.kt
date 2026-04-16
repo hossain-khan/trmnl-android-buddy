@@ -7,7 +7,7 @@ import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
-import ink.trmnl.android.buddy.fakes.FakeTrmnlApiService
+import ink.trmnl.android.buddy.fakes.FakeRecipesAnalyticsRepository
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import ink.trmnl.android.buddy.security.FakeBiometricAuthHelper
 import ink.trmnl.android.buddy.work.WorkerScheduler
@@ -25,9 +25,9 @@ class SettingsScreenTest {
             val repository = FakeUserPreferencesRepository()
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
             // Set analytics to fail gracefully (no analytics shown)
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 val state = awaitItem()
@@ -48,8 +48,8 @@ class SettingsScreenTest {
                 )
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 // Skip the initial state and get the updated state
@@ -66,8 +66,8 @@ class SettingsScreenTest {
             val repository = FakeUserPreferencesRepository()
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 val state = awaitItem()
@@ -97,8 +97,8 @@ class SettingsScreenTest {
                 )
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 // Skip the initial state and get the state with disabled tracking
@@ -124,8 +124,8 @@ class SettingsScreenTest {
             val repository = FakeUserPreferencesRepository()
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 val state = awaitItem()
@@ -145,8 +145,8 @@ class SettingsScreenTest {
             val repository = FakeUserPreferencesRepository()
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 val state = awaitItem()
@@ -162,8 +162,8 @@ class SettingsScreenTest {
             val repository = FakeUserPreferencesRepository()
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 val state = awaitItem()
@@ -195,8 +195,8 @@ class SettingsScreenTest {
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
             workerScheduler.isScheduled = true
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 skipItems(1)
@@ -219,8 +219,8 @@ class SettingsScreenTest {
             val repository = FakeUserPreferencesRepository()
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 val state = awaitItem()
@@ -252,8 +252,8 @@ class SettingsScreenTest {
                 )
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 skipItems(1)
@@ -270,8 +270,8 @@ class SettingsScreenTest {
             val repository = FakeUserPreferencesRepository()
             val workerScheduler = FakeWorkerScheduler()
             val biometricAuthHelper = FakeBiometricAuthHelper()
-            val apiService = FakeTrmnlApiService()
-            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, apiService)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
 
             presenter.test {
                 val state = awaitItem()
