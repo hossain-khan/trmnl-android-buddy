@@ -310,4 +310,6 @@ private class FakeApiService(
         authorization: String,
         body: Map<String, Boolean>,
     ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
+
+    override suspend fun getRecipesAnalytics(authorization: String) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 }

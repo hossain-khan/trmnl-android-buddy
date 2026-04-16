@@ -17,6 +17,7 @@ import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipeStats
+import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import kotlinx.coroutines.test.runTest
@@ -200,5 +201,8 @@ class RecipesRepositoryTest {
             authorization: String,
             body: Map<String, Boolean>,
         ): ApiResult<Unit, ApiError> = throw NotImplementedError()
+
+        override suspend fun getRecipesAnalytics(authorization: String): ApiResult<RecipesAnalyticsResponse, ApiError> =
+            throw NotImplementedError()
     }
 }
