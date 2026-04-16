@@ -143,19 +143,27 @@ class SettingsPresenter(
         // Fetch recipes analytics when the API token becomes available
         androidx.compose.runtime.LaunchedEffect(preferences.apiToken) {
             val apiToken = preferences.apiToken
+            println("🔵 [SettingsScreen] LaunchedEffect triggered with token: $apiToken")
             if (apiToken.isNullOrEmpty()) {
+                println("🔵 [SettingsScreen] Token is null/empty, clearing analytics")
                 recipesAnalyticsState.value = null
                 isLoadingAnalyticsState.value = false
             } else {
+                println("🔵 [SettingsScreen] Token available, fetching analytics")
                 isLoadingAnalyticsState.value = true
                 try {
                     val result = recipesAnalyticsRepository.getRecipesAnalytics("Bearer $apiToken")
                     result.onSuccess { analytics ->
+                        println("🟢 [SettingsScreen] Analytics fetched successfully")
                         recipesAnalyticsState.value = convertToAnalyticsUi(analytics)
+                    }
+                    result.onFailure { error ->
+                        println("🔴 [SettingsScreen] Analytics fetch failed: ${error.message}")
                     }
                     // Silently handle errors - analytics just won't be displayed
                 } catch (e: Exception) {
                     // Silently handle any exceptions during fetch
+                    println("🔴 [SettingsScreen] Exception during fetch: ${e.message}")
                 }
                 isLoadingAnalyticsState.value = false
             }

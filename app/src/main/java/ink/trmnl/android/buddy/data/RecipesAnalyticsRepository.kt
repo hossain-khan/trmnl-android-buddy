@@ -54,8 +54,11 @@ class RecipesAnalyticsRepositoryImpl(
         cacheMutex.withLock {
             // Check if we have valid cached data for this token
             if (cachedToken == authorization && cachedAnalytics != null) {
+                println("🔵 [RecipesAnalyticsRepository] Cache HIT - returning cached data")
                 return@withLock Result.success(cachedAnalytics!!)
             }
+
+            println("🟡 [RecipesAnalyticsRepository] Cache MISS - fetching from API. Cached token: $cachedToken, New token: $authorization")
 
             // Fetch fresh data from API
             val result =
@@ -68,6 +71,7 @@ class RecipesAnalyticsRepositoryImpl(
                 val analytics = result.getOrNull()!!
                 cachedToken = authorization
                 cachedAnalytics = analytics
+                println("🟢 [RecipesAnalyticsRepository] Cache UPDATED - stored data for token: $authorization")
             }
 
             result
