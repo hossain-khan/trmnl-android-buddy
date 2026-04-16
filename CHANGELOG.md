@@ -28,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Ensures consistent error messages for the same failure types across all screens
 ### Added
 - **Centralized error mapping utility**: Created `ErrorMapper` in the api module for consistent user-friendly error messages
+- **Recipes Analytics API endpoint**: Added `getRecipesAnalytics()` endpoint to fetch aggregated statistics about plugins in the TRMNL catalog
+  - Endpoint URL: `https://trmnl.com/analytics.json` with Bearer token authentication
+  - Created comprehensive data models: `RecipesAnalytics`, `RecipeAnalyticsPlugin`, `RecipeAnalyticsStats`, `RecipeAnalyticsHealth`, `GrowthDataPoint`, and `RecipesAnalyticsResponse`
+  - Implemented custom `GrowthDataPointSerializer` to deserialize JSON array format `["2026-04-09", 0]` into typed data objects
+  - Added comprehensive unit tests covering success responses, authorization failures, server errors, and growth data deserialization
+  - Includes full documentation with example responses and usage examples
   - Maps all `ApiResult.Failure` types (`HttpFailure`, `NetworkFailure`, `ApiFailure`, `UnknownFailure`) to user-friendly messages
   - Provides standard HTTP status code handling (401, 403, 404, 429, 5xx) with clear, actionable messages
   - Added `toUserMessage()` extension function on `ApiResult.Failure<*>` for ergonomic usage in presenters
