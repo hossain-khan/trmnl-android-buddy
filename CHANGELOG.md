@@ -7,27 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- **Refactored `DeviceDetailPresenter` to improve separation of concerns**: Extracted battery history management into a dedicated `BatteryChartPresenter`
-  - Created `BatteryChartScreen` with its own `State` and `Event` sealed classes for battery-specific data
-  - Created `BatteryChartPresenter` handling battery history loading, analysis, recording and clearing
-  - Created `BatteryChartContent` composable with `@CircuitInject(BatteryChartScreen::class)` for the battery UI
-  - `DeviceDetailPresenter` now focuses solely on playlist items, device token, and user preferences
-  - `DeviceDetailContent` embeds `BatteryChartScreen` via `CircuitContent` for inline rendering
-  - Battery-related events (`RecordBatteryManually`, `ClearBatteryHistory`, `PopulateBatteryHistory`) moved from `DeviceDetailScreen` to `BatteryChartScreen`
-  - Added comprehensive unit tests for `BatteryChartPresenter` in `BatteryChartScreenTest`
-- **Simplified API response wrapper pattern**: Replaced individual response wrapper classes with generic `ApiResponse<T>` wrapper
-  - Created `ApiResponse<T>` generic wrapper class as a single source of truth for the TRMNL API's `{ "data": ... }` response pattern
-  - Converted `DeviceResponse`, `DevicesResponse`, `UserResponse`, `RecipeDetailResponse`, `CategoriesResponse`, and `PlaylistItemsResponse` to type aliases
-  - Eliminated boilerplate serialization code across API models (~100 lines of duplicate code removed)
-  - Maintained backward compatibility with existing Retrofit integration and repositories
-  - Simplified adding new API endpoints - only need to define the data type and create a type alias
-  - Serialization/deserialization is covered by existing Retrofit MockWebServer tests in the API module (for example, `TrmnlDeviceApiTest`)
-- **Standardized error handling across presenters**: Refactored `TrmnlDevicesPresenter`, `UserAccountPresenter`, `DevicePreviewPresenter`, and `DeviceCatalogPresenter` to use the new `ErrorMapper` utility
-  - Removed duplicated `ApiResult.Failure.*` when-expression boilerplate from each presenter
-  - Ensures consistent error messages for the same failure types across all screens
 ### Added
-- **Centralized error mapping utility**: Created `ErrorMapper` in the api module for consistent user-friendly error messages
 - **Recipes Analytics API endpoint**: Added `getRecipesAnalytics()` endpoint to fetch aggregated statistics about plugins in the TRMNL catalog
   - Endpoint URL: `https://trmnl.com/analytics.json` with Bearer token authentication
   - Created comprehensive data models: `RecipesAnalytics`, `RecipeAnalyticsPlugin`, `RecipeAnalyticsStats`, `RecipeAnalyticsHealth`, `GrowthDataPoint`, and `RecipesAnalyticsResponse`
@@ -39,18 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Tests for custom serializer with varying growth data points
     - Tests for plugins with varying health states (healthy, degraded, erroring)
   - Includes full documentation with example responses and usage examples
-  - Maps all `ApiResult.Failure` types (`HttpFailure`, `NetworkFailure`, `ApiFailure`, `UnknownFailure`) to user-friendly messages
-  - Provides standard HTTP status code handling (401, 403, 404, 429, 5xx) with clear, actionable messages
-  - Added `toUserMessage()` extension function on `ApiResult.Failure<*>` for ergonomic usage in presenters
-  - Added unit tests for `ErrorMapper` covering all failure types and HTTP status codes
-- **Expanded test coverage for app module**: Significantly increased unit test coverage across presenters, repositories, and workers
-  - Added comprehensive presenter tests for `TrmnlDevicesPresenter`, `DeviceDetailPresenter`, `AuthenticationPresenter`, and all other key presenters
-  - Added repository tests for `BatteryHistoryRepository`, `BookmarkRepository`, `PlaylistItemsRepository`, `RecipesRepository`, `DeviceTokenRepository`, and `UserPreferencesRepository`
-  - Added worker tests for `BatteryCollectionWorker`, `AnnouncementSyncWorker`, `BlogPostSyncWorker`, and `LowBatteryNotificationWorker`
-  - All tests use AssertK for fluent, Kotlin-native assertions (no JUnit assertions)
-  - All tests use fake implementations instead of mocks following Android testing best practices
-- **Testing documentation**: Added `docs/TESTING.md` with comprehensive guide covering test patterns, available fakes, Circuit presenter testing, repository testing, worker testing, Flow testing with Turbine, and code coverage with Kover
-- **Code coverage reporting**: Kover is configured in CI/CD to generate XML coverage reports and upload them to Codecov on every push and pull request
 
 ## [2.13.0] - 2026-02-14
 
