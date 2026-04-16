@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.14.0] - 2026-04-16
+
 ### Added
 - **Recipes Analytics API endpoint**: Added `getRecipesAnalytics()` endpoint to fetch aggregated statistics about plugins in the TRMNL catalog
   - Endpoint URL: `https://trmnl.com/analytics.json` with Bearer token authentication
@@ -28,15 +30,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - **Empty State**: Gracefully handles case when user has no plugins
   - Added `RecipesAnalyticsUi` Parcelable DTOs for safe Circuit screen navigation (RecipesAnalyticsUi, GrowthDataPointUi, PluginAnalyticsUi)
   - Implemented Compose previews for both light and dark theme variants
+  - Added SimpleGrowthChart bar height limiting (max 80% of container) to prevent label overlap
+  - Added 4 preview variations showcasing different data patterns (normal, flat, spike, mixed)
 - **Upfront Analytics Fetch in Settings Screen**: Integrated analytics fetching into SettingsScreen presenter
   - Implemented `LaunchedEffect` to fetch analytics on screen load (only when API token is available)
   - Silently handles API failures - analytics displays only when successfully fetched
   - Converts full `RecipesAnalyticsResponse` to simplified `RecipesAnalyticsUi` DTO for safe serialization
+  - Uses in-memory caching via `RecipesAnalyticsRepository` to reduce redundant API calls
 - **Conditional Analytics Option in Extras Section**: Added "Recipes Analytics" navigation option in Settings
   - Only displays when user has plugins (totalPlugins > 0)
   - Uses chart_data icon for visual distinction
   - Navigates to new RecipesAnalyticsScreen with pre-fetched analytics data
   - Includes full documentation with example responses and usage examples
+- **Open Analytics Dashboard Button**: Added TopAppBar action button to access full TRMNL analytics dashboard
+  - Clicking button opens `https://trmnl.com/analytics` in browser using idiomatic Compose `LocalUriHandler`
+  - Uses Material 3 IconButton with proper accessibility (content description)
+
+### Changed
+- **Analytics Performance**: Implemented in-memory caching for recipes analytics data using `@SingleIn(AppScope::class)` Metro DI pattern
+  - Cache keyed by authorization token for multi-user support
+  - Automatic cache invalidation when token changes
+  - Reduces API calls when Settings screen is opened multiple times
+  - Uses Mutex for thread-safe concurrent access
 
 ## [2.13.0] - 2026-02-14
 
@@ -1493,7 +1508,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.13.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.14.0...HEAD
+[2.14.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.13.0...2.14.0
 [2.13.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.12.0...2.13.0
 [2.12.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.11.0...2.12.0
 [2.11.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.10.0...2.11.0
