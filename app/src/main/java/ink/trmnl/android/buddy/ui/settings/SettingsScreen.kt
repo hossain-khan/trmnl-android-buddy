@@ -44,13 +44,10 @@ import ink.trmnl.android.buddy.security.BiometricAuthHelper
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicecatalog.DeviceCatalogScreen
-import ink.trmnl.android.buddy.ui.recipesanalytics.GrowthDataPointUi
-import ink.trmnl.android.buddy.ui.recipesanalytics.PluginAnalyticsUi
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
-import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
 import ink.trmnl.android.buddy.ui.recipesanalytics.getDataOrNull
-import ink.trmnl.android.buddy.ui.recipesanalytics.normalizeHealthPercentages
+import ink.trmnl.android.buddy.ui.recipesanalytics.toUi
 import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.user.UserAccountScreen
@@ -74,6 +71,7 @@ data object SettingsScreen : Screen {
         val analyticsState: ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState =
             ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
                 .Loading(),
+        val showRecipeHealthCard: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -115,6 +113,10 @@ data object SettingsScreen : Screen {
         data object ContentHubClicked : Event()
 
         data object RecipesAnalyticsClicked : Event()
+
+        data class RecipeHealthCardToggled(
+            val enabled: Boolean,
+        ) : Event()
     }
 }
 
@@ -162,7 +164,7 @@ class SettingsPresenter(
                         )
                     val result = recipesAnalyticsRepository.getRecipesAnalytics("Bearer $apiToken")
                     result.onSuccess { analytics ->
-                        val uiData = convertToAnalyticsUi(analytics)
+                        val uiData = analytics.toUi()
                         analyticsState.value =
                             ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
                                 .Success(uiData)
@@ -194,6 +196,7 @@ class SettingsPresenter(
             isSecurityEnabled = preferences.isSecurityEnabled,
             isAuthenticationAvailable = isAuthenticationAvailable,
             analyticsState = analyticsState.value,
+            showRecipeHealthCard = preferences.isShowRecipeHealthCardEnabled,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
@@ -265,47 +268,13 @@ class SettingsPresenter(
                         navigator.goTo(RecipesAnalyticsScreen(data))
                     }
                 }
+                is SettingsScreen.Event.RecipeHealthCardToggled -> {
+                    coroutineScope.launch {
+                        userPreferencesRepository.setShowRecipeHealthCard(event.enabled)
+                    }
+                }
             }
         }
-    }
-
-    /**
-     * Convert [ink.trmnl.android.buddy.api.models.RecipesAnalytics] to [RecipesAnalyticsUi].
-     */
-    private fun convertToAnalyticsUi(analytics: ink.trmnl.android.buddy.api.models.RecipesAnalytics): RecipesAnalyticsUi {
-        // Normalize health percentages to sum to 100%
-        // (temporary fix until backend returns valid percentages)
-        val (normalizedHealthy, normalizedDegraded, normalizedErroring) =
-            normalizeHealthPercentages(
-                healthy = analytics.health.healthy.percent ?: 0.0,
-                degraded = analytics.health.degraded.percent ?: 0.0,
-                erroring = analytics.health.erroring.percent ?: 0.0,
-            )
-
-        return RecipesAnalyticsUi(
-            totalPlugins = analytics.plugins.size,
-            totalConnections = analytics.stats.connections,
-            totalPageviews = analytics.stats.pageviews,
-            healthyPercent = normalizedHealthy,
-            degradedPercent = normalizedDegraded,
-            erroringPercent = normalizedErroring,
-            growthData =
-                analytics.growth.map { point ->
-                    GrowthDataPointUi(
-                        date = point.date,
-                        value = point.value,
-                    )
-                },
-            plugins =
-                analytics.plugins.map { plugin ->
-                    PluginAnalyticsUi(
-                        name = plugin.name,
-                        state = plugin.state,
-                        installs = plugin.installs,
-                        forks = plugin.forks,
-                    )
-                },
-        )
     }
 
     @CircuitInject(SettingsScreen::class, AppScope::class)
@@ -418,6 +387,10 @@ fun SettingsContent(
                 analyticsState = state.analyticsState,
                 onRecipesAnalyticsClick = {
                     state.eventSink(SettingsScreen.Event.RecipesAnalyticsClicked)
+                },
+                showRecipeHealthCard = state.showRecipeHealthCard,
+                onToggleRecipeHealthCard = { enabled ->
+                    state.eventSink(SettingsScreen.Event.RecipeHealthCardToggled(enabled))
                 },
             )
 

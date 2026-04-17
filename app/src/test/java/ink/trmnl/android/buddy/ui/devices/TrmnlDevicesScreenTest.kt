@@ -42,6 +42,7 @@ import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicedetail.DeviceDetailScreen
 import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
+import ink.trmnl.android.buddy.ui.recipesanalytics.getDataOrNull
 import ink.trmnl.android.buddy.ui.settings.SettingsScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -361,11 +362,11 @@ class TrmnlDevicesScreenTest {
                 )
 
             presenter.test {
-                // Wait for state to have analytics data loaded
+                // Wait for analytics state to have data loaded (navigation depends on analyticsState)
                 var readyState: TrmnlDevicesScreen.State
                 do {
                     readyState = awaitItem()
-                } while (readyState.devices.isEmpty())
+                } while (readyState.analyticsState.getDataOrNull() == null)
 
                 readyState.eventSink(TrmnlDevicesScreen.Event.ViewRecipesAnalyticsClicked)
                 val nextScreen = navigator.awaitNextScreen()

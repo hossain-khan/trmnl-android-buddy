@@ -151,6 +151,7 @@ internal fun DevicesList(
     analyticsState: RecipesAnalyticsState,
     onRecipesHealthCardClick: () -> Unit,
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
+    showRecipeHealthCard: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -177,7 +178,7 @@ internal fun DevicesList(
         }
 
         // Recipes health card: only shown when analytics data is loaded and has plugins
-        if (analyticsState is RecipesAnalyticsState.Success && !analyticsState.isEmpty()) {
+        if (showRecipeHealthCard && analyticsState is RecipesAnalyticsState.Success && !analyticsState.isEmpty()) {
             item {
                 RecipesHealthCard(
                     data = analyticsState.data.toHealthCardData(onRecipesHealthCardClick),

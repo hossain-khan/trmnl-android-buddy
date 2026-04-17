@@ -63,13 +63,10 @@ import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.TogglePrivacy
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.ViewAllContentClicked
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.ViewRecipesAnalyticsClicked
 import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
-import ink.trmnl.android.buddy.ui.recipesanalytics.GrowthDataPointUi
-import ink.trmnl.android.buddy.ui.recipesanalytics.PluginAnalyticsUi
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
-import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
 import ink.trmnl.android.buddy.ui.recipesanalytics.getDataOrNull
-import ink.trmnl.android.buddy.ui.recipesanalytics.normalizeHealthPercentages
+import ink.trmnl.android.buddy.ui.recipesanalytics.toUi
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
@@ -143,6 +140,7 @@ data object TrmnlDevicesScreen : Screen {
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
         val analyticsState: RecipesAnalyticsState = RecipesAnalyticsState.Loading(),
+        val showRecipeHealthCard: Boolean = true,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -293,6 +291,7 @@ class TrmnlDevicesPresenter
             var analyticsState by rememberRetained {
                 mutableStateOf<RecipesAnalyticsState>(RecipesAnalyticsState.Loading())
             }
+            var showRecipeHealthCard by rememberRetained { mutableStateOf(true) }
             val coroutineScope = rememberCoroutineScope()
 
             // Create answering navigator for device preview to receive updated image URLs
@@ -320,6 +319,7 @@ class TrmnlDevicesPresenter
                     isRssFeedContentEnabled = preferences.isRssFeedContentEnabled
                     isLowBatteryNotificationEnabled = preferences.isLowBatteryNotificationEnabled
                     lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent
+                    showRecipeHealthCard = preferences.isShowRecipeHealthCardEnabled
                 }
             }
 
@@ -331,7 +331,7 @@ class TrmnlDevicesPresenter
                     try {
                         val result = recipesAnalyticsRepository.getRecipesAnalytics("Bearer $apiToken")
                         result.onSuccess { analytics ->
-                            analyticsState = RecipesAnalyticsState.Success(convertToAnalyticsUi(analytics))
+                            analyticsState = RecipesAnalyticsState.Success(analytics.toUi())
                         }
                         result.onFailure { error ->
                             analyticsState =
@@ -447,6 +447,7 @@ class TrmnlDevicesPresenter
                 isLowBatteryNotificationEnabled = isLowBatteryNotificationEnabled,
                 lowBatteryThresholdPercent = lowBatteryThresholdPercent,
                 analyticsState = analyticsState,
+                showRecipeHealthCard = showRecipeHealthCard,
             ) { event ->
                 when (event) {
                     Refresh -> {
@@ -667,36 +668,6 @@ class TrmnlDevicesPresenter
             }
         }
 
-        private fun convertToAnalyticsUi(analytics: ink.trmnl.android.buddy.api.models.RecipesAnalytics): RecipesAnalyticsUi {
-            val (normalizedHealthy, normalizedDegraded, normalizedErroring) =
-                normalizeHealthPercentages(
-                    healthy = analytics.health.healthy.percent ?: 0.0,
-                    degraded = analytics.health.degraded.percent ?: 0.0,
-                    erroring = analytics.health.erroring.percent ?: 0.0,
-                )
-            return RecipesAnalyticsUi(
-                totalPlugins = analytics.plugins.size,
-                totalConnections = analytics.stats.connections,
-                totalPageviews = analytics.stats.pageviews,
-                healthyPercent = normalizedHealthy,
-                degradedPercent = normalizedDegraded,
-                erroringPercent = normalizedErroring,
-                growthData =
-                    analytics.growth.map { point ->
-                        GrowthDataPointUi(date = point.date, value = point.value)
-                    },
-                plugins =
-                    analytics.plugins.map { plugin ->
-                        PluginAnalyticsUi(
-                            name = plugin.name,
-                            state = plugin.state,
-                            installs = plugin.installs,
-                            forks = plugin.forks,
-                        )
-                    },
-            )
-        }
-
         @CircuitInject(TrmnlDevicesScreen::class, AppScope::class)
         @AssistedFactory
         interface Factory {
@@ -805,6 +776,7 @@ fun TrmnlDevicesContent(
                     onRecipesHealthCardClick = {
                         state.eventSink(ViewRecipesAnalyticsClicked)
                     },
+                    showRecipeHealthCard = state.showRecipeHealthCard,
                     eventSink = state.eventSink,
                 )
             }
