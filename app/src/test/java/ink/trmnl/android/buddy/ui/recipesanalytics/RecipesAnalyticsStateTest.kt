@@ -220,4 +220,56 @@ class RecipesAnalyticsStateTest {
         assertThat(errorState.getDataOrNull()).isEqualTo(null)
         assertThat(loadingState.getDataOrNull()).isEqualTo(null)
     }
+
+    @Test
+    fun `normalizeHealthPercentages converts invalid percentages to valid sum of 100`() {
+        // API returns: 121.33% + 1.0% + 0.33% = 122.66%
+        val (healthy, degraded, erroring) =
+            normalizeHealthPercentages(
+                healthy = 121.3333333333333,
+                degraded = 1.0,
+                erroring = 0.3333333333333333,
+            )
+
+        // After normalization, should sum to 100%
+        val sum = healthy + degraded + erroring
+        assertThat(sum).isEqualTo(100.0)
+
+        // Healthy is the dominant value, should be ~99%
+        assertThat(healthy > 90.0).isTrue()
+        // Degraded and erroring are much smaller
+        assertThat(degraded < 10.0).isTrue()
+        assertThat(erroring < 1.0).isTrue()
+    }
+
+    @Test
+    fun `normalizeHealthPercentages handles already normalized percentages`() {
+        val (healthy, degraded, erroring) =
+            normalizeHealthPercentages(
+                healthy = 99.0,
+                degraded = 0.8,
+                erroring = 0.2,
+            )
+
+        // Already normalized, should remain ~same
+        val sum = healthy + degraded + erroring
+        assertThat(sum).isEqualTo(100.0)
+        assertThat(healthy).isEqualTo(99.0)
+        assertThat(degraded).isEqualTo(0.8)
+        assertThat(erroring).isEqualTo(0.2)
+    }
+
+    @Test
+    fun `normalizeHealthPercentages handles zero percentages`() {
+        val (healthy, degraded, erroring) =
+            normalizeHealthPercentages(
+                healthy = 0.0,
+                degraded = 0.0,
+                erroring = 0.0,
+            )
+
+        assertThat(healthy).isEqualTo(0.0)
+        assertThat(degraded).isEqualTo(0.0)
+        assertThat(erroring).isEqualTo(0.0)
+    }
 }

@@ -119,3 +119,40 @@ fun getHealthStatusLabel(state: String): String =
         "erroring" -> "Erroring"
         else -> "Unknown"
     }
+
+/**
+ * Normalizes health percentages to sum to 100%.
+ *
+ * **Why this is needed:**
+ * The TRMNL API sometimes returns health percentages that don't sum to 100%.
+ * For example: healthy=121.33%, degraded=1.0%, erroring=0.33% (total=122.67%)
+ *
+ * This is a temporary workaround until the backend is fixed.
+ * The web dashboard already applies this normalization, so we do the same
+ * in the Android app to keep the display consistent with the web version.
+ *
+ * **How it works:**
+ * Each percentage is divided by the total sum and multiplied by 100 to get
+ * the normalized value that represents its proportional share of 100%.
+ *
+ * @param healthy The healthy percentage from API
+ * @param degraded The degraded percentage from API
+ * @param erroring The erroring percentage from API
+ * @return Triple of (normalizedHealthy, normalizedDegraded, normalizedErroring) that sum to 100%
+ */
+fun normalizeHealthPercentages(
+    healthy: Double,
+    degraded: Double,
+    erroring: Double,
+): Triple<Double, Double, Double> {
+    val total = healthy + degraded + erroring
+    return if (total > 0) {
+        Triple(
+            (healthy / total) * 100,
+            (degraded / total) * 100,
+            (erroring / total) * 100,
+        )
+    } else {
+        Triple(0.0, 0.0, 0.0)
+    }
+}

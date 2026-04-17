@@ -50,6 +50,7 @@ import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
 import ink.trmnl.android.buddy.ui.recipesanalytics.getDataOrNull
+import ink.trmnl.android.buddy.ui.recipesanalytics.normalizeHealthPercentages
 import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.user.UserAccountScreen
@@ -271,14 +272,23 @@ class SettingsPresenter(
     /**
      * Convert [ink.trmnl.android.buddy.api.models.RecipesAnalytics] to [RecipesAnalyticsUi].
      */
-    private fun convertToAnalyticsUi(analytics: ink.trmnl.android.buddy.api.models.RecipesAnalytics): RecipesAnalyticsUi =
-        RecipesAnalyticsUi(
+    private fun convertToAnalyticsUi(analytics: ink.trmnl.android.buddy.api.models.RecipesAnalytics): RecipesAnalyticsUi {
+        // Normalize health percentages to sum to 100%
+        // (temporary fix until backend returns valid percentages)
+        val (normalizedHealthy, normalizedDegraded, normalizedErroring) =
+            normalizeHealthPercentages(
+                healthy = analytics.health.healthy.percent ?: 0.0,
+                degraded = analytics.health.degraded.percent ?: 0.0,
+                erroring = analytics.health.erroring.percent ?: 0.0,
+            )
+
+        return RecipesAnalyticsUi(
             totalPlugins = analytics.plugins.size,
             totalConnections = analytics.stats.connections,
             totalPageviews = analytics.stats.pageviews,
-            healthyPercent = analytics.health.healthy.percent ?: 0.0,
-            degradedPercent = analytics.health.degraded.percent ?: 0.0,
-            erroringPercent = analytics.health.erroring.percent ?: 0.0,
+            healthyPercent = normalizedHealthy,
+            degradedPercent = normalizedDegraded,
+            erroringPercent = normalizedErroring,
             growthData =
                 analytics.growth.map { point ->
                     GrowthDataPointUi(
@@ -296,6 +306,7 @@ class SettingsPresenter(
                     )
                 },
         )
+    }
 
     @CircuitInject(SettingsScreen::class, AppScope::class)
     @AssistedFactory

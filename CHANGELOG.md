@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Health percentages normalization**: Added temporary normalization of analytics health percentages from TRMNL API
+  - API returns invalid percentages that don't sum to 100% (e.g., 121.3% + 1.0% + 0.3% = 122.6%)
+  - Added `normalizeHealthPercentages()` helper function to convert invalid percentages to valid 0-100% range
+  - Android display now matches web dashboard behavior until backend returns valid percentages
+  - Includes unit tests verifying normalization logic works correctly
+
 ## [2.14.0] - 2026-04-16
 
 ### Added
