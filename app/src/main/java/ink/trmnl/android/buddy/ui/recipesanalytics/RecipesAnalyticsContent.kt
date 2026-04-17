@@ -42,6 +42,9 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import kotlin.math.floor
+import kotlin.math.log10
+import kotlin.math.pow
 
 /**
  * UI content for [RecipesAnalyticsScreen].
@@ -319,7 +322,8 @@ private fun GrowthChartCard(
 }
 
 /**
- * Simple bar chart showing growth data points with date labels.
+ * Simple bar chart showing growth data points with date labels and Y-axis scale.
+ * Y-axis shows only the maximum value for reference.
  */
 @Composable
 private fun SimpleGrowthChart(
@@ -327,6 +331,11 @@ private fun SimpleGrowthChart(
     modifier: Modifier = Modifier,
 ) {
     val maxValue = growthData.maxOfOrNull { it.value }?.toFloat() ?: 1f
+    val dataMaxValue = growthData.maxOfOrNull { it.value }?.toFloat() ?: 1f
+    val (_, niceMaxValue) = calculateNiceScale(dataMaxValue)
+
+    // TODO - Put this in a box with a line on top showing max value label and grid line for better readability
+    // Also show the label value in the top right corner of the chart area for better readability
 
     Row(
         modifier = modifier.padding(horizontal = 4.dp),
@@ -364,6 +373,39 @@ private fun SimpleGrowthChart(
             }
         }
     }
+}
+
+/**
+ * Calculate a nice scale for the chart Y-axis.
+ * Rounds the max value up to a nice number (1, 2, 5, 10, 20, 50, 100, etc.)
+ * so that Y-axis labels are readable round numbers.
+ *
+ * @param maxValue The actual maximum value in the data
+ * @return Pair of (minValue, niceMaxValue) for the scale
+ *
+ * Examples:
+ * - maxValue=8 → niceMaxValue=10
+ * - maxValue=45 → niceMaxValue=50
+ * - maxValue=200 → niceMaxValue=200
+ * - maxValue=1234 → niceMaxValue=1500
+ */
+private fun calculateNiceScale(maxValue: Float): Pair<Float, Float> {
+    if (maxValue <= 0) return Pair(0f, 1f)
+
+    // Find the order of magnitude (10^n)
+    val magnitude = 10f.pow(floor(log10(maxValue)).toInt().toFloat())
+    val normalized = maxValue / magnitude
+
+    // Round up to nice values: 1, 2, 5, 10
+    val niceMax =
+        when {
+            normalized <= 1 -> 1f * magnitude
+            normalized <= 2 -> 2f * magnitude
+            normalized <= 5 -> 5f * magnitude
+            else -> 10f * magnitude
+        }
+
+    return Pair(0f, niceMax)
 }
 
 /**
