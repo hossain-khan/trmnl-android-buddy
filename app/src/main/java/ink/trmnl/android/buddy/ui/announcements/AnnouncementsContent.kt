@@ -1,6 +1,5 @@
 package ink.trmnl.android.buddy.ui.announcements
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -82,7 +81,6 @@ import java.time.temporal.ChronoUnit
 /**
  * UI content for AnnouncementsScreen.
  */
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @CircuitInject(AnnouncementsScreen::class, AppScope::class)
 @Composable
@@ -156,7 +154,7 @@ fun AnnouncementsContent(
             }
         },
     ) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             // Filter chips fixed at the top - always visible regardless of content state
             Surface(
                 modifier = Modifier.fillMaxWidth(),
@@ -175,13 +173,12 @@ fun AnnouncementsContent(
             // Content area below filters
             when {
                 state.isLoading -> {
-                    LoadingState(modifier = Modifier.padding(innerPadding))
+                    LoadingState()
                 }
 
                 state.announcements.isEmpty() -> {
                     EmptyState(
                         filter = state.filter,
-                        modifier = Modifier.padding(innerPadding),
                     )
                 }
 
