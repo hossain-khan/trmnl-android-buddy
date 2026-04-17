@@ -24,6 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `RecipesAnalytics.toUi()` shared mapper extension to avoid duplicated conversion logic
 
 ### Fixed
+- **Edge-to-edge display improvements**: Fixed edge-to-edge display support for proper inset handling
+  - Added `android:windowSoftInputMode="adjustResize"` to `MainActivity` in `AndroidManifest.xml` to prevent text fields from being covered by the soft keyboard
+  - Fixed `AnnouncementsContent`: removed `@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")` suppression and applied `innerPadding` to the content `Column` so content respects system bar insets
+  - Fixed `BlogPostsContent`: removed `@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")` suppression and applied `innerPadding` to all content states (loading, error, empty, and list) so content respects system bar insets
 - **Health percentages normalization**: Added temporary normalization of analytics health percentages from TRMNL API
   - API returns invalid percentages that don't sum to 100% (e.g., 121.3% + 1.0% + 0.3% = 122.6%)
   - Added `normalizeHealthPercentages()` helper function to convert invalid percentages to valid 0-100% range

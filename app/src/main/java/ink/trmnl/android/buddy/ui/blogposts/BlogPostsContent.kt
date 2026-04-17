@@ -1,6 +1,5 @@
 package ink.trmnl.android.buddy.ui.blogposts
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
@@ -87,7 +86,6 @@ import java.time.temporal.ChronoUnit
 /**
  * UI content for BlogPostsScreen.
  */
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @CircuitInject(BlogPostsScreen::class, AppScope::class)
 @Composable
@@ -180,25 +178,26 @@ fun BlogPostsContent(
     ) { innerPadding ->
         when {
             state.isLoading -> {
-                LoadingState()
+                LoadingState(modifier = Modifier.padding(innerPadding))
             }
 
             state.errorMessage != null -> {
                 ErrorState(
                     errorMessage = state.errorMessage,
                     onRetry = { state.eventSink(BlogPostsScreen.Event.Refresh) },
+                    modifier = Modifier.padding(innerPadding),
                 )
             }
 
             state.blogPosts.isEmpty() -> {
-                EmptyState()
+                EmptyState(modifier = Modifier.padding(innerPadding))
             }
 
             else -> {
                 PullToRefreshBox(
                     isRefreshing = state.isRefreshing,
                     onRefresh = { state.eventSink(BlogPostsScreen.Event.Refresh) },
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
                 ) {
                     LazyColumn(
                         state = listState,
