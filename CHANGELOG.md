@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Recipes Health Card on Devices List**: Added compact `RecipesHealthCard` to the main devices dashboard
+  - Shows at-a-glance recipe health status ("All healthy" or "N unhealthy") after the content carousel
+  - Card only appears when analytics data is loaded and the user has published plugins
+  - Smooth fade-in animation when data becomes available
+  - Tapping the card navigates directly to the full Recipes Analytics screen
+  - New `RecipesHealthCardData` model and `RecipesAnalyticsUi.toHealthCardData()` extension function
+  - New `ViewRecipesAnalyticsClicked` event on `TrmnlDevicesScreen`
+  - Composable previews for light and dark themes added
+
 ### Fixed
 - **Health percentages normalization**: Added temporary normalization of analytics health percentages from TRMNL API
   - API returns invalid percentages that don't sum to 100% (e.g., 121.3% + 1.0% + 0.3% = 122.6%)
