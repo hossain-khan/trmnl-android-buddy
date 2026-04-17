@@ -24,7 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import ink.trmnl.android.buddy.R
-import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+import ink.trmnl.android.buddy.ui.recipesanalytics.isEmpty
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 
 /**
@@ -35,7 +36,7 @@ fun ExtrasSection(
     onDeviceCatalogClick: () -> Unit,
     onRecipesCatalogClick: () -> Unit,
     onContentHubClick: () -> Unit,
-    recipesAnalytics: RecipesAnalyticsUi? = null,
+    analyticsState: RecipesAnalyticsState = RecipesAnalyticsState.Loading(),
     onRecipesAnalyticsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
@@ -138,7 +139,7 @@ fun ExtrasSection(
                 )
 
                 // Recipes Analytics (only if user has plugins)
-                if (recipesAnalytics != null && recipesAnalytics.totalPlugins > 0) {
+                if (!analyticsState.isEmpty()) {
                     ListItem(
                         headlineContent = {
                             Text(

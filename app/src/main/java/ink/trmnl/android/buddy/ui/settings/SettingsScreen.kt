@@ -47,7 +47,9 @@ import ink.trmnl.android.buddy.ui.devicecatalog.DeviceCatalogScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.GrowthDataPointUi
 import ink.trmnl.android.buddy.ui.recipesanalytics.PluginAnalyticsUi
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
+import ink.trmnl.android.buddy.ui.recipesanalytics.getDataOrNull
 import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.user.UserAccountScreen
@@ -68,8 +70,9 @@ data object SettingsScreen : Screen {
         val isRssFeedContentNotificationEnabled: Boolean = false,
         val isSecurityEnabled: Boolean = false,
         val isAuthenticationAvailable: Boolean = false,
-        val recipesAnalytics: RecipesAnalyticsUi? = null,
-        val isLoadingAnalytics: Boolean = false,
+        val analyticsState: ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState =
+            ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+                .Loading(),
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -110,9 +113,7 @@ data object SettingsScreen : Screen {
 
         data object ContentHubClicked : Event()
 
-        data class RecipesAnalyticsClicked(
-            val analytics: RecipesAnalyticsUi,
-        ) : Event()
+        data object RecipesAnalyticsClicked : Event()
     }
 }
 
@@ -134,8 +135,13 @@ class SettingsPresenter(
                 UserPreferences(),
         )
         val coroutineScope = rememberCoroutineScope()
-        val recipesAnalyticsState = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<RecipesAnalyticsUi?>(null) }
-        val isLoadingAnalyticsState = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+        val analyticsState =
+            androidx.compose.runtime.remember {
+                androidx.compose.runtime.mutableStateOf<ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState>(
+                    ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+                        .Loading(),
+                )
+            }
 
         // Check biometric availability using the injected helper.
         val isAuthenticationAvailable = biometricAuthHelper.isBiometricAvailable()
@@ -145,20 +151,36 @@ class SettingsPresenter(
             val apiToken = preferences.apiToken
             try {
                 if (apiToken.isNullOrEmpty()) {
-                    recipesAnalyticsState.value = null
+                    analyticsState.value =
+                        ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+                            .Loading(null)
                 } else {
-                    isLoadingAnalyticsState.value = true
+                    analyticsState.value =
+                        ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Loading(
+                            analyticsState.value.getDataOrNull(),
+                        )
                     val result = recipesAnalyticsRepository.getRecipesAnalytics("Bearer $apiToken")
                     result.onSuccess { analytics ->
-                        recipesAnalyticsState.value = convertToAnalyticsUi(analytics)
+                        val uiData = convertToAnalyticsUi(analytics)
+                        analyticsState.value =
+                            ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+                                .Success(uiData)
                     }
                     result.onFailure { error ->
-                        // Silently handle errors - analytics just won't be displayed
-                        recipesAnalyticsState.value = null
+                        // Silently handle errors - keep previous data or show empty state
+                        analyticsState.value =
+                            ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Error(
+                                error.message ?: "Failed to load analytics",
+                                analyticsState.value.getDataOrNull(),
+                            )
                     }
                 }
-            } finally {
-                isLoadingAnalyticsState.value = false
+            } catch (e: Exception) {
+                analyticsState.value =
+                    ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Error(
+                        e.message ?: "Unexpected error",
+                        analyticsState.value.getDataOrNull(),
+                    )
             }
         }
 
@@ -170,8 +192,7 @@ class SettingsPresenter(
             isRssFeedContentNotificationEnabled = preferences.isRssFeedContentNotificationEnabled,
             isSecurityEnabled = preferences.isSecurityEnabled,
             isAuthenticationAvailable = isAuthenticationAvailable,
-            recipesAnalytics = recipesAnalyticsState.value,
-            isLoadingAnalytics = isLoadingAnalyticsState.value,
+            analyticsState = analyticsState.value,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
@@ -239,7 +260,9 @@ class SettingsPresenter(
                     navigator.goTo(ContentHubScreen)
                 }
                 is SettingsScreen.Event.RecipesAnalyticsClicked -> {
-                    navigator.goTo(RecipesAnalyticsScreen(event.analytics))
+                    analyticsState.value.getDataOrNull()?.let { data ->
+                        navigator.goTo(RecipesAnalyticsScreen(data))
+                    }
                 }
             }
         }
@@ -381,11 +404,9 @@ fun SettingsContent(
                 onContentHubClick = {
                     state.eventSink(SettingsScreen.Event.ContentHubClicked)
                 },
-                recipesAnalytics = state.recipesAnalytics,
+                analyticsState = state.analyticsState,
                 onRecipesAnalyticsClick = {
-                    state.recipesAnalytics?.let { analytics ->
-                        state.eventSink(SettingsScreen.Event.RecipesAnalyticsClicked(analytics))
-                    }
+                    state.eventSink(SettingsScreen.Event.RecipesAnalyticsClicked)
                 },
             )
 
