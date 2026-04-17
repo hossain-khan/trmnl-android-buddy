@@ -79,6 +79,11 @@ interface UserPreferencesRepository {
     suspend fun setSecurityEnabled(enabled: Boolean)
 
     /**
+     * Show or hide the Recipe Health Card on the devices list screen.
+     */
+    suspend fun setShowRecipeHealthCard(enabled: Boolean)
+
+    /**
      * Clear all preferences.
      */
     suspend fun clearAll()
@@ -101,6 +106,7 @@ class UserPreferencesRepositoryImpl
             val ANNOUNCEMENTS_ENABLED = booleanPreferencesKey("announcements_enabled") // Legacy key for migration
             val ANNOUNCEMENT_AUTH_BANNER_DISMISSED = booleanPreferencesKey("announcement_auth_banner_dismissed")
             val SECURITY_ENABLED = booleanPreferencesKey("security_enabled")
+            val SHOW_RECIPE_HEALTH_CARD = booleanPreferencesKey("show_recipe_health_card")
         }
 
         override val userPreferencesFlow: Flow<UserPreferences> =
@@ -124,6 +130,7 @@ class UserPreferencesRepositoryImpl
                     isAnnouncementAuthBannerDismissed =
                         preferences[PreferencesKeys.ANNOUNCEMENT_AUTH_BANNER_DISMISSED] ?: false,
                     isSecurityEnabled = preferences[PreferencesKeys.SECURITY_ENABLED] ?: false,
+                    isShowRecipeHealthCardEnabled = preferences[PreferencesKeys.SHOW_RECIPE_HEALTH_CARD] ?: true,
                 )
             }
 
@@ -186,6 +193,12 @@ class UserPreferencesRepositoryImpl
         override suspend fun setSecurityEnabled(enabled: Boolean) {
             context.dataStore.edit { preferences ->
                 preferences[PreferencesKeys.SECURITY_ENABLED] = enabled
+            }
+        }
+
+        override suspend fun setShowRecipeHealthCard(enabled: Boolean) {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.SHOW_RECIPE_HEALTH_CARD] = enabled
             }
         }
 

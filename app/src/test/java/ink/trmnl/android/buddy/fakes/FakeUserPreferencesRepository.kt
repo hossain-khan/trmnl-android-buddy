@@ -63,6 +63,12 @@ class FakeUserPreferencesRepository(
     var securityEnabled = initialPreferences.isSecurityEnabled
         private set
 
+    /**
+     * Test-visible property to verify show recipe health card state.
+     */
+    var showRecipeHealthCardEnabled = initialPreferences.isShowRecipeHealthCardEnabled
+        private set
+
     private val _userPreferencesFlow = MutableStateFlow(initialPreferences)
 
     override val userPreferencesFlow = _userPreferencesFlow
@@ -127,6 +133,11 @@ class FakeUserPreferencesRepository(
     override suspend fun setSecurityEnabled(enabled: Boolean) {
         securityEnabled = enabled
         _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isSecurityEnabled = enabled)
+    }
+
+    override suspend fun setShowRecipeHealthCard(enabled: Boolean) {
+        showRecipeHealthCardEnabled = enabled
+        _userPreferencesFlow.value = _userPreferencesFlow.value.copy(isShowRecipeHealthCardEnabled = enabled)
     }
 
     override suspend fun clearAll() {

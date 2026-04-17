@@ -23,7 +23,7 @@ import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 /**
  * Data model for the RecipesHealthCard composable.
  *
- * @property isHealthy True when overall recipe health is good (≥95% healthy plugins), false otherwise
+ * @property isHealthy True when overall recipe health is good (>95% healthy plugins), false otherwise
  * @property unhealthyCount Number of plugins not in the "healthy" state
  * @property onCardClicked Callback invoked when the card is tapped
  */
@@ -102,20 +102,21 @@ fun RecipesHealthCard(
                     )
                 },
                 supportingContent = {
+                    val hasUnhealthyPlugins = data.unhealthyCount > 0
                     val statusText =
-                        if (data.isHealthy) {
-                            "All healthy"
-                        } else {
+                        if (hasUnhealthyPlugins) {
                             "${data.unhealthyCount} unhealthy"
+                        } else {
+                            "All healthy"
                         }
                     Text(
                         text = statusText,
                         style = MaterialTheme.typography.bodyMedium,
                         color =
-                            if (data.isHealthy) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
+                            if (hasUnhealthyPlugins) {
                                 MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.primary
                             },
                     )
                 },

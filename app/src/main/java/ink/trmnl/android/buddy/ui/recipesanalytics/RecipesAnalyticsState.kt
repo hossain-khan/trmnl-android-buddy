@@ -1,5 +1,7 @@
 package ink.trmnl.android.buddy.ui.recipesanalytics
 
+import ink.trmnl.android.buddy.api.models.RecipesAnalytics
+
 /**
  * Sealed class representing the different states of the Recipes Analytics screen.
  *
@@ -40,6 +42,46 @@ sealed class RecipesAnalyticsState {
 // ============================================
 // Helper Extension Functions
 // ============================================
+
+/**
+ * Converts [ink.trmnl.android.buddy.api.models.RecipesAnalytics] to [RecipesAnalyticsUi].
+ *
+ * Normalizes health percentages so they sum to 100% (temporary fix until backend
+ * returns valid percentages).
+ */
+fun ink.trmnl.android.buddy.api.models.RecipesAnalytics.toUi(): RecipesAnalyticsUi {
+    val (normalizedHealthy, normalizedDegraded, normalizedErroring) =
+        normalizeHealthPercentages(
+            healthy = health.healthy.percent ?: 0.0,
+            degraded = health.degraded.percent ?: 0.0,
+            erroring = health.erroring.percent ?: 0.0,
+        )
+
+    return RecipesAnalyticsUi(
+        totalPlugins = plugins.size,
+        totalConnections = stats.connections,
+        totalPageviews = stats.pageviews,
+        healthyPercent = normalizedHealthy,
+        degradedPercent = normalizedDegraded,
+        erroringPercent = normalizedErroring,
+        growthData =
+            growth.map { point ->
+                GrowthDataPointUi(
+                    date = point.date,
+                    value = point.value,
+                )
+            },
+        plugins =
+            plugins.map { plugin ->
+                PluginAnalyticsUi(
+                    name = plugin.name,
+                    state = plugin.state,
+                    installs = plugin.installs,
+                    forks = plugin.forks,
+                )
+            },
+    )
+}
 
 /**
  * Check if the analytics data is empty (no plugins).

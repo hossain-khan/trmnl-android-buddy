@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,6 +39,8 @@ fun ExtrasSection(
     onContentHubClick: () -> Unit,
     analyticsState: RecipesAnalyticsState = RecipesAnalyticsState.Loading(),
     onRecipesAnalyticsClick: () -> Unit = {},
+    showRecipeHealthCard: Boolean = true,
+    onToggleRecipeHealthCard: (Boolean) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -174,6 +177,41 @@ fun ExtrasSection(
                                 containerColor = MaterialTheme.colorScheme.surface,
                             ),
                         modifier = Modifier.clickable { onRecipesAnalyticsClick() },
+                    )
+
+                    // Recipe Health Card toggle (only if user has published recipes)
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = "Show Recipe Health Card",
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = "Display recipe health summary on devices list",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.chart_data_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier.size(26.dp),
+                            )
+                        },
+                        trailingContent = {
+                            Switch(
+                                checked = showRecipeHealthCard,
+                                onCheckedChange = onToggleRecipeHealthCard,
+                            )
+                        },
+                        colors =
+                            ListItemDefaults.colors(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                            ),
                     )
                 }
 
