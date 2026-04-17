@@ -20,7 +20,12 @@ import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
+import ink.trmnl.android.buddy.api.models.RecipeAnalyticsHealth
+import ink.trmnl.android.buddy.api.models.RecipeAnalyticsHealthStatus
+import ink.trmnl.android.buddy.api.models.RecipeAnalyticsPlugin
+import ink.trmnl.android.buddy.api.models.RecipeAnalyticsStats
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
+import ink.trmnl.android.buddy.api.models.RecipesAnalytics
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import ink.trmnl.android.buddy.content.db.FakeAnnouncementDao
@@ -30,11 +35,13 @@ import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.content.repository.ContentFeedRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
+import ink.trmnl.android.buddy.fakes.FakeRecipesAnalyticsRepository
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicedetail.DeviceDetailScreen
 import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
 import ink.trmnl.android.buddy.ui.settings.SettingsScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -325,11 +332,58 @@ class TrmnlDevicesScreenTest {
             }
         }
 
+    @Test
+    fun `presenter navigates to recipes analytics screen on ViewRecipesAnalyticsClicked`() =
+        runTest {
+            val navigator = FakeNavigator(TrmnlDevicesScreen)
+            val analyticsRepository =
+                FakeRecipesAnalyticsRepository().apply {
+                    analyticsResult =
+                        Result.success(
+                            RecipesAnalytics(
+                                plugins = listOf(RecipeAnalyticsPlugin("Test Plugin", "healthy", 5, 2)),
+                                stats = RecipeAnalyticsStats(plugins = 1, connections = 5, pageviews = 10),
+                                health =
+                                    RecipeAnalyticsHealth(
+                                        healthy = RecipeAnalyticsHealthStatus(100.0),
+                                        degraded = RecipeAnalyticsHealthStatus(0.0),
+                                        erroring = RecipeAnalyticsHealthStatus(0.0),
+                                    ),
+                                growth = emptyList(),
+                            ),
+                        )
+                }
+            val (presenter, _) =
+                createPresenter(
+                    navigator = navigator,
+                    devicesResponse = ApiResult.success(DevicesResponse(data = listOf(createTestDevice(1)))),
+                    analyticsRepository = analyticsRepository,
+                )
+
+            presenter.test {
+                // Wait for state to have analytics data loaded
+                var readyState: TrmnlDevicesScreen.State
+                do {
+                    readyState = awaitItem()
+                } while (readyState.devices.isEmpty())
+
+                readyState.eventSink(TrmnlDevicesScreen.Event.ViewRecipesAnalyticsClicked)
+                val nextScreen = navigator.awaitNextScreen()
+                assertThat(nextScreen).isInstanceOf(RecipesAnalyticsScreen::class)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     // Helper function to create presenter with dependencies
     private fun createPresenter(
         navigator: FakeNavigator,
         devicesResponse: ApiResult<DevicesResponse, ApiError> = ApiResult.success(DevicesResponse(data = emptyList())),
         apiToken: String? = "test_token",
+        analyticsRepository: FakeRecipesAnalyticsRepository =
+            FakeRecipesAnalyticsRepository().apply {
+                // Default to failure so analytics fetch doesn't throw NotImplementedError
+                analyticsResult = Result.failure(Exception("No analytics available"))
+            },
     ): Pair<TrmnlDevicesPresenter, FakeAnnouncementDao> {
         val fakeAnnouncementDao = FakeAnnouncementDao()
         val fakeBlogPostDao = FakeBlogPostDao()
@@ -344,6 +398,7 @@ class TrmnlDevicesScreenTest {
                 contentFeedRepository = ContentFeedRepository(fakeAnnouncementDao, fakeBlogPostDao),
                 announcementRepository = AnnouncementRepository(fakeAnnouncementDao),
                 blogPostRepository = BlogPostRepository(fakeBlogPostDao),
+                recipesAnalyticsRepository = analyticsRepository,
             ),
             fakeAnnouncementDao,
         )

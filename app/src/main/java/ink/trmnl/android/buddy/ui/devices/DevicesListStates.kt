@@ -27,6 +27,10 @@ import androidx.compose.ui.unit.dp
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.content.models.ContentItem
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesHealthCard
+import ink.trmnl.android.buddy.ui.recipesanalytics.isEmpty
+import ink.trmnl.android.buddy.ui.recipesanalytics.toHealthCardData
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 
 /**
@@ -144,6 +148,8 @@ internal fun DevicesList(
     onPreviewClick: (Device, DevicePreviewInfo) -> Unit,
     onContentItemClick: (ContentItem) -> Unit,
     onViewAllContentClick: () -> Unit,
+    analyticsState: RecipesAnalyticsState,
+    onRecipesHealthCardClick: () -> Unit,
     eventSink: (TrmnlDevicesScreen.Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -165,6 +171,16 @@ internal fun DevicesList(
                     isLoading = isContentLoading,
                     onContentClick = onContentItemClick,
                     onViewAllClick = onViewAllContentClick,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
+
+        // Recipes health card: only shown when analytics data is loaded and has plugins
+        if (analyticsState is RecipesAnalyticsState.Success && !analyticsState.isEmpty()) {
+            item {
+                RecipesHealthCard(
+                    data = analyticsState.data.toHealthCardData(onRecipesHealthCardClick),
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -338,6 +354,8 @@ private fun DevicesListPreview() {
             onPreviewClick = { _, _ -> },
             onContentItemClick = {},
             onViewAllContentClick = {},
+            analyticsState = RecipesAnalyticsState.Loading(),
+            onRecipesHealthCardClick = {},
             eventSink = {},
         )
     }

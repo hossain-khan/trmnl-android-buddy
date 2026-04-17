@@ -41,6 +41,7 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.content.models.ContentItem
+import ink.trmnl.android.buddy.data.RecipesAnalyticsRepository
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
@@ -60,7 +61,15 @@ import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.ResetToken
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.SettingsClicked
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.TogglePrivacy
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.ViewAllContentClicked
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen.Event.ViewRecipesAnalyticsClicked
 import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
+import ink.trmnl.android.buddy.ui.recipesanalytics.GrowthDataPointUi
+import ink.trmnl.android.buddy.ui.recipesanalytics.PluginAnalyticsUi
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
+import ink.trmnl.android.buddy.ui.recipesanalytics.getDataOrNull
+import ink.trmnl.android.buddy.ui.recipesanalytics.normalizeHealthPercentages
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
@@ -116,6 +125,7 @@ data object TrmnlDevicesScreen : Screen {
      * @property isRssFeedContentEnabled True if user enabled RSS content feed in settings
      * @property isLowBatteryNotificationEnabled True if user enabled low battery notifications
      * @property lowBatteryThresholdPercent Battery percentage threshold for notifications (default 20%)
+     * @property analyticsState Current state of recipes analytics data
      * @property eventSink Callback for handling user events
      */
     data class State(
@@ -132,6 +142,7 @@ data object TrmnlDevicesScreen : Screen {
         val isRssFeedContentEnabled: Boolean = true,
         val isLowBatteryNotificationEnabled: Boolean = false,
         val lowBatteryThresholdPercent: Int = 20,
+        val analyticsState: RecipesAnalyticsState = RecipesAnalyticsState.Loading(),
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -192,6 +203,8 @@ data object TrmnlDevicesScreen : Screen {
         ) : Event()
 
         data object DismissSnackbar : Event()
+
+        data object ViewRecipesAnalyticsClicked : Event()
     }
 }
 
@@ -258,6 +271,7 @@ class TrmnlDevicesPresenter
         private val contentFeedRepository: ink.trmnl.android.buddy.content.repository.ContentFeedRepository,
         private val announcementRepository: ink.trmnl.android.buddy.content.repository.AnnouncementRepository,
         private val blogPostRepository: ink.trmnl.android.buddy.content.repository.BlogPostRepository,
+        private val recipesAnalyticsRepository: RecipesAnalyticsRepository,
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
         override fun present(): TrmnlDevicesScreen.State {
@@ -276,6 +290,9 @@ class TrmnlDevicesPresenter
             var isRssFeedContentEnabled by rememberRetained { mutableStateOf(true) }
             var isLowBatteryNotificationEnabled by rememberRetained { mutableStateOf(false) }
             var lowBatteryThresholdPercent by rememberRetained { mutableStateOf(20) }
+            var analyticsState by rememberRetained {
+                mutableStateOf<RecipesAnalyticsState>(RecipesAnalyticsState.Loading())
+            }
             val coroutineScope = rememberCoroutineScope()
 
             // Create answering navigator for device preview to receive updated image URLs
@@ -303,6 +320,31 @@ class TrmnlDevicesPresenter
                     isRssFeedContentEnabled = preferences.isRssFeedContentEnabled
                     isLowBatteryNotificationEnabled = preferences.isLowBatteryNotificationEnabled
                     lowBatteryThresholdPercent = preferences.lowBatteryThresholdPercent
+                }
+            }
+
+            // Fetch recipes analytics in background (silently, no loading indicator shown)
+            LaunchedEffect(Unit) {
+                val preferences = userPreferencesRepository.userPreferencesFlow.first()
+                val apiToken = preferences.apiToken
+                if (!apiToken.isNullOrEmpty()) {
+                    try {
+                        val result = recipesAnalyticsRepository.getRecipesAnalytics("Bearer $apiToken")
+                        result.onSuccess { analytics ->
+                            analyticsState = RecipesAnalyticsState.Success(convertToAnalyticsUi(analytics))
+                        }
+                        result.onFailure { error ->
+                            analyticsState =
+                                RecipesAnalyticsState.Error(
+                                    error.message ?: "Failed to load analytics",
+                                )
+                        }
+                    } catch (e: Exception) {
+                        analyticsState =
+                            RecipesAnalyticsState.Error(
+                                e.message ?: "Unexpected error",
+                            )
+                    }
                 }
             }
 
@@ -404,6 +446,7 @@ class TrmnlDevicesPresenter
                 isRssFeedContentEnabled = isRssFeedContentEnabled,
                 isLowBatteryNotificationEnabled = isLowBatteryNotificationEnabled,
                 lowBatteryThresholdPercent = lowBatteryThresholdPercent,
+                analyticsState = analyticsState,
             ) { event ->
                 when (event) {
                     Refresh -> {
@@ -538,6 +581,12 @@ class TrmnlDevicesPresenter
                     DismissSnackbar -> {
                         snackbarMessage = null
                     }
+
+                    ViewRecipesAnalyticsClicked -> {
+                        analyticsState.getDataOrNull()?.let { data ->
+                            navigator.goTo(RecipesAnalyticsScreen(data))
+                        }
+                    }
                 }
             }
         }
@@ -616,6 +665,36 @@ class TrmnlDevicesPresenter
             } catch (e: Exception) {
                 onError("Error loading devices: ${e.message}", false)
             }
+        }
+
+        private fun convertToAnalyticsUi(analytics: ink.trmnl.android.buddy.api.models.RecipesAnalytics): RecipesAnalyticsUi {
+            val (normalizedHealthy, normalizedDegraded, normalizedErroring) =
+                normalizeHealthPercentages(
+                    healthy = analytics.health.healthy.percent ?: 0.0,
+                    degraded = analytics.health.degraded.percent ?: 0.0,
+                    erroring = analytics.health.erroring.percent ?: 0.0,
+                )
+            return RecipesAnalyticsUi(
+                totalPlugins = analytics.plugins.size,
+                totalConnections = analytics.stats.connections,
+                totalPageviews = analytics.stats.pageviews,
+                healthyPercent = normalizedHealthy,
+                degradedPercent = normalizedDegraded,
+                erroringPercent = normalizedErroring,
+                growthData =
+                    analytics.growth.map { point ->
+                        GrowthDataPointUi(date = point.date, value = point.value)
+                    },
+                plugins =
+                    analytics.plugins.map { plugin ->
+                        PluginAnalyticsUi(
+                            name = plugin.name,
+                            state = plugin.state,
+                            installs = plugin.installs,
+                            forks = plugin.forks,
+                        )
+                    },
+            )
         }
 
         @CircuitInject(TrmnlDevicesScreen::class, AppScope::class)
@@ -721,6 +800,10 @@ fun TrmnlDevicesContent(
                     },
                     onViewAllContentClick = {
                         state.eventSink(ViewAllContentClicked)
+                    },
+                    analyticsState = state.analyticsState,
+                    onRecipesHealthCardClick = {
+                        state.eventSink(ViewRecipesAnalyticsClicked)
                     },
                     eventSink = state.eventSink,
                 )
