@@ -13,6 +13,7 @@ data class UserPreferences(
     val isRssFeedContentNotificationEnabled: Boolean = false,
     val isAnnouncementAuthBannerDismissed: Boolean = false,
     val isSecurityEnabled: Boolean = false,
+    val isShowRecipeHealthCardEnabled: Boolean = true,
 ) {
     companion object {
         /**

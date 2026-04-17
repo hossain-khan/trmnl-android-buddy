@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - New `RecipesHealthCardData` model and `RecipesAnalyticsUi.toHealthCardData()` extension function
   - New `ViewRecipesAnalyticsClicked` event on `TrmnlDevicesScreen`
   - Composable previews for light and dark themes added
+- **Settings toggle for Recipe Health Card visibility**: Added a toggle in Settings to control the visibility of the RecipesHealthCard on the devices list screen
+  - Toggle only appears in the Extras section when the user has published recipes (analytics has data)
+  - Preference saved to DataStore via `UserPreferencesRepository`; defaults to enabled (true)
+  - Toggle is part of `SettingsScreen.State` (`showRecipeHealthCard`) and triggered by `RecipeHealthCardToggled` event
+  - DevicesListScreen reads the preference and conditionally renders the card
+  - Added `RecipesAnalytics.toUi()` shared mapper extension to avoid duplicated conversion logic
 
 ### Fixed
 - **Health percentages normalization**: Added temporary normalization of analytics health percentages from TRMNL API
@@ -23,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `normalizeHealthPercentages()` helper function to convert invalid percentages to valid 0-100% range
   - Android display now matches web dashboard behavior until backend returns valid percentages
   - Includes unit tests verifying normalization logic works correctly
+- **Recipe Health Card status text**: Fixed status text in `RecipesHealthCard` to use `unhealthyCount == 0` instead of the health percentage threshold; ensures "All healthy" is only shown when there are truly zero unhealthy plugins
+- **Recipe Health Card KDoc**: Updated `RecipesHealthCardData.isHealthy` KDoc to accurately reflect the threshold comparison (`>95%` rather than `≥95%`)
+- **ViewRecipesAnalyticsClicked test**: Fixed test to wait until `analyticsState` data is loaded before sending the navigation event, preventing potential test flakiness
 
 ## [2.14.0] - 2026-04-16
 

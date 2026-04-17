@@ -36,6 +36,7 @@ class UserPreferencesRepositoryTest {
                 assertThat(prefs.isRssFeedContentNotificationEnabled).isFalse()
                 assertThat(prefs.isAnnouncementAuthBannerDismissed).isFalse()
                 assertThat(prefs.isSecurityEnabled).isFalse()
+                assertThat(prefs.isShowRecipeHealthCardEnabled).isTrue()
             }
         }
 
@@ -534,6 +535,39 @@ class UserPreferencesRepositoryTest {
                 val prefs = awaitItem()
                 assertThat(prefs.isRssFeedContentEnabled).isFalse()
                 assertThat(prefs.isRssFeedContentNotificationEnabled).isTrue()
+            }
+        }
+
+    @Test
+    fun `setShowRecipeHealthCard updates preference`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+
+            // When
+            repository.setShowRecipeHealthCard(false)
+
+            // Then
+            repository.userPreferencesFlow.test {
+                val prefs = awaitItem()
+                assertThat(prefs.isShowRecipeHealthCardEnabled).isFalse()
+            }
+        }
+
+    @Test
+    fun `setShowRecipeHealthCard can be set back to true`() =
+        runTest {
+            // Given
+            val repository = FakeUserPreferencesRepository()
+            repository.setShowRecipeHealthCard(false)
+
+            // When
+            repository.setShowRecipeHealthCard(true)
+
+            // Then
+            repository.userPreferencesFlow.test {
+                val prefs = awaitItem()
+                assertThat(prefs.isShowRecipeHealthCardEnabled).isTrue()
             }
         }
 }

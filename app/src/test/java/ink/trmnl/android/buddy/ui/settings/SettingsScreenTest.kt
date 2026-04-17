@@ -282,6 +282,79 @@ class SettingsScreenTest {
             }
         }
 
+    @Test
+    fun `presenter returns initial state with showRecipeHealthCard enabled by default`() =
+        runTest {
+            val navigator = FakeNavigator(SettingsScreen)
+            val repository = FakeUserPreferencesRepository()
+            val workerScheduler = FakeWorkerScheduler()
+            val biometricAuthHelper = FakeBiometricAuthHelper()
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
+
+            presenter.test {
+                val state = awaitItem()
+                assertThat(state.showRecipeHealthCard).isTrue()
+            }
+        }
+
+    @Test
+    fun `toggling recipe health card off updates the preference`() =
+        runTest {
+            val navigator = FakeNavigator(SettingsScreen)
+            val repository = FakeUserPreferencesRepository()
+            val workerScheduler = FakeWorkerScheduler()
+            val biometricAuthHelper = FakeBiometricAuthHelper()
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
+
+            presenter.test {
+                val state = awaitItem()
+
+                // Initially enabled
+                assertThat(state.showRecipeHealthCard).isTrue()
+
+                // Toggle to disabled
+                state.eventSink(SettingsScreen.Event.RecipeHealthCardToggled(false))
+
+                val updatedState = awaitItem()
+                assertThat(updatedState.showRecipeHealthCard).isFalse()
+                assertThat(repository.showRecipeHealthCardEnabled).isFalse()
+            }
+        }
+
+    @Test
+    fun `toggling recipe health card on updates the preference`() =
+        runTest {
+            val navigator = FakeNavigator(SettingsScreen)
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences =
+                        UserPreferences(
+                            isShowRecipeHealthCardEnabled = false,
+                        ),
+                )
+            val workerScheduler = FakeWorkerScheduler()
+            val biometricAuthHelper = FakeBiometricAuthHelper()
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
+
+            presenter.test {
+                skipItems(1)
+                val state = awaitItem()
+
+                // Initially disabled
+                assertThat(state.showRecipeHealthCard).isFalse()
+
+                // Toggle to enabled
+                state.eventSink(SettingsScreen.Event.RecipeHealthCardToggled(true))
+
+                val updatedState = awaitItem()
+                assertThat(updatedState.showRecipeHealthCard).isTrue()
+                assertThat(repository.showRecipeHealthCardEnabled).isTrue()
+            }
+        }
+
     // ========== Test Fakes ==========
 
     /**
