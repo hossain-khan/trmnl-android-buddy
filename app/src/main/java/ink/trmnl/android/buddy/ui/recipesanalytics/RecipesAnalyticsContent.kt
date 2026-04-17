@@ -210,7 +210,7 @@ private fun HealthStatusCard(
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                text = String.format("%.1f%%", percentage),
+                text = formatAsPercentage(percentage),
                 style = MaterialTheme.typography.headlineSmall,
                 color = color,
                 fontWeight = FontWeight.Bold,
