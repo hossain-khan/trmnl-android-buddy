@@ -129,6 +129,13 @@ fun DevelopmentContent(
                 eventSink = state.eventSink,
             )
 
+            // Analytics testing section
+            AnalyticsTestingSection(
+                currentScenario = state.currentAnalyticsScenario,
+                analyticsState = state.analyticsState,
+                eventSink = state.eventSink,
+            )
+
             // Development info
             DevelopmentInfoSection()
         }
@@ -531,6 +538,165 @@ private fun WorkerStatusItem(workerStatus: ink.trmnl.android.buddy.work.WorkerSt
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AnalyticsTestingSection(
+    currentScenario: DevelopmentScreen.AnalyticsScenario?,
+    analyticsState: ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState,
+    eventSink: (Event) -> Unit,
+) {
+    SectionCard(
+        title = "Recipes Analytics Testing",
+        description = "Simulate different analytics states to test RecipesHealthCard UI",
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            // Current scenario display
+            if (currentScenario != null) {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Current Scenario: ${currentScenario::class.simpleName}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    },
+                    supportingContent = {
+                        val stateLabel =
+                            when (analyticsState) {
+                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Success ->
+                                    "Loaded (${analyticsState.data.totalPlugins} plugins)"
+
+                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Loading ->
+                                    "Loading..."
+
+                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Error ->
+                                    "Error: ${analyticsState.message}"
+                            }
+                        Text(
+                            text = "State: $stateLabel",
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    },
+                    colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                )
+            }
+
+            HorizontalDivider()
+
+            // Scenario selector - Main states
+            Text(
+                text = "Health States",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(
+                    onClick = { eventSink(Event.SimulateRecipesAnalytics(DevelopmentScreen.AnalyticsScenario.AllHealthy)) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("All Healthy")
+                }
+
+                OutlinedButton(
+                    onClick = { eventSink(Event.SimulateRecipesAnalytics(DevelopmentScreen.AnalyticsScenario.AllUnhealthy)) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("All Unhealthy")
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        eventSink(
+                            Event.SimulateRecipesAnalytics(
+                                DevelopmentScreen.AnalyticsScenario.PartiallyHealthy(
+                                    unhealthyCount = 2,
+                                ),
+                            ),
+                        )
+                    },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Mixed (2 bad)")
+                }
+            }
+
+            // Load states
+            Text(
+                text = "State Transitions",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp),
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(
+                    onClick = { eventSink(Event.SimulateRecipesAnalytics(DevelopmentScreen.AnalyticsScenario.Loading)) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Loading")
+                }
+
+                OutlinedButton(
+                    onClick = { eventSink(Event.SimulateRecipesAnalytics(DevelopmentScreen.AnalyticsScenario.Error)) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Error")
+                }
+
+                OutlinedButton(
+                    onClick = { eventSink(Event.SimulateRecipesAnalytics(DevelopmentScreen.AnalyticsScenario.NoRecipes)) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("No Data")
+                }
+            }
+
+            // Advanced scenarios
+            Text(
+                text = "Advanced Scenarios",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp),
+            )
+
+            OutlinedButton(
+                onClick = {
+                    eventSink(
+                        Event.SimulateRecipesAnalytics(
+                            DevelopmentScreen.AnalyticsScenario.LargeDataset(
+                                recipeCount = 50,
+                                unhealthyPercent = 20,
+                            ),
+                        ),
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Large Dataset (50 recipes, 20% unhealthy)")
+            }
+
+            OutlinedButton(
+                onClick = { eventSink(Event.ClearAnalyticsCache) },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    "Clear Cache & Reset",
+                    color = MaterialTheme.colorScheme.error,
                 )
             }
         }

@@ -4,6 +4,7 @@ import androidx.work.WorkInfo
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
 import ink.trmnl.android.buddy.work.WorkerStatus
 import kotlinx.parcelize.Parcelize
 
@@ -27,6 +28,8 @@ data object DevelopmentScreen : Screen {
     data class State(
         val notificationPermissionGranted: Boolean = false,
         val workerStatuses: List<WorkerStatus> = emptyList(),
+        val analyticsState: RecipesAnalyticsState = RecipesAnalyticsState.Loading(),
+        val currentAnalyticsScenario: AnalyticsScenario? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 

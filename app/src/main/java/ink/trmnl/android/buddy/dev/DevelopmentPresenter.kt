@@ -27,8 +27,10 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.data.RecipesAnalyticsRepository
 import ink.trmnl.android.buddy.dev.DevelopmentScreen.Event
 import ink.trmnl.android.buddy.notification.NotificationHelper
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
 import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
 import ink.trmnl.android.buddy.work.BlogPostSyncWorker
@@ -46,11 +48,13 @@ import timber.log.Timber
  * - One-time worker execution
  * - Navigation to system settings
  * - WorkManager worker status monitoring
+ * - Analytics testing with different scenarios
  */
 @Inject
 class DevelopmentPresenter(
     @Assisted private val navigator: Navigator,
     private val workManagerObserver: WorkManagerObserver,
+    private val analyticsRepository: RecipesAnalyticsRepository,
 ) : Presenter<DevelopmentScreen.State> {
     @OptIn(ExperimentalPermissionsApi::class)
     @Composable
@@ -72,9 +76,15 @@ class DevelopmentPresenter(
         // Observe worker statuses
         val workerStatuses by workManagerObserver.observeAllWorkers().collectAsState(initial = emptyList())
 
+        // Track analytics state and current scenario for testing
+        var analyticsState by remember { mutableStateOf<RecipesAnalyticsState>(RecipesAnalyticsState.Loading()) }
+        var currentScenario by remember { mutableStateOf<DevelopmentScreen.AnalyticsScenario?>(null) }
+
         return DevelopmentScreen.State(
             notificationPermissionGranted = notificationPermissionGranted,
             workerStatuses = workerStatuses,
+            analyticsState = analyticsState,
+            currentAnalyticsScenario = currentScenario,
         ) { event ->
             when (event) {
                 // Notification testing with mock data
@@ -140,13 +150,42 @@ class DevelopmentPresenter(
                 // Analytics simulation
                 is Event.SimulateRecipesAnalytics -> {
                     Timber.d("Simulating recipes analytics: ${event.scenario}")
-                    // TODO: Implement analytics simulation in DevelopmentContent UI
-                    // This will allow testing different RecipesAnalyticsState variations
+                    currentScenario = event.scenario
+                    when (event.scenario) {
+                        DevelopmentScreen.AnalyticsScenario.NoRecipes -> {
+                            analyticsState = RecipesAnalyticsState.Loading()
+                        }
+
+                        DevelopmentScreen.AnalyticsScenario.Loading -> {
+                            analyticsState = RecipesAnalyticsState.Loading()
+                        }
+
+                        DevelopmentScreen.AnalyticsScenario.Error -> {
+                            analyticsState =
+                                RecipesAnalyticsState.Error(
+                                    message = "Mock error: Failed to fetch analytics data",
+                                    previousData = (analyticsState as? RecipesAnalyticsState.Success)?.data,
+                                )
+                        }
+
+                        else -> {
+                            // Generate mock analytics data
+                            val mockData = RecipesAnalyticsMockData.generateMockAnalytics(event.scenario)
+                            analyticsState =
+                                if (mockData != null) {
+                                    RecipesAnalyticsState.Success(mockData)
+                                } else {
+                                    RecipesAnalyticsState.Loading()
+                                }
+                        }
+                    }
                 }
 
                 Event.ClearAnalyticsCache -> {
                     Timber.d("Clearing recipes analytics cache")
-                    // TODO: Inject RecipesAnalyticsRepository and call clearCache()
+                    analyticsRepository.clearCache()
+                    analyticsState = RecipesAnalyticsState.Loading()
+                    currentScenario = null
                 }
 
                 // System actions
