@@ -137,6 +137,18 @@ class DevelopmentPresenter(
                     }
                 }
 
+                // Analytics simulation
+                is Event.SimulateRecipesAnalytics -> {
+                    Timber.d("Simulating recipes analytics: ${event.scenario}")
+                    // TODO: Implement analytics simulation in DevelopmentContent UI
+                    // This will allow testing different RecipesAnalyticsState variations
+                }
+
+                Event.ClearAnalyticsCache -> {
+                    Timber.d("Clearing recipes analytics cache")
+                    // TODO: Inject RecipesAnalyticsRepository and call clearCache()
+                }
+
                 // System actions
                 Event.RequestNotificationPermission -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !permissionRequested) {

@@ -23,6 +23,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Toggle is part of `SettingsScreen.State` (`showRecipeHealthCard`) and triggered by `RecipeHealthCardToggled` event
   - DevicesListScreen reads the preference and conditionally renders the card
   - Added `RecipesAnalytics.toUi()` shared mapper extension to avoid duplicated conversion logic
+- **Development screen analytics testing scenarios** (DEBUG builds only): Added analytics simulation test scenarios to DevelopmentScreen for comprehensive UI testing
+  - `NoRecipes` - Verify RecipeHealthCardSection doesn't appear when user has no published recipes
+  - `AllHealthy` - Test display when all recipes are healthy (>95% health)
+  - `AllUnhealthy` - Test warning state when all recipes are unhealthy
+  - `PartiallyHealthy(unhealthyCount)` - Test mixed health state with count display
+  - `Loading` - Test loading state skeleton/placeholder
+  - `Error` - Test error handling and graceful degradation
+  - `LargeDataset(recipeCount, unhealthyPercent)` - Test performance with large recipe sets
+  - `ClearAnalyticsCache` - Test cache invalidation and fresh data fetch
 
 ### Changed
 - **Settings screen organization**: Moved "Show Recipe Health Card" toggle from Extras section to its own dedicated "Recipe Health Card" section

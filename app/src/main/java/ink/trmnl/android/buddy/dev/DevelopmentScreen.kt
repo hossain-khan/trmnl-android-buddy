@@ -62,11 +62,76 @@ data object DevelopmentScreen : Screen {
 
         data object ResetWorkerSchedules : Event
 
+        // Analytics simulation events
+        data class SimulateRecipesAnalytics(
+            val scenario: AnalyticsScenario,
+        ) : Event
+
+        data object ClearAnalyticsCache : Event
+
         // System events
         data object RequestNotificationPermission : Event
 
         data object OpenNotificationSettings : Event
 
         data object NavigateBack : Event
+    }
+
+    /**
+     * Analytics test scenarios for simulating different UI states.
+     * Allows testing RecipesHealthCard and RecipeHealthCardSection with various data conditions.
+     */
+    sealed interface AnalyticsScenario {
+        /**
+         * User has no published recipes - analytics section should not appear.
+         * Used to test visibility toggle of RecipeHealthCardSection.
+         */
+        data object NoRecipes : AnalyticsScenario
+
+        /**
+         * All published recipes are healthy (health percentage > 95%).
+         * RecipesHealthCard should show "All healthy" status.
+         */
+        data object AllHealthy : AnalyticsScenario
+
+        /**
+         * All published recipes are unhealthy (health percentage ≤ 95%).
+         * RecipesHealthCard should show warning indicator.
+         */
+        data object AllUnhealthy : AnalyticsScenario
+
+        /**
+         * Mix of healthy and unhealthy recipes.
+         * RecipesHealthCard should show count of unhealthy recipes.
+         *
+         * @param unhealthyCount Number of unhealthy recipes to simulate (must be > 0)
+         */
+        data class PartiallyHealthy(
+            val unhealthyCount: Int,
+        ) : AnalyticsScenario
+
+        /**
+         * Simulate data loading state.
+         * RecipesHealthCard should show loading skeleton/placeholder.
+         */
+        data object Loading : AnalyticsScenario
+
+        /**
+         * Simulate API error during analytics fetch.
+         * RecipesHealthCard should handle error gracefully.
+         */
+        data object Error : AnalyticsScenario
+
+        /**
+         * Large number of recipes with mixed health states.
+         * Useful for testing performance and overflow scenarios.
+         *
+         * @param recipeCount Total number of recipes to simulate
+         * @param unhealthyPercent Percentage of recipes that are unhealthy (0-100)
+         */
+        data class LargeDataset(
+            val recipeCount: Int,
+            val unhealthyPercent: Int,
+        ) : AnalyticsScenario
     }
 }
