@@ -17,11 +17,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - New `ViewRecipesAnalyticsClicked` event on `TrmnlDevicesScreen`
   - Composable previews for light and dark themes added
 - **Settings toggle for Recipe Health Card visibility**: Added a toggle in Settings to control the visibility of the RecipesHealthCard on the devices list screen
-  - Toggle only appears in the Extras section when the user has published recipes (analytics has data)
+  - Toggle only appears in a new "Recipe Health Card" section when the user has published recipes (analytics has data)
+  - Section positioned after "Low Battery Alerts" section in Settings
   - Preference saved to DataStore via `UserPreferencesRepository`; defaults to enabled (true)
   - Toggle is part of `SettingsScreen.State` (`showRecipeHealthCard`) and triggered by `RecipeHealthCardToggled` event
   - DevicesListScreen reads the preference and conditionally renders the card
   - Added `RecipesAnalytics.toUi()` shared mapper extension to avoid duplicated conversion logic
+- **Development screen analytics testing scenarios** (DEBUG builds only): Added analytics simulation test scenarios to DevelopmentScreen for comprehensive UI testing
+  - `NoRecipes` - Verify RecipeHealthCardSection doesn't appear when user has no published recipes
+  - `AllHealthy` - Test display when all recipes are healthy (>95% health)
+  - `AllUnhealthy` - Test warning state when all recipes are unhealthy
+  - `PartiallyHealthy(unhealthyCount)` - Test mixed health state with count display
+  - `Loading` - Test loading state skeleton/placeholder
+  - `Error` - Test error handling and graceful degradation
+  - `LargeDataset(recipeCount, unhealthyPercent)` - Test performance with large recipe sets
+  - `ClearAnalyticsCache` - Test cache invalidation and fresh data fetch
+
+### Changed
+- **Settings screen organization**: Moved "Show Recipe Health Card" toggle from Extras section to its own dedicated "Recipe Health Card" section
+  - New section appears after "Low Battery Alerts" and before "Extras"
+  - Only visible when user has published recipes (analytics data available)
+  - Created new `RecipeHealthCardSection` composable for better organization
 
 ### Fixed
 - **Edge-to-edge display improvements**: Fixed edge-to-edge display support for proper inset handling

@@ -17,6 +17,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import ink.trmnl.android.buddy.data.RecipesAnalyticsRepository
 import ink.trmnl.android.buddy.work.WorkManagerObserver
 import ink.trmnl.android.buddy.work.WorkerStatus
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +52,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -68,7 +70,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -88,7 +91,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -106,7 +110,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -124,7 +129,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -142,7 +148,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -160,7 +167,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -178,7 +186,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -196,7 +205,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -218,7 +228,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -240,7 +251,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -258,7 +270,8 @@ class DevelopmentPresenterTest {
             // Given
             val navigator = FakeNavigator(DevelopmentScreen)
             val workManagerObserver = FakeWorkManagerObserver()
-            val presenter = createTestPresenter(navigator, workManagerObserver, context)
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
 
             // When/Then
             presenter.test {
@@ -273,6 +286,78 @@ class DevelopmentPresenterTest {
             }
         }
 
+    @Test
+    fun `simulate all healthy analytics navigates to RecipesAnalyticsScreen`() =
+        runTest {
+            // Given
+            val navigator = FakeNavigator(DevelopmentScreen)
+            val workManagerObserver = FakeWorkManagerObserver()
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
+
+            // When/Then
+            presenter.test {
+                val state = awaitItem()
+
+                // Trigger AllHealthy scenario
+                state.eventSink(DevelopmentScreen.Event.SimulateRecipesAnalytics(DevelopmentScreen.AnalyticsScenario.AllHealthy))
+
+                // Verify navigation to analytics screen occurred
+                val navigatedScreen = navigator.awaitNextScreen()
+                assertThat(navigatedScreen).isNotNull()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `simulate no recipes analytics navigates to RecipesAnalyticsScreen with empty data`() =
+        runTest {
+            // Given
+            val navigator = FakeNavigator(DevelopmentScreen)
+            val workManagerObserver = FakeWorkManagerObserver()
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
+
+            // When/Then
+            presenter.test {
+                val state = awaitItem()
+
+                // Trigger NoRecipes scenario
+                state.eventSink(DevelopmentScreen.Event.SimulateRecipesAnalytics(DevelopmentScreen.AnalyticsScenario.NoRecipes))
+
+                // Verify navigation to analytics screen occurred
+                val navigatedScreen = navigator.awaitNextScreen()
+                assertThat(navigatedScreen).isNotNull()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `clear analytics cache calls repository and resets state`() =
+        runTest {
+            // Given
+            val navigator = FakeNavigator(DevelopmentScreen)
+            val workManagerObserver = FakeWorkManagerObserver()
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = createTestPresenter(navigator, workManagerObserver, analyticsRepository, context)
+
+            // When/Then
+            presenter.test {
+                val state = awaitItem()
+                assertThat(analyticsRepository.clearCacheCalled).isFalse()
+
+                // Trigger ClearAnalyticsCache event
+                state.eventSink(DevelopmentScreen.Event.ClearAnalyticsCache)
+
+                // Verify cache was cleared
+                assertThat(analyticsRepository.clearCacheCalled).isTrue()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     /**
      * Create a test presenter that wraps DevelopmentPresenter with LocalContext provided.
      * This is necessary because Circuit's test framework doesn't automatically provide
@@ -281,10 +366,11 @@ class DevelopmentPresenterTest {
     private fun createTestPresenter(
         navigator: Navigator,
         workManagerObserver: WorkManagerObserver,
+        analyticsRepository: RecipesAnalyticsRepository,
         context: Context,
     ): Presenter<DevelopmentScreen.State> =
         object : Presenter<DevelopmentScreen.State> {
-            private val delegate = DevelopmentPresenter(navigator, workManagerObserver)
+            private val delegate = DevelopmentPresenter(navigator, workManagerObserver, analyticsRepository)
 
             @Composable
             override fun present(): DevelopmentScreen.State {
@@ -325,5 +411,21 @@ private class FakeWorkManagerObserver : WorkManagerObserver {
      */
     fun updateWorkerStatuses(statuses: List<WorkerStatus>) {
         workerStatusesFlow.value = statuses
+    }
+}
+
+/**
+ * Fake implementation of RecipesAnalyticsRepository for testing.
+ * Avoids mocking per project guidelines.
+ */
+private class FakeRecipesAnalyticsRepository : RecipesAnalyticsRepository {
+    var clearCacheCalled = false
+        private set
+
+    override suspend fun getRecipesAnalytics(authorization: String): Result<ink.trmnl.android.buddy.api.models.RecipesAnalytics> =
+        Result.failure(Exception("Fake repository - not implemented for testing"))
+
+    override fun clearCache() {
+        clearCacheCalled = true
     }
 }
