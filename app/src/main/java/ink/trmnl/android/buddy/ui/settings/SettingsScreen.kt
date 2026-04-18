@@ -374,8 +374,8 @@ fun SettingsContent(
                 },
             )
 
-            // Recipe Health Card Section (only if user has published recipes)
-            if (!state.analyticsState.isEmpty()) {
+            // Recipe Health Card Section (only if user has published recipes and data is loaded)
+            if (state.analyticsState is RecipesAnalyticsState.Success && !state.analyticsState.data.isEmpty()) {
                 RecipeHealthCardSection(
                     isEnabled = state.showRecipeHealthCard,
                     onToggle = { enabled ->

@@ -32,6 +32,7 @@ import ink.trmnl.android.buddy.dev.DevelopmentScreen.Event
 import ink.trmnl.android.buddy.notification.NotificationHelper
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
 import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
 import ink.trmnl.android.buddy.work.BlogPostSyncWorker
@@ -154,7 +155,20 @@ class DevelopmentPresenter(
                     currentScenario = event.scenario
                     when (event.scenario) {
                         DevelopmentScreen.AnalyticsScenario.NoRecipes -> {
-                            analyticsState = RecipesAnalyticsState.Loading()
+                            // Create empty analytics data to show no recipes state
+                            val emptyAnalytics =
+                                RecipesAnalyticsUi(
+                                    healthyPercent = 0.0,
+                                    degradedPercent = 0.0,
+                                    erroringPercent = 0.0,
+                                    totalPlugins = 0,
+                                    totalConnections = 0,
+                                    totalPageviews = 0,
+                                    plugins = emptyList(),
+                                    growthData = emptyList(),
+                                )
+                            analyticsState = RecipesAnalyticsState.Success(emptyAnalytics)
+                            navigator.goTo(RecipesAnalyticsScreen(emptyAnalytics))
                         }
 
                         DevelopmentScreen.AnalyticsScenario.Loading -> {

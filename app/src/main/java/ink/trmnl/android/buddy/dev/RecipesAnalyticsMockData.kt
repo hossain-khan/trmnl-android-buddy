@@ -77,12 +77,16 @@ object RecipesAnalyticsMockData {
         degradedPercent: Double,
         erroringPercent: Double,
     ): RecipesAnalyticsUi {
+        // Calculate integer thresholds to avoid Int to Double comparison issues
+        val healthyCount = (pluginCount * healthyPercent / 100).toInt()
+        val degradedCount = (pluginCount * (healthyPercent + degradedPercent) / 100).toInt()
+
         val plugins =
             (1..pluginCount).map { index ->
                 val state =
                     when {
-                        index <= (pluginCount * healthyPercent / 100) -> "healthy"
-                        index <= (pluginCount * (healthyPercent + degradedPercent) / 100) -> "degraded"
+                        index <= healthyCount -> "healthy"
+                        index <= degradedCount -> "degraded"
                         else -> "erroring"
                     }
                 PluginAnalyticsUi(
