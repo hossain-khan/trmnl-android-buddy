@@ -47,6 +47,7 @@ import ink.trmnl.android.buddy.ui.devicecatalog.DeviceCatalogScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
 import ink.trmnl.android.buddy.ui.recipesanalytics.getDataOrNull
+import ink.trmnl.android.buddy.ui.recipesanalytics.isEmpty
 import ink.trmnl.android.buddy.ui.recipesanalytics.toUi
 import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
@@ -373,6 +374,16 @@ fun SettingsContent(
                 },
             )
 
+            // Recipe Health Card Section (only if user has published recipes)
+            if (!state.analyticsState.isEmpty()) {
+                RecipeHealthCardSection(
+                    isEnabled = state.showRecipeHealthCard,
+                    onToggle = { enabled ->
+                        state.eventSink(SettingsScreen.Event.RecipeHealthCardToggled(enabled))
+                    },
+                )
+            }
+
             // Extras Section
             ExtrasSection(
                 onDeviceCatalogClick = {
@@ -387,10 +398,6 @@ fun SettingsContent(
                 analyticsState = state.analyticsState,
                 onRecipesAnalyticsClick = {
                     state.eventSink(SettingsScreen.Event.RecipesAnalyticsClicked)
-                },
-                showRecipeHealthCard = state.showRecipeHealthCard,
-                onToggleRecipeHealthCard = { enabled ->
-                    state.eventSink(SettingsScreen.Event.RecipeHealthCardToggled(enabled))
                 },
             )
 
