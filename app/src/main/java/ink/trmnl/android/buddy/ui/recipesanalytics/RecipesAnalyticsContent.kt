@@ -417,11 +417,17 @@ private fun PluginsListSection(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = "Your Plugins",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 12.dp),
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Your Published Recipes",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            OverallHealthStatus(plugins = plugins)
+        }
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -444,6 +450,60 @@ private fun PluginsListSection(
             }
         }
     }
+}
+
+/**
+ * Composable showing the overall health status of all published recipes.
+ * Determines the worst-case health status among all plugins.
+ */
+@Composable
+private fun OverallHealthStatus(
+    plugins: List<PluginAnalyticsUi>,
+    modifier: Modifier = Modifier,
+) {
+    // Determine overall status: error > degraded > healthy
+    val overallState =
+        when {
+            plugins.any { it.state == "erroring" } -> "erroring"
+            plugins.any { it.state == "degraded" } -> "degraded"
+            else -> "healthy"
+        }
+
+    val (bgColor, fgColor, label) =
+        when (overallState) {
+            "healthy" ->
+                Triple(
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                    MaterialTheme.colorScheme.primary,
+                    "Healthy",
+                )
+
+            "degraded" ->
+                Triple(
+                    MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
+                    MaterialTheme.colorScheme.tertiary,
+                    "Degraded",
+                )
+
+            else ->
+                Triple(
+                    MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
+                    MaterialTheme.colorScheme.error,
+                    "Erroring",
+                )
+        }
+
+    AssistChip(
+        onClick = {},
+        label = { Text(label, style = MaterialTheme.typography.labelSmall) },
+        modifier = modifier,
+        colors =
+            AssistChipDefaults.assistChipColors(
+                containerColor = bgColor,
+                labelColor = fgColor,
+            ),
+        enabled = false,
+    )
 }
 
 /**
