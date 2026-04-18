@@ -30,6 +30,7 @@ import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.data.RecipesAnalyticsRepository
 import ink.trmnl.android.buddy.dev.DevelopmentScreen.Event
 import ink.trmnl.android.buddy.notification.NotificationHelper
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
 import ink.trmnl.android.buddy.work.AnnouncementSyncWorker
 import ink.trmnl.android.buddy.work.BatteryCollectionWorker
@@ -171,12 +172,13 @@ class DevelopmentPresenter(
                         else -> {
                             // Generate mock analytics data
                             val mockData = RecipesAnalyticsMockData.generateMockAnalytics(event.scenario)
-                            analyticsState =
-                                if (mockData != null) {
-                                    RecipesAnalyticsState.Success(mockData)
-                                } else {
-                                    RecipesAnalyticsState.Loading()
-                                }
+                            if (mockData != null) {
+                                analyticsState = RecipesAnalyticsState.Success(mockData)
+                                // Navigate to analytics screen to view the simulated data
+                                navigator.goTo(RecipesAnalyticsScreen(mockData))
+                            } else {
+                                analyticsState = RecipesAnalyticsState.Loading()
+                            }
                         }
                     }
                 }
