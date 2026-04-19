@@ -309,7 +309,7 @@ interface TrmnlApiService {
      * This is a **public endpoint** that does NOT require authentication.
      *
      * **Note**: This endpoint is in alpha testing and may be moved to `/api/recipes`
-     * or `/api/plugins` before end of 2025.
+     * or `/api/plugins` in a future update.
      *
      * @param search Optional search term to filter recipes by keyword
      * @param sortBy Optional sort order: "oldest", "newest", "popularity", "fork", "install"
@@ -371,7 +371,7 @@ interface TrmnlApiService {
      * This is a **public endpoint** that does NOT require authentication.
      *
      * **Note**: This endpoint is in alpha testing and may be moved to `/api/recipes/{id}`
-     * or `/api/plugins/{id}` before end of 2025.
+     * or `/api/plugins/{id}` in a future update.
      *
      * @param id Recipe ID to fetch
      * @return ApiResult containing recipe details or error

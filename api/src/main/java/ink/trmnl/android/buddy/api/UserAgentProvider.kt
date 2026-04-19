@@ -7,7 +7,7 @@ import okhttp3.OkHttp
  * Provides a properly formatted User-Agent string following industry best practices.
  *
  * Format: `AppName/Version (Android APILevel; DeviceModel) OkHttp/Version`
- * Example: `TrmnlAndroidBuddy/1.6.0 (Android 14; Pixel 7) OkHttp/5.1.0`
+ * Example: `TrmnlAndroidBuddy/2.15.0 (Android 14; Pixel 7) OkHttp/5.1.0`
  *
  * This helps the server identify:
  * - The client application and version

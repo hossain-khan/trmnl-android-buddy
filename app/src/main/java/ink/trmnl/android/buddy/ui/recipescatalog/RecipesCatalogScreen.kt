@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
  * This screen allows users to browse, search, and discover community recipes
  * that can be installed on TRMNL devices.
  *
- * **Note**: The recipes API is in alpha testing and may be moved before end of 2025.
+ * **Note**: The recipes API is in alpha testing and may be moved in a future update.
  */
 @Parcelize
 data object RecipesCatalogScreen : Screen {

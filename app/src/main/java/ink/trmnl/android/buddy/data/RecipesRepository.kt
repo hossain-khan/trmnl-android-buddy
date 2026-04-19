@@ -13,7 +13,7 @@ import ink.trmnl.android.buddy.api.util.toResultDirect
  * Repository interface for TRMNL recipe catalog operations.
  *
  * **Note**: Recipe endpoints are public and do NOT require authentication.
- * The API is in alpha testing and may be moved before end of 2025.
+ * The API is in alpha testing and may be moved in a future update.
  */
 interface RecipesRepository {
     /**
