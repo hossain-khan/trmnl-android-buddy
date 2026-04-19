@@ -11,7 +11,11 @@ import timber.log.Timber
 
 /**
  * Observer for WorkManager operations.
- * Provides access to WorkInfo for all background workers in the app.
+ * Provides access to WorkInfo for all background workers in the app, including:
+ * - [BatteryCollectionWorker]
+ * - [LowBatteryNotificationWorker]
+ * - [BlogPostSyncWorker]
+ * - [AnnouncementSyncWorker]
  */
 interface WorkManagerObserver {
     /**

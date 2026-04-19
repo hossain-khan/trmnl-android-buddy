@@ -109,8 +109,10 @@ class TrmnlDeviceRepository(
      * Fetch playlist items for a specific device or all devices.
      *
      * Makes an API call to `/playlists/items` and returns the list of content items
-     * (plugins and mashups) configured for the device(s). The API returns items for
-     * all devices, so this method filters client-side when deviceId is provided.
+     * (plugins and mashups) configured for the device(s).
+     *
+     * **Note**: The TRMNL API returns items for ALL devices regardless of authentication.
+     * This method performs client-side filtering when a [deviceId] is provided.
      *
      * @param deviceId Optional device ID to filter playlist items (null returns all devices)
      * @return ApiResult containing list of playlist items or error

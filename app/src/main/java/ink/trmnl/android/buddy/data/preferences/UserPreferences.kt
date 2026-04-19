@@ -2,6 +2,17 @@ package ink.trmnl.android.buddy.data.preferences
 
 /**
  * Data class representing user preferences stored in DataStore.
+ *
+ * @property apiToken TRMNL User API key (Bearer token)
+ * @property isOnboardingCompleted Whether the user has finished the initial setup
+ * @property isBatteryTrackingEnabled Whether automatic weekly battery data collection is enabled
+ * @property isLowBatteryNotificationEnabled Whether notifications for low battery are enabled
+ * @property lowBatteryThresholdPercent Battery percentage threshold for low battery alerts
+ * @property isRssFeedContentEnabled Whether RSS feed content (announcements/blog posts) is enabled
+ * @property isRssFeedContentNotificationEnabled Whether notifications for new RSS content are enabled
+ * @property isAnnouncementAuthBannerDismissed Whether the announcement authentication banner has been hidden
+ * @property isSecurityEnabled Whether biometric/device credential authentication is enabled
+ * @property isShowRecipeHealthCardEnabled Whether the Recipe Health Card is visible on the devices list
  */
 data class UserPreferences(
     val apiToken: String? = null,

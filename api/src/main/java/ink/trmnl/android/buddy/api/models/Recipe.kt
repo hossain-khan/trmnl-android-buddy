@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
  * Each recipe includes configuration fields, statistics, and metadata.
  *
  * **Note**: This API endpoint is in alpha testing and may be moved to `/api/recipes`
- * or `/api/plugins` before end of 2025.
+ * or `/api/plugins` in a future update.
  *
  * @property id Unique identifier for the recipe
  * @property name Display name of the recipe

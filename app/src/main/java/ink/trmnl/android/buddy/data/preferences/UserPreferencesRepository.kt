@@ -60,6 +60,9 @@ interface UserPreferencesRepository {
 
     /**
      * Set RSS feed content (announcements and blog posts) enabled/disabled.
+     *
+     * This setting controls both announcements and blog posts sync.
+     * Note: This migrates from the legacy "announcements_enabled" preference.
      */
     suspend fun setRssFeedContentEnabled(enabled: Boolean)
 
