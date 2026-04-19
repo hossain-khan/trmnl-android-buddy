@@ -163,46 +163,46 @@ data object TrmnlDevicesScreen : Screen {
      * - State mutations (privacy, loading states)
      * - External browser launches (Custom Tabs)
      */
-    sealed class Event : CircuitUiEvent {
-        data object Refresh : Event()
+    sealed interface Event : CircuitUiEvent {
+        data object Refresh : Event
 
-        data object SettingsClicked : Event()
+        data object SettingsClicked : Event
 
-        data object TogglePrivacy : Event()
+        data object TogglePrivacy : Event
 
-        data object ResetToken : Event()
+        data object ResetToken : Event
 
         data class DeviceClicked(
             val device: Device,
-        ) : Event()
+        ) : Event
 
         data class DeviceSettingsClicked(
             val device: Device,
-        ) : Event()
+        ) : Event
 
         data class DevicePreviewClicked(
             val device: Device,
             val previewInfo: DevicePreviewInfo,
-        ) : Event()
+        ) : Event
 
         data class RefreshRateInfoClicked(
             val refreshRate: Int,
-        ) : Event()
+        ) : Event
 
         data class ContentItemClicked(
             val item: ContentItem,
-        ) : Event()
+        ) : Event
 
-        data object ViewAllContentClicked : Event()
+        data object ViewAllContentClicked : Event
 
         data class BatteryAlertClicked(
             val device: Device,
             val thresholdPercent: Int,
-        ) : Event()
+        ) : Event
 
-        data object DismissSnackbar : Event()
+        data object DismissSnackbar : Event
 
-        data object ViewRecipesAnalyticsClicked : Event()
+        data object ViewRecipesAnalyticsClicked : Event
     }
 }
 
@@ -254,7 +254,7 @@ data object TrmnlDevicesScreen : Screen {
  * @property announcementRepository Repository for TRMNL announcements
  * @property blogPostRepository Repository for TRMNL blog posts
  *
- * @see TrmnlDevicesScreen Screen definition with State and Event sealed classes
+ * @see TrmnlDevicesScreen Screen definition with State and Event sealed interfaces
  * @see DeviceDetailScreen Destination screen for device-specific details
  * @see ContentHubScreen Destination screen for viewing all content
  */

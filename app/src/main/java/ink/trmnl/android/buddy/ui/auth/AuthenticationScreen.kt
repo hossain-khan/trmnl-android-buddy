@@ -48,17 +48,17 @@ data object AuthenticationScreen : Screen {
      *
      * @see AuthenticationPresenter Handles event processing and state updates
      */
-    sealed class Event : CircuitUiEvent {
+    sealed interface Event : CircuitUiEvent {
         /**
          * User requested authentication by tapping the authenticate button.
          * Triggers the system biometric prompt (fingerprint, face, PIN/pattern/password).
          */
-        data object AuthenticateRequested : Event()
+        data object AuthenticateRequested : Event
 
         /**
          * User cancelled authentication flow by tapping the cancel button on retry prompt.
          * Disables security setting and navigates to main screen without authentication.
          */
-        data object CancelAuthentication : Event()
+        data object CancelAuthentication : Event
     }
 }

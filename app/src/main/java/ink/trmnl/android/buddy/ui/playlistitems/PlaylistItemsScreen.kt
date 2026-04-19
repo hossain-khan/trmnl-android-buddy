@@ -42,23 +42,23 @@ data class PlaylistItemsScreen(
     /**
      * Events that can be triggered from the Playlist Items Screen UI.
      */
-    sealed class Event : CircuitUiEvent {
+    sealed interface Event : CircuitUiEvent {
         /**
          * User clicked the back button.
          */
-        data object BackClicked : Event()
+        data object BackClicked : Event
 
         /**
          * User pulled to refresh the playlist items.
          */
-        data object Refresh : Event()
+        data object Refresh : Event
 
         /**
          * User clicked on a playlist item for more details.
          */
         data class ItemClicked(
             val item: PlaylistItemUi,
-        ) : Event()
+        ) : Event
 
         /**
          * User toggled the visibility of a playlist item.
@@ -66,6 +66,6 @@ data class PlaylistItemsScreen(
         data class ToggleItemVisibility(
             val itemId: Int,
             val newVisibility: Boolean,
-        ) : Event()
+        ) : Event
     }
 }

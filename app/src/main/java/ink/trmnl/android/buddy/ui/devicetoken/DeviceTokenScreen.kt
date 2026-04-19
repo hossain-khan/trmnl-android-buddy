@@ -28,15 +28,15 @@ data class DeviceTokenScreen(
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
-    sealed class Event : CircuitUiEvent {
+    sealed interface Event : CircuitUiEvent {
         data class TokenChanged(
             val token: String,
-        ) : Event()
+        ) : Event
 
-        data object SaveToken : Event()
+        data object SaveToken : Event
 
-        data object ClearToken : Event()
+        data object ClearToken : Event
 
-        data object BackClicked : Event()
+        data object BackClicked : Event
     }
 }

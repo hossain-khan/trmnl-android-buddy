@@ -31,8 +31,8 @@ data class RecipesAnalyticsScreen(
     /**
      * Events that can be triggered from the recipes analytics screen.
      */
-    sealed class Event : CircuitUiEvent {
+    sealed interface Event : CircuitUiEvent {
         /** User tapped back to return to previous screen */
-        data object BackClicked : Event()
+        data object BackClicked : Event
     }
 }

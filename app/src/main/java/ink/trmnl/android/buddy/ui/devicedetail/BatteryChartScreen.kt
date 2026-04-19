@@ -63,7 +63,7 @@ data class BatteryChartScreen(
     /**
      * Events for the battery chart section.
      */
-    sealed class Event : CircuitUiEvent {
+    sealed interface Event : CircuitUiEvent {
         /**
          * Developer action to populate battery history with simulated test data.
          *
@@ -71,16 +71,16 @@ data class BatteryChartScreen(
          */
         data class PopulateBatteryHistory(
             val minBatteryLevel: Float,
-        ) : Event()
+        ) : Event
 
         /**
          * User confirmed clearing all battery history for this device.
          */
-        data object ClearBatteryHistory : Event()
+        data object ClearBatteryHistory : Event
 
         /**
          * User tapped to manually record the current battery reading.
          */
-        data object RecordBatteryManually : Event()
+        data object RecordBatteryManually : Event
     }
 }

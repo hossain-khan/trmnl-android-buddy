@@ -76,48 +76,48 @@ data object SettingsScreen : Screen {
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
-    sealed class Event : CircuitUiEvent {
-        data object BackClicked : Event()
+    sealed interface Event : CircuitUiEvent {
+        data object BackClicked : Event
 
-        data object AccountClicked : Event()
+        data object AccountClicked : Event
 
         data class BatteryTrackingToggled(
             val enabled: Boolean,
-        ) : Event()
+        ) : Event
 
         data class LowBatteryNotificationToggled(
             val enabled: Boolean,
-        ) : Event()
+        ) : Event
 
         data class LowBatteryThresholdChanged(
             val percent: Int,
-        ) : Event()
+        ) : Event
 
         data class RssFeedContentToggled(
             val enabled: Boolean,
-        ) : Event()
+        ) : Event
 
         data class RssFeedContentNotificationToggled(
             val enabled: Boolean,
-        ) : Event()
+        ) : Event
 
         data class SecurityToggled(
             val enabled: Boolean,
-        ) : Event()
+        ) : Event
 
-        data object DevelopmentClicked : Event()
+        data object DevelopmentClicked : Event
 
-        data object DeviceCatalogClicked : Event()
+        data object DeviceCatalogClicked : Event
 
-        data object RecipesCatalogClicked : Event()
+        data object RecipesCatalogClicked : Event
 
-        data object ContentHubClicked : Event()
+        data object ContentHubClicked : Event
 
-        data object RecipesAnalyticsClicked : Event()
+        data object RecipesAnalyticsClicked : Event
 
         data class RecipeHealthCardToggled(
             val enabled: Boolean,
-        ) : Event()
+        ) : Event
     }
 }
 
