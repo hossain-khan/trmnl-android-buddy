@@ -135,20 +135,20 @@ data class DeviceDetailScreen(
      *
      * @see DeviceDetailPresenter Handles event processing and state management
      */
-    sealed class Event : CircuitUiEvent {
+    sealed interface Event : CircuitUiEvent {
         /**
          * User tapped the back button. Navigates to previous screen.
          */
-        data object BackClicked : Event()
+        data object BackClicked : Event
 
         /**
          * User tapped the settings button. Opens device token configuration.
          */
-        data object SettingsClicked : Event()
+        data object SettingsClicked : Event
 
         /**
          * User tapped to view playlist items. Opens full playlist items screen.
          */
-        data object ViewPlaylistItems : Event()
+        data object ViewPlaylistItems : Event
     }
 }

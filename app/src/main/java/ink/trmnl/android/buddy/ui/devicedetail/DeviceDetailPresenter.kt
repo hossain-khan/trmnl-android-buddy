@@ -64,7 +64,7 @@ import kotlinx.coroutines.withContext
  * @property deviceTokenRepository Repository for device-specific API tokens
  * @property playlistItemsRepository Repository with cached playlist items
  *
- * @see DeviceDetailScreen Screen definition with State and Event sealed classes
+ * @see DeviceDetailScreen Screen definition with State and Event sealed interfaces
  * @see BatteryChartPresenter Separate presenter for battery history management
  * @see PlaylistItemsRepository Shared repository with intelligent caching
  */

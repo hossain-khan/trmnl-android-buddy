@@ -34,31 +34,31 @@ data object BookmarkedRecipesScreen : Screen {
     /**
      * UI events for the Bookmarked Recipes Screen.
      */
-    sealed class Event : CircuitUiEvent {
+    sealed interface Event : CircuitUiEvent {
         /**
          * User clicked the back button.
          */
-        data object BackClicked : Event()
+        data object BackClicked : Event
 
         /**
          * User clicked the share button to share bookmarked recipes.
          */
-        data object ShareClicked : Event()
+        data object ShareClicked : Event
 
         /**
          * User clicked the clear all bookmarks button.
          */
-        data object ClearAllClicked : Event()
+        data object ClearAllClicked : Event
 
         /**
          * User confirmed clearing all bookmarks in the dialog.
          */
-        data object ConfirmClearAll : Event()
+        data object ConfirmClearAll : Event
 
         /**
          * User dismissed the clear all confirmation dialog.
          */
-        data object DismissClearAllDialog : Event()
+        data object DismissClearAllDialog : Event
 
         /**
          * User clicked on a recipe to view details.
@@ -67,7 +67,7 @@ data object BookmarkedRecipesScreen : Screen {
          */
         data class RecipeClicked(
             val recipe: Recipe,
-        ) : Event()
+        ) : Event
 
         /**
          * User clicked the bookmark button to remove bookmark.
@@ -76,6 +76,6 @@ data object BookmarkedRecipesScreen : Screen {
          */
         data class BookmarkClicked(
             val recipe: Recipe,
-        ) : Event()
+        ) : Event
     }
 }

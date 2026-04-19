@@ -8,7 +8,7 @@ import ink.trmnl.android.buddy.api.models.RecipesAnalytics
  * This wrapper provides type-safe state management with clear distinctions between
  * different UI states (loading, success, error).
  */
-sealed class RecipesAnalyticsState {
+sealed interface RecipesAnalyticsState {
     /**
      * Analytics data has been successfully loaded.
      *
@@ -16,7 +16,7 @@ sealed class RecipesAnalyticsState {
      */
     data class Success(
         val data: RecipesAnalyticsUi,
-    ) : RecipesAnalyticsState()
+    ) : RecipesAnalyticsState
 
     /**
      * Analytics data is currently being loaded.
@@ -25,7 +25,7 @@ sealed class RecipesAnalyticsState {
      */
     data class Loading(
         val previousData: RecipesAnalyticsUi? = null,
-    ) : RecipesAnalyticsState()
+    ) : RecipesAnalyticsState
 
     /**
      * An error occurred while loading analytics data.
@@ -36,7 +36,7 @@ sealed class RecipesAnalyticsState {
     data class Error(
         val message: String,
         val previousData: RecipesAnalyticsUi? = null,
-    ) : RecipesAnalyticsState()
+    ) : RecipesAnalyticsState
 }
 
 // ============================================

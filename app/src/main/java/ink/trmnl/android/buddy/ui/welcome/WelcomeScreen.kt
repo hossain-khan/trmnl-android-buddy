@@ -20,9 +20,9 @@ data object WelcomeScreen : Screen {
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
-    sealed class Event : CircuitUiEvent {
-        data object GetStartedClicked : Event()
+    sealed interface Event : CircuitUiEvent {
+        data object GetStartedClicked : Event
 
-        data object ViewUpdatesClicked : Event()
+        data object ViewUpdatesClicked : Event
     }
 }

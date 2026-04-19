@@ -36,11 +36,11 @@ data object DeviceCatalogScreen : Screen {
     /**
      * Events that can occur in the device catalog screen.
      */
-    sealed class Event : CircuitUiEvent {
+    sealed interface Event : CircuitUiEvent {
         /**
          * User clicked the back button.
          */
-        data object BackClicked : Event()
+        data object BackClicked : Event
 
         /**
          * User selected a device kind filter.
@@ -49,7 +49,7 @@ data object DeviceCatalogScreen : Screen {
          */
         data class FilterSelected(
             val kind: DeviceKind?,
-        ) : Event()
+        ) : Event
 
         /**
          * User clicked on a device to view details.
@@ -58,17 +58,17 @@ data object DeviceCatalogScreen : Screen {
          */
         data class DeviceClicked(
             val device: DeviceModel,
-        ) : Event()
+        ) : Event
 
         /**
          * User clicked retry after an error.
          */
-        data object RetryClicked : Event()
+        data object RetryClicked : Event
 
         /**
          * User dismissed the device details bottom sheet.
          */
-        data object DismissBottomSheet : Event()
+        data object DismissBottomSheet : Event
     }
 }
 

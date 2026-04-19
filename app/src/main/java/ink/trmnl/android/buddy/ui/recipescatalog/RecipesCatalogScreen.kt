@@ -55,16 +55,16 @@ data object RecipesCatalogScreen : Screen {
     /**
      * UI events for the Recipes Catalog Screen.
      */
-    sealed class Event : CircuitUiEvent {
+    sealed interface Event : CircuitUiEvent {
         /**
          * User clicked the back button.
          */
-        data object BackClicked : Event()
+        data object BackClicked : Event
 
         /**
          * User clicked the bookmarks button to view bookmarked recipes.
          */
-        data object BookmarksClicked : Event()
+        data object BookmarksClicked : Event
 
         /**
          * User changed the search query text.
@@ -73,17 +73,17 @@ data object RecipesCatalogScreen : Screen {
          */
         data class SearchQueryChanged(
             val query: String,
-        ) : Event()
+        ) : Event
 
         /**
          * User submitted the search (e.g., pressed search button or Enter key).
          */
-        data object SearchClicked : Event()
+        data object SearchClicked : Event
 
         /**
          * User clicked the clear search button (X icon).
          */
-        data object ClearSearchClicked : Event()
+        data object ClearSearchClicked : Event
 
         /**
          * User selected a different sort option.
@@ -92,7 +92,7 @@ data object RecipesCatalogScreen : Screen {
          */
         data class SortSelected(
             val sort: SortOption,
-        ) : Event()
+        ) : Event
 
         /**
          * User clicked on a recipe to view details.
@@ -101,7 +101,7 @@ data object RecipesCatalogScreen : Screen {
          */
         data class RecipeClicked(
             val recipe: Recipe,
-        ) : Event()
+        ) : Event
 
         /**
          * User clicked the bookmark button on a recipe.
@@ -110,17 +110,17 @@ data object RecipesCatalogScreen : Screen {
          */
         data class BookmarkClicked(
             val recipe: Recipe,
-        ) : Event()
+        ) : Event
 
         /**
          * User clicked the "Load More" button to fetch next page.
          */
-        data object LoadMoreClicked : Event()
+        data object LoadMoreClicked : Event
 
         /**
          * User clicked retry button after an error.
          */
-        data object RetryClicked : Event()
+        data object RetryClicked : Event
 
         /**
          * User selected a category to filter recipes.
@@ -129,7 +129,7 @@ data object RecipesCatalogScreen : Screen {
          */
         data class CategorySelected(
             val category: String,
-        ) : Event()
+        ) : Event
 
         /**
          * User deselected a category filter.
@@ -138,22 +138,22 @@ data object RecipesCatalogScreen : Screen {
          */
         data class CategoryDeselected(
             val category: String,
-        ) : Event()
+        ) : Event
 
         /**
          * User clicked to clear all category filters.
          */
-        data object ClearCategoryFilters : Event()
+        data object ClearCategoryFilters : Event
 
         /**
          * User clicked the filter toggle button to show/hide filters.
          */
-        data object ToggleFiltersClicked : Event()
+        data object ToggleFiltersClicked : Event
 
         /**
          * User dismissed the recipe detail bottom sheet.
          */
-        data object DismissRecipeDetails : Event()
+        data object DismissRecipeDetails : Event
     }
 }
 

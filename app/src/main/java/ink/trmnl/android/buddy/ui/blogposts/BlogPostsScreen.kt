@@ -35,21 +35,21 @@ data class BlogPostsScreen(
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
-    sealed class Event : CircuitUiEvent {
-        data object Refresh : Event()
+    sealed interface Event : CircuitUiEvent {
+        data object Refresh : Event
 
         data class BlogPostClicked(
             val blogPost: BlogPostEntity,
-        ) : Event()
+        ) : Event
 
         data class ToggleFavorite(
             val blogPostId: String,
-        ) : Event()
+        ) : Event
 
         data class CategorySelected(
             val category: String?, // null = All
-        ) : Event()
+        ) : Event
 
-        data object MarkAllAsRead : Event()
+        data object MarkAllAsRead : Event
     }
 }

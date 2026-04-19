@@ -93,16 +93,16 @@ data object UserAccountScreen : Screen {
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
-    sealed class Event : CircuitUiEvent {
-        data object BackClicked : Event()
+    sealed interface Event : CircuitUiEvent {
+        data object BackClicked : Event
 
-        data object Refresh : Event()
+        data object Refresh : Event
 
-        data object LogoutClicked : Event()
+        data object LogoutClicked : Event
 
-        data object ConfirmLogout : Event()
+        data object ConfirmLogout : Event
 
-        data object DismissLogoutDialog : Event()
+        data object DismissLogoutDialog : Event
     }
 }
 

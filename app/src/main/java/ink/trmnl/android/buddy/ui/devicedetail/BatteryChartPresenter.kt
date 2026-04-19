@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit
  * @property batteryHistoryRepository Repository for local battery history database operations
  * @property userPreferencesRepository Repository for user settings (battery tracking preference)
  *
- * @see BatteryChartScreen Screen definition with State and Event sealed classes
+ * @see BatteryChartScreen Screen definition with State and Event sealed interfaces
  * @see BatteryHistoryAnalyzer Battery health analysis and prediction logic
  */
 @Inject

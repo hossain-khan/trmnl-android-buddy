@@ -90,12 +90,12 @@ data object ContentHubScreen : Screen {
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
-    sealed class Event : CircuitUiEvent {
-        data object BackClicked : Event()
+    sealed interface Event : CircuitUiEvent {
+        data object BackClicked : Event
 
         data class TabSelected(
             val tab: Tab,
-        ) : Event()
+        ) : Event
     }
 
     // Placeholder for announcements state (to be provided by embedded presenter)

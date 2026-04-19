@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
  * @property userPreferencesRepository Repository for reading/updating security preferences
  * @property biometricAuthHelper Helper for triggering biometric authentication
  *
- * @see AuthenticationScreen Screen definition with State and Event sealed classes
+ * @see AuthenticationScreen Screen definition with State and Event sealed interfaces
  * @see BiometricAuthHelper Android biometric authentication wrapper
  */
 @Inject

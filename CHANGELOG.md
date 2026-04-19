@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Circuit best practices**: Updated Circuit dependency from `0.30.0` to `0.33.1` and aligned code with Circuit best practices
+  - Upgraded all `sealed class Event : CircuitUiEvent` to `sealed interface Event : CircuitUiEvent` across all screens for improved Compose compatibility
+  - Converted inner sealed state classes (`DownloadState`, `RefreshState` in `DevicePreviewScreen`) to `sealed interface`
+  - Converted `RecipesAnalyticsState` sealed class to `sealed interface`
+
 ## [2.15.0] - 2026-04-18
 
 ### Added

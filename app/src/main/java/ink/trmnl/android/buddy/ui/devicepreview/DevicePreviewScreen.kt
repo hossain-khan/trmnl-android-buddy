@@ -35,44 +35,44 @@ data class DevicePreviewScreen(
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
-    sealed class DownloadState {
-        data object Idle : DownloadState()
+    sealed interface DownloadState {
+        data object Idle : DownloadState
 
-        data object Downloading : DownloadState()
+        data object Downloading : DownloadState
 
         data class Success(
             val message: String,
-        ) : DownloadState()
+        ) : DownloadState
 
         data class Error(
             val message: String,
-        ) : DownloadState()
+        ) : DownloadState
     }
 
-    sealed class RefreshState {
-        data object Idle : RefreshState()
+    sealed interface RefreshState {
+        data object Idle : RefreshState
 
-        data object Refreshing : RefreshState()
+        data object Refreshing : RefreshState
 
         data class Success(
             val newImageUrl: String,
             val message: String,
-        ) : RefreshState()
+        ) : RefreshState
 
         data class Error(
             val message: String,
-        ) : RefreshState()
+        ) : RefreshState
     }
 
-    sealed class Event : CircuitUiEvent {
-        data object BackClicked : Event()
+    sealed interface Event : CircuitUiEvent {
+        data object BackClicked : Event
 
-        data object DownloadImageClicked : Event()
+        data object DownloadImageClicked : Event
 
-        data object RefreshImageClicked : Event()
+        data object RefreshImageClicked : Event
 
-        data object DismissSnackbar : Event()
+        data object DismissSnackbar : Event
 
-        data object DismissRefreshSnackbar : Event()
+        data object DismissRefreshSnackbar : Event
     }
 }

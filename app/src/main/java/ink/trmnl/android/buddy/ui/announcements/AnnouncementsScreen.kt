@@ -27,26 +27,26 @@ data class AnnouncementsScreen(
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
-    sealed class Event : CircuitUiEvent {
-        data object BackClicked : Event()
+    sealed interface Event : CircuitUiEvent {
+        data object BackClicked : Event
 
-        data object Refresh : Event()
+        data object Refresh : Event
 
         data class FilterChanged(
             val filter: Filter,
-        ) : Event()
+        ) : Event
 
         data class AnnouncementClicked(
             val announcement: AnnouncementEntity,
-        ) : Event()
+        ) : Event
 
         data class ToggleReadStatus(
             val announcement: AnnouncementEntity,
-        ) : Event()
+        ) : Event
 
-        data object MarkAllAsRead : Event()
+        data object MarkAllAsRead : Event
 
-        data object DismissAuthBanner : Event()
+        data object DismissAuthBanner : Event
     }
 
     enum class Filter {
