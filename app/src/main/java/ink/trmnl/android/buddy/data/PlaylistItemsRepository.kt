@@ -7,6 +7,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.PlaylistItem
+import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import kotlinx.coroutines.Dispatchers
@@ -235,7 +236,7 @@ class PlaylistItemsRepositoryImpl
 
                 is ApiResult.Failure ->
                     Result.failure(
-                        Exception("Failed to fetch playlist items: $result"),
+                        Exception(result.toUserMessage()),
                     )
             }
         }
@@ -349,8 +350,8 @@ class PlaylistItemsRepositoryImpl
                             val revertedItems = currentCache
                             cache = CachedData(revertedItems, cache?.timestamp ?: Clock.System.now())
                             _itemsFlow.value = revertedItems
-                            Timber.e("Failed to update visibility: $result")
-                            Result.failure(Exception("Failed to update visibility: $result"))
+                            Timber.e("Failed to update visibility: ${result.toUserMessage()}")
+                            Result.failure(Exception(result.toUserMessage()))
                         }
                     }
                 } catch (e: Exception) {
