@@ -52,7 +52,7 @@ data class PlaylistItem(
      *
      * Returns the plugin setting name if available, otherwise "Mashup #{id}" for mashup items.
      */
-    fun displayName(): String = pluginSetting?.name ?: "Mashup #$mashupId"
+    fun displayName(): String = pluginSetting?.name ?: mashupId?.let { "Mashup #$it" } ?: "Plugin #$pluginSettingId"
 
     /**
      * Check if this item has never been rendered/displayed.
