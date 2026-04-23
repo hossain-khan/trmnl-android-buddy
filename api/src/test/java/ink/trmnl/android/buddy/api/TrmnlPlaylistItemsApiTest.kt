@@ -298,6 +298,61 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
         }
 
     @Test
+    fun `getPlaylistItems handles empty plugin_setting object from API`() =
+        runTest {
+            // Given: API returns plugin_setting as empty object {} (fields not populated)
+            // This is the real-world behaviour seen in live API responses (scratch_5.json)
+            val responseBody =
+                """
+                {
+                  "data": [
+                    {
+                      "id": 484391,
+                      "device_id": 1002,
+                      "plugin_setting_id": 237340,
+                      "mashup_id": null,
+                      "visible": true,
+                      "rendered_at": "2026-04-23T16:38:53.462Z",
+                      "row_order": -1587270521,
+                      "created_at": "2026-02-03T01:33:53.683Z",
+                      "updated_at": "2026-04-23T16:38:53.462Z",
+                      "mirror": false,
+                      "plugin_setting": {}
+                    }
+                  ]
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            // When: Call getPlaylistItems
+            val result = apiService.getPlaylistItems("Bearer test_token")
+
+            // Then: Should parse successfully — empty {} must not cause MissingFieldException
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val successResult = result as ApiResult.Success
+
+            assertThat(successResult.value.data).hasSize(1)
+
+            val item = successResult.value.data[0]
+            assertThat(item.id).isEqualTo(484391)
+            assertThat(item.deviceId).isEqualTo(1002)
+            assertThat(item.pluginSettingId).isEqualTo(237340)
+            // plugin_setting is present but empty — all fields null
+            assertThat(item.pluginSetting).isNotNull()
+            assertThat(item.pluginSetting?.id).isNull()
+            assertThat(item.pluginSetting?.name).isNull()
+            assertThat(item.pluginSetting?.pluginId).isNull()
+            // displayName falls back to "Plugin #<pluginSettingId>" when name is null
+            assertThat(item.displayName()).isEqualTo("Plugin #237340")
+        }
+
+    @Test
     fun `getPlaylistItems returns HTTP 401 for unauthorized`() =
         runTest {
             // Given: Mock server returns 401 Unauthorized

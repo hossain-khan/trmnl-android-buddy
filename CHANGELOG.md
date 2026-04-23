@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **`PlaylistItemsResponse` parsing failure**: Fixed `MissingFieldException` crash when deserializing `GET /playlists/items` responses where the API returns `plugin_setting: {}` (an empty object) instead of a fully-populated object. Made all fields in `PluginSetting` nullable with defaults so that empty objects deserialize without error. Updated `PlaylistItem.displayName()` to fall back to `"Plugin #<id>"` when `plugin_setting.name` is null. Added a regression test covering the empty object case.
 - **Playlist items screen error message**: Fixed cryptic error message (e.g., `r8.f@b87fba8`) shown when tapping "View" on the Playlist Items section of the device detail screen. In release builds, R8 minification was causing `ApiResult.Failure.toString()` to return an obfuscated class name instead of a readable error. Now uses `ErrorMapper.toUserMessage()` for proper user-friendly error messages.
 
 ### Changed
