@@ -10,8 +10,11 @@ import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.work.WorkerScheduler
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 /**
@@ -27,8 +30,19 @@ interface AppGraph {
     val workManager: WorkManager
     val workerFactory: AppWorkerFactory
     val userPreferencesRepository: UserPreferencesRepository
+    val trmnlApiService: TrmnlApiService
     val workerScheduler: WorkerScheduler
     val imageLoader: ImageLoader
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideOkHttpClient(): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
 
     @Provides
     fun providesWorkManager(

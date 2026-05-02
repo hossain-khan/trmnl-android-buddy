@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Home screen widget (Compose Glance)**: Added a resizable home screen widget that displays the current e-ink display image from a selected TRMNL device
+  - Widget configuration activity (`WidgetConfigurationActivity`) to select a device from the account's device list when adding the widget
+  - Automatic image refresh based on the device's `refresh_rate` from the TRMNL display API (minimum 15 minutes)
+  - Four widget states: Unconfigured (tap to select device), Loading (while first image is fetched), Content (showing the device image with device name and refresh button), and Error (showing a message with tap-to-retry)
+  - `TrmnlWidgetRefreshWorker` (WorkManager) fetches the current display via the TRMNL API, downloads and caches the image as PNG, and reschedules itself using the API's `refreshRate`
+  - `RefreshWidgetCallback` handles manual refresh taps within the widget
+  - Minimum refresh interval of 15 minutes; uses device-specific API token for authentication
+
 ## [2.16.0] - 2026-04-23
 
 ### Fixed
