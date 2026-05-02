@@ -109,7 +109,8 @@ class WidgetConfigurationActivity : ComponentActivity() {
                 val prefs = appGraph.userPreferencesRepository.userPreferencesFlow.first()
                 val apiToken = prefs.apiToken
                 if (apiToken.isNullOrBlank()) {
-                    errorMessage = "No API token configured. Please open the app and sign in first."
+                    errorMessage =
+                        "Sign in required. Open the TRMNL Buddy app to authenticate before adding a widget."
                     isLoading = false
                     return@LaunchedEffect
                 }
@@ -119,8 +120,23 @@ class WidgetConfigurationActivity : ComponentActivity() {
                         isLoading = false
                     }
 
+                    is ApiResult.Failure.HttpFailure -> {
+                        errorMessage =
+                            if (result.code == 401) {
+                                "Authentication failed (HTTP 401). Re-open the app and check your API token."
+                            } else {
+                                "Server error (HTTP ${result.code}). Please try again later."
+                            }
+                        isLoading = false
+                    }
+
+                    is ApiResult.Failure.NetworkFailure -> {
+                        errorMessage = "No network connection. Check your internet and try again."
+                        isLoading = false
+                    }
+
                     else -> {
-                        errorMessage = "Failed to load devices. Check your connection."
+                        errorMessage = "Failed to load devices. Please try again."
                         isLoading = false
                     }
                 }

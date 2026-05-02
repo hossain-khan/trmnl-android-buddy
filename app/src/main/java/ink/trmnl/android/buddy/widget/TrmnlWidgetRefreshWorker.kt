@@ -200,10 +200,10 @@ class TrmnlWidgetRefreshWorker(
                     throw IOException("Failed to create image cache directory: ${parentDir.absolutePath}")
                 }
                 outputFile.outputStream().use { out ->
-                    // PNG is lossless; the quality parameter is ignored by the Android PNG encoder.
+                    // PNG compression quality is a no-op for the Android PNG encoder (lossless format).
                     // PNG is preferred here because TRMNL display images are monochrome/grayscale,
                     // which compresses very efficiently as PNG without any visual degradation.
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, out)
                 }
             }
         }

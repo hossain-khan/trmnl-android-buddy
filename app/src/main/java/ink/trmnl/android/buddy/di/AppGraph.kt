@@ -36,7 +36,7 @@ interface AppGraph {
 
     @Provides
     @SingleIn(AppScope::class)
-    fun providesOkHttpClient(): OkHttpClient =
+    fun provideOkHttpClient(): OkHttpClient =
         OkHttpClient
             .Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
