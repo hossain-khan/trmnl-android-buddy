@@ -167,6 +167,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         val configureIntent =
             AndroidIntent(context, WidgetConfigurationActivity::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                addFlags(AndroidIntent.FLAG_ACTIVITY_NEW_TASK)
             }
         Column(
             modifier =

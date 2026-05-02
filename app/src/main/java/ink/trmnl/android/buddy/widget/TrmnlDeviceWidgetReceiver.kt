@@ -53,8 +53,14 @@ class TrmnlDeviceWidgetReceiver : GlanceAppWidgetReceiver() {
                     "${TrmnlWidgetRefreshWorker.WIDGET_IMAGES_DIR}/widget_$appWidgetId.png",
                 )
             if (imageFile.exists()) {
-                imageFile.delete()
-                Timber.d("[TrmnlDeviceWidgetReceiver] Deleted cached image for widget $appWidgetId")
+                val deleted = imageFile.delete()
+                if (deleted) {
+                    Timber.d("[TrmnlDeviceWidgetReceiver] Deleted cached image for widget $appWidgetId")
+                } else {
+                    Timber.e(
+                        "[TrmnlDeviceWidgetReceiver] Failed to delete cached image for widget $appWidgetId at ${imageFile.absolutePath}",
+                    )
+                }
             }
         }
     }

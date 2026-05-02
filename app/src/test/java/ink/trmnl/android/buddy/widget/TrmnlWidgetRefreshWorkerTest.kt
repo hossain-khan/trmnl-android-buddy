@@ -13,7 +13,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
-import assertk.assertions.isNotNull
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakeTrmnlApiService
 import kotlinx.coroutines.test.runTest
@@ -144,31 +143,21 @@ class TrmnlWidgetRefreshWorkerTest {
     }
 
     @Test
-    fun `enqueue includes appWidgetId in work input data`() {
+    fun `enqueue unique work name encodes the appWidgetId`() {
         val appWidgetId = 55
 
         // When: Enqueue is called
         TrmnlWidgetRefreshWorker.enqueue(context, appWidgetId, initialDelayMinutes = 0)
 
-        // Then: The work contains the correct appWidgetId
+        // Then: The unique work name is derivable from the appWidgetId
+        val expectedWorkName = TrmnlWidgetRefreshWorker.workName(appWidgetId)
         val workManager = WorkManager.getInstance(context)
         val workInfos =
             workManager
-                .getWorkInfosForUniqueWork(TrmnlWidgetRefreshWorker.workName(appWidgetId))
+                .getWorkInfosForUniqueWork(expectedWorkName)
                 .get()
-        val workInfo = workInfos.firstOrNull()
-        assertThat(workInfo).isNotNull()
-        val storedId =
-            workInfo!!
-                .progress
-                .getInt(TrmnlWidgetRefreshWorker.KEY_APP_WIDGET_ID, -1)
-                .takeIf { it != -1 }
-                ?: run {
-                    // Input data is available via WorkInfo in WorkManager >= 2.8
-                    // Fall back to checking the unique work name contains the id
-                    appWidgetId
-                }
-        assertThat(storedId).isEqualTo(appWidgetId)
+        assertThat(workInfos).isNotEmpty()
+        assertThat(expectedWorkName).isEqualTo("trmnl_widget_refresh_$appWidgetId")
     }
 
     @Test

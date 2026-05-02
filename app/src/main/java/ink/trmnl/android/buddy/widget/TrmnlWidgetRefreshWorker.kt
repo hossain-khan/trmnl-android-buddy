@@ -137,6 +137,7 @@ class TrmnlWidgetRefreshWorker(
                         existingImagePath != null -> {
                             // Keep existing cached image; don't surface a transient download error
                             // since the user can still see the last known display image.
+                            Timber.d("[$WORK_TAG] Image download failed for widget $appWidgetId; retaining existing cached image")
                         }
                         else -> {
                             // No image available at all — surface an actionable error
