@@ -11,6 +11,8 @@ import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
+import androidx.work.ExistingWorkPolicy.KEEP
+import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -251,6 +253,7 @@ class TrmnlWidgetRefreshWorker(
             context: Context,
             appWidgetId: Int,
             initialDelayMinutes: Long = TrmnlDeviceWidget.DEFAULT_REFRESH_INTERVAL_MINUTES,
+            existingWorkPolicy: ExistingWorkPolicy = REPLACE,
         ) {
             val inputData =
                 Data
@@ -272,7 +275,7 @@ class TrmnlWidgetRefreshWorker(
             }
             WorkManager.getInstance(context).enqueueUniqueWork(
                 workName(appWidgetId),
-                ExistingWorkPolicy.REPLACE,
+                existingWorkPolicy,
                 requestBuilder.build(),
             )
         }

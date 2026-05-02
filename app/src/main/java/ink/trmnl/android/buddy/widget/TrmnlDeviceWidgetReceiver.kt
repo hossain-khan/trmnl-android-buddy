@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.widget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import timber.log.Timber
 import java.io.File
@@ -30,6 +31,7 @@ class TrmnlDeviceWidgetReceiver : GlanceAppWidgetReceiver() {
                 context = context,
                 appWidgetId = appWidgetId,
                 initialDelayMinutes = 0,
+                existingWorkPolicy = ExistingWorkPolicy.KEEP,
             )
         }
     }

@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `RefreshWidgetCallback` handles manual refresh taps within the widget
   - Minimum refresh interval of 15 minutes; uses device-specific API token for authentication
 
+### Fixed
+- **Widget worker cancellation loop**: Fixed `WorkerStoppedException` spam caused by `onUpdate` using `ExistingWorkPolicy.REPLACE`. Multiple `onUpdate` calls (triggered by the Glance session lifecycle) were cancelling any in-progress `TrmnlWidgetRefreshWorker`. Changed `onUpdate` to use `ExistingWorkPolicy.KEEP` so a running fetch is never interrupted; manual refresh from the widget refresh button continues to use `REPLACE` for an immediate restart.
+
 ## [2.16.0] - 2026-04-23
 
 ### Fixed
