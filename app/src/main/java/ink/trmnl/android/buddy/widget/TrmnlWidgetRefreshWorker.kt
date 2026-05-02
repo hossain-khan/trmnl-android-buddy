@@ -150,13 +150,22 @@ class TrmnlWidgetRefreshWorker(
                 }
                 TrmnlDeviceWidget().update(applicationContext, glanceId)
 
-                // Schedule next refresh using the API-provided rate, floored at the minimum
+                // Schedule next refresh using the API-provided rate, floored at the minimum.
+                // Use KEEP so the still-running coroutine is not cancelled by REPLACE: the current
+                // worker will have already returned Result.success() before the delayed job fires.
+                // A user-triggered refresh (RefreshWidgetCallback) uses REPLACE explicitly to
+                // override this pending delay when the user taps the refresh button.
                 val nextRefreshMinutes =
                     maxOf(
                         TrmnlDeviceWidget.MIN_REFRESH_INTERVAL_MINUTES,
                         (refreshRate / 60L),
                     )
-                enqueue(applicationContext, appWidgetId, initialDelayMinutes = nextRefreshMinutes)
+                enqueue(
+                    applicationContext,
+                    appWidgetId,
+                    initialDelayMinutes = nextRefreshMinutes,
+                    existingWorkPolicy = KEEP,
+                )
 
                 Result.success()
             }
