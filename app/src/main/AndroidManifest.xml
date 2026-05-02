@@ -34,6 +34,27 @@
             </intent-filter>
         </activity>
 
+        <!-- TRMNL Device Widget -->
+        <receiver
+            android:name=".widget.TrmnlDeviceWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/trmnl_device_widget_info" />
+        </receiver>
+
+        <activity
+            android:name=".widget.WidgetConfigurationActivity"
+            android:exported="true"
+            android:label="@string/widget_configure_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
         <!--
             This is required to use this app's custom WorkManager configuration.
             https://developer.android.com/develop/background-work/background-tasks/persistent/configuration/custom-configuration
