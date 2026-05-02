@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **Widget worker cancellation loop**: Fixed `WorkerStoppedException` spam caused by `onUpdate` using `ExistingWorkPolicy.REPLACE`. Multiple `onUpdate` calls (triggered by the Glance session lifecycle) were cancelling any in-progress `TrmnlWidgetRefreshWorker`. Changed `onUpdate` to use `ExistingWorkPolicy.KEEP` so a running fetch is never interrupted; manual refresh from the widget refresh button continues to use `REPLACE` for an immediate restart.
+- **Widget stuck on Loading after device selection**: Fixed widget remaining permanently in Loading state after selecting a device and the refresh worker successfully downloading the image. The root cause was a stale-capture bug in `TrmnlDeviceWidget.provideGlance`: the decoded `bitmap` was captured once at `provideGlance` invocation time (null when no image exists), and a path-comparison guard in `provideContent` returned `null` whenever Glance reactively recomposed with the new image path (before `provideGlance` re-ran via `update()`). Removed the guard so `provideContent` always uses the bitmap decoded during the most recent `provideGlance` run.
 
 ## [2.16.0] - 2026-04-23
 
