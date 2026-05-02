@@ -101,7 +101,11 @@ class TrmnlWidgetRefreshWorker(
                 val imageUrl = display.imageUrl
                 val refreshRate = display.refreshRate
 
+                // Check whether a cached image already exists before attempting download
+                val existingImagePath = prefs[TrmnlDeviceWidget.IMAGE_FILE_PATH_KEY]
+
                 var imageFilePath: String? = null
+                var downloadError: String? = null
                 if (!imageUrl.isNullOrBlank()) {
                     try {
                         val imageFile =
@@ -113,17 +117,33 @@ class TrmnlWidgetRefreshWorker(
                         imageFilePath = imageFile.absolutePath
                     } catch (e: Exception) {
                         Timber.e(e, "[$WORK_TAG] Failed to download image from $imageUrl")
+                        downloadError = "Failed to download display image."
                     }
+                } else {
+                    Timber.w("[$WORK_TAG] API returned no image URL for widget $appWidgetId")
+                    downloadError = "No display image available from API."
                 }
 
                 val filePath = imageFilePath
                 updateAppWidgetState(applicationContext, glanceId) { mutablePrefs ->
-                    if (filePath != null) {
-                        mutablePrefs[TrmnlDeviceWidget.IMAGE_FILE_PATH_KEY] = filePath
-                    }
                     mutablePrefs[TrmnlDeviceWidget.REFRESH_RATE_KEY] = refreshRate
                     mutablePrefs[TrmnlDeviceWidget.LAST_UPDATED_KEY] = System.currentTimeMillis()
-                    mutablePrefs.remove(TrmnlDeviceWidget.ERROR_MESSAGE_KEY)
+                    when {
+                        filePath != null -> {
+                            // New image successfully downloaded — update path and clear any error
+                            mutablePrefs[TrmnlDeviceWidget.IMAGE_FILE_PATH_KEY] = filePath
+                            mutablePrefs.remove(TrmnlDeviceWidget.ERROR_MESSAGE_KEY)
+                        }
+                        existingImagePath != null -> {
+                            // Keep existing cached image; don't surface a transient download error
+                            // since the user can still see the last known display image.
+                        }
+                        else -> {
+                            // No image available at all — surface an actionable error
+                            mutablePrefs[TrmnlDeviceWidget.ERROR_MESSAGE_KEY] =
+                                downloadError ?: "No display image available."
+                        }
+                    }
                 }
                 TrmnlDeviceWidget().update(applicationContext, glanceId)
 

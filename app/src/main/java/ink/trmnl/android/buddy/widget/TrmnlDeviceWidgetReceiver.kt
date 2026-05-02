@@ -5,13 +5,15 @@ import android.content.Context
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.work.WorkManager
 import timber.log.Timber
+import java.io.File
 
 /**
  * [GlanceAppWidgetReceiver] for the TRMNL Device Widget.
  *
  * Handles system lifecycle events:
  *  - **onUpdate**: Triggers a refresh for each widget instance (e.g. after a reboot)
- *  - **onDeleted**: Cancels the refresh worker and cleans up state for removed widgets
+ *  - **onDeleted**: Cancels the refresh worker and deletes the cached image file for each
+ *    removed widget to avoid leaking storage
  */
 class TrmnlDeviceWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget = TrmnlDeviceWidget()
@@ -39,8 +41,21 @@ class TrmnlDeviceWidgetReceiver : GlanceAppWidgetReceiver() {
         super.onDeleted(context, appWidgetIds)
         val workManager = WorkManager.getInstance(context)
         for (appWidgetId in appWidgetIds) {
-            Timber.d("[TrmnlDeviceWidgetReceiver] Cancelling refresh worker for widget $appWidgetId")
+            Timber.d("[TrmnlDeviceWidgetReceiver] Cleaning up widget $appWidgetId")
+
+            // Cancel the periodic refresh worker for this widget
             workManager.cancelUniqueWork(TrmnlWidgetRefreshWorker.workName(appWidgetId))
+
+            // Delete the cached display image to avoid leaking storage when widgets are removed
+            val imageFile =
+                File(
+                    context.filesDir,
+                    "${TrmnlWidgetRefreshWorker.WIDGET_IMAGES_DIR}/widget_$appWidgetId.png",
+                )
+            if (imageFile.exists()) {
+                imageFile.delete()
+                Timber.d("[TrmnlDeviceWidgetReceiver] Deleted cached image for widget $appWidgetId")
+            }
         }
     }
 }

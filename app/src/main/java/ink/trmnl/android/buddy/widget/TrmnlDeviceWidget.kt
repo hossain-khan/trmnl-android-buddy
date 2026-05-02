@@ -15,11 +15,12 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
 import androidx.glance.action.actionParametersOf
-import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
@@ -45,6 +46,7 @@ import ink.trmnl.android.buddy.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import android.content.Intent as AndroidIntent
 
 /**
  * TRMNL Device Widget – Glance-based app widget that shows the current
@@ -139,7 +141,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     .padding(8.dp),
         ) {
             when {
-                deviceFriendlyId == null -> UnconfiguredContent()
+                deviceFriendlyId == null -> UnconfiguredContent(appWidgetId = appWidgetId)
                 errorMessage != null ->
                     ErrorContent(
                         deviceName = deviceName,
@@ -160,12 +162,17 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun UnconfiguredContent() {
+    private fun UnconfiguredContent(appWidgetId: Int) {
+        val context = LocalContext.current
+        val configureIntent =
+            AndroidIntent(context, WidgetConfigurationActivity::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            }
         Column(
             modifier =
                 GlanceModifier
                     .fillMaxSize()
-                    .clickable(actionStartActivity<WidgetConfigurationActivity>()),
+                    .clickable(actionStartActivity(configureIntent)),
             verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

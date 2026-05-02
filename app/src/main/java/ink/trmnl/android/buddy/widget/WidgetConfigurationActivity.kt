@@ -223,6 +223,8 @@ class WidgetConfigurationActivity : ComponentActivity() {
                     glanceIds.firstOrNull { manager.getAppWidgetId(it) == appWidgetId }
                         ?: run {
                             Timber.e("[WidgetConfig] GlanceId not found for widget $appWidgetId")
+                            setResult(Activity.RESULT_CANCELED)
+                            finish()
                             return@launch
                         }
 
