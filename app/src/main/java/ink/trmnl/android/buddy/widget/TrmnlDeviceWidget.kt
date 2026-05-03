@@ -2,8 +2,14 @@ package ink.trmnl.android.buddy.widget
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
@@ -24,7 +30,6 @@ import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
-import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
@@ -95,23 +100,28 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         context: Context,
         id: GlanceId,
     ) {
-        // Load initial prefs and decode bitmap outside the composable (IO-safe here).
-        val initialPrefs = getAppWidgetState(context, PreferencesGlanceStateDefinition, id)
-        val imageFilePath = initialPrefs[IMAGE_FILE_PATH_KEY]
-        val bitmap =
-            withContext(Dispatchers.IO) {
-                imageFilePath?.let { path ->
-                    val file = File(path)
-                    if (file.exists()) BitmapFactory.decodeFile(path) else null
-                }
-            }
-
         provideContent {
             val prefs = currentState<Preferences>()
             val deviceFriendlyId = prefs[DEVICE_FRIENDLY_ID_KEY]
             val deviceName = prefs[DEVICE_NAME_KEY] ?: ""
             val errorMessage = prefs[ERROR_MESSAGE_KEY]
             val appWidgetId = prefs[APP_WIDGET_ID_KEY] ?: AppWidgetManager.INVALID_APPWIDGET_ID
+            val imageFilePath = prefs[IMAGE_FILE_PATH_KEY]
+
+            // Decode the bitmap reactively whenever the image file path changes.
+            // Using LaunchedEffect (supported since Glance 1.1.0) ensures the bitmap is always
+            // in sync with the latest state, even when Glance re-uses an active session and
+            // only triggers a recomposition (rather than a full provideGlance re-run).
+            var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+            LaunchedEffect(imageFilePath) {
+                bitmap =
+                    withContext(Dispatchers.IO) {
+                        imageFilePath?.let { path ->
+                            val file = File(path)
+                            if (file.exists()) BitmapFactory.decodeFile(path) else null
+                        }
+                    }
+            }
 
             GlanceTheme {
                 WidgetContent(
@@ -130,7 +140,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         appWidgetId: Int,
         deviceFriendlyId: String?,
         deviceName: String,
-        bitmap: android.graphics.Bitmap?,
+        bitmap: Bitmap?,
         errorMessage: String?,
     ) {
         Box(
@@ -276,7 +286,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
     @Composable
     private fun DisplayContent(
         deviceName: String,
-        bitmap: android.graphics.Bitmap,
+        bitmap: Bitmap,
         appWidgetId: Int,
     ) {
         val context = LocalContext.current

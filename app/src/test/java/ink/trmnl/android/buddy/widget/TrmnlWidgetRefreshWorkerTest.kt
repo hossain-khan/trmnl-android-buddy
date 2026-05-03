@@ -109,7 +109,7 @@ class TrmnlWidgetRefreshWorkerTest {
     // =========================================================
 
     @Test
-    fun `doWork returns success when widget no longer exists in Glance`() =
+    fun `doWork returns retry when widget glanceId not found in Glance`() =
         runTest {
             // Given: A valid but non-existent appWidgetId (no Glance widgets registered in tests)
             val worker = createWorkerWithWidgetId(appWidgetId = 99)
@@ -117,8 +117,10 @@ class TrmnlWidgetRefreshWorkerTest {
             // When: Worker executes
             val result = worker.doWork()
 
-            // Then: Returns success (widget gone — nothing to do)
-            assertThat(result).isInstanceOf(ListenableWorker.Result.Success::class.java)
+            // Then: Returns retry — glanceId may not be available yet due to a timing race on
+            // first widget add; retrying allows the worker to succeed once Glance has registered
+            // the widget.
+            assertThat(result).isInstanceOf(ListenableWorker.Result.Retry::class.java)
         }
 
     // =========================================================

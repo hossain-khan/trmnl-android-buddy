@@ -3,6 +3,8 @@ package ink.trmnl.android.buddy.widget
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -43,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.lifecycleScope
@@ -51,9 +54,16 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.TrmnlBuddyApp
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+import okhttp3.Request
 import timber.log.Timber
+import java.io.File
+import java.io.IOException
 
 /**
  * Configuration activity displayed when the user adds a new TRMNL Device Widget
@@ -62,8 +72,11 @@ import timber.log.Timber
  * Shows the list of devices in the user's account and lets them pick one.
  * After selection the activity:
  *  1. Stores the chosen device info in the widget's Glance state
- *  2. Schedules the first [TrmnlWidgetRefreshWorker] run
- *  3. Returns [Activity.RESULT_OK] to the system so the widget is added
+ *  2. Attempts an **inline image fetch** while still in the foreground so the widget
+ *     shows the display image immediately on first add (avoiding a race where the app
+ *     process is killed before WorkManager can execute the first refresh job)
+ *  3. Schedules a [TrmnlWidgetRefreshWorker] for the next periodic refresh
+ *  4. Returns [Activity.RESULT_OK] to the system so the widget is added
  *
  * If the activity is cancelled (back press / no token) RESULT_CANCELED is
  * returned and the widget is NOT added.
@@ -97,7 +110,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
         setContent {
             TrmnlBuddyAppTheme {
                 ConfigurationScreen(
-                    onDeviceSelected = { device -> onDeviceSelected(device) },
+                    onDeviceSelected = { device, onError -> onDeviceSelected(device, onError) },
                     onCancelled = { finish() },
                 )
             }
@@ -106,11 +119,12 @@ class WidgetConfigurationActivity : ComponentActivity() {
 
     @Composable
     private fun ConfigurationScreen(
-        onDeviceSelected: (Device) -> Unit,
+        onDeviceSelected: (Device, onError: () -> Unit) -> Unit,
         onCancelled: () -> Unit,
     ) {
         var devices by remember { mutableStateOf<List<Device>>(emptyList()) }
         var isLoading by remember { mutableStateOf(true) }
+        var isConfiguringWidget by remember { mutableStateOf(false) }
         var errorMessage by remember { mutableStateOf<String?>(null) }
 
         LaunchedEffect(Unit) {
@@ -169,6 +183,20 @@ class WidgetConfigurationActivity : ComponentActivity() {
                 contentAlignment = Alignment.Center,
             ) {
                 when {
+                    isConfiguringWidget -> {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier.padding(24.dp),
+                        ) {
+                            CircularProgressIndicator()
+                            Text(
+                                text = "Setting up widget…",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    }
                     isLoading -> CircularProgressIndicator()
                     errorMessage != null -> {
                         Column(
@@ -259,7 +287,10 @@ class WidgetConfigurationActivity : ComponentActivity() {
                             }
                             items(devices) { device ->
                                 Card(
-                                    onClick = { onDeviceSelected(device) },
+                                    onClick = {
+                                        isConfiguringWidget = true
+                                        onDeviceSelected(device) { isConfiguringWidget = false }
+                                    },
                                     modifier = Modifier.fillMaxWidth(),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                                     colors =
@@ -315,7 +346,10 @@ class WidgetConfigurationActivity : ComponentActivity() {
         }
     }
 
-    private fun onDeviceSelected(device: Device) {
+    private fun onDeviceSelected(
+        device: Device,
+        onError: () -> Unit,
+    ) {
         lifecycleScope.launch {
             try {
                 val manager = GlanceAppWidgetManager(applicationContext)
@@ -338,11 +372,38 @@ class WidgetConfigurationActivity : ComponentActivity() {
                 // Trigger initial render (shows loading state)
                 TrmnlDeviceWidget().update(applicationContext, glanceId)
 
-                // Schedule immediate first refresh
+                // Attempt an inline image fetch while still in the foreground.
+                //
+                // Background: after finish() the app process may be killed by aggressive
+                // OEM battery/process managers before WorkManager can execute the enqueued
+                // TrmnlWidgetRefreshWorker, leaving the widget stuck on "Loading…" until
+                // the user manually opens the app again.
+                //
+                // By fetching here — while the configuration activity is the foreground
+                // task — we guarantee the first image load succeeds regardless of whether
+                // WorkManager fires promptly.  If the fetch fails (no token, network issue,
+                // timeout) we fall back gracefully: the widget stays on Loading and the
+                // scheduled worker will retry.
+                val refreshRate =
+                    attemptInlineImageFetch(
+                        glanceId = glanceId,
+                        deviceFriendlyId = device.friendlyId,
+                        appWidgetId = appWidgetId,
+                    )
+
+                // Schedule future refreshes.  If the inline fetch succeeded we already
+                // know the API-supplied refresh rate and can schedule with the proper delay
+                // rather than running the worker again immediately.
+                val initialDelayMinutes =
+                    if (refreshRate != null) {
+                        maxOf(TrmnlDeviceWidget.MIN_REFRESH_INTERVAL_MINUTES, refreshRate / 60L)
+                    } else {
+                        0L // inline fetch failed — run immediately so the worker retries soon
+                    }
                 TrmnlWidgetRefreshWorker.enqueue(
                     context = applicationContext,
                     appWidgetId = appWidgetId,
-                    initialDelayMinutes = 0,
+                    initialDelayMinutes = initialDelayMinutes,
                 )
 
                 val resultValue =
@@ -351,7 +412,113 @@ class WidgetConfigurationActivity : ComponentActivity() {
                 finish()
             } catch (e: Exception) {
                 Timber.e(e, "[WidgetConfig] Error configuring widget")
+                // Reset the configuring flag so the device list reappears and the
+                // user can retry rather than being stuck on the progress screen.
+                onError()
             }
         }
+    }
+
+    /**
+     * Attempts to fetch the current display image from the TRMNL API and save it to the widget's
+     * local cache while the configuration activity is still in the foreground.
+     *
+     * This is a best-effort operation: any failure (missing token, network error, timeout) is
+     * silently swallowed so the caller can fall back to scheduling the background worker.
+     *
+     * @return the API-provided refresh rate in seconds on success, or `null` if the fetch failed.
+     */
+    private suspend fun attemptInlineImageFetch(
+        glanceId: GlanceId,
+        deviceFriendlyId: String,
+        appWidgetId: Int,
+    ): Int? {
+        val deviceToken = appGraph.deviceTokenRepository.getDeviceToken(deviceFriendlyId)
+        if (deviceToken.isNullOrBlank()) {
+            Timber.d("[WidgetConfig] No device token for $deviceFriendlyId — skipping inline fetch")
+            return null
+        }
+
+        return try {
+            val fetchResult =
+                withTimeoutOrNull(INLINE_FETCH_TIMEOUT_MS) {
+                    when (val result = appGraph.trmnlApiService.getDisplayCurrent(deviceToken)) {
+                        is ApiResult.Success -> {
+                            val display = result.value
+                            val imageUrl = display.imageUrl
+                            if (!imageUrl.isNullOrBlank()) {
+                                val imageFile =
+                                    File(
+                                        applicationContext.filesDir,
+                                        "${TrmnlWidgetRefreshWorker.WIDGET_IMAGES_DIR}/widget_$appWidgetId.png",
+                                    )
+                                downloadAndSaveWidgetImage(imageUrl, imageFile)
+                                updateAppWidgetState(applicationContext, glanceId) { mutablePrefs ->
+                                    mutablePrefs[TrmnlDeviceWidget.IMAGE_FILE_PATH_KEY] = imageFile.absolutePath
+                                    mutablePrefs[TrmnlDeviceWidget.REFRESH_RATE_KEY] = display.refreshRate
+                                    mutablePrefs[TrmnlDeviceWidget.LAST_UPDATED_KEY] = System.currentTimeMillis()
+                                    mutablePrefs.remove(TrmnlDeviceWidget.ERROR_MESSAGE_KEY)
+                                }
+                                // Re-render widget so the home screen sees the image immediately
+                                TrmnlDeviceWidget().update(applicationContext, glanceId)
+                                Timber.d("[WidgetConfig] Inline fetch succeeded for widget $appWidgetId")
+                                display.refreshRate
+                            } else {
+                                Timber.d("[WidgetConfig] API returned no image URL — skipping inline save")
+                                null
+                            }
+                        }
+                        else -> {
+                            Timber.d("[WidgetConfig] Inline fetch API call failed — worker will retry")
+                            null
+                        }
+                    }
+                }
+            if (fetchResult == null) {
+                Timber.d("[WidgetConfig] Inline fetch timed out or returned no result — worker will retry")
+            }
+            fetchResult
+        } catch (e: CancellationException) {
+            throw e // Do not swallow structured-concurrency cancellation
+        } catch (e: Exception) {
+            Timber.w(e, "[WidgetConfig] Inline fetch error — worker will retry")
+            null
+        }
+    }
+
+    /**
+     * Downloads an image from [imageUrl] and saves it as a PNG to [outputFile].
+     * Mirrors the download logic in [TrmnlWidgetRefreshWorker].
+     */
+    private suspend fun downloadAndSaveWidgetImage(
+        imageUrl: String,
+        outputFile: File,
+    ) {
+        val request = Request.Builder().url(imageUrl).build()
+        withContext(Dispatchers.IO) {
+            appGraph.okHttpClient.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
+                val body = response.body ?: throw IOException("Empty response body")
+                val bytes = body.bytes()
+                val bitmap =
+                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        ?: throw IOException("Failed to decode image from $imageUrl")
+                val parentDir = outputFile.parentFile
+                if (parentDir != null && !parentDir.exists() && !parentDir.mkdirs()) {
+                    throw IOException("Failed to create widget image directory: ${parentDir.absolutePath}")
+                }
+                outputFile.outputStream().use { out ->
+                    // PNG compression quality is a no-op for the Android PNG encoder (lossless format).
+                    // PNG is preferred here because TRMNL display images are monochrome/grayscale,
+                    // which compresses very efficiently as PNG without any visual degradation.
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, out)
+                }
+            }
+        }
+    }
+
+    companion object {
+        /** Timeout for the inline image fetch performed in the configuration activity. */
+        private const val INLINE_FETCH_TIMEOUT_MS = 15_000L
     }
 }

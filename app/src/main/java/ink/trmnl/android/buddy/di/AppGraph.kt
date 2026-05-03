@@ -11,6 +11,7 @@ import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.api.TrmnlApiService
+import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.work.WorkerScheduler
 import okhttp3.OkHttpClient
@@ -30,9 +31,11 @@ interface AppGraph {
     val workManager: WorkManager
     val workerFactory: AppWorkerFactory
     val userPreferencesRepository: UserPreferencesRepository
+    val deviceTokenRepository: DeviceTokenRepository
     val trmnlApiService: TrmnlApiService
     val workerScheduler: WorkerScheduler
     val imageLoader: ImageLoader
+    val okHttpClient: OkHttpClient
 
     @Provides
     @SingleIn(AppScope::class)
