@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `RefreshWidgetCallback` handles manual refresh taps within the widget
   - Minimum refresh interval of 15 minutes; uses device-specific API token for authentication
 
+### Changed
+- **Widget device configuration screen UI**: Replaced flat list with card-based layout matching the main app's device list style. Each device item is now a `Card` with the device icon, bold device name, subtle ID label, and a trailing chevron. Empty and error states now include an icon for better visual feedback.
+- **Widget tap opens devices screen**: Tapping the widget body (display image, loading state, or error state) now launches the app directly on the TRMNL Devices screen, skipping the welcome screen. `MainActivity` detects the `EXTRA_OPEN_DEVICES_SCREEN` intent extra set by the widget and uses `TrmnlDevicesScreen` as the back-stack root instead of `WelcomeScreen`.
+
 ### Fixed
 - **Widget worker cancellation loop**: Fixed `WorkerStoppedException` spam caused by `onUpdate` using `ExistingWorkPolicy.REPLACE`. Multiple `onUpdate` calls (triggered by the Glance session lifecycle) were cancelling any in-progress `TrmnlWidgetRefreshWorker`. Changed `onUpdate` to use `ExistingWorkPolicy.KEEP` so a running fetch is never interrupted; manual refresh from the widget refresh button continues to use `REPLACE` for an immediate restart.
 - **Widget stuck on Loading after device selection**: Fixed widget remaining permanently in Loading state after selecting a device and the refresh worker successfully downloading the image. The root cause was a stale-capture bug in `TrmnlDeviceWidget.provideGlance`: the decoded `bitmap` was captured once at `provideGlance` invocation time (null when no image exists), and a path-comparison guard in `provideContent` returned `null` whenever Glance reactively recomposed with the new image path (before `provideGlance` re-ran via `update()`). Removed the guard so `provideContent` always uses the bitmap decoded during the most recent `provideGlance` run.
