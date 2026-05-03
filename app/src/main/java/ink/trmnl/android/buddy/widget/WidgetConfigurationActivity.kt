@@ -50,9 +50,16 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.lifecycleScope
 import com.slack.eithernet.ApiResult
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.R
-import ink.trmnl.android.buddy.TrmnlBuddyApp
+import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
+import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
+import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.di.ActivityKey
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -81,13 +88,16 @@ import java.io.IOException
  * If the activity is cancelled (back press / no token) RESULT_CANCELED is
  * returned and the widget is NOT added.
  */
+@ActivityKey(WidgetConfigurationActivity::class)
+@ContributesIntoMap(AppScope::class, binding = binding<Activity>())
+@Inject
 @OptIn(ExperimentalMaterial3Api::class)
-class WidgetConfigurationActivity : ComponentActivity() {
-    private val appGraph by lazy {
-        checkNotNull(application as? TrmnlBuddyApp) {
-            "Application must be TrmnlBuddyApp to use WidgetConfigurationActivity"
-        }.appGraph()
-    }
+class WidgetConfigurationActivity(
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val trmnlApiService: TrmnlApiService,
+    private val deviceTokenRepository: DeviceTokenRepository,
+    private val okHttpClient: okhttp3.OkHttpClient,
+) : ComponentActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,13 +133,14 @@ class WidgetConfigurationActivity : ComponentActivity() {
         onCancelled: () -> Unit,
     ) {
         var devices by remember { mutableStateOf<List<Device>>(emptyList()) }
+        var devicesWithToken by remember { mutableStateOf<Set<String>>(emptySet()) }
         var isLoading by remember { mutableStateOf(true) }
         var isConfiguringWidget by remember { mutableStateOf(false) }
         var errorMessage by remember { mutableStateOf<String?>(null) }
 
         LaunchedEffect(Unit) {
             try {
-                val prefs = appGraph.userPreferencesRepository.userPreferencesFlow.first()
+                val prefs = userPreferencesRepository.userPreferencesFlow.first()
                 val apiToken = prefs.apiToken
                 if (apiToken.isNullOrBlank()) {
                     errorMessage =
@@ -137,9 +148,18 @@ class WidgetConfigurationActivity : ComponentActivity() {
                     isLoading = false
                     return@LaunchedEffect
                 }
-                when (val result = appGraph.trmnlApiService.getDevices("Bearer $apiToken")) {
+                when (val result = trmnlApiService.getDevices("Bearer $apiToken")) {
                     is ApiResult.Success -> {
-                        devices = result.value.data
+                        val loadedDevices = result.value.data
+                        devices = loadedDevices
+                        devicesWithToken =
+                            buildSet {
+                                for (device in loadedDevices) {
+                                    if (deviceTokenRepository.hasDeviceToken(device.friendlyId)) {
+                                        add(device.friendlyId)
+                                    }
+                                }
+                            }
                         isLoading = false
                     }
 
@@ -286,16 +306,21 @@ class WidgetConfigurationActivity : ComponentActivity() {
                                 }
                             }
                             items(devices) { device ->
+                                val hasToken = device.friendlyId in devicesWithToken
                                 Card(
                                     onClick = {
-                                        isConfiguringWidget = true
-                                        onDeviceSelected(device) { isConfiguringWidget = false }
+                                        if (hasToken) {
+                                            isConfiguringWidget = true
+                                            onDeviceSelected(device) { isConfiguringWidget = false }
+                                        }
                                     },
+                                    enabled = hasToken,
                                     modifier = Modifier.fillMaxWidth(),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = if (hasToken) 1.dp else 0.dp),
                                     colors =
                                         CardDefaults.cardColors(
                                             containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f),
                                         ),
                                 ) {
                                     ListItem(
@@ -304,20 +329,41 @@ class WidgetConfigurationActivity : ComponentActivity() {
                                                 text = device.name,
                                                 style = MaterialTheme.typography.titleMedium,
                                                 fontWeight = FontWeight.SemiBold,
+                                                color =
+                                                    if (hasToken) {
+                                                        MaterialTheme.colorScheme.onSurface
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                                    },
                                             )
                                         },
                                         supportingContent = {
                                             Text(
-                                                text = "ID: ${device.friendlyId}",
+                                                text =
+                                                    if (hasToken) {
+                                                        "ID: ${device.friendlyId}"
+                                                    } else {
+                                                        "ID: ${device.friendlyId} · Device API key not configured"
+                                                    },
                                                 style = MaterialTheme.typography.bodySmall,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                color =
+                                                    if (hasToken) {
+                                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                                    },
                                             )
                                         },
                                         leadingContent = {
                                             Icon(
                                                 painter = painterResource(R.drawable.devices_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                                                 contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.primary,
+                                                tint =
+                                                    if (hasToken) {
+                                                        MaterialTheme.colorScheme.primary
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                                    },
                                                 modifier = Modifier.size(24.dp),
                                             )
                                         },
@@ -328,13 +374,21 @@ class WidgetConfigurationActivity : ComponentActivity() {
                                                         R.drawable.chevron_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24,
                                                     ),
                                                 contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                tint =
+                                                    if (hasToken) {
+                                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                                                    },
                                                 modifier = Modifier.size(20.dp),
                                             )
                                         },
                                         colors =
                                             ListItemDefaults.colors(
-                                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                                containerColor =
+                                                    MaterialTheme.colorScheme.surfaceContainer.copy(
+                                                        alpha = if (hasToken) 1f else 0.5f,
+                                                    ),
                                             ),
                                     )
                                 }
@@ -433,7 +487,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
         deviceFriendlyId: String,
         appWidgetId: Int,
     ): Int? {
-        val deviceToken = appGraph.deviceTokenRepository.getDeviceToken(deviceFriendlyId)
+        val deviceToken = deviceTokenRepository.getDeviceToken(deviceFriendlyId)
         if (deviceToken.isNullOrBlank()) {
             Timber.d("[WidgetConfig] No device token for $deviceFriendlyId — skipping inline fetch")
             return null
@@ -442,7 +496,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
         return try {
             val fetchResult =
                 withTimeoutOrNull(INLINE_FETCH_TIMEOUT_MS) {
-                    when (val result = appGraph.trmnlApiService.getDisplayCurrent(deviceToken)) {
+                    when (val result = trmnlApiService.getDisplayCurrent(deviceToken)) {
                         is ApiResult.Success -> {
                             val display = result.value
                             val imageUrl = display.imageUrl
@@ -496,7 +550,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
     ) {
         val request = Request.Builder().url(imageUrl).build()
         withContext(Dispatchers.IO) {
-            appGraph.okHttpClient.newCall(request).execute().use { response ->
+            okHttpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
                 val body = response.body ?: throw IOException("Empty response body")
                 val bytes = body.bytes()
