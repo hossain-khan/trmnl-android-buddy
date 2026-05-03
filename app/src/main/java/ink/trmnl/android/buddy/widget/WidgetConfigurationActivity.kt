@@ -110,7 +110,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
         setContent {
             TrmnlBuddyAppTheme {
                 ConfigurationScreen(
-                    onDeviceSelected = { device -> onDeviceSelected(device) },
+                    onDeviceSelected = { device, onError -> onDeviceSelected(device, onError) },
                     onCancelled = { finish() },
                 )
             }
@@ -119,7 +119,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
 
     @Composable
     private fun ConfigurationScreen(
-        onDeviceSelected: (Device) -> Unit,
+        onDeviceSelected: (Device, onError: () -> Unit) -> Unit,
         onCancelled: () -> Unit,
     ) {
         var devices by remember { mutableStateOf<List<Device>>(emptyList()) }
@@ -289,7 +289,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
                                 Card(
                                     onClick = {
                                         isConfiguringWidget = true
-                                        onDeviceSelected(device)
+                                        onDeviceSelected(device) { isConfiguringWidget = false }
                                     },
                                     modifier = Modifier.fillMaxWidth(),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
@@ -346,7 +346,10 @@ class WidgetConfigurationActivity : ComponentActivity() {
         }
     }
 
-    private fun onDeviceSelected(device: Device) {
+    private fun onDeviceSelected(
+        device: Device,
+        onError: () -> Unit,
+    ) {
         lifecycleScope.launch {
             try {
                 val manager = GlanceAppWidgetManager(applicationContext)
@@ -409,6 +412,9 @@ class WidgetConfigurationActivity : ComponentActivity() {
                 finish()
             } catch (e: Exception) {
                 Timber.e(e, "[WidgetConfig] Error configuring widget")
+                // Reset the configuring flag so the device list reappears and the
+                // user can retry rather than being stuck on the progress screen.
+                onError()
             }
         }
     }
