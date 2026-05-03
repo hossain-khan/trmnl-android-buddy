@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.17.0] - 2026-05-03
+
 ### Added
 - **Home screen widget (Compose Glance)**: Added a resizable home screen widget that displays the current e-ink display image from a selected TRMNL device
   - Widget configuration activity (`WidgetConfigurationActivity`) to select a device from the account's device list when adding the widget
@@ -1593,7 +1595,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.16.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.17.0...HEAD
+[2.17.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.16.0...2.17.0
 [2.16.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.15.0...2.16.0
 [2.15.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.14.0...2.15.0
 [2.14.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.13.0...2.14.0
