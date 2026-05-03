@@ -133,6 +133,7 @@ class TrmnlWidgetRefreshWorker(
                 updateAppWidgetState(applicationContext, glanceId) { mutablePrefs ->
                     mutablePrefs[TrmnlDeviceWidget.REFRESH_RATE_KEY] = refreshRate
                     mutablePrefs[TrmnlDeviceWidget.LAST_UPDATED_KEY] = System.currentTimeMillis()
+                    mutablePrefs.remove(TrmnlDeviceWidget.IS_REFRESHING_KEY)
                     when {
                         filePath != null -> {
                             // New image successfully downloaded — update path and clear any error
@@ -184,12 +185,14 @@ class TrmnlWidgetRefreshWorker(
                     TrmnlDeviceWidget().update(applicationContext, glanceId)
                     Result.failure()
                 } else {
+                    clearRefreshingFlag(applicationContext, glanceId)
                     Result.retry()
                 }
             }
 
             is ApiResult.Failure.NetworkFailure -> {
                 Timber.e(result.error, "[$WORK_TAG] Network error for widget $appWidgetId")
+                clearRefreshingFlag(applicationContext, glanceId)
                 Result.retry()
             }
 
@@ -202,6 +205,7 @@ class TrmnlWidgetRefreshWorker(
 
             is ApiResult.Failure.UnknownFailure -> {
                 Timber.e(result.error, "[$WORK_TAG] Unknown error for widget $appWidgetId")
+                clearRefreshingFlag(applicationContext, glanceId)
                 Result.retry()
             }
         }
@@ -214,7 +218,19 @@ class TrmnlWidgetRefreshWorker(
     ) {
         updateAppWidgetState(context, glanceId) { mutablePrefs ->
             mutablePrefs[TrmnlDeviceWidget.ERROR_MESSAGE_KEY] = message
+            mutablePrefs.remove(TrmnlDeviceWidget.IS_REFRESHING_KEY)
         }
+    }
+
+    /** Clears the [TrmnlDeviceWidget.IS_REFRESHING_KEY] flag and triggers a widget re-render. */
+    private suspend fun clearRefreshingFlag(
+        context: Context,
+        glanceId: androidx.glance.GlanceId,
+    ) {
+        updateAppWidgetState(context, glanceId) { mutablePrefs ->
+            mutablePrefs.remove(TrmnlDeviceWidget.IS_REFRESHING_KEY)
+        }
+        TrmnlDeviceWidget().update(context, glanceId)
     }
 
     private suspend fun downloadAndSaveImage(
