@@ -13,6 +13,7 @@ import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.overlay.ContentWithOverlays
+import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.sharedelements.SharedElementTransitionLayout
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.zacsweers.metro.AppScope
@@ -20,6 +21,7 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.di.ActivityKey
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 
@@ -30,15 +32,23 @@ class MainActivity
     constructor(
         private val circuit: Circuit,
     ) : FragmentActivity() {
+        companion object {
+            /** Set this extra to `true` on the launch Intent to open directly on the devices screen. */
+            const val EXTRA_OPEN_DEVICES_SCREEN = "open_devices_screen"
+        }
+
         @OptIn(ExperimentalSharedTransitionApi::class)
         override fun onCreate(savedInstanceState: Bundle?) {
             enableEdgeToEdge()
             super.onCreate(savedInstanceState)
 
+            val openDevicesScreen = intent?.getBooleanExtra(EXTRA_OPEN_DEVICES_SCREEN, false) == true
+            val rootScreen: Screen = if (openDevicesScreen) TrmnlDevicesScreen else WelcomeScreen
+
             setContent {
                 TrmnlBuddyAppTheme {
                     // See https://slackhq.github.io/circuit/navigation/
-                    val backStack = rememberSaveableBackStack(root = WelcomeScreen)
+                    val backStack = rememberSaveableBackStack(root = rootScreen)
                     val navigator = rememberCircuitNavigator(backStack)
 
                     // See https://slackhq.github.io/circuit/circuit-content/

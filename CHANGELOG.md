@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Widget device configuration screen UI**: Replaced flat list with card-based layout matching the main app's device list style. Each device item is now a `Card` with the device icon, bold device name, subtle ID label, and a trailing chevron. Empty and error states now include an icon for better visual feedback.
+- **Widget tap opens devices screen**: Tapping the widget body (display image, loading state, or error state) now launches the app directly on the TRMNL Devices screen, skipping the welcome screen. `MainActivity` detects the `EXTRA_OPEN_DEVICES_SCREEN` intent extra set by the widget and uses `TrmnlDevicesScreen` as the back-stack root instead of `WelcomeScreen`.
 
 ### Fixed
 - **Widget worker cancellation loop**: Fixed `WorkerStoppedException` spam caused by `onUpdate` using `ExistingWorkPolicy.REPLACE`. Multiple `onUpdate` calls (triggered by the Glance session lifecycle) were cancelling any in-progress `TrmnlWidgetRefreshWorker`. Changed `onUpdate` to use `ExistingWorkPolicy.KEEP` so a running fetch is never interrupted; manual refresh from the widget refresh button continues to use `REPLACE` for an immediate restart.

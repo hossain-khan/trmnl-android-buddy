@@ -42,11 +42,19 @@ import androidx.glance.layout.wrapContentHeight
 import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import ink.trmnl.android.buddy.MainActivity
 import ink.trmnl.android.buddy.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import android.content.Intent as AndroidIntent
+
+/** Returns an [AndroidIntent] that opens [MainActivity] directly on the devices screen. */
+private fun openDevicesIntent(context: Context): AndroidIntent =
+    AndroidIntent(context, MainActivity::class.java).apply {
+        putExtra(MainActivity.EXTRA_OPEN_DEVICES_SCREEN, true)
+        addFlags(AndroidIntent.FLAG_ACTIVITY_NEW_TASK or AndroidIntent.FLAG_ACTIVITY_CLEAR_TOP)
+    }
 
 /**
  * TRMNL Device Widget – Glance-based app widget that shows the current
@@ -186,8 +194,12 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
 
     @Composable
     private fun LoadingContent(deviceName: String) {
+        val context = LocalContext.current
         Column(
-            modifier = GlanceModifier.fillMaxSize(),
+            modifier =
+                GlanceModifier
+                    .fillMaxSize()
+                    .clickable(actionStartActivity(openDevicesIntent(context))),
             verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -204,8 +216,12 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         errorMessage: String,
         appWidgetId: Int,
     ) {
+        val context = LocalContext.current
         Column(
-            modifier = GlanceModifier.fillMaxSize(),
+            modifier =
+                GlanceModifier
+                    .fillMaxSize()
+                    .clickable(actionStartActivity(openDevicesIntent(context))),
             verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -244,6 +260,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         bitmap: android.graphics.Bitmap,
         appWidgetId: Int,
     ) {
+        val context = LocalContext.current
         Column(modifier = GlanceModifier.fillMaxSize()) {
             // Header row: device name + refresh button
             Row(
@@ -275,11 +292,14 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                 )
             }
 
-            // Device display image
+            // Device display image — tap opens the app directly on the devices screen
             Image(
                 provider = ImageProvider(bitmap),
                 contentDescription = "TRMNL display: $deviceName",
-                modifier = GlanceModifier.fillMaxSize(),
+                modifier =
+                    GlanceModifier
+                        .fillMaxSize()
+                        .clickable(actionStartActivity(openDevicesIntent(context))),
                 contentScale = ContentScale.Fit,
             )
         }
