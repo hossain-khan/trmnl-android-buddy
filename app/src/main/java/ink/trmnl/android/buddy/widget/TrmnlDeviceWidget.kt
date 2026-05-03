@@ -165,6 +165,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     ErrorContent(
                         deviceName = deviceName,
                         appWidgetId = appWidgetId,
+                        isRefreshing = isRefreshing,
                     )
 
                 bitmap != null ->
@@ -245,6 +246,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
     private fun ErrorContent(
         deviceName: String,
         appWidgetId: Int,
+        isRefreshing: Boolean,
     ) {
         val context = LocalContext.current
         Column(
@@ -274,20 +276,29 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                 style = TextStyle(color = GlanceTheme.colors.onSurfaceVariant, fontSize = 11.sp),
             )
             Spacer(modifier = GlanceModifier.height(12.dp))
-            Image(
-                provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                contentDescription = "Retry",
-                modifier =
-                    GlanceModifier
-                        .size(32.dp)
-                        .clickable(
-                            actionRunCallback<RefreshWidgetCallback>(
-                                actionParametersOf(
-                                    RefreshWidgetCallback.APP_WIDGET_ID_KEY to appWidgetId,
+            if (isRefreshing) {
+                Image(
+                    provider = ImageProvider(R.drawable.clock_loader_40_24dp_999999_fill0_wght400_grad0_opsz24),
+                    contentDescription = "Refreshing…",
+                    modifier = GlanceModifier.size(32.dp),
+                    alpha = 0.5f,
+                )
+            } else {
+                Image(
+                    provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                    contentDescription = "Retry",
+                    modifier =
+                        GlanceModifier
+                            .size(32.dp)
+                            .clickable(
+                                actionRunCallback<RefreshWidgetCallback>(
+                                    actionParametersOf(
+                                        RefreshWidgetCallback.APP_WIDGET_ID_KEY to appWidgetId,
+                                    ),
                                 ),
                             ),
-                        ),
-            )
+                )
+            }
         }
     }
 
