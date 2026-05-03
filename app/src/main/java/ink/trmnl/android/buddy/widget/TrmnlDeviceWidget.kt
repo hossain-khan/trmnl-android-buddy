@@ -102,7 +102,6 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
             val prefs = currentState<Preferences>()
             val deviceFriendlyId = prefs[DEVICE_FRIENDLY_ID_KEY]
             val deviceName = prefs[DEVICE_NAME_KEY] ?: ""
-            val currentImageFilePath = prefs[IMAGE_FILE_PATH_KEY]
             val errorMessage = prefs[ERROR_MESSAGE_KEY]
             val appWidgetId = prefs[APP_WIDGET_ID_KEY] ?: AppWidgetManager.INVALID_APPWIDGET_ID
 
@@ -111,12 +110,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     appWidgetId = appWidgetId,
                     deviceFriendlyId = deviceFriendlyId,
                     deviceName = deviceName,
-                    bitmap =
-                        if (currentImageFilePath != null && currentImageFilePath == imageFilePath) {
-                            bitmap
-                        } else {
-                            null
-                        },
+                    bitmap = bitmap,
                     errorMessage = errorMessage,
                 )
             }
