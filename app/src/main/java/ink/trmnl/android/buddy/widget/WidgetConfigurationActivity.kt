@@ -50,9 +50,16 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.lifecycleScope
 import com.slack.eithernet.ApiResult
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.R
-import ink.trmnl.android.buddy.TrmnlBuddyApp
+import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
+import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
+import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.di.ActivityKey
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -81,13 +88,16 @@ import java.io.IOException
  * If the activity is cancelled (back press / no token) RESULT_CANCELED is
  * returned and the widget is NOT added.
  */
+@ActivityKey(WidgetConfigurationActivity::class)
+@ContributesIntoMap(AppScope::class, binding = binding<Activity>())
+@Inject
 @OptIn(ExperimentalMaterial3Api::class)
-class WidgetConfigurationActivity : ComponentActivity() {
-    private val appGraph by lazy {
-        checkNotNull(application as? TrmnlBuddyApp) {
-            "Application must be TrmnlBuddyApp to use WidgetConfigurationActivity"
-        }.appGraph()
-    }
+class WidgetConfigurationActivity(
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val trmnlApiService: TrmnlApiService,
+    private val deviceTokenRepository: DeviceTokenRepository,
+    private val okHttpClient: okhttp3.OkHttpClient,
+) : ComponentActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,7 +140,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
 
         LaunchedEffect(Unit) {
             try {
-                val prefs = appGraph.userPreferencesRepository.userPreferencesFlow.first()
+                val prefs = userPreferencesRepository.userPreferencesFlow.first()
                 val apiToken = prefs.apiToken
                 if (apiToken.isNullOrBlank()) {
                     errorMessage =
@@ -138,13 +148,13 @@ class WidgetConfigurationActivity : ComponentActivity() {
                     isLoading = false
                     return@LaunchedEffect
                 }
-                when (val result = appGraph.trmnlApiService.getDevices("Bearer $apiToken")) {
+                when (val result = trmnlApiService.getDevices("Bearer $apiToken")) {
                     is ApiResult.Success -> {
                         val loadedDevices = result.value.data
                         devices = loadedDevices
                         devicesWithToken =
                             loadedDevices
-                                .filter { appGraph.deviceTokenRepository.hasDeviceToken(it.friendlyId) }
+                                .filter { deviceTokenRepository.hasDeviceToken(it.friendlyId) }
                                 .map { it.friendlyId }
                                 .toSet()
                         isLoading = false
@@ -474,7 +484,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
         deviceFriendlyId: String,
         appWidgetId: Int,
     ): Int? {
-        val deviceToken = appGraph.deviceTokenRepository.getDeviceToken(deviceFriendlyId)
+        val deviceToken = deviceTokenRepository.getDeviceToken(deviceFriendlyId)
         if (deviceToken.isNullOrBlank()) {
             Timber.d("[WidgetConfig] No device token for $deviceFriendlyId — skipping inline fetch")
             return null
@@ -483,7 +493,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
         return try {
             val fetchResult =
                 withTimeoutOrNull(INLINE_FETCH_TIMEOUT_MS) {
-                    when (val result = appGraph.trmnlApiService.getDisplayCurrent(deviceToken)) {
+                    when (val result = trmnlApiService.getDisplayCurrent(deviceToken)) {
                         is ApiResult.Success -> {
                             val display = result.value
                             val imageUrl = display.imageUrl
@@ -537,7 +547,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
     ) {
         val request = Request.Builder().url(imageUrl).build()
         withContext(Dispatchers.IO) {
-            appGraph.okHttpClient.newCall(request).execute().use { response ->
+            okHttpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
                 val body = response.body ?: throw IOException("Empty response body")
                 val bytes = body.bytes()
