@@ -147,7 +147,6 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                 errorMessage != null ->
                     ErrorContent(
                         deviceName = deviceName,
-                        errorMessage = errorMessage,
                         appWidgetId = appWidgetId,
                     )
 
@@ -203,9 +202,23 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Image(
+                provider = ImageProvider(R.drawable.clock_loader_40_24dp_999999_fill0_wght400_grad0_opsz24),
+                contentDescription = null,
+                modifier = GlanceModifier.size(36.dp),
+                alpha = 0.6f,
+            )
+            Spacer(modifier = GlanceModifier.height(10.dp))
+            if (deviceName.isNotEmpty()) {
+                Text(
+                    text = deviceName,
+                    style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = 13.sp),
+                )
+                Spacer(modifier = GlanceModifier.height(2.dp))
+            }
             Text(
-                text = if (deviceName.isNotEmpty()) "Loading $deviceName…" else "Loading…",
-                style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = 14.sp),
+                text = "Fetching display…",
+                style = TextStyle(color = GlanceTheme.colors.onSurfaceVariant, fontSize = 11.sp),
             )
         }
     }
@@ -213,7 +226,6 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
     @Composable
     private fun ErrorContent(
         deviceName: String,
-        errorMessage: String,
         appWidgetId: Int,
     ) {
         val context = LocalContext.current
@@ -225,24 +237,31 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Image(
+                provider = ImageProvider(R.drawable.warning_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                contentDescription = null,
+                modifier = GlanceModifier.size(32.dp),
+                alpha = 0.8f,
+            )
+            Spacer(modifier = GlanceModifier.height(8.dp))
             if (deviceName.isNotEmpty()) {
                 Text(
                     text = deviceName,
-                    style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = 12.sp),
+                    style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = 13.sp),
                 )
-                Spacer(modifier = GlanceModifier.height(4.dp))
+                Spacer(modifier = GlanceModifier.height(2.dp))
             }
             Text(
-                text = errorMessage,
-                style = TextStyle(color = GlanceTheme.colors.error, fontSize = 12.sp),
+                text = "Couldn't refresh display",
+                style = TextStyle(color = GlanceTheme.colors.onSurfaceVariant, fontSize = 11.sp),
             )
-            Spacer(modifier = GlanceModifier.height(8.dp))
+            Spacer(modifier = GlanceModifier.height(12.dp))
             Image(
                 provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                 contentDescription = "Retry",
                 modifier =
                     GlanceModifier
-                        .size(24.dp)
+                        .size(32.dp)
                         .clickable(
                             actionRunCallback<RefreshWidgetCallback>(
                                 actionParametersOf(

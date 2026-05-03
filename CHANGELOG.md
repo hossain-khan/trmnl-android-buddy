@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Minimum refresh interval of 15 minutes; uses device-specific API token for authentication
 
 ### Changed
+- **Glance library upgrade**: Updated Glance from `1.1.1` to `1.2.0-rc01`; leverages new `Image` alpha parameter (added in 1.2.0) to render loading and warning icons at reduced opacity for a softer look
+- **Widget loading state UI**: Replaced plain loading text with a clock icon, the device name as a primary label, and a secondary "Fetching display…" caption for clearer visual hierarchy
+- **Widget error state UI**: Replaced raw error text with a warning icon, friendly "Couldn't refresh display" message, and a larger retry button (32 dp) for easier tapping
 - **Widget device configuration screen UI**: Replaced flat list with card-based layout matching the main app's device list style. Each device item is now a `Card` with the device icon, bold device name, subtle ID label, and a trailing chevron. Empty and error states now include an icon for better visual feedback.
 - **Widget tap opens devices screen**: Tapping the widget body (display image, loading state, or error state) now launches the app directly on the TRMNL Devices screen, skipping the welcome screen. `MainActivity` detects the `EXTRA_OPEN_DEVICES_SCREEN` intent extra set by the widget and uses `TrmnlDevicesScreen` as the back-stack root instead of `WelcomeScreen`.
 
