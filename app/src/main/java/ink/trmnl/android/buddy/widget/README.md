@@ -88,7 +88,7 @@ Refreshes use chained one-time [WorkManager](https://developer.android.com/topic
 | Scenario | `ExistingWorkPolicy` | Reason |
 |----------|----------------------|--------|
 | System `onUpdate` (reboot, widget restore) | `KEEP` | Don't cancel an in-progress fetch |
-| Self-reschedule after successful fetch | `REPLACE` | Replace any stale pending request |
+| Self-reschedule after successful fetch | `APPEND_OR_REPLACE` | Worker is still RUNNING when it re-enqueues; `KEEP` silently drops the request because RUNNING counts as "work present", breaking periodic refresh. `APPEND_OR_REPLACE` chains the new delayed job after the current run. |
 | User taps refresh button | `REPLACE` | Force an immediate restart |
 
 The minimum refresh interval is **15 minutes** (`MIN_REFRESH_INTERVAL_MINUTES`) regardless of the API-returned rate.

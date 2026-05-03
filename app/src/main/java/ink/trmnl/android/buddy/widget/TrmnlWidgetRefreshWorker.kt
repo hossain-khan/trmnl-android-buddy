@@ -11,6 +11,7 @@ import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
+import androidx.work.ExistingWorkPolicy.APPEND_OR_REPLACE
 import androidx.work.ExistingWorkPolicy.KEEP
 import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.NetworkType
@@ -155,10 +156,14 @@ class TrmnlWidgetRefreshWorker(
                 TrmnlDeviceWidget().update(applicationContext, glanceId)
 
                 // Schedule next refresh using the API-provided rate, floored at the minimum.
-                // Use KEEP so the still-running coroutine is not cancelled by REPLACE: the current
-                // worker will have already returned Result.success() before the delayed job fires.
+                // APPEND_OR_REPLACE is required here: this enqueue() is called while the current
+                // worker is still in RUNNING state. KEEP would silently drop the new request
+                // (WorkManager treats RUNNING as "work already present"), causing periodic refresh
+                // to stop after the very first successful fetch. APPEND_OR_REPLACE enqueues the
+                // new delayed job as a child of the current run — it executes after this worker
+                // finishes without cancelling it.
                 // A user-triggered refresh (RefreshWidgetCallback) uses REPLACE explicitly to
-                // override this pending delay when the user taps the refresh button.
+                // override the pending delay when the user taps the refresh button.
                 val nextRefreshMinutes =
                     maxOf(
                         TrmnlDeviceWidget.MIN_REFRESH_INTERVAL_MINUTES,
@@ -168,7 +173,7 @@ class TrmnlWidgetRefreshWorker(
                     applicationContext,
                     appWidgetId,
                     initialDelayMinutes = nextRefreshMinutes,
-                    existingWorkPolicy = KEEP,
+                    existingWorkPolicy = APPEND_OR_REPLACE,
                 )
 
                 Result.success()
