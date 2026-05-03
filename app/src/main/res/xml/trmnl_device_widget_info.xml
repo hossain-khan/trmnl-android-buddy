@@ -15,7 +15,7 @@
     android:minHeight="130dp"
     android:minResizeWidth="130dp"
     android:minResizeHeight="80dp"
-    android:previewImage="@drawable/trmnl_device_frame"
+    android:previewImage="@drawable/trmnl_device_frame_grey"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="3"
     android:targetCellHeight="2"
