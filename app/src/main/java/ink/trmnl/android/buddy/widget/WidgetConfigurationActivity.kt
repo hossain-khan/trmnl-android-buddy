@@ -153,10 +153,13 @@ class WidgetConfigurationActivity(
                         val loadedDevices = result.value.data
                         devices = loadedDevices
                         devicesWithToken =
-                            loadedDevices
-                                .filter { deviceTokenRepository.hasDeviceToken(it.friendlyId) }
-                                .map { it.friendlyId }
-                                .toSet()
+                            buildSet {
+                                for (device in loadedDevices) {
+                                    if (deviceTokenRepository.hasDeviceToken(device.friendlyId)) {
+                                        add(device.friendlyId)
+                                    }
+                                }
+                            }
                         isLoading = false
                     }
 
@@ -317,7 +320,7 @@ class WidgetConfigurationActivity(
                                     colors =
                                         CardDefaults.cardColors(
                                             containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f),
+                                            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.38f),
                                         ),
                                 ) {
                                     ListItem(
@@ -384,7 +387,7 @@ class WidgetConfigurationActivity(
                                             ListItemDefaults.colors(
                                                 containerColor =
                                                     MaterialTheme.colorScheme.surfaceContainer.copy(
-                                                        alpha = if (hasToken) 1f else 0.5f,
+                                                        alpha = if (hasToken) 1f else 0.38f,
                                                     ),
                                             ),
                                     )
