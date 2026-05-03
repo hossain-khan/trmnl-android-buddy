@@ -320,7 +320,7 @@ class WidgetConfigurationActivity(
                                     colors =
                                         CardDefaults.cardColors(
                                             containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.38f),
+                                            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f),
                                         ),
                                 ) {
                                     ListItem(
@@ -387,7 +387,7 @@ class WidgetConfigurationActivity(
                                             ListItemDefaults.colors(
                                                 containerColor =
                                                     MaterialTheme.colorScheme.surfaceContainer.copy(
-                                                        alpha = if (hasToken) 1f else 0.38f,
+                                                        alpha = if (hasToken) 1f else 0.5f,
                                                     ),
                                             ),
                                     )
