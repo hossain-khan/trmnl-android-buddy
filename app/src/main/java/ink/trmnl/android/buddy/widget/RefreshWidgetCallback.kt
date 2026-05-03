@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.glance.GlanceId
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.action.ActionCallback
+import androidx.glance.appwidget.state.updateAppWidgetState
 import timber.log.Timber
 
 /**
@@ -24,6 +25,14 @@ class RefreshWidgetCallback : ActionCallback {
             return
         }
         Timber.d("[RefreshWidgetCallback] Scheduling immediate refresh for widget $appWidgetId")
+
+        // Mark the widget as refreshing so the UI immediately shows a loading indicator
+        // while TrmnlWidgetRefreshWorker runs in the background.
+        updateAppWidgetState(context, glanceId) { mutablePrefs ->
+            mutablePrefs[TrmnlDeviceWidget.IS_REFRESHING_KEY] = true
+        }
+        TrmnlDeviceWidget().update(context, glanceId)
+
         TrmnlWidgetRefreshWorker.enqueue(
             context = context,
             appWidgetId = appWidgetId,

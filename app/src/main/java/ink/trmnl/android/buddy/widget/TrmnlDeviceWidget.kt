@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -90,6 +91,9 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         val LAST_UPDATED_KEY = longPreferencesKey("last_updated")
         val ERROR_MESSAGE_KEY = stringPreferencesKey("error_message")
 
+        /** Set to `true` by [RefreshWidgetCallback] while a manual refresh is in flight. */
+        val IS_REFRESHING_KEY = booleanPreferencesKey("is_refreshing")
+
         // Default interval used when no refresh rate is available from the API yet.
         // MIN is the floor enforced on the API-provided refresh rate to avoid excessive polling.
         const val DEFAULT_REFRESH_INTERVAL_MINUTES = 15L
@@ -107,6 +111,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
             val errorMessage = prefs[ERROR_MESSAGE_KEY]
             val appWidgetId = prefs[APP_WIDGET_ID_KEY] ?: AppWidgetManager.INVALID_APPWIDGET_ID
             val imageFilePath = prefs[IMAGE_FILE_PATH_KEY]
+            val isRefreshing = prefs[IS_REFRESHING_KEY] ?: false
 
             // Decode the bitmap reactively whenever the image file path changes.
             // Using LaunchedEffect (supported since Glance 1.1.0) ensures the bitmap is always
@@ -130,6 +135,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     deviceName = deviceName,
                     bitmap = bitmap,
                     errorMessage = errorMessage,
+                    isRefreshing = isRefreshing,
                 )
             }
         }
@@ -142,6 +148,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         deviceName: String,
         bitmap: Bitmap?,
         errorMessage: String?,
+        isRefreshing: Boolean,
     ) {
         Box(
             modifier =
@@ -158,6 +165,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     ErrorContent(
                         deviceName = deviceName,
                         appWidgetId = appWidgetId,
+                        isRefreshing = isRefreshing,
                     )
 
                 bitmap != null ->
@@ -165,6 +173,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                         deviceName = deviceName,
                         bitmap = bitmap,
                         appWidgetId = appWidgetId,
+                        isRefreshing = isRefreshing,
                     )
 
                 else -> LoadingContent(deviceName = deviceName)
@@ -237,6 +246,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
     private fun ErrorContent(
         deviceName: String,
         appWidgetId: Int,
+        isRefreshing: Boolean,
     ) {
         val context = LocalContext.current
         Column(
@@ -266,20 +276,29 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                 style = TextStyle(color = GlanceTheme.colors.onSurfaceVariant, fontSize = 11.sp),
             )
             Spacer(modifier = GlanceModifier.height(12.dp))
-            Image(
-                provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                contentDescription = "Retry",
-                modifier =
-                    GlanceModifier
-                        .size(32.dp)
-                        .clickable(
-                            actionRunCallback<RefreshWidgetCallback>(
-                                actionParametersOf(
-                                    RefreshWidgetCallback.APP_WIDGET_ID_KEY to appWidgetId,
+            if (isRefreshing) {
+                Image(
+                    provider = ImageProvider(R.drawable.clock_loader_40_24dp_999999_fill0_wght400_grad0_opsz24),
+                    contentDescription = "Refreshing…",
+                    modifier = GlanceModifier.size(32.dp),
+                    alpha = 0.5f,
+                )
+            } else {
+                Image(
+                    provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                    contentDescription = "Retry",
+                    modifier =
+                        GlanceModifier
+                            .size(32.dp)
+                            .clickable(
+                                actionRunCallback<RefreshWidgetCallback>(
+                                    actionParametersOf(
+                                        RefreshWidgetCallback.APP_WIDGET_ID_KEY to appWidgetId,
+                                    ),
                                 ),
                             ),
-                        ),
-            )
+                )
+            }
         }
     }
 
@@ -288,6 +307,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         deviceName: String,
         bitmap: Bitmap,
         appWidgetId: Int,
+        isRefreshing: Boolean,
     ) {
         val context = LocalContext.current
         Column(modifier = GlanceModifier.fillMaxSize()) {
@@ -305,20 +325,32 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     modifier = GlanceModifier.defaultWeight(),
                     style = TextStyle(color = GlanceTheme.colors.onSurface, fontSize = 12.sp),
                 )
-                Image(
-                    provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                    contentDescription = "Refresh",
-                    modifier =
-                        GlanceModifier
-                            .size(20.dp)
-                            .clickable(
-                                actionRunCallback<RefreshWidgetCallback>(
-                                    actionParametersOf(
-                                        RefreshWidgetCallback.APP_WIDGET_ID_KEY to appWidgetId,
+                if (isRefreshing) {
+                    // Show a static clock-loader icon while the refresh worker is running.
+                    // Glance does not support animated drawables, so a static frame communicates
+                    // the in-progress state without animation.
+                    Image(
+                        provider = ImageProvider(R.drawable.clock_loader_40_24dp_999999_fill0_wght400_grad0_opsz24),
+                        contentDescription = "Refreshing…",
+                        modifier = GlanceModifier.size(20.dp),
+                        alpha = 0.5f,
+                    )
+                } else {
+                    Image(
+                        provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                        contentDescription = "Refresh",
+                        modifier =
+                            GlanceModifier
+                                .size(20.dp)
+                                .clickable(
+                                    actionRunCallback<RefreshWidgetCallback>(
+                                        actionParametersOf(
+                                            RefreshWidgetCallback.APP_WIDGET_ID_KEY to appWidgetId,
+                                        ),
                                     ),
                                 ),
-                            ),
-                )
+                    )
+                }
             }
 
             // Device display image — tap opens the app directly on the devices screen
