@@ -74,8 +74,11 @@ class TrmnlWidgetRefreshWorker(
         val glanceIds = manager.getGlanceIds(TrmnlDeviceWidget::class.java)
         val glanceId = glanceIds.firstOrNull { manager.getAppWidgetId(it) == appWidgetId }
         if (glanceId == null) {
-            Timber.w("[$WORK_TAG] Widget $appWidgetId no longer exists, skipping")
-            return Result.success()
+            // Widget may not be fully registered with Glance yet (timing race on first add).
+            // Retry so that the worker re-runs once Glance has had a chance to initialize the
+            // widget state, instead of silently succeeding and leaving the widget stuck on Loading.
+            Timber.w("[$WORK_TAG] GlanceId not found for widget $appWidgetId, will retry")
+            return Result.retry()
         }
 
         val prefs = getAppWidgetState(applicationContext, PreferencesGlanceStateDefinition, glanceId)
