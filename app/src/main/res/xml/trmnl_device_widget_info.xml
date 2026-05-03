@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
     TRMNL Widget Provider
 
     See: 
     - https://developer.android.com/reference/android/appwidget/AppWidgetProvider
-    - https://developer.android.com/develop/ui/views/appwidgets
+    - https://developer.android.com/develop/ui/compose/glance/create-app-widget
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="ink.trmnl.android.buddy.widget.WidgetConfigurationActivity"
@@ -16,7 +17,7 @@
     android:minResizeHeight="80dp"
     android:previewImage="@drawable/trmnl_device_frame"
     android:resizeMode="horizontal|vertical"
-    android:targetCellWidth="2"
-    android:targetCellHeight="3"
+    android:targetCellWidth="3"
+    android:targetCellHeight="2"
     android:updatePeriodMillis="0"
     android:widgetCategory="home_screen" />
