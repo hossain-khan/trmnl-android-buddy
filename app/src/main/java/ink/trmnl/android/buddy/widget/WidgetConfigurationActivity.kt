@@ -123,6 +123,7 @@ class WidgetConfigurationActivity : ComponentActivity() {
         onCancelled: () -> Unit,
     ) {
         var devices by remember { mutableStateOf<List<Device>>(emptyList()) }
+        var devicesWithToken by remember { mutableStateOf<Set<String>>(emptySet()) }
         var isLoading by remember { mutableStateOf(true) }
         var isConfiguringWidget by remember { mutableStateOf(false) }
         var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -139,7 +140,13 @@ class WidgetConfigurationActivity : ComponentActivity() {
                 }
                 when (val result = appGraph.trmnlApiService.getDevices("Bearer $apiToken")) {
                     is ApiResult.Success -> {
-                        devices = result.value.data
+                        val loadedDevices = result.value.data
+                        devices = loadedDevices
+                        devicesWithToken =
+                            loadedDevices
+                                .filter { appGraph.deviceTokenRepository.hasDeviceToken(it.friendlyId) }
+                                .map { it.friendlyId }
+                                .toSet()
                         isLoading = false
                     }
 
@@ -286,16 +293,21 @@ class WidgetConfigurationActivity : ComponentActivity() {
                                 }
                             }
                             items(devices) { device ->
+                                val hasToken = device.friendlyId in devicesWithToken
                                 Card(
                                     onClick = {
-                                        isConfiguringWidget = true
-                                        onDeviceSelected(device) { isConfiguringWidget = false }
+                                        if (hasToken) {
+                                            isConfiguringWidget = true
+                                            onDeviceSelected(device) { isConfiguringWidget = false }
+                                        }
                                     },
+                                    enabled = hasToken,
                                     modifier = Modifier.fillMaxWidth(),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                                    elevation = CardDefaults.cardElevation(defaultElevation = if (hasToken) 1.dp else 0.dp),
                                     colors =
                                         CardDefaults.cardColors(
                                             containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f),
                                         ),
                                 ) {
                                     ListItem(
@@ -304,20 +316,41 @@ class WidgetConfigurationActivity : ComponentActivity() {
                                                 text = device.name,
                                                 style = MaterialTheme.typography.titleMedium,
                                                 fontWeight = FontWeight.SemiBold,
+                                                color =
+                                                    if (hasToken) {
+                                                        MaterialTheme.colorScheme.onSurface
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                                    },
                                             )
                                         },
                                         supportingContent = {
                                             Text(
-                                                text = "ID: ${device.friendlyId}",
+                                                text =
+                                                    if (hasToken) {
+                                                        "ID: ${device.friendlyId}"
+                                                    } else {
+                                                        "ID: ${device.friendlyId} · Device API key not configured"
+                                                    },
                                                 style = MaterialTheme.typography.bodySmall,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                color =
+                                                    if (hasToken) {
+                                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                                    },
                                             )
                                         },
                                         leadingContent = {
                                             Icon(
                                                 painter = painterResource(R.drawable.devices_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                                                 contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.primary,
+                                                tint =
+                                                    if (hasToken) {
+                                                        MaterialTheme.colorScheme.primary
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                                    },
                                                 modifier = Modifier.size(24.dp),
                                             )
                                         },
@@ -328,13 +361,21 @@ class WidgetConfigurationActivity : ComponentActivity() {
                                                         R.drawable.chevron_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24,
                                                     ),
                                                 contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                tint =
+                                                    if (hasToken) {
+                                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                                                    },
                                                 modifier = Modifier.size(20.dp),
                                             )
                                         },
                                         colors =
                                             ListItemDefaults.colors(
-                                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                                containerColor =
+                                                    MaterialTheme.colorScheme.surfaceContainer.copy(
+                                                        alpha = if (hasToken) 1f else 0.5f,
+                                                    ),
                                             ),
                                     )
                                 }
