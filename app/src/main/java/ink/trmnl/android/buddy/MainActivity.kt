@@ -25,6 +25,13 @@ import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 
+/**
+ * Single activity host for the app's Circuit navigation graph.
+ *
+ * By default the back-stack root is [WelcomeScreen]. Callers (e.g. the home screen widget) can
+ * pass [EXTRA_OPEN_DEVICES_SCREEN] = `true` in the launch Intent to start with
+ * [TrmnlDevicesScreen] as the root instead, skipping the welcome screen.
+ */
 @ActivityKey(MainActivity::class)
 @ContributesIntoMap(AppScope::class, binding = binding<Activity>())
 @Inject
