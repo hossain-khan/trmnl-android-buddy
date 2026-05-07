@@ -17,6 +17,7 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
@@ -192,10 +193,9 @@ class WorkerSchedulerTest {
 
             // Then: One-time work has network connectivity constraint
             val allWorkInfos = workManager.getWorkInfosByTag(LowBatteryNotificationWorker::class.java.name).get()
-            if (allWorkInfos.isNotEmpty()) {
-                val workInfo = allWorkInfos.first()
-                assertThat(workInfo.constraints.requiredNetworkType).isEqualTo(NetworkType.CONNECTED)
-            }
+            assertThat(allWorkInfos).isNotEmpty()
+            val workInfo = allWorkInfos.first()
+            assertThat(workInfo.constraints.requiredNetworkType).isEqualTo(NetworkType.CONNECTED)
         }
 
     // ========================================
@@ -481,10 +481,10 @@ class WorkerSchedulerTest {
             assertThat(announcementWork.first().id).isNotNull()
             assertThat(blogPostWork.first().id).isNotNull()
 
-            // IDs should be different
-            assertThat(lowBatteryWork.first().id).isEqualTo(lowBatteryWork.first().id)
-            assertThat(announcementWork.first().id).isEqualTo(announcementWork.first().id)
-            assertThat(blogPostWork.first().id).isEqualTo(blogPostWork.first().id)
+            // IDs should be different across workers
+            assertThat(lowBatteryWork.first().id).isNotEqualTo(announcementWork.first().id)
+            assertThat(lowBatteryWork.first().id).isNotEqualTo(blogPostWork.first().id)
+            assertThat(announcementWork.first().id).isNotEqualTo(blogPostWork.first().id)
         }
 
     // ========================================
