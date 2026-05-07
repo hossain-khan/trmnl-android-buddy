@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed tautological assertions in `WorkerSchedulerTest` that compared each worker ID to itself instead of verifying IDs are distinct across workers
+- Strengthened conditional assertion in `WorkerSchedulerTest` for `triggerLowBatteryNotificationNow` network constraint to always verify the constraint rather than silently skip when work list happens to be empty
+
 ## [2.17.0] - 2026-05-03
 
 ### Added
