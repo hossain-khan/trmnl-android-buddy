@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Cleaned up build warnings and deprecated API usage
+  - Migrated `content` module from deprecated `kotlinOptions` to `compilerOptions` DSL
+  - Added Room schema export directory for the `app` module
+  - Enabled `-Xannotation-default-target=param-property` to align qualifier annotation targets with Kotlin's future behavior
+  - Replaced deprecated `ClickableText` with `Text` using `LinkAnnotation.Url`
+  - Replaced deprecated `SwipeToDismissBoxState.confirmValueChange` with a `LaunchedEffect` that snaps the state back to settled after toggling read status
+
 ### Fixed
 - Fixed tautological assertions in `WorkerSchedulerTest` that compared each worker ID to itself instead of verifying IDs are distinct across workers
 - Strengthened conditional assertion in `WorkerSchedulerTest` for `triggerLowBatteryNotificationNow` network constraint to always verify the constraint rather than silently skip when work list happens to be empty

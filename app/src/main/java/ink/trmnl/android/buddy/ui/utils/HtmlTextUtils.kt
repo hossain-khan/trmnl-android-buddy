@@ -4,7 +4,9 @@ import android.text.Spanned
 import android.text.style.URLSpan
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.core.text.HtmlCompat
@@ -30,18 +32,18 @@ fun htmlToAnnotatedString(
         spanned.getSpans(0, spanned.length, URLSpan::class.java).forEach { urlSpan ->
             val start = spanned.getSpanStart(urlSpan)
             val end = spanned.getSpanEnd(urlSpan)
-            addStyle(
-                style =
-                    SpanStyle(
-                        color = linkColor,
-                        textDecoration = TextDecoration.Underline,
-                    ),
-                start = start,
-                end = end,
-            )
-            addStringAnnotation(
-                tag = "URL",
-                annotation = urlSpan.url,
+            addLink(
+                LinkAnnotation.Url(
+                    url = urlSpan.url,
+                    styles =
+                        TextLinkStyles(
+                            style =
+                                SpanStyle(
+                                    color = linkColor,
+                                    textDecoration = TextDecoration.Underline,
+                                ),
+                        ),
+                ),
                 start = start,
                 end = end,
             )

@@ -475,17 +475,14 @@ private fun AnnouncementItem(
     onToggleReadStatus: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val dismissState =
-        rememberSwipeToDismissBoxState(
-            confirmValueChange = { dismissValue ->
-                if (dismissValue == SwipeToDismissBoxValue.EndToStart || dismissValue == SwipeToDismissBoxValue.StartToEnd) {
-                    onToggleReadStatus()
-                    false // Don't actually dismiss, just toggle
-                } else {
-                    false
-                }
-            },
-        )
+    val dismissState = rememberSwipeToDismissBoxState()
+
+    LaunchedEffect(dismissState.currentValue) {
+        if (dismissState.currentValue != SwipeToDismissBoxValue.Settled) {
+            onToggleReadStatus()
+            dismissState.snapTo(SwipeToDismissBoxValue.Settled)
+        }
+    }
 
     // Track press state for animation
     val interactionSource = remember { MutableInteractionSource() }

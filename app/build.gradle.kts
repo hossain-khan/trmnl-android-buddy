@@ -101,6 +101,10 @@ kotlin {
     // See https://kotlinlang.org/docs/gradle-compiler-options.html
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        // Align annotation default targets with Kotlin's future behavior so that
+        // qualifier annotations on constructor parameters (e.g. @ApplicationContext)
+        // are applied to both the parameter and the property backing field.
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
     }
 }
 
@@ -194,11 +198,14 @@ dependencies {
 ksp {
     // Circuit-KSP for Metro
     arg("circuit.codegen.mode", "metro")
-    
+
     // Metro 0.4.0 feature: Enable scoped inject class hints for better performance
     // This allows child graphs to depend on parent-scoped dependencies that are unused
     // See https://zacsweers.github.io/metro/dependency-graphs/
     arg("metro.enableScopedInjectClassHints", "true")
+
+    // Room schema export location
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 
