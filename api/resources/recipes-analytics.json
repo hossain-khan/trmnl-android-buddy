@@ -12,105 +12,101 @@
                 "name": "Calendar XL",
                 "state": "healthy",
                 "installs": 0,
-                "forks": 43
+                "forks": 97
             },
             {
                 "name": "Durham Waste Collection",
                 "state": "healthy",
-                "installs": 9,
-                "forks": 7
+                "installs": 10,
+                "forks": 8
             },
             {
                 "name": "Element of the Day",
                 "state": "healthy",
-                "installs": 9,
-                "forks": 73
-            },
-            {
-                "name": "Google Photos",
-                "state": "healthy",
-                "installs": 1,
-                "forks": 124
-            },
-            {
-                "name": "Google Photos Canvas",
-                "state": "healthy",
-                "installs": 0,
-                "forks": 65
+                "installs": 10,
+                "forks": 94
             },
             {
                 "name": "GO Transit Schedule",
                 "state": "healthy",
                 "installs": 0,
-                "forks": 14
+                "forks": 16
+            },
+            {
+                "name": "Google Photos",
+                "state": "healthy",
+                "installs": 7,
+                "forks": 173
+            },
+            {
+                "name": "Google Photos Canvas",
+                "state": "healthy",
+                "installs": 0,
+                "forks": 86
             },
             {
                 "name": "Islamic Prayer Times",
                 "state": "healthy",
                 "installs": 5,
-                "forks": 17
+                "forks": 33
             },
             {
                 "name": "Kung Fu Panda Quotes",
                 "state": "healthy",
-                "installs": 5,
-                "forks": 23
+                "installs": 6,
+                "forks": 38
             },
             {
                 "name": "Max Payne Quotes",
                 "state": "healthy",
-                "installs": 27,
+                "installs": 29,
                 "forks": 1
             }
         ],
         "stats": {
             "plugins": 9,
-            "connections": 423,
-            "pageviews": 28
+            "connections": 613,
+            "pageviews": 18
         },
         "health": {
             "healthy": {
-                "percent": 121.3333333333333
+                "percent": 0.9871794871794872
             },
             "degraded": {
-                "percent": 0.6666666666666666
+                "percent": 0.01282051282051282
             },
             "erroring": {
-                "percent": 0.3333333333333333
+                "percent": 0.0
             }
         },
         "growth": [
             [
-                "2026-04-09",
-                0
-            ],
-            [
-                "2026-04-10",
-                0
-            ],
-            [
-                "2026-04-11",
-                0
-            ],
-            [
-                "2026-04-12",
-                0
-            ],
-            [
-                "2026-04-13",
-                2
-            ],
-            [
-                "2026-04-14",
-                1
-            ],
-            [
-                "2026-04-15",
+                "2026-06-28",
                 3
             ],
             [
-                "2026-04-16",
-                0
+                "2026-06-29",
+                2
+            ],
+            [
+                "2026-06-30",
+                1
+            ],
+            [
+                "2026-07-02",
+                4
+            ],
+            [
+                "2026-07-03",
+                2
+            ],
+            [
+                "2026-07-04",
+                5
+            ],
+            [
+                "2026-07-05",
+                3
             ]
         ]
     }
