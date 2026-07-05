@@ -28,10 +28,65 @@ paths:
         description: Device percent charged (eg. 69.4)
         schema:
           type: number
+      - name: Battery-Count
+        in: header
+        required: false
+        description: Number of batteries in device (e.g. 1-2)
+        schema:
+          type: number
+      - name: Battery-Charging
+        in: header
+        required: false
+        description: Whether device is plugged into power (eg. true)
+        schema:
+          type: number
+      - name: Battery-Health
+        in: header
+        required: false
+        description: Quality of battery (eg. -1-100)
+        schema:
+          type: number
+      - name: Battery-Current
+        in: header
+        required: false
+        description: Battery current (eg. -1-N)
+        schema:
+          type: number
+      - name: Battery-Temp
+        in: header
+        required: false
+        description: Battery temperature in celsius (eg. -1-N)
+        schema:
+          type: number
+      - name: Battery-Capacity
+        in: header
+        required: false
+        description: Ratio of current / max capacity (eg. -1/-1 in fault case)
+        schema:
+          type: number
+      - name: USB-Connected
+        in: header
+        required: false
+        description: Whether device is plugged into power via USB ("true" or "false")
+        schema:
+          type: string
+      - name: WiFi-Band
+        in: header
+        required: false
+        description: WiFi band the device is connected on ("2.4" or "5")
+        schema:
+          type: string
       - name: FW-Version
         in: header
         required: false
         description: Device firmware version (eg. 0.0.1)
+        schema:
+          type: string
+      - name: FW-Commit
+        in: header
+        required: false
+        description: Device firmware commit hash, for the development channel (eg.
+          a14914c)
         schema:
           type: string
       - name: RSSI
@@ -64,6 +119,25 @@ paths:
         description: Encode image function (eg. true)
         schema:
           type: boolean
+      - name: Sensors
+        in: header
+        required: false
+        description: Environmental sensor data
+        schema:
+          type: string
+      - name: Image-Cached
+        in: header
+        required: false
+        description: Whether the device served the previous image from cache (eg.
+          true / false)
+        schema:
+          type: string
+      - name: Wake-Time
+        in: header
+        required: false
+        description: Seconds the device was awake during the last cycle (eg. 12)
+        schema:
+          type: integer
       responses:
         '200':
           description: Success
@@ -78,7 +152,7 @@ paths:
                   image_url:
                     type: string
                     nullable: true
-                    example: https://trmnl.com/images/screens/setup_logo/og_plus.png
+                    example: https://trmnl.com/images/system_screens/setup_logo/og_plus.png
                   filename:
                     type: string
                     nullable: true
@@ -133,7 +207,7 @@ paths:
                   image_url:
                     type: string
                     nullable: true
-                    example: https://trmnl.com/images/screens/setup_logo/og_plus.png
+                    example: https://trmnl.com/images/system_screens/setup_logo/og_plus.png
                   filename:
                     type: string
                     nullable: true
@@ -213,7 +287,7 @@ paths:
                   image_url:
                     type: string
                     nullable: true
-                    example: https://trmnl.com/images/screens/setup_logo/og_plus.png
+                    example: https://trmnl.com/images/system_screens/setup_logo/og_plus.png
                   message:
                     type: string
                     example: Register at trmnl.com/start with Device ID 'ABC-123'
@@ -718,6 +792,118 @@ paths:
           description: Image too large
         '429':
           description: Rate limited
+  "/api/plugin_settings/{plugin_setting_id}/markup/{size}":
+    get:
+      summary: Read markup for a size
+      tags:
+      - Plugin Settings - Markup
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: plugin_setting_id
+        in: path
+        required: true
+        description: Plugin setting UUID
+        schema:
+          type: string
+      - name: size
+        in: path
+        required: true
+        description: Markup size (e.g. markup_full)
+        schema:
+          type: string
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '200':
+          description: Returns markup content
+        '422':
+          description: Invalid size
+        '404':
+          description: UUID belonging to another user
+    put:
+      summary: Write markup for a size
+      tags:
+      - Plugin Settings - Markup
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: plugin_setting_id
+        in: path
+        required: true
+        description: Plugin setting UUID
+        schema:
+          type: string
+      - name: size
+        in: path
+        required: true
+        description: Markup size (e.g. markup_full)
+        schema:
+          type: string
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '200':
+          description: Markup written successfully
+        '422':
+          description: Invalid size
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+              required:
+              - content
+        required: true
+  "/api/plugin_settings/{plugin_setting_id}/settings":
+    patch:
+      summary: Update plugin settings fields
+      tags:
+      - Plugin Settings - Settings
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: plugin_setting_id
+        in: path
+        required: true
+        description: Plugin setting UUID
+        schema:
+          type: string
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '200':
+          description: Settings updated successfully
+        '422':
+          description: Non-string field values
+        '404':
+          description: Unknown UUID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fields:
+                  type: object
+              required:
+              - fields
+        required: true
   "/api/plugin_settings":
     get:
       summary: List my plugin settings
@@ -785,6 +971,31 @@ paths:
             schema:
               "$ref": "#/components/schemas/PluginSettingParams"
         required: true
+  "/api/plugin_settings/{id}/details":
+    get:
+      summary: Get plugin setting details
+      tags:
+      - Plugin Settings
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Plugin setting UUID
+        schema:
+          type: string
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '200':
+          description: Returns plugin details with sizes
+        '404':
+          description: UUID belonging to another user
   "/api/plugin_settings/{id}":
     delete:
       summary: Delete a plugin setting
@@ -857,6 +1068,11 @@ components:
           type: integer
           nullable: true
           example: -70
+        wifi_band:
+          type: string
+          nullable: true
+          example: '5'
+          description: WiFi band the device is connected on ("2.4" or "5")
         sleep_mode_enabled:
           type: boolean
           nullable: false
@@ -867,6 +1083,16 @@ components:
         sleep_end_time:
           type: integer
           example: 480
+        last_ping_at:
+          type: string
+          format: date_time
+          nullable: true
+          example: '2026-03-31T14:30:00.000Z'
+        hardware_last_ping_at:
+          type: string
+          format: date_time
+          nullable: true
+          example: '2026-03-31T14:30:00.000Z'
         percent_charged:
           type: number
           example: 85.0
@@ -947,6 +1173,13 @@ components:
           - gray-4
           - gray-16
           description: Supported color palette IDs
+        preview_white_point:
+          type: string
+          example: true_white
+          description: Preview white point mode for color previews
+          enum:
+          - true_white
+          - limited
         image_size_limit:
           type: integer
           example: 92160
@@ -970,6 +1203,9 @@ components:
                 size:
                   type: string
                   example: screen--md
+                density:
+                  type: string
+                  example: screen--density-1x
             variables:
               type: array
               items:
@@ -1015,6 +1251,12 @@ components:
           type: string
           example: screen--4bit
           description: Framework CSS class for this palette
+        grayscale_bit_depth:
+          type: integer
+          nullable: true
+          example: 1
+          description: For color palettes, bit depth for grayscale areas (1 for 3/4-color
+            limited, 2 for 6/7-color, 4 for full-spectrum)
     PlaylistItem:
       type: object
       additionalProperties: false
@@ -1023,6 +1265,12 @@ components:
           type: string
           format: date_time
           example: '2023-10-01T12:00:00Z'
+        configuration_state:
+          type: string
+          example: configured
+          enum:
+          - configured
+          - needs_configuration
         device_id:
           type: integer
           example: 1
@@ -1039,15 +1287,43 @@ components:
         playlist_group_id:
           type: integer
           example: 1
+        plugin:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: Weather
+            keyname:
+              type: string
+              example: weather
+            description:
+              type: string
+              nullable: true
+            image:
+              type: string
+              nullable: true
+            image_dark:
+              type: string
+              nullable: true
+        plugin_id:
+          type: integer
+          example: 1
+          nullable: true
         plugin_setting:
           "$ref": "#/components/schemas/PluginSetting"
         plugin_setting_id:
           type: integer
           example: 1
+          nullable: true
         rendered_at:
           type: string
           format: date_time
           example: '2023-10-01T12:00:00Z'
+          nullable: true
         row_order:
           type: integer
           example: 1
@@ -1078,6 +1354,21 @@ components:
         plugin_id:
           type: integer
           example: 1
+        icon_url:
+          type: string
+          example: https://trmnl-public.s3.com/qwertyasdf
+          nullable: true
+        icon_content_type:
+          type: string
+          example: image/png
+          nullable: true
+        read_only?:
+          type: boolean
+          example: false
+        strategy:
+          type: string
+          example: webhook
+          nullable: true
     PluginSettingArchive:
       type: object
       properties:
