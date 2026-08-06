@@ -316,6 +316,56 @@ paths:
                     - life
                     - marketing
                     - ecommerce
+  "/api/firmware/flash":
+    get:
+      summary: List flashable firmware versions per device model
+      tags:
+      - Flash Firmwares
+      description: |
+        Firmware builds flashable via the TRMNL web flasher (/flash).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      models:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            keyname:
+                              type: string
+                            chipFamily:
+                              type: string
+                            label:
+                              type: string
+                            versions:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  version:
+                                    type: string
+                                  url:
+                                    type: string
+                                required:
+                                - version
+                                - url
+                          required:
+                          - keyname
+                          - chipFamily
+                          - label
+                          - versions
+                    required:
+                    - models
+                required:
+                - data
   "/api/ips":
     get:
       summary: List all TRMNL server IP addresses
@@ -775,7 +825,7 @@ paths:
       - Plugin Settings
       responses:
         '200':
-          description: Success with home_assistant_screenshot plugin
+          description: Full-color image on a color device
           content:
             application/json:
               schema:
@@ -1182,8 +1232,10 @@ components:
           - limited
         image_size_limit:
           type: integer
-          example: 92160
-          description: Maximum image file size in bytes for webhook uploads
+          nullable: true
+          example: 90000
+          description: Maximum image file size in bytes for webhook uploads; null
+            means the model declares no limit
         image_upload_supported:
           type: boolean
           example: true
@@ -1351,6 +1403,10 @@ components:
         name:
           type: string
           example: My Plugin Setting
+        description:
+          type: string
+          example: Upcoming train departures
+          nullable: true
         plugin_id:
           type: integer
           example: 1
