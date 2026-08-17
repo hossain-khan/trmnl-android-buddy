@@ -54,4 +54,9 @@ data class Display(
      */
     @SerialName("rendered_at")
     val renderedAt: String? = null,
+    /**
+     * Special function or mode active on the device (e.g., "identify", "sleep", or null).
+     */
+    @SerialName("special_function")
+    val specialFunction: String? = null,
 )

@@ -300,9 +300,7 @@ class DevicePreviewScreenTest {
                 assertThat(successState.totalImages).isEqualTo(2)
                 assertThat(successState.currentImageIndex).isEqualTo(1)
                 assertThat(successState.canGoPrevious).isTrue()
-
-                val loadNext = successState.loadNextState as DevicePreviewScreen.LoadNextState.Success
-                assertThat(loadNext.message).isEqualTo("Next display image loaded")
+                assertThat(successState.loadNextState).isInstanceOf(DevicePreviewScreen.LoadNextState.Idle::class)
             }
         }
 
@@ -457,6 +455,117 @@ class DevicePreviewScreenTest {
                 val result = popResult.result as DevicePreviewScreen.Result
                 assertThat(result.deviceId).isEqualTo("ABC-123")
                 assertThat(result.newImageUrl).isNull()
+            }
+        }
+
+    @Test
+    fun `normalizeImageUrl strips dynamic query parameters from signed storage URLs`() {
+        val s3SignedUrl =
+            "https://trmnl-screens.nyc3.digitaloceanspaces.com/vsgnimt6q3z4giloww5cmmb7iw0s?" +
+                "response-content-disposition=inline%3B%20filename%3D%22plugin-aabc0b%22&" +
+                "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20260817T072931Z&X-Amz-Signature=abc123"
+        assertThat(normalizeImageUrl(s3SignedUrl))
+            .isEqualTo("https://trmnl-screens.nyc3.digitaloceanspaces.com/vsgnimt6q3z4giloww5cmmb7iw0s")
+
+        val standardUrl = "https://example.com/image.bmp"
+        assertThat(normalizeImageUrl(standardUrl)).isEqualTo("https://example.com/image.bmp")
+    }
+
+    @Test
+    fun `next image detects sleep mode and displays friendly error without duplicating cache`() =
+        runTest {
+            val navigator = FakeNavigator(testScreen)
+            val apiService =
+                FakeApiService(
+                    nextDisplayResponse =
+                        ApiResult.success(
+                            Display(
+                                status = 0,
+                                refreshRate = 34565,
+                                imageUrl = "https://trmnl-screens.nyc3.digitaloceanspaces.com/sleep-asset?sig=new",
+                                filename = "sleep",
+                                specialFunction = "identify",
+                            ),
+                        ),
+                )
+            val tokenRepository =
+                FakeDeviceTokenRepository(
+                    initialTokens = mapOf("ABC-123" to "device-token-123"),
+                )
+            val presenter = DevicePreviewPresenter(testScreen, navigator, apiService, tokenRepository)
+
+            presenter.test {
+                awaitItem() // Initial frame
+                val configuredState = awaitItem()
+
+                // Trigger next image
+                configuredState.eventSink(DevicePreviewScreen.Event.NextImageClicked)
+
+                // Wait for loading state
+                val loadingState = awaitItem()
+                assertThat(loadingState.isLoadingNext).isTrue()
+
+                // Wait for error state detecting sleep mode
+                val errorState = awaitItem()
+                assertThat(errorState.isLoadingNext).isFalse()
+                assertThat(errorState.totalImages).isEqualTo(1)
+                assertThat(errorState.currentImageIndex).isEqualTo(0)
+                assertThat(errorState.loadNextState).isInstanceOf(DevicePreviewScreen.LoadNextState.Error::class)
+
+                val error = errorState.loadNextState as DevicePreviewScreen.LoadNextState.Error
+                assertThat(error.message).isEqualTo("Device is in sleep mode. No new screen available.")
+            }
+        }
+
+    @Test
+    fun `next image detects same underlying screen despite dynamic signed query params`() =
+        runTest {
+            val screenWithSignedUrl =
+                DevicePreviewScreen(
+                    deviceId = "ABC-123",
+                    deviceName = "Test Device",
+                    imageUrl = "https://trmnl-screens.nyc3.digitaloceanspaces.com/vsgnimt6q3z4giloww5cmmb7iw0s?sig=request1",
+                )
+            val navigator = FakeNavigator(screenWithSignedUrl)
+            val apiService =
+                FakeApiService(
+                    nextDisplayResponse =
+                        ApiResult.success(
+                            Display(
+                                status = 0,
+                                refreshRate = 16237,
+                                imageUrl =
+                                    "https://trmnl-screens.nyc3.digitaloceanspaces.com/vsgnimt6q3z4giloww5cmmb7iw0s?sig=request2_different_timestamp",
+                                filename = "plugin-aabc0b",
+                            ),
+                        ),
+                )
+            val tokenRepository =
+                FakeDeviceTokenRepository(
+                    initialTokens = mapOf("ABC-123" to "device-token-123"),
+                )
+            val presenter = DevicePreviewPresenter(screenWithSignedUrl, navigator, apiService, tokenRepository)
+
+            presenter.test {
+                awaitItem() // Initial frame
+                val configuredState = awaitItem()
+
+                // Trigger next image
+                configuredState.eventSink(DevicePreviewScreen.Event.NextImageClicked)
+
+                // Wait for loading state
+                val loadingState = awaitItem()
+                assertThat(loadingState.isLoadingNext).isTrue()
+
+                // Wait for error state detecting same screen
+                val errorState = awaitItem()
+                assertThat(errorState.isLoadingNext).isFalse()
+                assertThat(errorState.totalImages).isEqualTo(1)
+                assertThat(errorState.currentImageIndex).isEqualTo(0)
+                assertThat(errorState.loadNextState).isInstanceOf(DevicePreviewScreen.LoadNextState.Error::class)
+
+                val error = errorState.loadNextState as DevicePreviewScreen.LoadNextState.Error
+                assertThat(error.message).isEqualTo("No new screen to display. Device may have only one screen in rotation.")
             }
         }
 }
