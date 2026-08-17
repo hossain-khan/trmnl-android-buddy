@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.18.1] - 2026-08-17
+
+### Added
+- **Smart sleep mode & rotation duplicate detection in device preview**: Added smart detection to full-screen device preview to handle sleeping devices and single-screen rotations gracefully (#520).
+  - Normalized pre-signed S3 / DigitalOcean storage URLs by stripping dynamic signature query parameters (`normalizeImageUrl`).
+  - Detects `filename: "sleep"` or `special_function: "sleep"` from TRMNL server and alerts user without duplicating screen history.
+  - Detects single-screen rotations where the server returns the same underlying image and informs the user.
+  - Added `special_function` property to `Display` API model.
+
+### Changed
+- Removed redundant success snackbar on successful next display image load in full-screen preview.
+
 ## [2.18.0] - 2026-08-16
 
 ### Added
@@ -1609,7 +1621,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.1...HEAD
+[2.18.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.0...2.18.1
 [2.18.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.17.0...2.18.0
 [2.17.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.16.0...2.17.0
 [2.16.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.15.0...2.16.0
