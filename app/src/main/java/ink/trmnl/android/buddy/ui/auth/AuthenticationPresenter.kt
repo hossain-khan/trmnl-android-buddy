@@ -1,5 +1,7 @@
 package ink.trmnl.android.buddy.ui.auth
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,7 +65,7 @@ class AuthenticationPresenter
             var isAuthenticationAvailable by remember { mutableStateOf(false) }
             var showRetryPrompt by remember { mutableStateOf(false) }
             val coroutineScope = rememberCoroutineScope()
-            val context = LocalContext.current
+            val context = runCatching { LocalContext.current }.getOrNull()
 
             // Check authentication availability
             LaunchedEffect(Unit) {
@@ -76,7 +78,7 @@ class AuthenticationPresenter
             ) { event ->
                 when (event) {
                     is AuthenticationScreen.Event.AuthenticateRequested -> {
-                        val activity = context as FragmentActivity
+                        val activity = context?.findFragmentActivity()
                         biometricAuthHelper.authenticate(
                             activity = activity,
                             title = "Authenticate to continue",
@@ -84,7 +86,7 @@ class AuthenticationPresenter
                             onSuccess = {
                                 navigator.resetRoot(TrmnlDevicesScreen)
                             },
-                            onError = { error ->
+                            onError = { _ ->
                                 // Show retry prompt on error
                                 showRetryPrompt = true
                             },
@@ -104,6 +106,17 @@ class AuthenticationPresenter
                     }
                 }
             }
+        }
+
+        private fun Context.findFragmentActivity(): FragmentActivity? {
+            var currentContext = this
+            while (currentContext is ContextWrapper) {
+                if (currentContext is FragmentActivity) {
+                    return currentContext
+                }
+                currentContext = currentContext.baseContext
+            }
+            return currentContext as? FragmentActivity
         }
 
         @CircuitInject(AuthenticationScreen::class, AppScope::class)
