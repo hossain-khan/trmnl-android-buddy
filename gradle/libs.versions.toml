@@ -28,7 +28,7 @@ kotlinter = "5.2.0"
 
 # Kover - Kotlin code coverage
 # https://github.com/Kotlin/kotlinx-kover
-kover = "0.9.1"
+kover = "0.9.9"
 lifecycleRuntimeKtx = "2.9.4"
 metro = "0.6.8"
 androidxWork = "2.10.5"
