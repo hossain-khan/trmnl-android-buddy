@@ -109,21 +109,18 @@ fun DevicePreviewContent(
         }
     }
 
-    // Handle load next state with snackbar messages
+    // Handle load next state with snackbar messages (errors only)
     LaunchedEffect(state.loadNextState) {
         when (val loadNextState = state.loadNextState) {
-            is DevicePreviewScreen.LoadNextState.Success -> {
-                snackbarHostState.showSnackbar(loadNextState.message)
-                state.eventSink(DevicePreviewScreen.Event.DismissLoadNextSnackbar)
-            }
             is DevicePreviewScreen.LoadNextState.Error -> {
                 snackbarHostState.showSnackbar(loadNextState.message)
                 state.eventSink(DevicePreviewScreen.Event.DismissLoadNextSnackbar)
             }
             DevicePreviewScreen.LoadNextState.Idle,
             DevicePreviewScreen.LoadNextState.Loading,
+            is DevicePreviewScreen.LoadNextState.Success,
             -> {
-                // No action needed
+                // No snackbar on success or loading
             }
         }
     }

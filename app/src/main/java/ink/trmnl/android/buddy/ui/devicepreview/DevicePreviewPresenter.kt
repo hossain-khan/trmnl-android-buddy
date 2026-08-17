@@ -109,16 +109,31 @@ class DevicePreviewPresenter
                                     when (val result = apiService.getDisplay(token)) {
                                         is ApiResult.Success -> {
                                             val newImageUrl = result.value.imageUrl
+                                            val display = result.value
                                             if (newImageUrl != null) {
-                                                if (newImageUrl != currentImageUrl) {
+                                                val isSleeping =
+                                                    display.filename?.equals("sleep", ignoreCase = true) == true ||
+                                                        display.specialFunction?.equals("sleep", ignoreCase = true) == true
+                                                val isSameScreen =
+                                                    normalizeImageUrl(newImageUrl) == normalizeImageUrl(currentImageUrl)
+
+                                                if (isSleeping) {
+                                                    loadNextState =
+                                                        DevicePreviewScreen.LoadNextState.Error(
+                                                            message = "Device is in sleep mode. No new screen available.",
+                                                        )
+                                                } else if (isSameScreen) {
+                                                    loadNextState =
+                                                        DevicePreviewScreen.LoadNextState.Error(
+                                                            message =
+                                                                "No new screen to display. " +
+                                                                    "Device may have only one screen in rotation.",
+                                                        )
+                                                } else {
                                                     cachedImages = cachedImages + newImageUrl
                                                     currentImageIndex = cachedImages.lastIndex
+                                                    loadNextState = DevicePreviewScreen.LoadNextState.Idle
                                                 }
-                                                loadNextState =
-                                                    DevicePreviewScreen.LoadNextState.Success(
-                                                        newImageUrl = newImageUrl,
-                                                        message = "Next display image loaded",
-                                                    )
                                             } else {
                                                 loadNextState =
                                                     DevicePreviewScreen.LoadNextState.Error(
@@ -205,3 +220,26 @@ class DevicePreviewPresenter
             ): DevicePreviewPresenter
         }
     }
+
+/**
+ * Normalizes an image URL by stripping dynamic query parameters to compare the underlying image asset.
+ *
+ * TRMNL device display API responses (`GET /api/display` and `GET /api/display/current`) provide
+ * pre-signed cloud storage URLs (e.g., AWS S3 or DigitalOcean Spaces) that contain dynamic timestamp,
+ * credential, and cryptographic signature query parameters (such as `X-Amz-Date`, `X-Amz-Signature`, `X-Amz-Expires`).
+ * Because these query parameters change on every HTTP request even when the underlying image has not changed,
+ * comparing full URL strings directly falsely indicates that a new image was generated.
+ *
+ * Example:
+ * ```
+ * Full URL:
+ *   https://trmnl-screens.nyc3.digitaloceanspaces.com/vsgnimt6q3z4giloww5cmmb7iw0s?response-content-disposition=inline&X-Amz-Date=20260817T072931Z&X-Amz-Signature=abc123
+ *
+ * Normalized:
+ *   https://trmnl-screens.nyc3.digitaloceanspaces.com/vsgnimt6q3z4giloww5cmmb7iw0s
+ * ```
+ *
+ * @param url The raw image URL string.
+ * @return The base URL string without query parameters.
+ */
+internal fun normalizeImageUrl(url: String): String = url.substringBefore('?')
