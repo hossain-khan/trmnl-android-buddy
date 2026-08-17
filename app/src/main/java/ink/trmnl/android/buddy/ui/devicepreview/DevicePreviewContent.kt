@@ -1,11 +1,15 @@
 package ink.trmnl.android.buddy.ui.devicepreview
 
+import android.content.res.Configuration
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -14,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -23,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -97,6 +103,25 @@ fun DevicePreviewContent(
             }
             DevicePreviewScreen.RefreshState.Idle,
             DevicePreviewScreen.RefreshState.Refreshing,
+            -> {
+                // No action needed
+            }
+        }
+    }
+
+    // Handle load next state with snackbar messages
+    LaunchedEffect(state.loadNextState) {
+        when (val loadNextState = state.loadNextState) {
+            is DevicePreviewScreen.LoadNextState.Success -> {
+                snackbarHostState.showSnackbar(loadNextState.message)
+                state.eventSink(DevicePreviewScreen.Event.DismissLoadNextSnackbar)
+            }
+            is DevicePreviewScreen.LoadNextState.Error -> {
+                snackbarHostState.showSnackbar(loadNextState.message)
+                state.eventSink(DevicePreviewScreen.Event.DismissLoadNextSnackbar)
+            }
+            DevicePreviewScreen.LoadNextState.Idle,
+            DevicePreviewScreen.LoadNextState.Loading,
             -> {
                 // No action needed
             }
@@ -216,6 +241,79 @@ fun DevicePreviewContent(
                         }
                     },
                 )
+            }
+
+            // Bottom floating navigation pill (only shown when device is configured with API key)
+            if (state.isConfigured) {
+                val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+                Surface(
+                    modifier =
+                        Modifier
+                            .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
+                            .padding(
+                                end = if (isLandscape) 24.dp else 0.dp,
+                                bottom = 24.dp,
+                            ),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.92f),
+                    tonalElevation = 6.dp,
+                    shadowElevation = 6.dp,
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        IconButton(
+                            onClick = { state.eventSink(DevicePreviewScreen.Event.PreviousImageClicked) },
+                            enabled = state.canGoPrevious && !state.isLoadingNext,
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.chevron_backward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Previous display image",
+                                modifier = Modifier.size(24.dp),
+                                tint =
+                                    if (state.canGoPrevious && !state.isLoadingNext) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                    },
+                            )
+                        }
+
+                        Text(
+                            text = "${state.currentImageIndex + 1} / ${state.totalImages}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(horizontal = 4.dp),
+                        )
+
+                        IconButton(
+                            onClick = { state.eventSink(DevicePreviewScreen.Event.NextImageClicked) },
+                            enabled = state.canGoNext && !state.isLoadingNext,
+                        ) {
+                            if (state.isLoadingNext) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    strokeWidth = 2.dp,
+                                )
+                            } else {
+                                Icon(
+                                    painter = painterResource(R.drawable.chevron_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                    contentDescription = "Next display image",
+                                    modifier = Modifier.size(24.dp),
+                                    tint =
+                                        if (state.canGoNext && !state.isLoadingNext) {
+                                            MaterialTheme.colorScheme.primary
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                        },
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

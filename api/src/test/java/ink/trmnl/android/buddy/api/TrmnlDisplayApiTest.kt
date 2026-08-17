@@ -209,4 +209,84 @@ class TrmnlDisplayApiTest : BaseApiTest() {
             assertThat(display.renderedAt).isNotNull()
             assertThat(display.renderedAt).isEqualTo("2024-12-25T18:30:00Z")
         }
+
+    @Test
+    fun `getDisplay returns success with next display data`() =
+        runTest {
+            // Given
+            val deviceApiKey = "abc-123"
+            val mockResponse =
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(
+                        """
+                        {
+                          "status": 200,
+                          "refresh_rate": 300,
+                          "image_url": "https://trmnl.com/images/system_screens/setup_logo/og_plus.png",
+                          "filename": "next-logo.bmp"
+                        }
+                        """.trimIndent(),
+                    )
+            mockWebServer.enqueue(mockResponse)
+
+            // When
+            val result = apiService.getDisplay(deviceApiKey)
+
+            // Then
+            assertThat(result).isInstanceOf<ApiResult.Success<*>>()
+            val successResult = result as ApiResult.Success
+            val display = successResult.value
+
+            assertThat(display.status).isEqualTo(200)
+            assertThat(display.refreshRate).isEqualTo(300)
+            assertThat(display.imageUrl).isEqualTo("https://trmnl.com/images/system_screens/setup_logo/og_plus.png")
+            assertThat(display.filename).isEqualTo("next-logo.bmp")
+
+            // Verify request
+            val request = mockWebServer.takeRequest()
+            assertThat(request.path).isEqualTo("/display")
+            assertThat(request.method).isEqualTo("GET")
+            assertThat(request.getHeader("Access-Token")).isEqualTo(deviceApiKey)
+        }
+
+    @Test
+    fun `getDisplay returns 401 Unauthorized`() =
+        runTest {
+            // Given
+            val deviceApiKey = "invalid-key"
+            val mockResponse =
+                MockResponse()
+                    .setResponseCode(401)
+                    .setBody(
+                        """
+                        {
+                          "error": "Unauthorized",
+                          "message": "Invalid or missing device API token"
+                        }
+                        """.trimIndent(),
+                    )
+            mockWebServer.enqueue(mockResponse)
+
+            // When
+            val result = apiService.getDisplay(deviceApiKey)
+
+            // Then
+            assertThat(result).isInstanceOf<ApiResult.Failure.HttpFailure<*>>()
+            val failure = result as ApiResult.Failure.HttpFailure
+            assertThat(failure.code).isEqualTo(401)
+        }
+
+    @Test
+    fun `getDisplay handles network failure`() =
+        runTest {
+            // Given
+            mockWebServer.shutdown()
+
+            // When
+            val result = apiService.getDisplay("abc-123")
+
+            // Then
+            assertThat(result).isInstanceOf<ApiResult.Failure.NetworkFailure>()
+        }
 }

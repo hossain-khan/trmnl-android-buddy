@@ -1,7 +1,9 @@
 package ink.trmnl.android.buddy.ui.devicepreview
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -32,6 +34,12 @@ class DevicePreviewPresenter
     ) : Presenter<DevicePreviewScreen.State> {
         @Composable
         override fun present(): DevicePreviewScreen.State {
+            var isConfigured by rememberRetained { mutableStateOf(false) }
+
+            LaunchedEffect(screen.deviceId) {
+                isConfigured = deviceTokenRepository.hasDeviceToken(screen.deviceId)
+            }
+
             var downloadState by rememberRetained {
                 mutableStateOf<DevicePreviewScreen.DownloadState>(
                     DevicePreviewScreen.DownloadState.Idle,
@@ -44,16 +52,31 @@ class DevicePreviewPresenter
                 )
             }
 
-            var currentImageUrl by rememberRetained { mutableStateOf(screen.imageUrl) }
+            var loadNextState by rememberRetained {
+                mutableStateOf<DevicePreviewScreen.LoadNextState>(
+                    DevicePreviewScreen.LoadNextState.Idle,
+                )
+            }
 
+            var cachedImages by rememberRetained { mutableStateOf(listOf(screen.imageUrl)) }
+            var currentImageIndex by rememberRetained { mutableIntStateOf(0) }
+
+            val currentImageUrl = cachedImages.getOrElse(currentImageIndex) { screen.imageUrl }
             val scope = rememberCoroutineScope()
 
             return DevicePreviewScreen.State(
                 deviceId = screen.deviceId,
                 deviceName = screen.deviceName,
                 imageUrl = currentImageUrl,
+                isConfigured = isConfigured,
+                currentImageIndex = currentImageIndex,
+                totalImages = cachedImages.size,
+                canGoPrevious = currentImageIndex > 0,
+                canGoNext = isConfigured,
+                isLoadingNext = loadNextState is DevicePreviewScreen.LoadNextState.Loading,
                 downloadState = downloadState,
                 refreshState = refreshState,
+                loadNextState = loadNextState,
             ) { event ->
                 when (event) {
                     DevicePreviewScreen.Event.BackClicked -> {
@@ -70,17 +93,68 @@ class DevicePreviewPresenter
                             downloadState = DevicePreviewScreen.DownloadState.Downloading
                         }
                     }
+                    DevicePreviewScreen.Event.PreviousImageClicked -> {
+                        if (currentImageIndex > 0) {
+                            currentImageIndex--
+                        }
+                    }
+                    DevicePreviewScreen.Event.NextImageClicked -> {
+                        if (currentImageIndex < cachedImages.lastIndex) {
+                            currentImageIndex++
+                        } else if (isConfigured && loadNextState !is DevicePreviewScreen.LoadNextState.Loading) {
+                            loadNextState = DevicePreviewScreen.LoadNextState.Loading
+                            scope.launch {
+                                val token = deviceTokenRepository.getDeviceToken(screen.deviceId)
+                                if (token != null) {
+                                    when (val result = apiService.getDisplay(token)) {
+                                        is ApiResult.Success -> {
+                                            val newImageUrl = result.value.imageUrl
+                                            if (newImageUrl != null) {
+                                                if (newImageUrl != currentImageUrl) {
+                                                    cachedImages = cachedImages + newImageUrl
+                                                    currentImageIndex = cachedImages.lastIndex
+                                                }
+                                                loadNextState =
+                                                    DevicePreviewScreen.LoadNextState.Success(
+                                                        newImageUrl = newImageUrl,
+                                                        message = "Next display image loaded",
+                                                    )
+                                            } else {
+                                                loadNextState =
+                                                    DevicePreviewScreen.LoadNextState.Error(
+                                                        message = "No display image returned",
+                                                    )
+                                            }
+                                        }
+                                        is ApiResult.Failure -> {
+                                            loadNextState =
+                                                DevicePreviewScreen.LoadNextState.Error(
+                                                    message = result.toUserMessage(),
+                                                )
+                                        }
+                                    }
+                                } else {
+                                    loadNextState =
+                                        DevicePreviewScreen.LoadNextState.Error(
+                                            message = "Device API key not found. Please configure it in settings.",
+                                        )
+                                }
+                            }
+                        }
+                    }
                     DevicePreviewScreen.Event.RefreshImageClicked -> {
                         if (refreshState !is DevicePreviewScreen.RefreshState.Refreshing) {
                             refreshState = DevicePreviewScreen.RefreshState.Refreshing
                             scope.launch {
-                                val deviceToken = deviceTokenRepository.getDeviceToken(screen.deviceId)
-                                if (deviceToken != null) {
-                                    when (val result = apiService.getDisplayCurrent(deviceToken)) {
+                                val token = deviceTokenRepository.getDeviceToken(screen.deviceId)
+                                if (token != null) {
+                                    when (val result = apiService.getDisplayCurrent(token)) {
                                         is ApiResult.Success -> {
                                             val newImageUrl = result.value.imageUrl
                                             if (newImageUrl != null) {
-                                                currentImageUrl = newImageUrl
+                                                val updatedList = cachedImages.toMutableList()
+                                                updatedList[currentImageIndex] = newImageUrl
+                                                cachedImages = updatedList
                                                 refreshState =
                                                     DevicePreviewScreen.RefreshState.Success(
                                                         newImageUrl = newImageUrl,
@@ -114,6 +188,9 @@ class DevicePreviewPresenter
                     }
                     DevicePreviewScreen.Event.DismissRefreshSnackbar -> {
                         refreshState = DevicePreviewScreen.RefreshState.Idle
+                    }
+                    DevicePreviewScreen.Event.DismissLoadNextSnackbar -> {
+                        loadNextState = DevicePreviewScreen.LoadNextState.Idle
                     }
                 }
             }

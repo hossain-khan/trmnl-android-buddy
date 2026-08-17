@@ -30,8 +30,15 @@ data class DevicePreviewScreen(
         val deviceId: String,
         val deviceName: String,
         val imageUrl: String,
+        val isConfigured: Boolean = false,
+        val currentImageIndex: Int = 0,
+        val totalImages: Int = 1,
+        val canGoPrevious: Boolean = false,
+        val canGoNext: Boolean = false,
+        val isLoadingNext: Boolean = false,
         val downloadState: DownloadState = DownloadState.Idle,
         val refreshState: RefreshState = RefreshState.Idle,
+        val loadNextState: LoadNextState = LoadNextState.Idle,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -64,6 +71,21 @@ data class DevicePreviewScreen(
         ) : RefreshState
     }
 
+    sealed interface LoadNextState {
+        data object Idle : LoadNextState
+
+        data object Loading : LoadNextState
+
+        data class Success(
+            val newImageUrl: String,
+            val message: String,
+        ) : LoadNextState
+
+        data class Error(
+            val message: String,
+        ) : LoadNextState
+    }
+
     sealed interface Event : CircuitUiEvent {
         data object BackClicked : Event
 
@@ -71,8 +93,14 @@ data class DevicePreviewScreen(
 
         data object RefreshImageClicked : Event
 
+        data object PreviousImageClicked : Event
+
+        data object NextImageClicked : Event
+
         data object DismissSnackbar : Event
 
         data object DismissRefreshSnackbar : Event
+
+        data object DismissLoadNextSnackbar : Event
     }
 }

@@ -33,6 +33,7 @@ class FakeTrmnlApiService : TrmnlApiService {
     var getRecipeResult: ApiResult<RecipeDetailResponse, ApiError>? = null
     var getDeviceModelsResult: ApiResult<DeviceModelsResponse, ApiError>? = null
     var getDisplayCurrentResult: ApiResult<Display, ApiError>? = null
+    var getDisplayResult: ApiResult<Display, ApiError>? = null
     var getPlaylistItemsResult: ApiResult<PlaylistItemsResponse, ApiError>? = null
     var getRecipesAnalyticsResult: ApiResult<RecipesAnalyticsResponse, ApiError>? = null
 
@@ -75,6 +76,9 @@ class FakeTrmnlApiService : TrmnlApiService {
 
     override suspend fun getDisplayCurrent(deviceApiKey: String): ApiResult<Display, ApiError> =
         getDisplayCurrentResult ?: throw NotImplementedError("getDisplayCurrentResult not implemented")
+
+    override suspend fun getDisplay(deviceApiKey: String): ApiResult<Display, ApiError> =
+        getDisplayResult ?: throw NotImplementedError("getDisplayResult not implemented")
 
     override suspend fun getPlaylistItems(authorization: String): ApiResult<PlaylistItemsResponse, ApiError> {
         lastAuthorizationHeader = authorization
