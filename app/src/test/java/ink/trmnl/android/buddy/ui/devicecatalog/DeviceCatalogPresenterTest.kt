@@ -427,6 +427,8 @@ private open class FakeApiService(
 
     override suspend fun getDisplayCurrent(deviceApiKey: String) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
+    override suspend fun getDisplay(deviceApiKey: String) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
+
     override suspend fun userInfo(authorization: String) = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
     override suspend fun getRecipes(

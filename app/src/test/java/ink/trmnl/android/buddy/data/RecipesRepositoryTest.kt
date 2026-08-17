@@ -187,6 +187,8 @@ class RecipesRepositoryTest {
 
         override suspend fun getDisplayCurrent(deviceApiKey: String): ApiResult<Display, ApiError> = throw NotImplementedError()
 
+        override suspend fun getDisplay(deviceApiKey: String): ApiResult<Display, ApiError> = throw NotImplementedError()
+
         override suspend fun userInfo(authorization: String): ApiResult<UserResponse, ApiError> = throw NotImplementedError()
 
         override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> = throw NotImplementedError()

@@ -177,6 +177,51 @@ interface TrmnlApiService {
         @Header("Access-Token") deviceApiKey: String,
     ): ApiResult<Display, ApiError>
 
+    /**
+     * Fetch the next display screen for a specific device.
+     *
+     * This endpoint uses Device API authentication (Access-Token header)
+     * and instructs the server to render and return the next display screen in the playlist rotation.
+     *
+     * Note: This is a Device API endpoint that requires the device's API key,
+     * not the user's Account API key.
+     *
+     * @param deviceApiKey Device API Key (format: "abc-123")
+     * @return ApiResult containing display data or error
+     *
+     * Example response:
+     * ```json
+     * {
+     *   "status": 200,
+     *   "refresh_rate": 300,
+     *   "image_url": "https://trmnl.com/images/system_screens/setup_logo/og_plus.png",
+     *   "filename": "setup-logo.bmp"
+     * }
+     * ```
+     *
+     * Example usage:
+     * ```kotlin
+     * when (val result = api.getDisplay("abc-123")) {
+     *     is ApiResult.Success -> {
+     *         val display = result.value
+     *         println("Next display image: ${display.imageUrl}")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         404 -> println("Device not found")
+     *         401 -> println("Unauthorized")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @GET("display")
+    suspend fun getDisplay(
+        @Header("Access-Token") deviceApiKey: String,
+    ): ApiResult<Display, ApiError>
+
     // ========================================
     // Playlists API
     // ========================================

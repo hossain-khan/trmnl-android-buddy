@@ -435,6 +435,9 @@ private class FakeApiService(
     override suspend fun getDisplayCurrent(deviceApiKey: String): ApiResult<Display, ApiError> =
         ApiResult.success(Display(200, 300, null, null, null))
 
+    override suspend fun getDisplay(deviceApiKey: String): ApiResult<Display, ApiError> =
+        ApiResult.success(Display(200, 300, null, null, null))
+
     override suspend fun userInfo(authorization: String): ApiResult<UserResponse, ApiError> = throw NotImplementedError()
 
     override suspend fun getRecipes(
