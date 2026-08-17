@@ -10,6 +10,7 @@ import ink.trmnl.android.buddy.api.models.PlaylistItem
 import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -313,6 +314,7 @@ class PlaylistItemsRepositoryImpl
             visible: Boolean,
         ): Result<PlaylistItemUi?> =
             withContext(Dispatchers.IO) {
+                var originalItems: List<PlaylistItemUi> = emptyList()
                 try {
                     // Fetch API key first before performing optimistic update
                     val apiKey =
@@ -320,6 +322,7 @@ class PlaylistItemsRepositoryImpl
                             ?: return@withContext Result.failure(Exception("API key not available"))
 
                     val currentCache = cache?.items ?: emptyList()
+                    originalItems = currentCache
                     val itemToUpdate =
                         currentCache.find { it.id == itemId }
                             ?: return@withContext Result.success(null)
@@ -332,7 +335,6 @@ class PlaylistItemsRepositoryImpl
                     Timber.d("Optimistically updated item $itemId visibility to $visible")
 
                     // Make API call to persist the change
-
                     val result =
                         apiService.updatePlaylistItemVisibility(
                             id = itemId,
@@ -347,19 +349,18 @@ class PlaylistItemsRepositoryImpl
                         }
                         is ApiResult.Failure -> {
                             // Revert optimistic update on API failure
-                            val revertedItems = currentCache
-                            cache = CachedData(revertedItems, cache?.timestamp ?: Clock.System.now())
-                            _itemsFlow.value = revertedItems
+                            cache = CachedData(originalItems, cache?.timestamp ?: Clock.System.now())
+                            _itemsFlow.value = originalItems
                             Timber.e("Failed to update visibility: ${result.toUserMessage()}")
                             Result.failure(Exception(result.toUserMessage()))
                         }
                     }
-                } catch (e: Exception) {
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Throwable) {
                     // Revert optimistic update on unexpected exceptions as well
-                    val currentCache = cache?.items ?: emptyList()
-                    val revertedItems = currentCache
-                    cache = CachedData(revertedItems, cache?.timestamp ?: Clock.System.now())
-                    _itemsFlow.value = revertedItems
+                    cache = CachedData(originalItems, cache?.timestamp ?: Clock.System.now())
+                    _itemsFlow.value = originalItems
                     Timber.e(e, "Error updating visibility, reverted cache")
                     Result.failure(e)
                 }
