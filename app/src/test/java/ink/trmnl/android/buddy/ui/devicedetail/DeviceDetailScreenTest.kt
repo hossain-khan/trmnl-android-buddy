@@ -12,6 +12,7 @@ import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakePlaylistItemsRepository
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
+import ink.trmnl.android.buddy.ui.playlistitems.PlaylistItemsScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -435,6 +436,114 @@ class DeviceDetailScreenTest {
                 // Final state should have loading=false
                 assertThat(state.isPlaylistItemsLoading).isFalse()
 
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `ViewPlaylistItems event navigates to PlaylistItemsScreen`() =
+        runTest {
+            val screen =
+                DeviceDetailScreen(
+                    deviceId = "ABC-123",
+                    deviceName = "Test Device",
+                    currentBattery = 85.0,
+                    currentVoltage = 3.7,
+                    wifiStrength = 75.0,
+                    rssi = -60,
+                    refreshRate = 300,
+                    deviceNumericId = 12345,
+                )
+            val navigator = FakeNavigator(screen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val deviceTokenRepo = FakeDeviceTokenRepository()
+            val playlistItemsRepo = FakePlaylistItemsRepository()
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+
+            presenter.test {
+                val state = awaitItem()
+                state.eventSink(DeviceDetailScreen.Event.ViewPlaylistItems)
+
+                val navigatedScreen = navigator.awaitNextScreen()
+                assertThat(navigatedScreen).isEqualTo(
+                    PlaylistItemsScreen(
+                        deviceId = 12345,
+                        deviceName = "Test Device",
+                    ),
+                )
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `presenter computes nowPlaying and upNext stats correctly when items exist`() =
+        runTest {
+            val screen =
+                DeviceDetailScreen(
+                    deviceId = "ABC-123",
+                    deviceName = "Test Device",
+                    currentBattery = 85.0,
+                    currentVoltage = 3.7,
+                    wifiStrength = 75.0,
+                    rssi = -60,
+                    refreshRate = 300,
+                    deviceNumericId = 100,
+                )
+            val item1 = createTestPlaylistItem(id = 1, deviceId = 100, displayName = "Clock", renderedAt = "2026-08-17T10:00:00Z")
+            val item2 = createTestPlaylistItem(id = 2, deviceId = 100, displayName = "Weather", isVisible = true)
+            val item3 = createTestPlaylistItem(id = 3, deviceId = 100, displayName = "News", isVisible = false)
+
+            val navigator = FakeNavigator(screen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val deviceTokenRepo = FakeDeviceTokenRepository()
+            val playlistItemsRepo = FakePlaylistItemsRepository(initialResult = Result.success(listOf(item1, item2, item3)))
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+
+            presenter.test {
+                var state: DeviceDetailScreen.State
+                do {
+                    state = awaitItem()
+                } while (state.playlistItemsCount != 3)
+
+                assertThat(state.playlistItemsCount).isEqualTo(3)
+                assertThat(state.nowPlayingItem).isEqualTo("Clock")
+                assertThat(state.upNextItem).isEqualTo("Weather")
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `presenter computes empty upNext when nowPlaying is the last item or remaining items are hidden`() =
+        runTest {
+            val screen =
+                DeviceDetailScreen(
+                    deviceId = "ABC-123",
+                    deviceName = "Test Device",
+                    currentBattery = 85.0,
+                    currentVoltage = 3.7,
+                    wifiStrength = 75.0,
+                    rssi = -60,
+                    refreshRate = 300,
+                    deviceNumericId = 100,
+                )
+            val item1 = createTestPlaylistItem(id = 1, deviceId = 100, displayName = "Clock", renderedAt = "2026-08-17T10:00:00Z")
+            val item2 = createTestPlaylistItem(id = 2, deviceId = 100, displayName = "News", isVisible = false)
+
+            val navigator = FakeNavigator(screen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val deviceTokenRepo = FakeDeviceTokenRepository()
+            val playlistItemsRepo = FakePlaylistItemsRepository(initialResult = Result.success(listOf(item1, item2)))
+            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+
+            presenter.test {
+                var state: DeviceDetailScreen.State
+                do {
+                    state = awaitItem()
+                } while (state.playlistItemsCount != 2)
+
+                assertThat(state.playlistItemsCount).isEqualTo(2)
+                assertThat(state.nowPlayingItem).isEqualTo("Clock")
+                assertThat(state.upNextItem).isEqualTo("")
                 cancelAndIgnoreRemainingEvents()
             }
         }
