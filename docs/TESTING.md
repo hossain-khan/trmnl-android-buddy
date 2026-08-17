@@ -630,6 +630,18 @@ dependencies {
     kover(project(":api"))
     kover(project(":content"))
 }
+
+kover {
+    reports {
+        filters {
+            excludes {
+                // Excludes Room generated classes (*_Impl), DI factories (*$$$*),
+                // and Jetpack Compose UI composables (*ContentKt*, *ComponentsKt*, etc.)
+                // to focus coverage metrics purely on business logic.
+            }
+        }
+    }
+}
 ```
 
 ### Generating Reports Locally

@@ -52,3 +52,40 @@ dependencies {
     kover(project(":api"))
     kover(project(":content"))
 }
+
+kover {
+    reports {
+        filters {
+            excludes {
+                // Exclude generated code and UI boilerplate to focus coverage on business logic
+                classes(
+                    // Room Database & DAO generated implementations
+                    "*_Impl*",
+                    "*_Impl$*",
+                    "*Dao_Impl*",
+                    "*Database_Impl*",
+                    // Metro / DI generated factories and binders
+                    "*$$$*",
+                    "*_Factory*",
+                    "*Factory$*",
+                    // Compose UI Composables, themes, and bottom sheets
+                    "*.ui.theme.*",
+                    "*ContentKt*",
+                    "*ComponentsKt*",
+                    "*BottomSheetKt*",
+                    "*PreviewKt*",
+                    "*ComposableSingletons*",
+                    // Android UI entry points
+                    "*Activity*",
+                    "*Application*",
+                    // Glance Widget UI composable definition
+                    "*TrmnlDeviceWidget*",
+                )
+                annotatedBy(
+                    "androidx.compose.runtime.Composable",
+                    "androidx.compose.ui.tooling.preview.Preview",
+                )
+            }
+        }
+    }
+}
