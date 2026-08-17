@@ -77,11 +77,19 @@ class FakeTrmnlApiService : TrmnlApiService {
     override suspend fun getDisplayCurrent(deviceApiKey: String): ApiResult<Display, ApiError> =
         getDisplayCurrentResult ?: throw NotImplementedError("getDisplayCurrentResult not implemented")
 
+    var updatePlaylistItemVisibilityResult: ApiResult<Unit, ApiError>? = ApiResult.success(Unit)
+    var updatePlaylistItemVisibilityException: Exception? = null
+    var getPlaylistItemsCallCount = 0
+    var updatePlaylistItemVisibilityCallCount = 0
+    var lastUpdatePlaylistItemId: Int? = null
+    var lastUpdatePlaylistItemBody: Map<String, Boolean>? = null
+
     override suspend fun getDisplay(deviceApiKey: String): ApiResult<Display, ApiError> =
         getDisplayResult ?: throw NotImplementedError("getDisplayResult not implemented")
 
     override suspend fun getPlaylistItems(authorization: String): ApiResult<PlaylistItemsResponse, ApiError> {
         lastAuthorizationHeader = authorization
+        getPlaylistItemsCallCount++
         return getPlaylistItemsResult ?: throw NotImplementedError("getPlaylistItemsResult not implemented")
     }
 
@@ -94,7 +102,14 @@ class FakeTrmnlApiService : TrmnlApiService {
         id: Int,
         authorization: String,
         body: Map<String, Boolean>,
-    ): ApiResult<Unit, ApiError> = ApiResult.success(Unit)
+    ): ApiResult<Unit, ApiError> {
+        lastAuthorizationHeader = authorization
+        lastUpdatePlaylistItemId = id
+        lastUpdatePlaylistItemBody = body
+        updatePlaylistItemVisibilityCallCount++
+        updatePlaylistItemVisibilityException?.let { throw it }
+        return updatePlaylistItemVisibilityResult ?: throw NotImplementedError("updatePlaylistItemVisibilityResult not set")
+    }
 
     override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
         throw NotImplementedError("getCategories not implemented")
