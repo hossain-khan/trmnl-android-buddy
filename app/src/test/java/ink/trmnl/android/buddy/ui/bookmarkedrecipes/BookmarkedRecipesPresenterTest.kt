@@ -1,5 +1,7 @@
 package ink.trmnl.android.buddy.ui.bookmarkedrecipes
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
@@ -9,31 +11,208 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
+import com.slack.circuit.test.test
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.data.FakeBookmarkRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
 /**
- * Tests for BookmarkedRecipesScreen presenter.
+ * Tests for [BookmarkedRecipesPresenter] and [BookmarkedRecipesScreen].
  *
  * Verifies:
- * - Loading bookmarked recipes on initial composition
- * - Displaying list of bookmarked recipes
- * - Empty state when no bookmarks
- * - Bookmark removal (unbookmark)
- * - Clear all bookmarks functionality
- * - Navigation events
- * - Edge cases (single recipe, many recipes, missing data)
- *
- * Note: This presenter uses Android LocalContext for share functionality,
- * which makes standard Circuit unit testing challenging. These tests focus
- * on the core bookmark management logic that can be tested without triggering
- * Context-dependent operations.
+ * - Presenter state emissions with reactive bookmarks
+ * - Clear all dialog flows (open, dismiss, confirm)
+ * - Bookmark toggling and deletion
+ * - Back and Share click events
+ * - Core bookmark repository operations
  */
+@RunWith(RobolectricTestRunner::class)
 class BookmarkedRecipesPresenterTest {
+    private val context: Context
+        get() = ApplicationProvider.getApplicationContext()
+
+    @Test
+    fun `presenter emits initial state with bookmarked recipes`() =
+        runTest {
+            val bookmarkRepository = FakeBookmarkRepository()
+            val recipe1 = createSampleRecipe(1, "Recipe 1")
+            val recipe2 = createSampleRecipe(2, "Recipe 2")
+            bookmarkRepository.toggleBookmark(recipe1)
+            bookmarkRepository.toggleBookmark(recipe2)
+
+            val navigator = FakeNavigator(BookmarkedRecipesScreen)
+            val presenter = BookmarkedRecipesPresenter(navigator, context, bookmarkRepository)
+
+            presenter.test {
+                var loadedState: BookmarkedRecipesScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.bookmarkedRecipes.isEmpty())
+
+                assertThat(loadedState.bookmarkedRecipes).hasSize(2)
+                assertThat(loadedState.isLoading).isFalse()
+                assertThat(loadedState.error).isNull()
+                assertThat(loadedState.showClearAllDialog).isFalse()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `BackClicked event pops navigator`() =
+        runTest {
+            val bookmarkRepository = FakeBookmarkRepository()
+            val navigator = FakeNavigator(BookmarkedRecipesScreen)
+            val presenter = BookmarkedRecipesPresenter(navigator, context, bookmarkRepository)
+
+            presenter.test {
+                val state = awaitItem()
+
+                state.eventSink(BookmarkedRecipesScreen.Event.BackClicked)
+
+                val popped = navigator.awaitPop()
+                assertThat(popped).isNotNull()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `ClearAllClicked and DismissClearAllDialog control dialog state`() =
+        runTest {
+            val bookmarkRepository = FakeBookmarkRepository()
+            val navigator = FakeNavigator(BookmarkedRecipesScreen)
+            val presenter = BookmarkedRecipesPresenter(navigator, context, bookmarkRepository)
+
+            presenter.test {
+                val state = awaitItem()
+                assertThat(state.showClearAllDialog).isFalse()
+
+                // Show dialog
+                state.eventSink(BookmarkedRecipesScreen.Event.ClearAllClicked)
+                val dialogState = awaitItem()
+                assertThat(dialogState.showClearAllDialog).isTrue()
+
+                // Dismiss dialog
+                dialogState.eventSink(BookmarkedRecipesScreen.Event.DismissClearAllDialog)
+                val dismissedState = awaitItem()
+                assertThat(dismissedState.showClearAllDialog).isFalse()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `ConfirmClearAll clears bookmarks in repository and closes dialog`() =
+        runTest {
+            val bookmarkRepository = FakeBookmarkRepository()
+            val recipe = createSampleRecipe(1, "Recipe 1")
+            bookmarkRepository.toggleBookmark(recipe)
+
+            val navigator = FakeNavigator(BookmarkedRecipesScreen)
+            val presenter = BookmarkedRecipesPresenter(navigator, context, bookmarkRepository)
+
+            presenter.test {
+                var loadedState: BookmarkedRecipesScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.bookmarkedRecipes.isEmpty())
+                assertThat(loadedState.bookmarkedRecipes).hasSize(1)
+
+                // Show and confirm clear all
+                loadedState.eventSink(BookmarkedRecipesScreen.Event.ClearAllClicked)
+                val dialogState = awaitItem()
+                assertThat(dialogState.showClearAllDialog).isTrue()
+
+                dialogState.eventSink(BookmarkedRecipesScreen.Event.ConfirmClearAll)
+                val clearedDialogState = awaitItem()
+                assertThat(clearedDialogState.showClearAllDialog).isFalse()
+
+                var emptyState: BookmarkedRecipesScreen.State = clearedDialogState
+                while (emptyState.bookmarkedRecipes.isNotEmpty()) {
+                    emptyState = awaitItem()
+                }
+                assertThat(emptyState.bookmarkedRecipes).isEmpty()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `BookmarkClicked removes recipe from bookmarks`() =
+        runTest {
+            val bookmarkRepository = FakeBookmarkRepository()
+            val recipe = createSampleRecipe(1, "Recipe 1")
+            bookmarkRepository.toggleBookmark(recipe)
+
+            val navigator = FakeNavigator(BookmarkedRecipesScreen)
+            val presenter = BookmarkedRecipesPresenter(navigator, context, bookmarkRepository)
+
+            presenter.test {
+                var loadedState: BookmarkedRecipesScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.bookmarkedRecipes.isEmpty())
+                assertThat(loadedState.bookmarkedRecipes).hasSize(1)
+
+                // Toggle bookmark off
+                loadedState.eventSink(BookmarkedRecipesScreen.Event.BookmarkClicked(recipe))
+
+                var emptyState: BookmarkedRecipesScreen.State
+                do {
+                    emptyState = awaitItem()
+                } while (emptyState.bookmarkedRecipes.isNotEmpty())
+
+                assertThat(emptyState.bookmarkedRecipes).isEmpty()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `RecipeClicked and ShareClicked events execute cleanly when bookmarks exist`() =
+        runTest {
+            val bookmarkRepository = FakeBookmarkRepository()
+            val recipe = createSampleRecipe(1, "Recipe 1")
+            bookmarkRepository.toggleBookmark(recipe)
+
+            val navigator = FakeNavigator(BookmarkedRecipesScreen)
+            val presenter = BookmarkedRecipesPresenter(navigator, context, bookmarkRepository)
+
+            presenter.test {
+                var loadedState: BookmarkedRecipesScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.bookmarkedRecipes.isEmpty())
+
+                // Trigger RecipeClicked
+                loadedState.eventSink(BookmarkedRecipesScreen.Event.RecipeClicked(recipe))
+
+                // Trigger ShareClicked with non-empty bookmarks
+                loadedState.eventSink(BookmarkedRecipesScreen.Event.ShareClicked)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `ShareClicked executes cleanly when bookmarks list is empty`() =
+        runTest {
+            val bookmarkRepository = FakeBookmarkRepository()
+            val navigator = FakeNavigator(BookmarkedRecipesScreen)
+            val presenter = BookmarkedRecipesPresenter(navigator, context, bookmarkRepository)
+
+            presenter.test {
+                val state = awaitItem()
+
+                // Trigger ShareClicked with empty bookmarks
+                state.eventSink(BookmarkedRecipesScreen.Event.ShareClicked)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    // ========== Repository Integration Tests ==========
     @Test
     fun `repository loads bookmarked recipes correctly`() =
         runTest {
