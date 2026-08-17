@@ -125,7 +125,9 @@ class DevicePreviewPresenter
                                                 } else if (isSameScreen) {
                                                     loadNextState =
                                                         DevicePreviewScreen.LoadNextState.Error(
-                                                            message = "No new screen to display. Device may have only one screen in rotation.",
+                                                            message =
+                                                                "No new screen to display. " +
+                                                                    "Device may have only one screen in rotation.",
                                                         )
                                                 } else {
                                                     cachedImages = cachedImages + newImageUrl
