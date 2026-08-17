@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.18.0] - 2026-08-16
+
+### Added
+- **Next display image loading & navigation in full-screen preview**: Added ability to load the next display image from TRMNL server (`GET /api/display`) and navigate back and forward through display screen history while retaining an in-memory session cache (#517, #518).
+  - Floating bottom navigation pill with Previous (`<`), Counter (`X / Y`), and Next (`>`) controls (centered on portrait, docked to bottom-right on landscape).
+  - Navigation controls and API requests are automatically enabled when the device is configured with a Device API key and hidden otherwise.
+  - Next button displays a loading progress indicator while fetching new screen rotations.
+  - Display refresh and navigation results propagate back to parent screens.
+  - Added `getDisplay` endpoint to `TrmnlApiService` for auto-advancing playlist content via the TRMNL API.
+
 ### Fixed
 - Fixed tautological assertions in `WorkerSchedulerTest` that compared each worker ID to itself instead of verifying IDs are distinct across workers
 - Strengthened conditional assertion in `WorkerSchedulerTest` for `triggerLowBatteryNotificationNow` network constraint to always verify the constraint rather than silently skip when work list happens to be empty
@@ -1599,7 +1609,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.17.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.0...HEAD
+[2.18.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.17.0...2.18.0
 [2.17.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.16.0...2.17.0
 [2.16.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.15.0...2.16.0
 [2.15.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.14.0...2.15.0
