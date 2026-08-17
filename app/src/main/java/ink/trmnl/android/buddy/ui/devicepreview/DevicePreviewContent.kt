@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.devicepreview
 
+import android.content.res.Configuration
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -243,11 +245,15 @@ fun DevicePreviewContent(
 
             // Bottom floating navigation pill (only shown when device is configured with API key)
             if (state.isConfigured) {
+                val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
                 Surface(
                     modifier =
                         Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 24.dp),
+                            .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
+                            .padding(
+                                end = if (isLandscape) 24.dp else 0.dp,
+                                bottom = 24.dp,
+                            ),
                     shape = CircleShape,
                     color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.92f),
                     tonalElevation = 6.dp,
