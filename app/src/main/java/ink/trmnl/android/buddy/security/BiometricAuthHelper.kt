@@ -23,7 +23,7 @@ interface BiometricAuthHelper {
 
     /**
      * Show biometric authentication prompt.
-     * @param activity The activity to show the prompt in
+     * @param activity The activity to show the prompt in (nullable for safe handling)
      * @param title Title for the biometric prompt
      * @param subtitle Subtitle for the biometric prompt (optional)
      * @param onSuccess Callback when authentication succeeds
@@ -31,7 +31,7 @@ interface BiometricAuthHelper {
      * @param onUserCancelled Callback when user explicitly cancels authentication
      */
     fun authenticate(
-        activity: FragmentActivity,
+        activity: FragmentActivity?,
         title: String,
         subtitle: String = "",
         onSuccess: () -> Unit,
@@ -82,13 +82,17 @@ class BiometricAuthHelperImpl(
      * @param onUserCancelled Callback when user explicitly cancels authentication
      */
     override fun authenticate(
-        activity: FragmentActivity,
+        activity: FragmentActivity?,
         title: String,
         subtitle: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit,
         onUserCancelled: () -> Unit,
     ) {
+        if (activity == null) {
+            onError("Activity not available for biometric prompt")
+            return
+        }
         val executor = ContextCompat.getMainExecutor(context)
 
         val biometricPrompt =

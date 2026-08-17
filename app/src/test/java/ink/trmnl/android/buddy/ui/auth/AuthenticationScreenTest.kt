@@ -1,25 +1,193 @@
 package ink.trmnl.android.buddy.ui.auth
 
+import androidx.test.core.app.ApplicationProvider
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
+import com.slack.circuit.test.FakeNavigator
+import com.slack.circuit.test.test
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
+import ink.trmnl.android.buddy.security.BiometricAuthHelperImpl
 import ink.trmnl.android.buddy.security.FakeBiometricAuthHelper
-import kotlinx.coroutines.flow.MutableStateFlow
+import ink.trmnl.android.buddy.security.FakeBiometricAuthHelper.AuthBehavior
+import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.Robolectric
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.android.controller.ActivityController
 
 /**
- * Unit tests for AuthenticationScreen presenter.
- * Tests authentication flow, navigation logic, and security settings.
+ * Unit tests for [AuthenticationPresenter] and [AuthenticationScreen].
  *
- * Note: Tests that require Android Context (LocalContext.current) cannot be run as unit tests
- * and would need to be implemented as instrumented tests. This includes most presenter state tests.
- * The following tests focus on the repository integration and event handling logic that can be tested.
+ * Tests the complete authentication flow, biometric availability checks,
+ * retry states, security preference cancellation, and navigation logic.
  */
+@RunWith(RobolectricTestRunner::class)
 class AuthenticationScreenTest {
+    // ========== Presenter State & Event Tests ==========
+
+    @Test
+    fun `initial state checks and enables biometric availability when supported`() =
+        runTest {
+            val navigator = FakeNavigator(AuthenticationScreen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val biometricHelper = FakeBiometricAuthHelper(isAvailable = true)
+            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+
+            presenter.test {
+                // Initial state before LaunchedEffect runs
+                val initialState = awaitItem()
+                assertThat(initialState.isAuthenticationAvailable).isFalse()
+                assertThat(initialState.showRetryPrompt).isFalse()
+
+                // State after LaunchedEffect checks availability
+                val availableState = awaitItem()
+                assertThat(availableState.isAuthenticationAvailable).isTrue()
+                assertThat(availableState.showRetryPrompt).isFalse()
+            }
+        }
+
+    @Test
+    fun `initial state keeps biometric availability false when not supported`() =
+        runTest {
+            val navigator = FakeNavigator(AuthenticationScreen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val biometricHelper = FakeBiometricAuthHelper(isAvailable = false)
+            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+
+            presenter.test {
+                val state = awaitItem()
+                assertThat(state.isAuthenticationAvailable).isFalse()
+                assertThat(state.showRetryPrompt).isFalse()
+                expectNoEvents()
+            }
+        }
+
+    @Test
+    fun `AuthenticateRequested triggers biometric prompt and resets root to TrmnlDevicesScreen on success`() =
+        runTest {
+            val navigator = FakeNavigator(AuthenticationScreen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val biometricHelper =
+                FakeBiometricAuthHelper(
+                    isAvailable = true,
+                    authBehavior = AuthBehavior.ImmediateSuccess,
+                )
+            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+
+            presenter.test {
+                awaitItem() // Initial frame
+                val state = awaitItem()
+                assertThat(state.isAuthenticationAvailable).isTrue()
+
+                // Trigger authentication
+                state.eventSink(AuthenticationScreen.Event.AuthenticateRequested)
+
+                // Verify navigation to main screen
+                assertThat(navigator.awaitResetRoot().newRoot).isEqualTo(TrmnlDevicesScreen)
+                assertThat(biometricHelper.authenticateCallCount).isEqualTo(1)
+            }
+        }
+
+    @Test
+    fun `AuthenticateRequested sets showRetryPrompt to true when authentication fails with error`() =
+        runTest {
+            val navigator = FakeNavigator(AuthenticationScreen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val biometricHelper =
+                FakeBiometricAuthHelper(
+                    isAvailable = true,
+                    authBehavior = AuthBehavior.ImmediateError,
+                )
+            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+
+            presenter.test {
+                awaitItem() // Initial frame
+                val state = awaitItem()
+                assertThat(state.showRetryPrompt).isFalse()
+
+                // Trigger authentication that fails
+                state.eventSink(AuthenticationScreen.Event.AuthenticateRequested)
+
+                val retryState = awaitItem()
+                assertThat(retryState.showRetryPrompt).isTrue()
+                assertThat(biometricHelper.authenticateCallCount).isEqualTo(1)
+            }
+        }
+
+    @Test
+    fun `AuthenticateRequested sets showRetryPrompt to true when user cancels biometric prompt`() =
+        runTest {
+            val navigator = FakeNavigator(AuthenticationScreen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val biometricHelper =
+                FakeBiometricAuthHelper(
+                    isAvailable = true,
+                    authBehavior = AuthBehavior.ImmediateUserCancelled,
+                )
+            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+
+            presenter.test {
+                awaitItem() // Initial frame
+                val state = awaitItem()
+                assertThat(state.showRetryPrompt).isFalse()
+
+                // Trigger authentication that is cancelled by user
+                state.eventSink(AuthenticationScreen.Event.AuthenticateRequested)
+
+                val retryState = awaitItem()
+                assertThat(retryState.showRetryPrompt).isTrue()
+                assertThat(biometricHelper.authenticateCallCount).isEqualTo(1)
+            }
+        }
+
+    @Test
+    fun `CancelAuthentication disables security in repository and navigates to TrmnlDevicesScreen`() =
+        runTest {
+            val navigator = FakeNavigator(AuthenticationScreen)
+            val userPrefsRepo =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(isSecurityEnabled = true),
+                )
+            val biometricHelper = FakeBiometricAuthHelper(isAvailable = true)
+            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+
+            presenter.test {
+                awaitItem() // Initial frame
+                val state = awaitItem()
+
+                // User cancels authentication
+                state.eventSink(AuthenticationScreen.Event.CancelAuthentication)
+
+                // Verify security is disabled in preferences
+                assertThat(userPrefsRepo.securityEnabled).isFalse()
+
+                // Verify navigation to main screen
+                assertThat(navigator.awaitResetRoot().newRoot).isEqualTo(TrmnlDevicesScreen)
+            }
+        }
+
+    // ========== BiometricAuthHelperImpl Tests ==========
+
+    @Test
+    fun `BiometricAuthHelperImpl authenticate with null activity invokes error callback`() {
+        val helper = BiometricAuthHelperImpl(ApplicationProvider.getApplicationContext())
+        var errorCalled = false
+        helper.authenticate(
+            activity = null,
+            title = "Test Auth",
+            onSuccess = {},
+            onError = { errorCalled = true },
+            onUserCancelled = {},
+        )
+        assertThat(errorCalled).isTrue()
+    }
+
     // ========== Repository Integration Tests ==========
 
     @Test
