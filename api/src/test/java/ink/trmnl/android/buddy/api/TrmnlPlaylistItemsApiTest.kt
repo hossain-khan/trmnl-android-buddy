@@ -596,4 +596,138 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
         // Then: Returns false
         assertThat(isMashup).isFalse()
     }
+
+    // region updatePlaylistItemVisibility
+
+    @Test
+    fun `updatePlaylistItemVisibility returns success when hiding item`() =
+        runTest {
+            // Given: Mock server returns 204 No Content for visibility update
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(204),
+            )
+
+            // When: Call updatePlaylistItemVisibility with visible = false
+            val result =
+                apiService.updatePlaylistItemVisibility(
+                    id = 491784,
+                    authorization = "Bearer test_token",
+                    body = mapOf("visible" to false),
+                )
+
+            // Then: Verify success result
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+
+            // Verify request method, path, headers, and body
+            val request = mockWebServer.takeRequest()
+            assertThat(request.method).isEqualTo("PATCH")
+            assertThat(request.path).isEqualTo("/playlists/items/491784")
+            assertThat(request.getHeader("Authorization")).isEqualTo("Bearer test_token")
+            assertThat(request.body.readUtf8()).isEqualTo("""{"visible":false}""")
+        }
+
+    @Test
+    fun `updatePlaylistItemVisibility returns success when showing item`() =
+        runTest {
+            // Given: Mock server returns 204 No Content for visibility update
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(204),
+            )
+
+            // When: Call updatePlaylistItemVisibility with visible = true
+            val result =
+                apiService.updatePlaylistItemVisibility(
+                    id = 491784,
+                    authorization = "Bearer test_token",
+                    body = mapOf("visible" to true),
+                )
+
+            // Then: Verify success result
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+
+            // Verify request body
+            val request = mockWebServer.takeRequest()
+            assertThat(request.method).isEqualTo("PATCH")
+            assertThat(request.path).isEqualTo("/playlists/items/491784")
+            assertThat(request.body.readUtf8()).isEqualTo("""{"visible":true}""")
+        }
+
+    @Test
+    fun `updatePlaylistItemVisibility returns HTTP 401 for unauthorized`() =
+        runTest {
+            // Given: Mock server returns 401 Unauthorized
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(401)
+                    .setBody("""{"error": "Unauthorized"}""")
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            // When: Call updatePlaylistItemVisibility with invalid token
+            val result =
+                apiService.updatePlaylistItemVisibility(
+                    id = 491784,
+                    authorization = "Bearer invalid_token",
+                    body = mapOf("visible" to false),
+                )
+
+            // Then: Verify HTTP failure with 401
+            assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
+            val failure = result as ApiResult.Failure.HttpFailure
+            assertThat(failure.code).isEqualTo(401)
+        }
+
+    @Test
+    fun `updatePlaylistItemVisibility returns HTTP 404 when item does not exist`() =
+        runTest {
+            // Given: Mock server returns 404 Not Found
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(404)
+                    .setBody("""{"error": "Playlist item not found"}""")
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            // When: Call updatePlaylistItemVisibility for non-existent item
+            val result =
+                apiService.updatePlaylistItemVisibility(
+                    id = 999999,
+                    authorization = "Bearer test_token",
+                    body = mapOf("visible" to false),
+                )
+
+            // Then: Verify HTTP failure with 404
+            assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
+            val failure = result as ApiResult.Failure.HttpFailure
+            assertThat(failure.code).isEqualTo(404)
+        }
+
+    @Test
+    fun `updatePlaylistItemVisibility returns HTTP 422 for validation error`() =
+        runTest {
+            // Given: Mock server returns 422 Unprocessable Entity
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(422)
+                    .setBody("""{"error": "Invalid parameters"}""")
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            // When: Call updatePlaylistItemVisibility
+            val result =
+                apiService.updatePlaylistItemVisibility(
+                    id = 491784,
+                    authorization = "Bearer test_token",
+                    body = emptyMap(),
+                )
+
+            // Then: Verify HTTP failure with 422
+            assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
+            val failure = result as ApiResult.Failure.HttpFailure
+            assertThat(failure.code).isEqualTo(422)
+        }
+
+    // endregion
 }
