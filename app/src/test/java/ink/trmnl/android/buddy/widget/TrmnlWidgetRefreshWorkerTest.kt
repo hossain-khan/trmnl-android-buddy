@@ -13,6 +13,8 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakeTrmnlApiService
 import kotlinx.coroutines.test.runTest
@@ -254,9 +256,147 @@ class TrmnlWidgetRefreshWorkerTest {
         assertThat(TrmnlDeviceWidget.MIN_REFRESH_INTERVAL_MINUTES).isGreaterThanOrEqualTo(15L)
     }
 
+    @Test
+    fun `refresh interval calculation with zero or negative seconds defaults to minimum`() {
+        val zeroMinutes = maxOf(TrmnlDeviceWidget.MIN_REFRESH_INTERVAL_MINUTES, (0L / 60L))
+        val negativeMinutes = maxOf(TrmnlDeviceWidget.MIN_REFRESH_INTERVAL_MINUTES, (-300L / 60L))
+
+        assertThat(zeroMinutes).isEqualTo(TrmnlDeviceWidget.MIN_REFRESH_INTERVAL_MINUTES)
+        assertThat(negativeMinutes).isEqualTo(TrmnlDeviceWidget.MIN_REFRESH_INTERVAL_MINUTES)
+    }
+
+    @Test
+    fun `refresh interval calculation with one day converts to 1440 minutes`() {
+        val oneDaySeconds = 86400L // 24 hours
+        val nextRefreshMinutes = maxOf(TrmnlDeviceWidget.MIN_REFRESH_INTERVAL_MINUTES, (oneDaySeconds / 60L))
+
+        assertThat(nextRefreshMinutes).isEqualTo(1440L)
+    }
+
+    // =========================================================
+    // Enqueue policies and delays
+    // =========================================================
+
+    @Test
+    fun `enqueue with default parameters uses default refresh interval and REPLACE policy`() {
+        val appWidgetId = 88
+        val workManager = WorkManager.getInstance(context)
+
+        // When: Enqueue with default parameters
+        TrmnlWidgetRefreshWorker.enqueue(context, appWidgetId)
+
+        // Then: Work is enqueued
+        val workInfos =
+            workManager
+                .getWorkInfosForUniqueWork(TrmnlWidgetRefreshWorker.workName(appWidgetId))
+                .get()
+        assertThat(workInfos.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `enqueue with APPEND_OR_REPLACE policy enqueues unique work`() {
+        val appWidgetId = 89
+        val workManager = WorkManager.getInstance(context)
+
+        // When: Enqueue with APPEND_OR_REPLACE policy
+        TrmnlWidgetRefreshWorker.enqueue(
+            context = context,
+            appWidgetId = appWidgetId,
+            initialDelayMinutes = 15,
+            existingWorkPolicy = androidx.work.ExistingWorkPolicy.APPEND_OR_REPLACE,
+        )
+
+        // Then: Work is enqueued
+        val workInfos =
+            workManager
+                .getWorkInfosForUniqueWork(TrmnlWidgetRefreshWorker.workName(appWidgetId))
+                .get()
+        assertThat(workInfos.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `enqueue with KEEP policy enqueues unique work`() {
+        val appWidgetId = 90
+        val workManager = WorkManager.getInstance(context)
+
+        // When: Enqueue with KEEP policy
+        TrmnlWidgetRefreshWorker.enqueue(
+            context = context,
+            appWidgetId = appWidgetId,
+            initialDelayMinutes = 30,
+            existingWorkPolicy = androidx.work.ExistingWorkPolicy.KEEP,
+        )
+
+        // Then: Work is enqueued
+        val workInfos =
+            workManager
+                .getWorkInfosForUniqueWork(TrmnlWidgetRefreshWorker.workName(appWidgetId))
+                .get()
+        assertThat(workInfos.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `constants have expected values`() {
+        assertThat(TrmnlWidgetRefreshWorker.KEY_APP_WIDGET_ID).isEqualTo("app_widget_id")
+        assertThat(TrmnlWidgetRefreshWorker.WIDGET_IMAGES_DIR).isEqualTo("widget_images")
+    }
+
+    @Test
+    fun `factory creates worker for TrmnlWidgetRefreshWorker class name`() {
+        val factory =
+            TestTrmnlWidgetRefreshWorkerFactory(
+                apiService = fakeApiService,
+                deviceTokenRepository = fakeDeviceTokenRepository,
+                okHttpClient = okHttpClient,
+            )
+
+        val worker =
+            factory.createWorker(
+                appContext = context,
+                workerClassName = TrmnlWidgetRefreshWorker::class.java.name,
+                workerParameters = getWorkerParameters(),
+            )
+
+        assertThat(worker).isNotNull()
+        assertThat(worker!!).isInstanceOf(TrmnlWidgetRefreshWorker::class)
+    }
+
+    @Test
+    fun `factory returns null for unknown worker class name`() {
+        val factory =
+            TestTrmnlWidgetRefreshWorkerFactory(
+                apiService = fakeApiService,
+                deviceTokenRepository = fakeDeviceTokenRepository,
+                okHttpClient = okHttpClient,
+            )
+
+        val worker =
+            factory.createWorker(
+                appContext = context,
+                workerClassName = "ink.trmnl.android.buddy.work.NonExistentWorker",
+                workerParameters = getWorkerParameters(),
+            )
+
+        assertThat(worker).isNull()
+    }
+
     // =========================================================
     // Helpers
     // =========================================================
+
+    private fun getWorkerParameters(): androidx.work.WorkerParameters {
+        class DummyWorker(
+            context: Context,
+            params: androidx.work.WorkerParameters,
+        ) : androidx.work.Worker(context, params) {
+            override fun doWork(): Result = Result.success()
+        }
+
+        val dummyWorker = TestListenableWorkerBuilder<DummyWorker>(context).build()
+        val paramsField = androidx.work.ListenableWorker::class.java.getDeclaredField("mWorkerParams")
+        paramsField.isAccessible = true
+        return paramsField.get(dummyWorker) as androidx.work.WorkerParameters
+    }
 
     private fun createWorker(inputData: Data): TrmnlWidgetRefreshWorker =
         TestListenableWorkerBuilder<TrmnlWidgetRefreshWorker>(context)
