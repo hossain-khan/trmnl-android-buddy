@@ -99,50 +99,60 @@ class BiometricAuthHelperImpl(
             BiometricPrompt(
                 activity,
                 executor,
-                object : BiometricPrompt.AuthenticationCallback() {
-                    override fun onAuthenticationError(
-                        errorCode: Int,
-                        errString: CharSequence,
-                    ) {
-                        super.onAuthenticationError(errorCode, errString)
-                        // User cancelled authentication
-                        if (errorCode == BiometricPrompt.ERROR_USER_CANCELED ||
-                            errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON
-                        ) {
-                            onUserCancelled()
-                        } else {
-                            onError(errString.toString())
-                        }
-                    }
-
-                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                        super.onAuthenticationSucceeded(result)
-                        onSuccess()
-                    }
-
-                    override fun onAuthenticationFailed() {
-                        super.onAuthenticationFailed()
-                        // This is called when biometric is recognized but not verified
-                        // Don't show error here, let user retry
-                    }
-                },
+                createAuthenticationCallback(onSuccess, onError, onUserCancelled),
             )
 
-        // Use BIOMETRIC_STRONG | DEVICE_CREDENTIAL to allow both biometric and device PIN/pattern/password
-        // This follows Android best practices and provides better UX
-        val promptInfo =
-            BiometricPrompt.PromptInfo
-                .Builder()
-                .setTitle(title)
-                .apply {
-                    if (subtitle.isNotEmpty()) {
-                        setSubtitle(subtitle)
-                    }
-                }.setAllowedAuthenticators(AUTHENTICATORS)
-                .build()
+        val promptInfo = createPromptInfo(title, subtitle)
 
         biometricPrompt.authenticate(promptInfo)
     }
+
+    internal fun createAuthenticationCallback(
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit,
+        onUserCancelled: () -> Unit,
+    ): BiometricPrompt.AuthenticationCallback =
+        object : BiometricPrompt.AuthenticationCallback() {
+            override fun onAuthenticationError(
+                errorCode: Int,
+                errString: CharSequence,
+            ) {
+                super.onAuthenticationError(errorCode, errString)
+                // User cancelled authentication
+                if (errorCode == BiometricPrompt.ERROR_USER_CANCELED ||
+                    errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON
+                ) {
+                    onUserCancelled()
+                } else {
+                    onError(errString.toString())
+                }
+            }
+
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                super.onAuthenticationSucceeded(result)
+                onSuccess()
+            }
+
+            override fun onAuthenticationFailed() {
+                super.onAuthenticationFailed()
+                // This is called when biometric is recognized but not verified
+                // Don't show error here, let user retry
+            }
+        }
+
+    internal fun createPromptInfo(
+        title: String,
+        subtitle: String,
+    ): BiometricPrompt.PromptInfo =
+        BiometricPrompt.PromptInfo
+            .Builder()
+            .setTitle(title)
+            .apply {
+                if (subtitle.isNotEmpty()) {
+                    setSubtitle(subtitle)
+                }
+            }.setAllowedAuthenticators(AUTHENTICATORS)
+            .build()
 
     companion object {
         /**
