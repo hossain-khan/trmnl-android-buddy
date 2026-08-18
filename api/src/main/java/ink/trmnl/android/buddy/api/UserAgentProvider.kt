@@ -22,13 +22,21 @@ object UserAgentProvider {
      * Generates a user agent string with the provided app version.
      *
      * @param appVersion The application version (e.g., "1.6.0")
-     * @return Formatted user agent string
+     * @param androidVersion The Android SDK version (defaults to [Build.VERSION.SDK_INT])
+     * @param deviceModel The device model name (defaults to [Build.MODEL])
+     * @param okhttpVersion The OkHttp library version (defaults to [OkHttp.VERSION])
+     * @return Formatted and sanitized user agent string
      */
-    fun getUserAgent(appVersion: String): String {
-        val androidVersion = Build.VERSION.SDK_INT
-        val deviceModel = Build.MODEL ?: "Unknown"
-        val okhttpVersion = OkHttp.VERSION
+    fun getUserAgent(
+        appVersion: String,
+        androidVersion: Int = Build.VERSION.SDK_INT,
+        deviceModel: String? = Build.MODEL,
+        okhttpVersion: String = OkHttp.VERSION,
+    ): String {
+        val sanitizedVersion = appVersion.trim().ifBlank { "unknown" }
+        val sanitizedModel = deviceModel?.trim()?.ifBlank { "Unknown" } ?: "Unknown"
+        val sanitizedOkHttp = okhttpVersion.trim().ifBlank { "unknown" }
 
-        return "$APP_NAME/$appVersion (Android $androidVersion; $deviceModel) OkHttp/$okhttpVersion"
+        return "$APP_NAME/$sanitizedVersion (Android $androidVersion; $sanitizedModel) OkHttp/$sanitizedOkHttp"
     }
 }
