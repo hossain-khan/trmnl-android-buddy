@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.api
 import android.os.Build
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import assertk.assertions.matches
 import assertk.assertions.startsWith
@@ -117,5 +118,78 @@ class UserAgentProviderTest {
         assertThat(userAgent).contains("unknown")
         assertThat(userAgent).contains("Android")
         assertThat(userAgent).contains("OkHttp")
+    }
+
+    @Test
+    fun `getUserAgent with custom parameters formats exact expected string`() {
+        val userAgent =
+            UserAgentProvider.getUserAgent(
+                appVersion = "2.15.0",
+                androidVersion = 34,
+                deviceModel = "Pixel 8",
+                okhttpVersion = "5.1.0",
+            )
+
+        assertThat(userAgent).isEqualTo("TrmnlAndroidBuddy/2.15.0 (Android 34; Pixel 8) OkHttp/5.1.0")
+    }
+
+    @Test
+    fun `getUserAgent with blank app version falls back to unknown`() {
+        val userAgent =
+            UserAgentProvider.getUserAgent(
+                appVersion = "   ",
+                androidVersion = 33,
+                deviceModel = "Galaxy S23",
+                okhttpVersion = "5.0.0",
+            )
+
+        assertThat(userAgent).isEqualTo("TrmnlAndroidBuddy/unknown (Android 33; Galaxy S23) OkHttp/5.0.0")
+    }
+
+    @Test
+    fun `getUserAgent with null or blank device model falls back to Unknown`() {
+        val userAgentWithNull =
+            UserAgentProvider.getUserAgent(
+                appVersion = "1.0.0",
+                androidVersion = 30,
+                deviceModel = null,
+                okhttpVersion = "4.9.0",
+            )
+        val userAgentWithBlank =
+            UserAgentProvider.getUserAgent(
+                appVersion = "1.0.0",
+                androidVersion = 30,
+                deviceModel = "   ",
+                okhttpVersion = "4.9.0",
+            )
+
+        assertThat(userAgentWithNull).isEqualTo("TrmnlAndroidBuddy/1.0.0 (Android 30; Unknown) OkHttp/4.9.0")
+        assertThat(userAgentWithBlank).isEqualTo("TrmnlAndroidBuddy/1.0.0 (Android 30; Unknown) OkHttp/4.9.0")
+    }
+
+    @Test
+    fun `getUserAgent trims surrounding whitespace from all components`() {
+        val userAgent =
+            UserAgentProvider.getUserAgent(
+                appVersion = " 2.0.0 ",
+                androidVersion = 31,
+                deviceModel = " Pixel 6 Pro ",
+                okhttpVersion = " 5.1.0 ",
+            )
+
+        assertThat(userAgent).isEqualTo("TrmnlAndroidBuddy/2.0.0 (Android 31; Pixel 6 Pro) OkHttp/5.1.0")
+    }
+
+    @Test
+    fun `getUserAgent with blank okhttp version falls back to unknown`() {
+        val userAgent =
+            UserAgentProvider.getUserAgent(
+                appVersion = "1.0.0",
+                androidVersion = 32,
+                deviceModel = "Pixel 7",
+                okhttpVersion = "   ",
+            )
+
+        assertThat(userAgent).isEqualTo("TrmnlAndroidBuddy/1.0.0 (Android 32; Pixel 7) OkHttp/unknown")
     }
 }
