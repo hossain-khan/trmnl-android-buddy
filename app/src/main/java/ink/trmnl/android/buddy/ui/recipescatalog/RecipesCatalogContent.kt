@@ -89,9 +89,12 @@ fun RecipesCatalogContent(
         }
     }
 
-    LaunchedEffect(state.installErrorMessage) {
-        state.installErrorMessage?.let { message ->
-            snackbarHostState.showSnackbar(message)
+    LaunchedEffect(state.installErrorMessage, state.selectedRecipeForDetails) {
+        val errorMessage = state.installErrorMessage
+        // When bottom sheet is open, error is rendered inline inside the sheet;
+        // otherwise display in Scaffold snackbar.
+        if (errorMessage != null && state.selectedRecipeForDetails == null) {
+            snackbarHostState.showSnackbar(errorMessage)
             state.eventSink(RecipesCatalogScreen.Event.DismissInstallMessage)
         }
     }
@@ -265,6 +268,10 @@ fun RecipesCatalogContent(
             },
             isInstalling = state.isInstallingRecipe,
             targetDeviceName = state.targetDeviceName,
+            installErrorMessage = state.installErrorMessage,
+            onDismissInstallError = {
+                state.eventSink(RecipesCatalogScreen.Event.DismissInstallMessage)
+            },
         )
     }
 

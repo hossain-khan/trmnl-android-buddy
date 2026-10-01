@@ -18,10 +18,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -57,6 +61,11 @@ import ink.trmnl.android.buddy.ui.utils.htmlToAnnotatedString
  * @param recipe The recipe to display details for
  * @param sheetState State of the bottom sheet
  * @param onDismiss Callback when the bottom sheet is dismissed
+ * @param onInstallClick Callback when the install button is clicked
+ * @param isInstalling Whether installation is currently in progress
+ * @param targetDeviceName Optional pre-selected device name for install button label
+ * @param installErrorMessage Error message to display inline if recipe installation failed
+ * @param onDismissInstallError Callback to dismiss the inline installation error banner
  * @param modifier Optional modifier for the component
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -68,6 +77,8 @@ fun RecipeDetailBottomSheet(
     onInstallClick: () -> Unit = {},
     isInstalling: Boolean = false,
     targetDeviceName: String? = null,
+    installErrorMessage: String? = null,
+    onDismissInstallError: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     ModalBottomSheet(
@@ -194,6 +205,85 @@ fun RecipeDetailBottomSheet(
                             "Install to Device…"
                         }
                     Text(label)
+                }
+            }
+
+            // Inline install error banner
+            if (installErrorMessage != null) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Card(
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                        ),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.info_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                                    modifier = Modifier.size(20.dp),
+                                )
+                                Text(
+                                    text = "Installation Failed",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                )
+                            }
+                            if (onDismissInstallError != null) {
+                                IconButton(
+                                    onClick = onDismissInstallError,
+                                    modifier = Modifier.size(24.dp),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                                        contentDescription = "Dismiss error",
+                                        tint = MaterialTheme.colorScheme.onErrorContainer,
+                                        modifier = Modifier.size(16.dp),
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Text(
+                            text = installErrorMessage,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                        )
+
+                        val uriHandler = LocalUriHandler.current
+                        if (installErrorMessage.contains("https://trmnl.com/account") ||
+                            installErrorMessage.contains("account", ignoreCase = true)
+                        ) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Button(
+                                onClick = { uriHandler.openUri("https://trmnl.com/account") },
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.error,
+                                        contentColor = MaterialTheme.colorScheme.onError,
+                                    ),
+                                modifier = Modifier.align(Alignment.End),
+                            ) {
+                                Text("Open TRMNL Account")
+                            }
+                        }
+                    }
                 }
             }
 
@@ -388,6 +478,30 @@ private fun RecipeDetailBottomSheetNoScreenshotPreview() {
                 ),
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             onDismiss = {},
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@PreviewLightDark
+@Composable
+private fun RecipeDetailBottomSheetErrorPreview() {
+    TrmnlBuddyAppTheme {
+        RecipeDetailBottomSheet(
+            recipe =
+                Recipe(
+                    id = 11023,
+                    name = "Simple Calendar",
+                    iconUrl = null,
+                    screenshotUrl = null,
+                    authorBio = null,
+                    stats = RecipeStats(installs = 68, forks = 1370),
+                ),
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            onDismiss = {},
+            installErrorMessage =
+                "This is a legacy API key, which reaches only the endpoints it had before API keys held capabilities. Create an API key with the capabilities you need at https://trmnl.com/account.",
+            onDismissInstallError = {},
         )
     }
 }

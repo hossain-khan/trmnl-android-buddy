@@ -989,6 +989,68 @@ class RecipesCatalogPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+
+    @Test
+    fun `dismiss recipe details clears installErrorMessage and selected recipe`() =
+        runTest {
+            // Given
+            val targetScreen =
+                RecipesCatalogScreen(
+                    targetDeviceId = 99,
+                    targetDeviceName = "Studio",
+                )
+            val navigator = FakeNavigator(targetScreen)
+            val sampleRecipe = createSampleRecipe(1)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            repository.installRecipeResult = Result.failure(Exception("Installation error"))
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository, targetScreen)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                // Open recipe details
+                loadedState.eventSink(RecipesCatalogScreen.Event.RecipeClicked(sampleRecipe))
+                testScheduler.advanceUntilIdle()
+
+                var detailsState = awaitItem()
+                while (detailsState.selectedRecipeForDetails == null) {
+                    detailsState = awaitItem()
+                }
+                assertThat(detailsState.selectedRecipeForDetails).isEqualTo(sampleRecipe)
+
+                // Trigger install failure
+                detailsState.eventSink(RecipesCatalogScreen.Event.InstallRecipeClicked(sampleRecipe))
+                testScheduler.advanceUntilIdle()
+
+                var errorState = awaitItem()
+                while (errorState.installErrorMessage == null) {
+                    errorState = awaitItem()
+                }
+                assertThat(errorState.installErrorMessage).isEqualTo("Installation error")
+                assertThat(errorState.selectedRecipeForDetails).isEqualTo(sampleRecipe)
+
+                // Dismiss details
+                errorState.eventSink(RecipesCatalogScreen.Event.DismissRecipeDetails)
+                testScheduler.advanceUntilIdle()
+
+                var dismissedState = awaitItem()
+                while (dismissedState.selectedRecipeForDetails != null || dismissedState.installErrorMessage != null) {
+                    dismissedState = awaitItem()
+                }
+                assertThat(dismissedState.selectedRecipeForDetails).isNull()
+                assertThat(dismissedState.installErrorMessage).isNull()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
 }
 
 /**

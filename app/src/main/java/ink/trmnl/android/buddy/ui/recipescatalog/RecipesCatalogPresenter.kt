@@ -259,6 +259,7 @@ class RecipesCatalogPresenter(
                 RecipesCatalogScreen.Event.DismissRecipeDetails -> {
                     // Dismiss recipe details bottom sheet
                     selectedRecipeForDetails = null
+                    installErrorMessage = null
                 }
 
                 is RecipesCatalogScreen.Event.BookmarkClicked -> {
