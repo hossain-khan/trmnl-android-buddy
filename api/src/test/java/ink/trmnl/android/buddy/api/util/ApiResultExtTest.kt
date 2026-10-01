@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.ApiError
 import org.junit.Test
 import java.io.IOException
 
@@ -80,6 +81,17 @@ class ApiResultExtTest {
 
         assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()?.message).isEqualTo("API error: Invalid payload format")
+    }
+
+    @Test
+    fun `toResult - ApiFailure with ApiError extracts error message directly`() {
+        val apiError = ApiError("This is a legacy API key")
+        val apiResult: ApiResult<String, ApiError> = ApiResult.apiFailure(apiError)
+
+        val result = apiResult.toResult { it }
+
+        assertThat(result.isFailure).isTrue()
+        assertThat(result.exceptionOrNull()?.message).isEqualTo("This is a legacy API key")
     }
 
     @Test
