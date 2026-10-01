@@ -259,7 +259,7 @@ class SettingsPresenter(
                     navigator.goTo(DeviceCatalogScreen)
                 }
                 SettingsScreen.Event.RecipesCatalogClicked -> {
-                    navigator.goTo(RecipesCatalogScreen)
+                    navigator.goTo(RecipesCatalogScreen())
                 }
                 SettingsScreen.Event.ContentHubClicked -> {
                     navigator.goTo(ContentHubScreen)

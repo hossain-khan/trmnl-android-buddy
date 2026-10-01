@@ -11,7 +11,9 @@ import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import ink.trmnl.android.buddy.api.models.AuthorBio
+import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.api.models.Recipe
+import ink.trmnl.android.buddy.api.models.RecipeInstallData
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.data.FakeBookmarkRepository
@@ -40,7 +42,7 @@ class RecipesCatalogPresenterTest {
     fun `presenter loads recipes on initial composition`() =
         runTest {
             // Given
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(2),
@@ -68,7 +70,7 @@ class RecipesCatalogPresenterTest {
     fun `search query triggers debounced API call`() =
         runTest {
             // Given
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
@@ -109,7 +111,7 @@ class RecipesCatalogPresenterTest {
     fun `clear search resets query and fetches all recipes`() =
         runTest {
             // Given
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(2),
@@ -140,7 +142,7 @@ class RecipesCatalogPresenterTest {
     fun `selecting sort option fetches recipes with new sort`() =
         runTest {
             // Given
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(2),
@@ -172,7 +174,7 @@ class RecipesCatalogPresenterTest {
     fun `load more appends next page of recipes`() =
         runTest {
             // Given
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(2, currentPage = 1),
@@ -251,7 +253,7 @@ class RecipesCatalogPresenterTest {
                     nextPageUrl = null,
                 )
 
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository = FakeRecipesRepository(recipesResponse = page1Response)
             repository.setResponseForPage(2, page2Response)
             val bookmarkRepository = FakeBookmarkRepository()
@@ -291,7 +293,7 @@ class RecipesCatalogPresenterTest {
     fun `error state shows error message and allows retry`() =
         runTest {
             // Given
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     shouldFail = true,
@@ -334,7 +336,7 @@ class RecipesCatalogPresenterTest {
     fun `back clicked navigates back`() =
         runTest {
             // Given
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
@@ -362,7 +364,7 @@ class RecipesCatalogPresenterTest {
     @Test
     fun `sort by newest works correctly`() =
         runTest {
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
@@ -396,7 +398,7 @@ class RecipesCatalogPresenterTest {
     @Test
     fun `sort by oldest works correctly`() =
         runTest {
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
@@ -422,7 +424,7 @@ class RecipesCatalogPresenterTest {
     @Test
     fun `sort by popularity works correctly`() =
         runTest {
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
@@ -448,7 +450,7 @@ class RecipesCatalogPresenterTest {
     @Test
     fun `sort by installs works correctly`() =
         runTest {
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
@@ -474,7 +476,7 @@ class RecipesCatalogPresenterTest {
     @Test
     fun `sort by forks works correctly`() =
         runTest {
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse = createSampleRecipesResponse(1),
@@ -507,7 +509,7 @@ class RecipesCatalogPresenterTest {
                     createSampleRecipeWithCategories(2, "sports"),
                     createSampleRecipeWithCategories(3, null),
                 )
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse =
@@ -551,7 +553,7 @@ class RecipesCatalogPresenterTest {
                     createSampleRecipeWithCategories(3, "calendar,custom"),
                     createSampleRecipeWithCategories(4, "news"),
                 )
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse =
@@ -601,7 +603,7 @@ class RecipesCatalogPresenterTest {
                     createSampleRecipeWithCategories(4, "news"),
                     createSampleRecipeWithCategories(5, "sports,games"),
                 )
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse =
@@ -654,7 +656,7 @@ class RecipesCatalogPresenterTest {
                     createSampleRecipeWithCategories(2, " sports , games "),
                     createSampleRecipeWithCategories(3, "news"),
                 )
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse =
@@ -701,7 +703,7 @@ class RecipesCatalogPresenterTest {
                     createSampleRecipeWithCategories(2, ""),
                     createSampleRecipeWithCategories(3, "calendar"),
                 )
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse =
@@ -747,7 +749,7 @@ class RecipesCatalogPresenterTest {
                     createSampleRecipeWithCategories(1, "calendar"),
                     createSampleRecipeWithCategories(2, "sports"),
                 )
-            val navigator = FakeNavigator(RecipesCatalogScreen)
+            val navigator = FakeNavigator(RecipesCatalogScreen())
             val repository =
                 FakeRecipesRepository(
                     recipesResponse =
@@ -779,6 +781,272 @@ class RecipesCatalogPresenterTest {
                 var filteredState = awaitItem()
                 assertThat(filteredState.recipes).isEmpty()
                 assertThat(filteredState.selectedCategories).isEqualTo(setOf("finance"))
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `install recipe with pre-targeted device triggers install directly`() =
+        runTest {
+            // Given
+            val targetScreen =
+                RecipesCatalogScreen(
+                    targetDeviceId = 42,
+                    targetDeviceName = "Desk TRMNL",
+                )
+            val navigator = FakeNavigator(targetScreen)
+            val sampleRecipe = createSampleRecipe(1)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository, targetScreen)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                assertThat(loadedState.targetDeviceId).isEqualTo(42)
+                assertThat(loadedState.targetDeviceName).isEqualTo("Desk TRMNL")
+
+                // Trigger install
+                loadedState.eventSink(RecipesCatalogScreen.Event.InstallRecipeClicked(sampleRecipe))
+
+                var successState = awaitItem()
+                while (successState.installSuccessMessage == null) {
+                    successState = awaitItem()
+                }
+                assertThat(successState.isInstallingRecipe).isFalse()
+                assertThat(successState.installSuccessMessage).isEqualTo("Successfully installed \"Recipe 1\" to Desk TRMNL!")
+                assertThat(repository.installCallCount).isEqualTo(1)
+                assertThat(repository.lastInstallRecipeId).isEqualTo(1)
+                assertThat(repository.lastInstallDeviceId).isEqualTo(42)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `install recipe with single available device installs directly`() =
+        runTest {
+            // Given
+            val navigator = FakeNavigator(RecipesCatalogScreen())
+            val sampleRecipe = createSampleRecipe(5)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            repository.userDevicesResult =
+                Result.success(
+                    listOf(
+                        createTestDevice(10, "Kitchen TRMNL"),
+                    ),
+                )
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty() || loadedState.availableDevices.isEmpty())
+
+                assertThat(loadedState.availableDevices).hasSize(1)
+
+                // Trigger install
+                loadedState.eventSink(RecipesCatalogScreen.Event.InstallRecipeClicked(sampleRecipe))
+
+                var successState = awaitItem()
+                while (successState.installSuccessMessage == null) {
+                    successState = awaitItem()
+                }
+                assertThat(successState.isInstallingRecipe).isFalse()
+                assertThat(successState.installSuccessMessage).isEqualTo("Successfully installed \"Recipe 5\" to Kitchen TRMNL!")
+                assertThat(repository.lastInstallRecipeId).isEqualTo(5)
+                assertThat(repository.lastInstallDeviceId).isEqualTo(10)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `install recipe with multiple available devices prompts device picker`() =
+        runTest {
+            // Given
+            val navigator = FakeNavigator(RecipesCatalogScreen())
+            val sampleRecipe = createSampleRecipe(7)
+            val device1 = createTestDevice(1, "Living Room")
+            val device2 = createTestDevice(2, "Office")
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            repository.userDevicesResult = Result.success(listOf(device1, device2))
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty() || loadedState.availableDevices.isEmpty())
+
+                assertThat(loadedState.availableDevices).hasSize(2)
+
+                // Click install -> should open device picker
+                loadedState.eventSink(RecipesCatalogScreen.Event.InstallRecipeClicked(sampleRecipe))
+
+                var pickerState = awaitItem()
+                while (pickerState.showDevicePickerForRecipe == null) {
+                    pickerState = awaitItem()
+                }
+                assertThat(pickerState.showDevicePickerForRecipe).isEqualTo(sampleRecipe)
+
+                // Dismiss device picker
+                pickerState.eventSink(RecipesCatalogScreen.Event.DismissDevicePicker)
+                var dismissedState = awaitItem()
+                while (dismissedState.showDevicePickerForRecipe != null) {
+                    dismissedState = awaitItem()
+                }
+                assertThat(dismissedState.showDevicePickerForRecipe).isNull()
+
+                // Re-open device picker and select device2
+                dismissedState.eventSink(RecipesCatalogScreen.Event.InstallRecipeClicked(sampleRecipe))
+                var pickerState2 = awaitItem()
+                while (pickerState2.showDevicePickerForRecipe == null) {
+                    pickerState2 = awaitItem()
+                }
+
+                pickerState2.eventSink(
+                    RecipesCatalogScreen.Event.DeviceSelectedForInstall(
+                        recipe = sampleRecipe,
+                        device = device2,
+                    ),
+                )
+
+                var finalState = awaitItem()
+                while (finalState.installSuccessMessage == null) {
+                    finalState = awaitItem()
+                }
+                assertThat(finalState.installSuccessMessage).isEqualTo("Successfully installed \"Recipe 7\" to Office!")
+                assertThat(repository.lastInstallRecipeId).isEqualTo(7)
+                assertThat(repository.lastInstallDeviceId).isEqualTo(2)
+
+                // Dismiss install message
+                finalState.eventSink(RecipesCatalogScreen.Event.DismissInstallMessage)
+                var clearedState = awaitItem()
+                while (clearedState.installSuccessMessage != null) {
+                    clearedState = awaitItem()
+                }
+                assertThat(clearedState.installSuccessMessage).isNull()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `install recipe failure sets installErrorMessage`() =
+        runTest {
+            // Given
+            val targetScreen =
+                RecipesCatalogScreen(
+                    targetDeviceId = 99,
+                    targetDeviceName = "Studio",
+                )
+            val navigator = FakeNavigator(targetScreen)
+            val sampleRecipe = createSampleRecipe(1)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            repository.installRecipeResult = Result.failure(Exception("Installation limit reached"))
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository, targetScreen)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                loadedState.eventSink(RecipesCatalogScreen.Event.InstallRecipeClicked(sampleRecipe))
+
+                var errorState = awaitItem()
+                while (errorState.installErrorMessage == null) {
+                    errorState = awaitItem()
+                }
+                assertThat(errorState.installErrorMessage).isEqualTo("Installation limit reached")
+                assertThat(errorState.isInstallingRecipe).isFalse()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `dismiss recipe details clears installErrorMessage and selected recipe`() =
+        runTest {
+            // Given
+            val targetScreen =
+                RecipesCatalogScreen(
+                    targetDeviceId = 99,
+                    targetDeviceName = "Studio",
+                )
+            val navigator = FakeNavigator(targetScreen)
+            val sampleRecipe = createSampleRecipe(1)
+            val repository =
+                FakeRecipesRepository(
+                    recipesResponse = createSampleRecipesResponse(1),
+                )
+            repository.installRecipeResult = Result.failure(Exception("Installation error"))
+            val bookmarkRepository = FakeBookmarkRepository()
+            val presenter = RecipesCatalogPresenter(navigator, repository, bookmarkRepository, targetScreen)
+
+            // When/Then
+            presenter.test {
+                var loadedState: RecipesCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.recipes.isEmpty())
+
+                // Open recipe details
+                loadedState.eventSink(RecipesCatalogScreen.Event.RecipeClicked(sampleRecipe))
+                testScheduler.advanceUntilIdle()
+
+                var detailsState = awaitItem()
+                while (detailsState.selectedRecipeForDetails == null) {
+                    detailsState = awaitItem()
+                }
+                assertThat(detailsState.selectedRecipeForDetails).isEqualTo(sampleRecipe)
+
+                // Trigger install failure
+                detailsState.eventSink(RecipesCatalogScreen.Event.InstallRecipeClicked(sampleRecipe))
+                testScheduler.advanceUntilIdle()
+
+                var errorState = awaitItem()
+                while (errorState.installErrorMessage == null) {
+                    errorState = awaitItem()
+                }
+                assertThat(errorState.installErrorMessage).isEqualTo("Installation error")
+                assertThat(errorState.selectedRecipeForDetails).isEqualTo(sampleRecipe)
+
+                // Dismiss details
+                errorState.eventSink(RecipesCatalogScreen.Event.DismissRecipeDetails)
+                testScheduler.advanceUntilIdle()
+
+                var dismissedState = awaitItem()
+                while (dismissedState.selectedRecipeForDetails != null || dismissedState.installErrorMessage != null) {
+                    dismissedState = awaitItem()
+                }
+                assertThat(dismissedState.selectedRecipeForDetails).isNull()
+                assertThat(dismissedState.installErrorMessage).isNull()
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -863,6 +1131,25 @@ private class FakeRecipesRepository(
             )
         }
 
+    var installRecipeResult: Result<RecipeInstallData> =
+        Result.success(RecipeInstallData(pluginSetting = null, installMethod = "one_click"))
+    var lastInstallRecipeId: Int? = null
+    var lastInstallDeviceId: Int? = null
+    var installCallCount = 0
+    var userDevicesResult: Result<List<Device>> = Result.success(emptyList())
+
+    override suspend fun installRecipe(
+        id: Int,
+        deviceId: Int,
+    ): Result<RecipeInstallData> {
+        installCallCount++
+        lastInstallRecipeId = id
+        lastInstallDeviceId = deviceId
+        return installRecipeResult
+    }
+
+    override suspend fun getUserDevices(): Result<List<Device>> = userDevicesResult
+
     /**
      * Set a specific response for a given page number.
      * Useful for testing pagination.
@@ -932,4 +1219,23 @@ private fun createSampleRecipeWithCategories(
                 installs = id * 100,
                 forks = id * 10,
             ),
+    )
+
+/**
+ * Create a sample Device for testing.
+ */
+private fun createTestDevice(
+    id: Int,
+    name: String,
+    macAddress: String = "00:11:22:33:44:55",
+): Device =
+    Device(
+        id = id,
+        name = name,
+        friendlyId = "DEV-$id",
+        macAddress = macAddress,
+        batteryVoltage = 4.0,
+        rssi = -60,
+        percentCharged = 80.0,
+        wifiStrength = 85.0,
     )

@@ -34,10 +34,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,9 +80,28 @@ fun RecipesCatalogContent(
     modifier: Modifier = Modifier,
 ) {
     val bottomSheetState = rememberModalBottomSheetState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(state.installSuccessMessage) {
+        state.installSuccessMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            state.eventSink(RecipesCatalogScreen.Event.DismissInstallMessage)
+        }
+    }
+
+    LaunchedEffect(state.installErrorMessage, state.selectedRecipeForDetails) {
+        val errorMessage = state.installErrorMessage
+        // When bottom sheet is open, error is rendered inline inside the sheet;
+        // otherwise display in Scaffold snackbar.
+        if (errorMessage != null && state.selectedRecipeForDetails == null) {
+            snackbarHostState.showSnackbar(errorMessage)
+            state.eventSink(RecipesCatalogScreen.Event.DismissInstallMessage)
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { TrmnlTitle("Recipes Catalog") },
@@ -240,6 +262,29 @@ fun RecipesCatalogContent(
             sheetState = bottomSheetState,
             onDismiss = {
                 state.eventSink(RecipesCatalogScreen.Event.DismissRecipeDetails)
+            },
+            onInstallClick = {
+                state.eventSink(RecipesCatalogScreen.Event.InstallRecipeClicked(recipe))
+            },
+            isInstalling = state.isInstallingRecipe,
+            targetDeviceName = state.targetDeviceName,
+            installErrorMessage = state.installErrorMessage,
+            onDismissInstallError = {
+                state.eventSink(RecipesCatalogScreen.Event.DismissInstallMessage)
+            },
+        )
+    }
+
+    // Show device picker dialog when user initiates install without a preselected target device
+    state.showDevicePickerForRecipe?.let { recipe ->
+        SelectDeviceDialog(
+            recipe = recipe,
+            devices = state.availableDevices,
+            onDeviceSelected = { device ->
+                state.eventSink(RecipesCatalogScreen.Event.DeviceSelectedForInstall(recipe, device))
+            },
+            onDismiss = {
+                state.eventSink(RecipesCatalogScreen.Event.DismissDevicePicker)
             },
         )
     }

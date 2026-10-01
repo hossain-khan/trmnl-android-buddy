@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.api.util
 
 import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.ApiError
 
 /*
  * Extension functions for converting [ApiResult] to Kotlin [Result] with standardized error handling.
@@ -60,10 +61,14 @@ inline fun <T : Any, R : Any> ApiResult<T, *>.toResult(
             Result.failure(
                 Exception("Network error: ${error.message ?: "Unknown network issue"}"),
             )
-        is ApiResult.Failure.ApiFailure ->
-            Result.failure(
-                Exception("API error: $error"),
-            )
+        is ApiResult.Failure.ApiFailure -> {
+            val errorMessage =
+                when (val apiErr = error) {
+                    is ApiError -> apiErr.error
+                    else -> "API error: $apiErr"
+                }
+            Result.failure(Exception(errorMessage))
+        }
         is ApiResult.Failure.UnknownFailure ->
             Result.failure(
                 Exception("Unknown error: ${error.message ?: "Unexpected error occurred"}"),
