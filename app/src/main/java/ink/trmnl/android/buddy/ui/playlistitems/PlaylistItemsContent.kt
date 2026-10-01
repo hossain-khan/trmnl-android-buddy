@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.AssistChip
@@ -82,6 +85,16 @@ fun PlaylistItemsContent(
                         )
                     }
                 },
+                actions = {
+                    if (state.deviceId != null) {
+                        IconButton(onClick = { state.eventSink(PlaylistItemsScreen.Event.AddRecipeClicked) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.recipe_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Add recipe to device",
+                            )
+                        }
+                    }
+                },
             )
         },
     ) { innerPadding ->
@@ -106,7 +119,14 @@ fun PlaylistItemsContent(
                 }
 
                 state.items.isEmpty() -> {
-                    EmptyState()
+                    EmptyState(
+                        onAddRecipeClick =
+                            if (state.deviceId != null) {
+                                { state.eventSink(PlaylistItemsScreen.Event.AddRecipeClicked) }
+                            } else {
+                                null
+                            },
+                    )
                 }
 
                 else -> {
@@ -182,7 +202,10 @@ private fun ErrorState(
  * Empty state UI when no playlist items are found.
  */
 @Composable
-private fun EmptyState(modifier: Modifier = Modifier) {
+private fun EmptyState(
+    onAddRecipeClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -207,6 +230,17 @@ private fun EmptyState(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            if (onAddRecipeClick != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = onAddRecipeClick) {
+                    Icon(
+                        painter = painterResource(R.drawable.recipe_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        contentDescription = null,
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Add Recipe")
+                }
+            }
         }
     }
 }

@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -63,6 +65,9 @@ fun RecipeDetailBottomSheet(
     recipe: Recipe,
     sheetState: SheetState,
     onDismiss: () -> Unit,
+    onInstallClick: () -> Unit = {},
+    isInstalling: Boolean = false,
+    targetDeviceName: String? = null,
     modifier: Modifier = Modifier,
 ) {
     ModalBottomSheet(
@@ -153,6 +158,42 @@ fun RecipeDetailBottomSheet(
                                     ).padding(horizontal = 8.dp, vertical = 4.dp),
                         )
                     }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Install button
+            Button(
+                onClick = onInstallClick,
+                enabled = !isInstalling,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+            ) {
+                if (isInstalling) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Installing…")
+                } else {
+                    Icon(
+                        painter = painterResource(R.drawable.download_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    val label =
+                        if (targetDeviceName != null) {
+                            "Install to $targetDeviceName"
+                        } else {
+                            "Install to Device…"
+                        }
+                    Text(label)
                 }
             }
 

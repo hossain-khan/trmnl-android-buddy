@@ -25,6 +25,8 @@ import ink.trmnl.android.buddy.api.models.RecipeAnalyticsHealthStatus
 import ink.trmnl.android.buddy.api.models.RecipeAnalyticsPlugin
 import ink.trmnl.android.buddy.api.models.RecipeAnalyticsStats
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
+import ink.trmnl.android.buddy.api.models.RecipeInstallRequest
+import ink.trmnl.android.buddy.api.models.RecipeInstallResponse
 import ink.trmnl.android.buddy.api.models.RecipesAnalytics
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
@@ -777,4 +779,10 @@ private class FakeApiService(
     ) = throw NotImplementedError()
 
     override suspend fun getRecipesAnalytics(authorization: String) = throw NotImplementedError()
+
+    override suspend fun installRecipe(
+        id: Int,
+        authorization: String,
+        body: RecipeInstallRequest,
+    ): ApiResult<RecipeInstallResponse, ApiError> = throw NotImplementedError()
 }

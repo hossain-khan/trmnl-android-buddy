@@ -19,6 +19,8 @@ import ink.trmnl.android.buddy.api.models.DeviceResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
+import ink.trmnl.android.buddy.api.models.RecipeInstallRequest
+import ink.trmnl.android.buddy.api.models.RecipeInstallResponse
 import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
@@ -456,4 +458,10 @@ private open class FakeApiService(
 
     override suspend fun getRecipesAnalytics(authorization: String) =
         throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
+
+    override suspend fun installRecipe(
+        id: Int,
+        authorization: String,
+        body: RecipeInstallRequest,
+    ): ApiResult<RecipeInstallResponse, ApiError> = throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 }
