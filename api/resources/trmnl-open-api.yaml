@@ -8,136 +8,136 @@ paths:
     get:
       summary: Fetch the next screen
       tags:
-      - Device API
+        - Device API
       parameters:
-      - name: Access-Token
-        in: header
-        required: true
-        description: Device API Key (eg. abc-123)
-        schema:
-          type: string
-      - name: Battery-Voltage
-        in: header
-        required: false
-        description: Device battery voltage (eg. 3.7)
-        schema:
-          type: number
-      - name: Percent-Charged
-        in: header
-        required: false
-        description: Device percent charged (eg. 69.4)
-        schema:
-          type: number
-      - name: Battery-Count
-        in: header
-        required: false
-        description: Number of batteries in device (e.g. 1-2)
-        schema:
-          type: number
-      - name: Battery-Charging
-        in: header
-        required: false
-        description: Whether device is plugged into power (eg. true)
-        schema:
-          type: number
-      - name: Battery-Health
-        in: header
-        required: false
-        description: Quality of battery (eg. -1-100)
-        schema:
-          type: number
-      - name: Battery-Current
-        in: header
-        required: false
-        description: Battery current (eg. -1-N)
-        schema:
-          type: number
-      - name: Battery-Temp
-        in: header
-        required: false
-        description: Battery temperature in celsius (eg. -1-N)
-        schema:
-          type: number
-      - name: Battery-Capacity
-        in: header
-        required: false
-        description: Ratio of current / max capacity (eg. -1/-1 in fault case)
-        schema:
-          type: number
-      - name: USB-Connected
-        in: header
-        required: false
-        description: Whether device is plugged into power via USB ("true" or "false")
-        schema:
-          type: string
-      - name: WiFi-Band
-        in: header
-        required: false
-        description: WiFi band the device is connected on ("2.4" or "5")
-        schema:
-          type: string
-      - name: FW-Version
-        in: header
-        required: false
-        description: Device firmware version (eg. 0.0.1)
-        schema:
-          type: string
-      - name: FW-Commit
-        in: header
-        required: false
-        description: Device firmware commit hash, for the development channel (eg.
-          a14914c)
-        schema:
-          type: string
-      - name: RSSI
-        in: header
-        required: false
-        description: Device RSSI (eg. -69)
-        schema:
-          type: number
-      - name: Height
-        in: header
-        required: false
-        description: Device screen height (eg. 480)
-        schema:
-          type: string
-      - name: Width
-        in: header
-        required: false
-        description: Device screen width (eg. 800)
-        schema:
-          type: string
-      - name: Special-Function
-        in: header
-        required: false
-        description: Device special function (eg. true)
-        schema:
-          type: boolean
-      - name: BASE64
-        in: header
-        required: false
-        description: Encode image function (eg. true)
-        schema:
-          type: boolean
-      - name: Sensors
-        in: header
-        required: false
-        description: Environmental sensor data
-        schema:
-          type: string
-      - name: Image-Cached
-        in: header
-        required: false
-        description: Whether the device served the previous image from cache (eg.
-          true / false)
-        schema:
-          type: string
-      - name: Wake-Time
-        in: header
-        required: false
-        description: Seconds the device was awake during the last cycle (eg. 12)
-        schema:
-          type: integer
+        - name: Access-Token
+          in: header
+          required: true
+          description: Device API Key (eg. abc-123)
+          schema:
+            type: string
+        - name: Battery-Voltage
+          in: header
+          required: false
+          description: Device battery voltage (eg. 3.7)
+          schema:
+            type: number
+        - name: Percent-Charged
+          in: header
+          required: false
+          description: Device percent charged (eg. 69.4)
+          schema:
+            type: number
+        - name: Battery-Count
+          in: header
+          required: false
+          description: Number of batteries in device (e.g. 1-2)
+          schema:
+            type: number
+        - name: Battery-Charging
+          in: header
+          required: false
+          description: Whether device is plugged into power (eg. true)
+          schema:
+            type: number
+        - name: Battery-Health
+          in: header
+          required: false
+          description: Quality of battery (eg. -1-100)
+          schema:
+            type: number
+        - name: Battery-Current
+          in: header
+          required: false
+          description: Battery current (eg. -1-N)
+          schema:
+            type: number
+        - name: Battery-Temp
+          in: header
+          required: false
+          description: Battery temperature in celsius (eg. -1-N)
+          schema:
+            type: number
+        - name: Battery-Capacity
+          in: header
+          required: false
+          description: Ratio of current / max capacity (eg. -1/-1 in fault case)
+          schema:
+            type: number
+        - name: USB-Connected
+          in: header
+          required: false
+          description: Whether device is plugged into power via USB ("true" or "false")
+          schema:
+            type: string
+        - name: WiFi-Band
+          in: header
+          required: false
+          description: WiFi band the device is connected on ("2.4" or "5")
+          schema:
+            type: string
+        - name: FW-Version
+          in: header
+          required: false
+          description: Device firmware version (eg. 0.0.1)
+          schema:
+            type: string
+        - name: FW-Commit
+          in: header
+          required: false
+          description: Device firmware commit hash, for the development channel (eg.
+            a14914c)
+          schema:
+            type: string
+        - name: RSSI
+          in: header
+          required: false
+          description: Device RSSI (eg. -69)
+          schema:
+            type: number
+        - name: Height
+          in: header
+          required: false
+          description: Device screen height (eg. 480)
+          schema:
+            type: string
+        - name: Width
+          in: header
+          required: false
+          description: Device screen width (eg. 800)
+          schema:
+            type: string
+        - name: Special-Function
+          in: header
+          required: false
+          description: Device special function (eg. true)
+          schema:
+            type: boolean
+        - name: BASE64
+          in: header
+          required: false
+          description: Encode image function (eg. true)
+          schema:
+            type: boolean
+        - name: Sensors
+          in: header
+          required: false
+          description: Environmental sensor data
+          schema:
+            type: string
+        - name: Image-Cached
+          in: header
+          required: false
+          description: Whether the device served the previous image from cache (eg.
+            true / false)
+          schema:
+            type: string
+        - name: Wake-Time
+          in: header
+          required: false
+          description: Seconds the device was awake during the last cycle (eg. 12)
+          schema:
+            type: integer
       responses:
         '200':
           description: Success
@@ -182,14 +182,14 @@ paths:
     get:
       summary: Fetch the current screen
       tags:
-      - Device API
+        - Device API
       parameters:
-      - name: Access-Token
-        in: header
-        required: true
-        description: Device API Key (eg. abc-123)
-        schema:
-          type: string
+        - name: Access-Token
+          in: header
+          required: true
+          description: Device API Key (eg. abc-123)
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -220,14 +220,14 @@ paths:
     post:
       summary: Log with logs[] (array)
       tags:
-      - Device API
+        - Device API
       parameters:
-      - name: Access-Token
-        in: header
-        required: true
-        description: Device API Key (eg. abc-123)
-        schema:
-          type: string
+        - name: Access-Token
+          in: header
+          required: true
+          description: Device API Key (eg. abc-123)
+          schema:
+            type: string
       responses:
         '204':
           description: Logs created when ignore_log_messages is not set
@@ -237,9 +237,9 @@ paths:
             schema:
               type: object
               properties:
-                logs: []
+                logs: [ ]
               required:
-              - logs
+                - logs
               additionalProperties: false
         required: true
         description: 'An array of log entries. Each entry can be any JSON type: string,
@@ -248,20 +248,20 @@ paths:
     get:
       summary: Set up device
       tags:
-      - Device API
+        - Device API
       parameters:
-      - name: ID
-        in: header
-        required: true
-        description: Device MAC Address (eg. 41:B4:10:39:A1:24)
-        schema:
-          type: string
-      - name: Model
-        in: header
-        required: true
-        description: DEVICE_MODEL from firmware definitions
-        schema:
-          type: string
+        - name: ID
+          in: header
+          required: true
+          description: Device MAC Address (eg. 41:B4:10:39:A1:24)
+          schema:
+            type: string
+        - name: Model
+          in: header
+          required: true
+          description: DEVICE_MODEL from firmware definitions
+          schema:
+            type: string
       description: |
         Please note that the returned `status` JSON value may NOT always equal the HTTP status code. Notably, if a device MAC address is not found,
         then the HTTP status code will be 200 but the `status` code in the response will be 404.
@@ -295,7 +295,7 @@ paths:
     get:
       summary: List all plugin categories
       tags:
-      - Categories
+        - Categories
       description: Returns a list of approved plugin categories.
       responses:
         '200':
@@ -313,14 +313,14 @@ paths:
                     items:
                       type: string
                     example:
-                    - life
-                    - marketing
-                    - ecommerce
+                      - life
+                      - marketing
+                      - ecommerce
   "/api/firmware/flash":
     get:
       summary: List flashable firmware versions per device model
       tags:
-      - Flash Firmwares
+        - Flash Firmwares
       description: |
         Firmware builds flashable via the TRMNL web flasher (/flash).
       responses:
@@ -355,22 +355,22 @@ paths:
                                   url:
                                     type: string
                                 required:
-                                - version
-                                - url
+                                  - version
+                                  - url
                           required:
-                          - keyname
-                          - chipFamily
-                          - label
-                          - versions
+                            - keyname
+                            - chipFamily
+                            - label
+                            - versions
                     required:
-                    - models
+                      - models
                 required:
-                - data
+                  - data
   "/api/ips":
     get:
       summary: List all TRMNL server IP addresses
       tags:
-      - Server IPs
+        - Server IPs
       description: |
         Returns a list of public IP addresses for all TRMNL core servers.
 
@@ -398,8 +398,8 @@ paths:
     post:
       summary: Render Liquid template
       tags:
-      - Markup
-      parameters: []
+        - Markup
+      parameters: [ ]
       responses:
         '200':
           description: Success
@@ -410,10 +410,10 @@ paths:
                 properties:
                   data:
                     oneOf:
-                    - type: string
-                    - type: array
-                      items:
-                        type: string
+                      - type: string
+                      - type: array
+                        items:
+                          type: string
       requestBody:
         content:
           application/json:
@@ -422,21 +422,21 @@ paths:
               properties:
                 markup:
                   oneOf:
-                  - type: string
-                    example: Hello, {{ name }}!
-                  - type: array
-                    items:
-                      type: string
-                    example:
-                    - Hello, {{ name }}!
-                    - Goodbye, {{ name }}!
+                    - type: string
+                      example: Hello, {{ name }}!
+                    - type: array
+                      items:
+                        type: string
+                      example:
+                        - Hello, {{ name }}!
+                        - Goodbye, {{ name }}!
                 variables:
                   type: object
                   example:
                     name: World
               required:
-              - markup
-              - variables
+                - markup
+                - variables
               additionalProperties: false
         required: true
         description: The Liquid markup(s) to render and an optional set of variables
@@ -445,7 +445,7 @@ paths:
     get:
       summary: List all device models
       tags:
-      - Models
+        - Models
       responses:
         '200':
           description: Success
@@ -462,7 +462,7 @@ paths:
     get:
       summary: List all palettes
       tags:
-      - Palettes
+        - Palettes
       responses:
         '200':
           description: Success
@@ -479,9 +479,9 @@ paths:
     get:
       summary: List my devices
       tags:
-      - Devices
+        - Devices
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -502,18 +502,18 @@ paths:
                       "$ref": "#/components/schemas/Device"
   "/api/devices/{id}":
     parameters:
-    - name: id
-      in: path
-      description: Device ID
-      required: true
-      schema:
-        type: integer
+      - name: id
+        in: path
+        description: Device ID
+        required: true
+        schema:
+          type: integer
     get:
       summary: Get the data of a device
       tags:
-      - Devices
+        - Devices
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -539,10 +539,10 @@ paths:
     patch:
       summary: Update a device
       tags:
-      - Devices
-      parameters: []
+        - Devices
+      parameters: [ ]
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -574,9 +574,9 @@ paths:
     get:
       summary: Get my user data
       tags:
-      - Users
+        - Users
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -597,9 +597,9 @@ paths:
     get:
       summary: List my playlist items
       tags:
-      - Playlists
+        - Playlists
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -622,16 +622,16 @@ paths:
     patch:
       summary: Update a playlist item
       tags:
-      - Playlists
+        - Playlists
       parameters:
-      - name: id
-        in: path
-        description: ID of the playlist item
-        required: true
-        schema:
-          type: integer
+        - name: id
+          in: path
+          description: ID of the playlist item
+          required: true
+          schema:
+            type: integer
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -650,19 +650,19 @@ paths:
                 visible:
                   type: boolean
               required:
-              - visible
+                - visible
   "/api/plugin_settings/{id}/archive":
     parameters:
-    - name: id
-      in: path
-      description: Plugin setting ID
-      required: true
-      schema:
-        type: integer
+      - name: id
+        in: path
+        description: Plugin setting ID
+        required: true
+        schema:
+          type: integer
     get:
       summary: Download a plugin setting archive
       tags:
-      - Plugin Settings
+        - Plugin Settings
       description: |
         This endpoint is available for unauthenticated requests.
 
@@ -670,7 +670,7 @@ paths:
 
         When authenticated, the requesting user's private plugins are also archivable.
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       responses:
         '200':
           description: Success
@@ -689,10 +689,10 @@ paths:
     post:
       summary: Upload a plugin setting archive
       tags:
-      - Plugin Settings
+        - Plugin Settings
       security:
-      - bearer_auth: []
-      parameters: []
+        - bearer_auth: [ ]
+      parameters: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -724,18 +724,18 @@ paths:
         description: Plugin setting archive file
   "/api/plugin_settings/{id}/data":
     parameters:
-    - name: id
-      in: path
-      description: Plugin setting ID or UUID
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        description: Plugin setting ID or UUID
+        required: true
+        schema:
+          type: string
     get:
       summary: Get the data of a plugin setting
       tags:
-      - Plugin Settings
+        - Plugin Settings
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -767,10 +767,10 @@ paths:
     post:
       summary: Update data for a plugin setting
       tags:
-      - Plugin Settings
+        - Plugin Settings
       security:
-      - bearer_auth: []
-      parameters: []
+        - bearer_auth: [ ]
+      parameters: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -805,24 +805,24 @@ paths:
             schema:
               type: object
               properties:
-                merge_variables: {}
+                merge_variables: { }
               required:
-              - merge_variables
+                - merge_variables
               additionalProperties: false
         required: true
         description: The value of `merge_variables` must be a JSON object
   "/api/plugin_settings/{id}/image":
     parameters:
-    - name: id
-      in: path
-      description: Plugin setting UUID
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        description: Plugin setting UUID
+        required: true
+        schema:
+          type: string
     post:
       summary: Upload an image for a webhook_image plugin
       tags:
-      - Plugin Settings
+        - Plugin Settings
       responses:
         '200':
           description: Full-color image on a color device
@@ -846,22 +846,22 @@ paths:
     get:
       summary: Read markup for a size
       tags:
-      - Plugin Settings - Markup
+        - Plugin Settings - Markup
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       parameters:
-      - name: plugin_setting_id
-        in: path
-        required: true
-        description: Plugin setting UUID
-        schema:
-          type: string
-      - name: size
-        in: path
-        required: true
-        description: Markup size (e.g. markup_full)
-        schema:
-          type: string
+        - name: plugin_setting_id
+          in: path
+          required: true
+          description: Plugin setting UUID
+          schema:
+            type: string
+        - name: size
+          in: path
+          required: true
+          description: Markup size (e.g. markup_full)
+          schema:
+            type: string
       responses:
         '401':
           description: Unauthorized
@@ -878,22 +878,22 @@ paths:
     put:
       summary: Write markup for a size
       tags:
-      - Plugin Settings - Markup
+        - Plugin Settings - Markup
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       parameters:
-      - name: plugin_setting_id
-        in: path
-        required: true
-        description: Plugin setting UUID
-        schema:
-          type: string
-      - name: size
-        in: path
-        required: true
-        description: Markup size (e.g. markup_full)
-        schema:
-          type: string
+        - name: plugin_setting_id
+          in: path
+          required: true
+          description: Plugin setting UUID
+          schema:
+            type: string
+        - name: size
+          in: path
+          required: true
+          description: Markup size (e.g. markup_full)
+          schema:
+            type: string
       responses:
         '401':
           description: Unauthorized
@@ -914,22 +914,22 @@ paths:
                 content:
                   type: string
               required:
-              - content
+                - content
         required: true
   "/api/plugin_settings/{plugin_setting_id}/settings":
     patch:
       summary: Update plugin settings fields
       tags:
-      - Plugin Settings - Settings
+        - Plugin Settings - Settings
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       parameters:
-      - name: plugin_setting_id
-        in: path
-        required: true
-        description: Plugin setting UUID
-        schema:
-          type: string
+        - name: plugin_setting_id
+          in: path
+          required: true
+          description: Plugin setting UUID
+          schema:
+            type: string
       responses:
         '401':
           description: Unauthorized
@@ -952,22 +952,22 @@ paths:
                 fields:
                   type: object
               required:
-              - fields
+                - fields
         required: true
   "/api/plugin_settings":
     get:
       summary: List my plugin settings
       tags:
-      - Plugin Settings
+        - Plugin Settings
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       parameters:
-      - name: plugin_id
-        in: query
-        required: false
-        description: ID of a plugin or "calendars" to filter calendar plugins
-        schema:
-          type: string
+        - name: plugin_id
+          in: query
+          required: false
+          description: ID of a plugin or "calendars" to filter calendar plugins
+          schema:
+            type: string
       responses:
         '401':
           description: Unauthorized
@@ -989,10 +989,10 @@ paths:
     post:
       summary: Create a new plugin setting
       tags:
-      - Plugin Settings
+        - Plugin Settings
       security:
-      - bearer_auth: []
-      parameters: []
+        - bearer_auth: [ ]
+      parameters: [ ]
       responses:
         '401':
           description: Unauthorized
@@ -1025,16 +1025,16 @@ paths:
     get:
       summary: Get plugin setting details
       tags:
-      - Plugin Settings
+        - Plugin Settings
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       parameters:
-      - name: id
-        in: path
-        required: true
-        description: Plugin setting UUID
-        schema:
-          type: string
+        - name: id
+          in: path
+          required: true
+          description: Plugin setting UUID
+          schema:
+            type: string
       responses:
         '401':
           description: Unauthorized
@@ -1050,16 +1050,16 @@ paths:
     delete:
       summary: Delete a plugin setting
       tags:
-      - Plugin Settings
+        - Plugin Settings
       security:
-      - bearer_auth: []
+        - bearer_auth: [ ]
       parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID of the plugin setting to delete
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          description: ID of the plugin setting to delete
+          schema:
+            type: integer
       responses:
         '401':
           description: Unauthorized
@@ -1076,10 +1076,10 @@ paths:
               schema:
                 "$ref": "#/components/schemas/Error"
 servers:
-- url: https://{defaultHost}
-  variables:
-    defaultHost:
-      default: trmnl.com
+  - url: https://{defaultHost}
+    variables:
+      defaultHost:
+        default: trmnl.com
 components:
   securitySchemes:
     bearer_auth:
@@ -1210,26 +1210,26 @@ components:
           example: trmnl
           description: Device kind (e.g., trmnl, kindle, byod)
           enum:
-          - trmnl
-          - kindle
-          - byod
-          - tidbyt
+            - trmnl
+            - kindle
+            - byod
+            - tidbyt
         palette_ids:
           type: array
           items:
             type: string
           example:
-          - bw
-          - gray-4
-          - gray-16
+            - bw
+            - gray-4
+            - gray-16
           description: Supported color palette IDs
         preview_white_point:
           type: string
           example: true_white
           description: Preview white point mode for color previews
           enum:
-          - true_white
-          - limited
+            - true_white
+            - limited
         image_size_limit:
           type: integer
           nullable: true
@@ -1265,8 +1265,8 @@ components:
                 items:
                   type: string
                 example:
-                - "--screen-w"
-                - 800px
+                  - "--screen-w"
+                  - 800px
     Palette:
       type: object
       additionalProperties: false
@@ -1292,12 +1292,12 @@ components:
           items:
             type: string
           example:
-          - "#FF0000"
-          - "#00FF00"
-          - "#0000FF"
-          - "#FFFF00"
-          - "#000000"
-          - "#FFFFFF"
+            - "#FF0000"
+            - "#00FF00"
+            - "#0000FF"
+            - "#FFFF00"
+            - "#000000"
+            - "#FFFFFF"
           description: Array of hex color codes (null for grayscale palettes)
         framework_class:
           type: string
@@ -1321,8 +1321,8 @@ components:
           type: string
           example: configured
           enum:
-          - configured
-          - needs_configuration
+            - configured
+            - needs_configuration
         device_id:
           type: integer
           example: 1
