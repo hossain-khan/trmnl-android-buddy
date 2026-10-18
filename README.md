@@ -28,10 +28,6 @@ An Android app built with:
 - 🎨 [Jetpack Compose](https://developer.android.com/jetpack/compose) for UI
 - 📱 Material Design 3 with 🌈 Material You!
 
-## AI Automation 🤖
-
-This repository uses [JetBrains Junie](https://github.com/JetBrains/junie-github-action) powered by OpenRouter for automated PR code reviews and interactive issue/PR assistance. See [`docs/JUNIE_AUTOMATION.md`](docs/JUNIE_AUTOMATION.md) for full setup and usage details.
-
 ### 📸 Screenshots
 
 <table>
@@ -52,3 +48,7 @@ This repository uses [JetBrains Junie](https://github.com/JetBrains/junie-github
     <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_224736.png" alt="App Settings" width="250"/></td>
   </tr>
 </table>
+
+## AI Automation 🤖
+
+This repository uses [JetBrains Junie](https://github.com/JetBrains/junie-github-action) powered by OpenRouter for automated PR code reviews and interactive issue/PR assistance. See [`docs/JUNIE_AUTOMATION.md`](docs/JUNIE_AUTOMATION.md) for full setup and usage details.
