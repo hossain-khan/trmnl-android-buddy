@@ -504,6 +504,13 @@ suspend fun fetchDevices(): Result<List<Device>> {
 - **Do NOT create summary markdown files** (like `FEATURE_SUMMARY.md`, `SCREENS_IMPLEMENTATION.md`, etc.) for features or bug fixes
 - Keep documentation in existing files like README.md, CHANGELOG.md, or inline code comments
 
+### JetBrains Junie GitHub Action
+The repository integrates [JetBrains Junie](https://github.com/JetBrains/junie-github-action) with OpenRouter BYOK for automated code reviews and `@junie-agent` interactive tasks.
+- Details & usage: See [`docs/JUNIE_AUTOMATION.md`](../docs/JUNIE_AUTOMATION.md)
+- Workflows: `.github/workflows/junie.yml` (interactive agent) and `.github/workflows/junie-code-review.yml` (PR code review)
+- Guidelines: `.junie/guidelines.md` symlinked to `.github/copilot-instructions.md`
+- Important: Junie model identifiers must omit the provider prefix (e.g. use `claude-sonnet-5-5`, not `anthropic/claude-sonnet-5.5`).
+
 ### GitHub Operations
 
 **ALWAYS use GitHub MCP tools for GitHub operations:**
