@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **JetBrains Junie GitHub Actions automation**: Integrated JetBrains Junie (`@junie-agent`) for automated PR code reviews and interactive issue/PR assistance powered by OpenRouter BYOK.
+  - Interactive agent workflow (`.github/workflows/junie.yml`) with trusted-user authorization (`OWNER`, `MEMBER`, `COLLABORATOR`).
+  - Automated code review workflow (`.github/workflows/junie-code-review.yml`) on non-draft pull requests targeting `main`.
+  - Guidelines symlink (`.junie/guidelines.md`) and agent guidelines symlink (`AGENTS.md`) linking to `.github/copilot-instructions.md`.
+  - Comprehensive documentation in `docs/JUNIE_AUTOMATION.md`.
+
 ## [2.18.1] - 2026-08-17
 
 ### Added

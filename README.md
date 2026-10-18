@@ -28,7 +28,6 @@ An Android app built with:
 - 🎨 [Jetpack Compose](https://developer.android.com/jetpack/compose) for UI
 - 📱 Material Design 3 with 🌈 Material You!
 
-
 ### 📸 Screenshots
 
 <table>
@@ -49,3 +48,4 @@ An Android app built with:
     <td><img src="project-resources/screenshots/v2.1.0-pixel-6pro/Screenshot_20251025_224736.png" alt="App Settings" width="250"/></td>
   </tr>
 </table>
+
