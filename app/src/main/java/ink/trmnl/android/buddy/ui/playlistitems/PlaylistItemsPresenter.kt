@@ -17,6 +17,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.data.PlaylistItemsRepository
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
+import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
 import timber.log.Timber
 
 /**
@@ -141,6 +142,14 @@ class PlaylistItemsPresenter
                         is PlaylistItemsScreen.Event.ToggleItemVisibility -> {
                             // Trigger visibility toggle via state change
                             toggleRequest = event.itemId to event.newVisibility
+                        }
+                        PlaylistItemsScreen.Event.AddRecipeClicked -> {
+                            navigator.goTo(
+                                RecipesCatalogScreen(
+                                    targetDeviceId = screen.deviceId,
+                                    targetDeviceName = screen.deviceName,
+                                ),
+                            )
                         }
                     }
                 },

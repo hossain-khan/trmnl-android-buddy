@@ -9,6 +9,8 @@ import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
+import ink.trmnl.android.buddy.api.models.RecipeInstallRequest
+import ink.trmnl.android.buddy.api.models.RecipeInstallResponse
 import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
@@ -16,6 +18,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -442,6 +445,45 @@ interface TrmnlApiService {
     suspend fun getRecipe(
         @Path("id") id: Int,
     ): ApiResult<RecipeDetailResponse, ApiError>
+
+    /**
+     * Install a recipe into the authenticated user's account and add to a specific device playlist.
+     *
+     * Adds the recipe as a plugin setting in the user's account and joins the playlist of the
+     * specified [RecipeInstallRequest.deviceId].
+     *
+     * Requires authentication via Bearer token.
+     *
+     * @param id Recipe ID to install
+     * @param authorization Bearer token with format "Bearer user_xxxxxx"
+     * @param body Request body with mandatory device_id
+     * @return ApiResult containing [RecipeInstallResponse] or error
+     *
+     * Example usage:
+     * ```kotlin
+     * val request = RecipeInstallRequest(deviceId = 12345)
+     * when (val result = api.installRecipe(123, "Bearer user_abc123", request)) {
+     *     is ApiResult.Success -> {
+     *         val setting = result.value.data.pluginSetting
+     *         println("Installed plugin: ${setting?.name}")
+     *     }
+     *     is ApiResult.Failure.HttpFailure -> when (result.code) {
+     *         401 -> println("Unauthorized")
+     *         404 -> println("Recipe not found")
+     *         else -> println("HTTP error: ${result.code}")
+     *     }
+     *     is ApiResult.Failure.NetworkFailure -> println("Network error")
+     *     is ApiResult.Failure.ApiFailure -> println("API error: ${result.error}")
+     *     is ApiResult.Failure.UnknownFailure -> println("Unknown error")
+     * }
+     * ```
+     */
+    @POST("recipes/{id}/installs")
+    suspend fun installRecipe(
+        @Path("id") id: Int,
+        @Header("Authorization") authorization: String,
+        @Body body: RecipeInstallRequest,
+    ): ApiResult<RecipeInstallResponse, ApiError>
 
     /**
      * Get analytics data for recipes and plugins in the TRMNL catalog.

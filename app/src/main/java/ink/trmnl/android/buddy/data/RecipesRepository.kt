@@ -4,16 +4,18 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import ink.trmnl.android.buddy.api.TrmnlApiService
+import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.api.models.Recipe
+import ink.trmnl.android.buddy.api.models.RecipeInstallData
+import ink.trmnl.android.buddy.api.models.RecipeInstallRequest
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.util.toResult
 import ink.trmnl.android.buddy.api.util.toResultDirect
+import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import kotlinx.coroutines.flow.first
 
 /**
  * Repository interface for TRMNL recipe catalog operations.
- *
- * **Note**: Recipe endpoints are public and do NOT require authentication.
- * The API is in alpha testing and may be moved in a future update.
  */
 interface RecipesRepository {
     /**
@@ -46,14 +48,28 @@ interface RecipesRepository {
      * Returns a list of valid category identifiers that can be used for filtering
      * recipes and improving search exposure. This endpoint does not require authentication.
      *
-     * Categories include: analytics, art, calendar, comics, crm, custom, discovery,
-     * ecommerce, education, email, entertainment, environment, finance, games, humor,
-     * images, kpi, life, marketing, nature, news, personal, productivity, programming,
-     * sales, sports, and travel.
-     *
      * @return Result containing list of category strings or error
      */
     suspend fun getCategories(): Result<List<String>>
+
+    /**
+     * Install a recipe into the user's account and assign it to a specific device's playlist.
+     *
+     * @param id Recipe ID to install
+     * @param deviceId ID of the TRMNL device whose playlist the installed recipe joins
+     * @return Result containing [RecipeInstallData] or error
+     */
+    suspend fun installRecipe(
+        id: Int,
+        deviceId: Int,
+    ): Result<RecipeInstallData>
+
+    /**
+     * Get user's registered TRMNL devices for destination selection during install.
+     *
+     * @return Result containing list of devices or error
+     */
+    suspend fun getUserDevices(): Result<List<Device>>
 }
 
 /**
@@ -63,6 +79,7 @@ interface RecipesRepository {
 @ContributesBinding(AppScope::class)
 class RecipesRepositoryImpl(
     private val apiService: TrmnlApiService,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) : RecipesRepository {
     override suspend fun getRecipes(
         search: String?,
@@ -83,4 +100,35 @@ class RecipesRepositoryImpl(
         apiService
             .getCategories()
             .toResult("Failed to fetch categories") { it.data }
+
+    override suspend fun installRecipe(
+        id: Int,
+        deviceId: Int,
+    ): Result<RecipeInstallData> {
+        val token =
+            userPreferencesRepository.userPreferencesFlow.first().apiToken
+                ?: return Result.failure(
+                    IllegalStateException("No API key configured. Please set up your TRMNL API key first."),
+                )
+
+        val request = RecipeInstallRequest(deviceId = deviceId)
+        return apiService
+            .installRecipe(
+                id = id,
+                authorization = "Bearer $token",
+                body = request,
+            ).toResult("Failed to install recipe $id") { it.data }
+    }
+
+    override suspend fun getUserDevices(): Result<List<Device>> {
+        val token =
+            userPreferencesRepository.userPreferencesFlow.first().apiToken
+                ?: return Result.failure(
+                    IllegalStateException("No API key configured. Please set up your TRMNL API key first."),
+                )
+
+        return apiService
+            .getDevices("Bearer $token")
+            .toResult("Failed to fetch user devices") { it.data }
+    }
 }

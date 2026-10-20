@@ -15,6 +15,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
+import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.data.BookmarkRepository
 import ink.trmnl.android.buddy.data.RecipesRepository
@@ -41,6 +42,7 @@ private const val DEFAULT_PER_PAGE = 25
  * - Search with debouncing (500ms delay)
  * - Sort by 5 different options
  * - Pagination with load more functionality
+ * - In-app recipe installation targeting specific devices
  * - Error handling and retry
  */
 @Inject
@@ -48,6 +50,7 @@ class RecipesCatalogPresenter(
     @Assisted private val navigator: Navigator,
     private val recipesRepository: RecipesRepository,
     private val bookmarkRepository: BookmarkRepository,
+    @Assisted private val screen: RecipesCatalogScreen = RecipesCatalogScreen(),
 ) : Presenter<RecipesCatalogScreen.State> {
     @Composable
     override fun present(): RecipesCatalogScreen.State {
@@ -64,6 +67,11 @@ class RecipesCatalogPresenter(
         var hasMorePages by remember { mutableStateOf(false) }
         var totalRecipes by remember { mutableStateOf(0) }
         var selectedRecipeForDetails by remember { mutableStateOf<Recipe?>(null) }
+        var availableDevices by remember { mutableStateOf<List<Device>>(emptyList()) }
+        var showDevicePickerForRecipe by remember { mutableStateOf<Recipe?>(null) }
+        var isInstallingRecipe by remember { mutableStateOf(false) }
+        var installSuccessMessage by remember { mutableStateOf<String?>(null) }
+        var installErrorMessage by remember { mutableStateOf<String?>(null) }
 
         // Collect bookmarked recipe IDs as state
         val bookmarkedRecipeIds by bookmarkRepository
@@ -72,6 +80,33 @@ class RecipesCatalogPresenter(
 
         val coroutineScope = rememberCoroutineScope()
         var searchJob by remember { mutableStateOf<Job?>(null) }
+
+        // Helper to perform recipe installation onto target device
+        fun performInstall(
+            recipe: Recipe,
+            targetDeviceId: Int,
+            targetDeviceName: String,
+        ) {
+            if (isInstallingRecipe) return
+            coroutineScope.launch {
+                isInstallingRecipe = true
+                installErrorMessage = null
+                val result = recipesRepository.installRecipe(id = recipe.id, deviceId = targetDeviceId)
+                isInstallingRecipe = false
+                result.fold(
+                    onSuccess = { installData ->
+                        val pluginName = installData.pluginSetting?.name ?: recipe.name
+                        installSuccessMessage = "Successfully installed \"$pluginName\" to $targetDeviceName!"
+                        selectedRecipeForDetails = null
+                        showDevicePickerForRecipe = null
+                    },
+                    onFailure = { exception ->
+                        Timber.e(exception, "Failed to install recipe: ${recipe.name}")
+                        installErrorMessage = exception.message ?: "Failed to install recipe."
+                    },
+                )
+            }
+        }
 
         // Apply client-side category filtering to recipes
         val filteredRecipes =
@@ -89,6 +124,18 @@ class RecipesCatalogPresenter(
                 onFailure = { exception ->
                     Timber.e(exception, "Failed to fetch categories")
                     // Continue without categories - non-blocking error
+                },
+            )
+        }
+
+        // Load available devices for recipe installation
+        LaunchedEffect(Unit) {
+            recipesRepository.getUserDevices().fold(
+                onSuccess = { devices ->
+                    availableDevices = devices
+                },
+                onFailure = { exception ->
+                    Timber.e(exception, "Failed to fetch user devices for recipe installation")
                 },
             )
         }
@@ -122,6 +169,13 @@ class RecipesCatalogPresenter(
             hasMorePages = hasMorePages,
             totalRecipes = totalRecipes,
             selectedRecipeForDetails = selectedRecipeForDetails,
+            targetDeviceId = screen.targetDeviceId,
+            targetDeviceName = screen.targetDeviceName,
+            availableDevices = availableDevices,
+            showDevicePickerForRecipe = showDevicePickerForRecipe,
+            isInstallingRecipe = isInstallingRecipe,
+            installSuccessMessage = installSuccessMessage,
+            installErrorMessage = installErrorMessage,
         ) { event ->
             when (event) {
                 RecipesCatalogScreen.Event.BackClicked -> {
@@ -205,6 +259,7 @@ class RecipesCatalogPresenter(
                 RecipesCatalogScreen.Event.DismissRecipeDetails -> {
                     // Dismiss recipe details bottom sheet
                     selectedRecipeForDetails = null
+                    installErrorMessage = null
                 }
 
                 is RecipesCatalogScreen.Event.BookmarkClicked -> {
@@ -282,6 +337,44 @@ class RecipesCatalogPresenter(
                     // Toggle filter visibility
                     showFilters = !showFilters
                 }
+
+                is RecipesCatalogScreen.Event.InstallRecipeClicked -> {
+                    val targetDeviceId = screen.targetDeviceId
+                    if (targetDeviceId != null) {
+                        val targetDeviceName =
+                            screen.targetDeviceName
+                                ?: availableDevices.firstOrNull { it.id == targetDeviceId }?.name
+                                ?: "Device $targetDeviceId"
+                        performInstall(event.recipe, targetDeviceId, targetDeviceName)
+                    } else {
+                        when {
+                            availableDevices.size == 1 -> {
+                                val singleDevice = availableDevices.first()
+                                performInstall(event.recipe, singleDevice.id, singleDevice.name)
+                            }
+                            availableDevices.size > 1 -> {
+                                showDevicePickerForRecipe = event.recipe
+                            }
+                            else -> {
+                                installErrorMessage = "No TRMNL devices found on your account. Please link a device first."
+                            }
+                        }
+                    }
+                }
+
+                is RecipesCatalogScreen.Event.DeviceSelectedForInstall -> {
+                    showDevicePickerForRecipe = null
+                    performInstall(event.recipe, event.device.id, event.device.name)
+                }
+
+                RecipesCatalogScreen.Event.DismissDevicePicker -> {
+                    showDevicePickerForRecipe = null
+                }
+
+                RecipesCatalogScreen.Event.DismissInstallMessage -> {
+                    installSuccessMessage = null
+                    installErrorMessage = null
+                }
             }
         }
     }
@@ -319,7 +412,10 @@ class RecipesCatalogPresenter(
     @CircuitInject(RecipesCatalogScreen::class, AppScope::class)
     @AssistedFactory
     interface Factory {
-        fun create(navigator: Navigator): RecipesCatalogPresenter
+        fun create(
+            screen: RecipesCatalogScreen,
+            navigator: Navigator,
+        ): RecipesCatalogPresenter
     }
 }
 

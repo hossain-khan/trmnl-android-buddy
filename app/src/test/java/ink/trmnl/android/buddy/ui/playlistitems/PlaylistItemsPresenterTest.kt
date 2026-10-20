@@ -12,6 +12,7 @@ import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import ink.trmnl.android.buddy.fakes.FakePlaylistItemsRepository
+import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -501,6 +502,29 @@ class PlaylistItemsPresenterTest {
                 } while (state.errorMessage == null)
 
                 assertThat(state.errorMessage).isEqualTo("Failed to toggle visibility: $updateError")
+            }
+        }
+
+    @Test
+    fun `add recipe clicked navigates to recipes catalog with device id and name`() =
+        runTest {
+            // Given
+            val repository = FakePlaylistItemsRepository()
+            val screen = PlaylistItemsScreen(deviceId = 42, deviceName = "Hallway Screen")
+            val navigator = FakeNavigator(screen)
+            val presenter = createPresenter(screen = screen, navigator = navigator, repository = repository)
+
+            // When/Then
+            presenter.test {
+                val state = awaitItem()
+                state.eventSink(PlaylistItemsScreen.Event.AddRecipeClicked)
+
+                val navigatedScreen = navigator.awaitNextScreen()
+                assertThat(navigatedScreen).isEqualTo(
+                    RecipesCatalogScreen(targetDeviceId = 42, targetDeviceName = "Hallway Screen"),
+                )
+
+                cancelAndIgnoreRemainingEvents()
             }
         }
 

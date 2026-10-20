@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.ui.recipescatalog
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.api.models.Recipe
 import kotlinx.parcelize.Parcelize
 
@@ -12,10 +13,14 @@ import kotlinx.parcelize.Parcelize
  * This screen allows users to browse, search, and discover community recipes
  * that can be installed on TRMNL devices.
  *
- * **Note**: The recipes API is in alpha testing and may be moved in a future update.
+ * @property targetDeviceId Optional pre-selected device ID if opened from a specific device view
+ * @property targetDeviceName Optional pre-selected device name for display in install prompts
  */
 @Parcelize
-data object RecipesCatalogScreen : Screen {
+data class RecipesCatalogScreen(
+    val targetDeviceId: Int? = null,
+    val targetDeviceName: String? = null,
+) : Screen {
     /**
      * UI state for the Recipes Catalog Screen.
      *
@@ -32,6 +37,13 @@ data object RecipesCatalogScreen : Screen {
      * @property hasMorePages True if more pages are available
      * @property totalRecipes Total number of recipes matching the query
      * @property selectedRecipeForDetails Recipe selected to show in detail bottom sheet, or null
+     * @property targetDeviceId Optional pre-selected device ID
+     * @property targetDeviceName Optional pre-selected device name
+     * @property availableDevices User's registered TRMNL displays available for installation
+     * @property showDevicePickerForRecipe Recipe waiting for user device selection, or null
+     * @property isInstallingRecipe True while install API call is in flight
+     * @property installSuccessMessage Confirmation message to display in snackbar upon success
+     * @property installErrorMessage Error message to display in snackbar upon installation failure
      * @property eventSink Handler for UI events
      */
     data class State(
@@ -49,6 +61,13 @@ data object RecipesCatalogScreen : Screen {
         val hasMorePages: Boolean = false,
         val totalRecipes: Int = 0,
         val selectedRecipeForDetails: Recipe? = null,
+        val targetDeviceId: Int? = null,
+        val targetDeviceName: String? = null,
+        val availableDevices: List<Device> = emptyList(),
+        val showDevicePickerForRecipe: Recipe? = null,
+        val isInstallingRecipe: Boolean = false,
+        val installSuccessMessage: String? = null,
+        val installErrorMessage: String? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -154,6 +173,36 @@ data object RecipesCatalogScreen : Screen {
          * User dismissed the recipe detail bottom sheet.
          */
         data object DismissRecipeDetails : Event
+
+        /**
+         * User clicked the install button for a recipe.
+         *
+         * @property recipe The recipe to install
+         */
+        data class InstallRecipeClicked(
+            val recipe: Recipe,
+        ) : Event
+
+        /**
+         * User selected a specific destination device from the device picker dialog.
+         *
+         * @property recipe The recipe being installed
+         * @property device The selected target device
+         */
+        data class DeviceSelectedForInstall(
+            val recipe: Recipe,
+            val device: Device,
+        ) : Event
+
+        /**
+         * User dismissed the device picker dialog without selecting a device.
+         */
+        data object DismissDevicePicker : Event
+
+        /**
+         * User dismissed or snackbar timed out for install success/error message.
+         */
+        data object DismissInstallMessage : Event
     }
 }
 

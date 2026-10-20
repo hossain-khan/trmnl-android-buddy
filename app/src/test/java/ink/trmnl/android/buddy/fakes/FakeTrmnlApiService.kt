@@ -10,6 +10,8 @@ import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
+import ink.trmnl.android.buddy.api.models.RecipeInstallRequest
+import ink.trmnl.android.buddy.api.models.RecipeInstallResponse
 import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
@@ -36,9 +38,13 @@ class FakeTrmnlApiService : TrmnlApiService {
     var getDisplayResult: ApiResult<Display, ApiError>? = null
     var getPlaylistItemsResult: ApiResult<PlaylistItemsResponse, ApiError>? = null
     var getRecipesAnalyticsResult: ApiResult<RecipesAnalyticsResponse, ApiError>? = null
+    var installRecipeResult: ApiResult<RecipeInstallResponse, ApiError>? = null
 
     var lastAuthorizationHeader: String? = null
     var getDevicesCallCount = 0
+    var installRecipeCallCount = 0
+    var lastInstallRecipeId: Int? = null
+    var lastInstallRecipeRequest: RecipeInstallRequest? = null
 
     override suspend fun getDevices(authorization: String): ApiResult<DevicesResponse, ApiError> {
         lastAuthorizationHeader = authorization
@@ -109,6 +115,18 @@ class FakeTrmnlApiService : TrmnlApiService {
         updatePlaylistItemVisibilityCallCount++
         updatePlaylistItemVisibilityException?.let { throw it }
         return updatePlaylistItemVisibilityResult ?: throw NotImplementedError("updatePlaylistItemVisibilityResult not set")
+    }
+
+    override suspend fun installRecipe(
+        id: Int,
+        authorization: String,
+        request: RecipeInstallRequest,
+    ): ApiResult<RecipeInstallResponse, ApiError> {
+        lastAuthorizationHeader = authorization
+        lastInstallRecipeId = id
+        lastInstallRecipeRequest = request
+        installRecipeCallCount++
+        return installRecipeResult ?: throw NotImplementedError("installRecipeResult not set")
     }
 
     override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =

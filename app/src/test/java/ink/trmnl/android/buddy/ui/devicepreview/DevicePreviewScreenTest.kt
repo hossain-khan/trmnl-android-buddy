@@ -13,6 +13,8 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.Display
+import ink.trmnl.android.buddy.api.models.RecipeInstallRequest
+import ink.trmnl.android.buddy.api.models.RecipeInstallResponse
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -631,4 +633,10 @@ private class FakeApiService(
     ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
     override suspend fun getRecipesAnalytics(authorization: String) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
+
+    override suspend fun installRecipe(
+        id: Int,
+        authorization: String,
+        body: RecipeInstallRequest,
+    ): ApiResult<RecipeInstallResponse, ApiError> = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 }

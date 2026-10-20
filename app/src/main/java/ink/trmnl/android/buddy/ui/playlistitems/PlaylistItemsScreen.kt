@@ -67,5 +67,10 @@ data class PlaylistItemsScreen(
             val itemId: Int,
             val newVisibility: Boolean,
         ) : Event
+
+        /**
+         * User clicked add recipe to browse recipes for this device.
+         */
+        data object AddRecipeClicked : Event
     }
 }
