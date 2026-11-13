@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -123,8 +124,6 @@ fun AccessTokenContent(
                 visible = state.isLegacyToken,
                 isLoading = state.isLoading,
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             SaveTokenButton(
                 isLoading = state.isLoading,
@@ -378,9 +377,10 @@ private fun LegacyTokenWarningCard(
             modifier = Modifier.fillMaxWidth(),
             colors =
                 CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
             shape = RoundedCornerShape(12.dp),
         ) {
             Column(
@@ -397,7 +397,7 @@ private fun LegacyTokenWarningCard(
                     Icon(
                         painter = painterResource(R.drawable.warning_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                     Text(
                         text = "Legacy API Key Detected",
