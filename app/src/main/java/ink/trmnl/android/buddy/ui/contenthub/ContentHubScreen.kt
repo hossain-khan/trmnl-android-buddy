@@ -487,8 +487,6 @@ private fun ContentHubContentPreview(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    // For debug only - the tab screens are overridden here
-                    .background(Color.Red.copy(alpha = 0.1f))
                     .padding(innerPadding),
             contentAlignment = Alignment.Center,
         ) {

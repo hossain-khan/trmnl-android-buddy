@@ -103,7 +103,7 @@ fun WelcomeContent(
                     painter = painterResource(id = R.drawable.trmnl_logo_plain),
                     contentDescription = "TRMNL Buddy Logo",
                     modifier = Modifier.size(120.dp),
-                    colorFilter = ColorFilter.tint(Color(colorResource(id = R.color.trmnl_orange).value)),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
