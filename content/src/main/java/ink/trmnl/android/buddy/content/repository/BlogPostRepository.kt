@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.content.repository
 import com.prof18.rssparser.RssParser
 import ink.trmnl.android.buddy.content.db.BlogPostDao
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
@@ -107,6 +108,8 @@ open class BlogPostRepository(
                                     ZonedDateTime
                                         .parse(pubDate, DateTimeFormatter.ISO_DATE_TIME)
                                         .toInstant()
+                                } catch (e: CancellationException) {
+                                    throw e
                                 } catch (e: Exception) {
                                     null
                                 }
@@ -145,6 +148,8 @@ open class BlogPostRepository(
                             imageUrls = imageUrls,
                             fetchedAt = Instant.now(),
                         )
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         null
                     }
@@ -164,6 +169,8 @@ open class BlogPostRepository(
             Timber.d("BlogPostRepository: Inserted ${blogPosts.size} posts, updated summaries for $updatedCount posts")
 
             Result.success(Unit)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Result.failure(e)
         }

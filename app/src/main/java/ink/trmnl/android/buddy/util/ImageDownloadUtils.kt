@@ -11,6 +11,7 @@ import coil3.asImage
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.toBitmap
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -57,6 +58,8 @@ object ImageDownloadUtils {
                 val bitmap =
                     try {
                         result.image.toBitmap()
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         Timber.e(e, "Failed to convert image to bitmap")
                         return@withContext Result.failure(Exception("Could not convert image to bitmap: ${e.message}"))
@@ -76,6 +79,8 @@ object ImageDownloadUtils {
                 } else {
                     Result.failure(Exception("Failed to save image to media store"))
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "Error downloading image")
                 Result.failure(e)

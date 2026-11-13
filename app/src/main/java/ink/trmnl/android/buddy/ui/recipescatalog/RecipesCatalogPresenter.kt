@@ -18,6 +18,7 @@ import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.data.BookmarkRepository
 import ink.trmnl.android.buddy.data.RecipesRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -212,6 +213,8 @@ class RecipesCatalogPresenter(
                         try {
                             bookmarkRepository.toggleBookmark(event.recipe)
                             Timber.d("Bookmark toggled for recipe: ${event.recipe.name} (ID: ${event.recipe.id})")
+                        } catch (e: CancellationException) {
+                            throw e
                         } catch (e: Exception) {
                             Timber.e(
                                 e,

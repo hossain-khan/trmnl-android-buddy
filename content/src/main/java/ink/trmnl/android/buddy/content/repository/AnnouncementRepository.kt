@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.content.repository
 import com.prof18.rssparser.RssParser
 import ink.trmnl.android.buddy.content.db.AnnouncementDao
 import ink.trmnl.android.buddy.content.db.AnnouncementEntity
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -102,6 +103,8 @@ open class AnnouncementRepository
 
                     announcementDao.insertAll(announcements)
                     Result.success(Unit)
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     Result.failure(e)
                 }

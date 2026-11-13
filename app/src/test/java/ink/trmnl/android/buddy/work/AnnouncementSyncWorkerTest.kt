@@ -6,6 +6,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import androidx.work.testing.TestListenableWorkerBuilder
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
@@ -15,6 +16,7 @@ import ink.trmnl.android.buddy.content.db.FakeAnnouncementDao
 import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -251,6 +253,19 @@ class AnnouncementSyncWorkerTest {
 
             // Then: Retry returned
             assertThat(result).isInstanceOf(ListenableWorker.Result.Retry::class.java)
+        }
+
+    @Test
+    fun `cancellation exception during sync is rethrown`() =
+        runTest {
+            // Given: Repository throws CancellationException
+            fakeAnnouncementRepository.setExceptionToThrow(CancellationException("Cancelled"))
+
+            // When/Then: Worker rethrows CancellationException instead of returning retry
+            val worker = createWorker()
+            assertFailure {
+                worker.doWork()
+            }.isInstanceOf(CancellationException::class.java)
         }
 
     @Test
@@ -598,6 +613,7 @@ private class FakeAnnouncementRepository(
 ) {
     private var feedResponse: Result<List<AnnouncementEntity>> = Result.success(emptyList())
     private var shouldThrow: Boolean = false
+    private var exceptionToThrow: Exception? = null
 
     /**
      * Set the response that refreshAnnouncements() should return.
@@ -614,6 +630,13 @@ private class FakeAnnouncementRepository(
     }
 
     /**
+     * Set a specific exception to throw during refreshAnnouncements().
+     */
+    fun setExceptionToThrow(exception: Exception?) {
+        this.exceptionToThrow = exception
+    }
+
+    /**
      * Get unread count from the DAO.
      */
     fun getUnreadCount(): Flow<Int> = announcementDao.getUnreadCount()
@@ -622,6 +645,7 @@ private class FakeAnnouncementRepository(
      * Simulate RSS feed refresh with controllable behavior.
      */
     suspend fun refreshAnnouncements(): Result<Unit> {
+        exceptionToThrow?.let { throw it }
         if (shouldThrow) {
             throw RuntimeException("Test exception")
         }

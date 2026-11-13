@@ -15,6 +15,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 /**
@@ -69,6 +70,8 @@ class AccessTokenPresenter
 
                                         // Navigate to devices list screen (resetRoot to prevent back navigation)
                                         navigator.resetRoot(TrmnlDevicesScreen)
+                                    } catch (e: CancellationException) {
+                                        throw e
                                     } catch (e: Exception) {
                                         errorMessage = "Failed to save token: ${e.message}"
                                     } finally {

@@ -17,6 +17,7 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.di.AppWorkerFactory
 import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
 import ink.trmnl.android.buddy.di.WorkerKey
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
@@ -131,6 +132,8 @@ class BatteryCollectionWorker(
                     return Result.failure()
                 }
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             val executionTime = System.currentTimeMillis() - startTime
             Timber.e(e, "[$WORK_NAME] Error collecting battery data (execution time: %d ms)", executionTime)
