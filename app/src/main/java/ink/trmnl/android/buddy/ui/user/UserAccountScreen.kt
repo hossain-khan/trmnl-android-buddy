@@ -440,7 +440,7 @@ private fun ErrorState(
                             "Your current API key doesn't have the Profile scope permission enabled, " +
                                 "so your account details cannot be loaded.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.92f),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.92f),
                     )
 
                     Text(
@@ -448,13 +448,13 @@ private fun ErrorState(
                             "To fix this, create a new API key at https://trmnl.com/account with " +
                                 "Profile checked under \"What it can do\", then update your key in the app.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
                     )
 
                     Text(
                         text = "Server response: $errorMessage",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.72f),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.72f),
                     )
 
                     Column(
