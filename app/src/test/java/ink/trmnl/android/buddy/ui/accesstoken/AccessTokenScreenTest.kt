@@ -41,6 +41,7 @@ class AccessTokenScreenTest {
                 assertThat(state.token).isEqualTo("")
                 assertThat(state.isLoading).isFalse()
                 assertThat(state.errorMessage).isNull()
+                assertThat(state.isLegacyToken).isFalse()
             }
         }
 
@@ -373,6 +374,54 @@ class AccessTokenScreenTest {
                 awaitItem() // final
 
                 assertThat(repository.savedToken).isEqualTo("token_value")
+            }
+        }
+
+    @Test
+    fun `legacy user_ token prefix sets isLegacyToken true and trmnl_ clears it`() =
+        runTest {
+            val navigator = FakeNavigator(AccessTokenScreen)
+            val repository = FakeUserPreferencesRepository()
+            val presenter = AccessTokenPresenter(navigator, repository)
+
+            presenter.test {
+                val initialState = awaitItem()
+                assertThat(initialState.isLegacyToken).isFalse()
+
+                // Entering legacy user_ token (even with leading spaces) flags isLegacyToken
+                initialState.eventSink(AccessTokenScreen.Event.TokenChanged("  user_abc123xyz"))
+                val legacyState = awaitItem()
+                assertThat(legacyState.isLegacyToken).isTrue()
+
+                // Replacing with capability-scoped trmnl_ token clears isLegacyToken
+                legacyState.eventSink(AccessTokenScreen.Event.TokenChanged("trmnl_abc123DEF456"))
+                val scopedState = awaitItem()
+                assertThat(scopedState.isLegacyToken).isFalse()
+            }
+        }
+
+    @Test
+    fun `legacy user_ token can still be saved when user continues`() =
+        runTest {
+            val navigator = FakeNavigator(AccessTokenScreen)
+            val repository = FakeUserPreferencesRepository()
+            val presenter = AccessTokenPresenter(navigator, repository)
+
+            presenter.test {
+                var state = awaitItem()
+
+                state.eventSink(AccessTokenScreen.Event.TokenChanged("user_legacy_123456"))
+                state = awaitItem()
+                assertThat(state.isLegacyToken).isTrue()
+
+                state.eventSink(AccessTokenScreen.Event.SaveClicked)
+                state = awaitItem() // loading
+                assertThat(state.isLoading).isTrue()
+
+                state = awaitItem() // final
+                assertThat(state.isLoading).isFalse()
+                assertThat(repository.savedToken).isEqualTo("user_legacy_123456")
+                assertThat(navigator.awaitResetRoot().newRoot).isEqualTo(TrmnlDevicesScreen)
             }
         }
 }

@@ -14,6 +14,7 @@ data object AccessTokenScreen : ParcelableScreen {
         val token: String = "",
         val isLoading: Boolean = false,
         val errorMessage: String? = null,
+        val isLegacyToken: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
