@@ -76,10 +76,12 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
+import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.util.formatRelativeDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -268,8 +270,10 @@ private fun BlogPostCard(
         interactionSource = interactionSource,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // Image carousel if images are available
-            val imageUrls = blogPost.imageUrls ?: blogPost.featuredImageUrl?.let { listOf(it) }
+            // Image carousel if images are available (normalize cached relative paths if needed)
+            val imageUrls =
+                (blogPost.imageUrls ?: blogPost.featuredImageUrl?.let { listOf(it) })
+                    ?.map(BlogPostRepository::normalizeImageUrl)
             if (!imageUrls.isNullOrEmpty()) {
                 ImageCarousel(
                     imageUrls = imageUrls,
@@ -426,8 +430,15 @@ private fun ImageCarousel(
                         CircularProgressIndicator(modifier = Modifier.size(32.dp))
                     }
                 },
+                onError = { errorState ->
+                    Timber.w(
+                        errorState.result.throwable,
+                        "Failed to load blog post image: %s",
+                        imageUrls[index],
+                    )
+                },
                 error = {
-                    // Silently fail - don't show error for images
+                    // Silently fail - don't show error UI for images
                 },
             )
 

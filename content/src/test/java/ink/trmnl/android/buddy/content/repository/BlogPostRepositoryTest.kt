@@ -249,6 +249,36 @@ class BlogPostRepositoryTest {
             assertThat(imageUrls).isNull()
         }
 
+    @Test
+    fun `test extractAllImages resolves relative image URLs against trmnl base URL`() =
+        runTest {
+            val htmlContent =
+                """
+                <div>
+                    <img src="/rails/active_storage/representations/proxy/abc/image1.png">
+                    <img src="//cdn.trmnl.com/image2.jpg">
+                    <img src="https://trmnl.com/image3.webp">
+                    <img src="assets/image4.png">
+                </div>
+                """.trimIndent()
+
+            val extractMethod =
+                BlogPostRepository::class.java.getDeclaredMethod(
+                    "extractAllImages",
+                    String::class.java,
+                )
+            extractMethod.isAccessible = true
+
+            val imageUrls = extractMethod.invoke(repository, htmlContent) as List<*>?
+
+            assertThat(imageUrls).isNotNull()
+            assertThat(imageUrls!!.size).isEqualTo(4)
+            assertThat(imageUrls[0]).isEqualTo("https://trmnl.com/rails/active_storage/representations/proxy/abc/image1.png")
+            assertThat(imageUrls[1]).isEqualTo("https://cdn.trmnl.com/image2.jpg")
+            assertThat(imageUrls[2]).isEqualTo("https://trmnl.com/image3.webp")
+            assertThat(imageUrls[3]).isEqualTo("https://trmnl.com/assets/image4.png")
+        }
+
     /**
      * Load the sample XML file from test resources.
      */

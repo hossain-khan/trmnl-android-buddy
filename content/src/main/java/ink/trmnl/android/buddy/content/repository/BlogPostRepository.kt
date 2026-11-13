@@ -25,7 +25,27 @@ open class BlogPostRepository(
     private val blogPostDao: BlogPostDao,
 ) {
     companion object {
-        private const val BLOG_POSTS_FEED_URL = "https://trmnl.com/feeds/posts.xml"
+        private const val BLOG_BASE_URL = "https://trmnl.com"
+        private const val BLOG_POSTS_FEED_URL = "$BLOG_BASE_URL/feeds/posts.xml"
+        private val IMG_SRC_REGEX = """<img[^>]+src\s*=\s*["']([^"']+)["']""".toRegex(RegexOption.IGNORE_CASE)
+
+        /**
+         * Resolves relative blog image URLs (such as `/rails/active_storage/...`) against [BLOG_BASE_URL]
+         * so image loaders like Coil can fetch them over HTTPS.
+         */
+        fun normalizeImageUrl(url: String): String {
+            val trimmed = url.trim()
+            return when {
+                trimmed.startsWith("http://", ignoreCase = true) ||
+                    trimmed.startsWith("https://", ignoreCase = true) -> trimmed
+
+                trimmed.startsWith("//") -> "https:$trimmed"
+
+                trimmed.startsWith("/") -> "$BLOG_BASE_URL$trimmed"
+
+                else -> "$BLOG_BASE_URL/$trimmed"
+            }
+        }
     }
 
     /**
@@ -185,9 +205,11 @@ open class BlogPostRepository(
     private fun extractFeaturedImage(content: String?): String? {
         if (content.isNullOrBlank()) return null
 
-        // Simple regex to find first img src
-        val imgRegex = """<img[^>]+src\s*=\s*["']([^"']+)["']""".toRegex(RegexOption.IGNORE_CASE)
-        return imgRegex.find(content)?.groupValues?.getOrNull(1)
+        return IMG_SRC_REGEX
+            .find(content)
+            ?.groupValues
+            ?.getOrNull(1)
+            ?.let(::normalizeImageUrl)
     }
 
     /**
@@ -200,9 +222,12 @@ open class BlogPostRepository(
     private fun extractAllImages(content: String?): List<String>? {
         if (content.isNullOrBlank()) return null
 
-        // Regex to find all img src attributes
-        val imgRegex = """<img[^>]+src\s*=\s*["']([^"']+)["']""".toRegex(RegexOption.IGNORE_CASE)
-        val imageUrls = imgRegex.findAll(content).mapNotNull { it.groupValues.getOrNull(1) }.toList()
+        val imageUrls =
+            IMG_SRC_REGEX
+                .findAll(content)
+                .mapNotNull { it.groupValues.getOrNull(1) }
+                .map(::normalizeImageUrl)
+                .toList()
 
         return imageUrls.takeIf { it.isNotEmpty() }
     }

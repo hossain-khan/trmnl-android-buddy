@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Blog post image loading for relative RSS image URLs**: Resolved root-relative and protocol-relative `<img src>` URLs (e.g. `/rails/active_storage/...`) against `https://trmnl.com` in `BlogPostRepository` and normalized cached URLs in `BlogPostsContent` so rotating blog post images load reliably.
 - **Replaced hardcoded UI colors with `MaterialTheme.colorScheme` tokens**:
   - Removed debug `Color.Red` background in `ContentHubScreen` placeholder preview.
   - Removed hardcoded `Color.Blue` default parameter from `htmlToAnnotatedString`.
