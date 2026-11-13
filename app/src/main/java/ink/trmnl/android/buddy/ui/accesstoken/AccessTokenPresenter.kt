@@ -39,6 +39,7 @@ class AccessTokenPresenter
                 token = token,
                 isLoading = isLoading,
                 errorMessage = errorMessage,
+                isLegacyToken = isLegacyUserToken(token),
             ) { event ->
                 when (event) {
                     is AccessTokenScreen.Event.TokenChanged -> {
@@ -95,3 +96,9 @@ class AccessTokenPresenter
             fun create(navigator: Navigator): AccessTokenPresenter
         }
     }
+
+/**
+ * Returns true if [token] uses the legacy `user_` prefix instead of the newer
+ * capability-scoped `trmnl_` prefix.
+ */
+internal fun isLegacyUserToken(token: String): Boolean = token.trim().startsWith("user_", ignoreCase = true)

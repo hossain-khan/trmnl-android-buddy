@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Logs tab**: Shows filterable device logs (`All`, `Error`, `Warn`, `Info`, `Debug`) with cursor-based pagination for older entries.
   - **API Key Capability Prompt**: Surfaces HTTP 403 legacy/insufficient-capability key errors with direct actions to create a new key at `trmnl.com/account` or update the key in-app.
 - Diagnostics summary card on Device Details with prefetched next check-in time.
+- **Legacy API Key Detection & Capability Guidance** (`AccessTokenScreen`):
+  - Detects legacy `user_` tokens inline and displays a Material 3 warning card explaining that newer features (Device Diagnostics, Timeline & Logs, Account Info) require a capability-scoped `trmnl_` key.
+  - Lists recommended capabilities (**Read**, **Content**, **Profile**, **Whole account (no limit)**) with a direct **Create `trmnl_` Key** link to `https://trmnl.com/account`, while allowing users to replace the key or explicitly **Continue with Legacy Key**.
+  - Updated token placeholder and setup hints for `trmnl_` capability-scoped keys.
 
 ### Fixed
 - **Account screen missing `Profile` scope handling & logging**:
