@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `@DecodeErrorBody` to `TrmnlApiService.userInfo()`.
   - Added a Material 3 **Profile Permission Required** card on `UserAccountScreen` when `GET /api/me` returns HTTP `403`, explaining that the **Profile** capability is required and providing actions to open `trmnl.com/account`, update the key in-app, or retry.
 - **Content Hub double top/bottom insets**: Disabled redundant `Scaffold` window insets in embedded `AnnouncementsContent` and `BlogPostsContent` (`showTopBar == false`) so `ContentHubScreen` no longer adds extra blank space below the top app bar.
+- **Edge-to-Edge & IME compatibility**:
+  - Enabled `enableEdgeToEdge()` in `WidgetConfigurationActivity`.
+  - Set `window.isNavigationBarContrastEnforced = false` on API 29+ in `MainActivity` for `NavigationBar` edge-to-edge rendering.
+  - Added `consumeWindowInsets(innerPadding)` and `imePadding()` to `AccessTokenContent` and `DeviceTokenContent` so the soft keyboard doesn't obscure input fields or action buttons.
 
 ## [2.19.1] - 2026-11-12
 
