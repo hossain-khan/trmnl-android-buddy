@@ -315,7 +315,7 @@ private fun ForecastStepCard(
                 Text(
                     text = step.name ?: "Scheduled Render",
                     fontWeight = FontWeight.Medium,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
             },
@@ -557,7 +557,7 @@ private fun RecordedTimelineCard(item: TimelineRecordedItem) {
                 Text(
                     text = item.name ?: "Device Activity",
                     fontWeight = FontWeight.Medium,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
             },
