@@ -35,7 +35,7 @@ import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
@@ -258,7 +258,7 @@ data object TrmnlDevicesScreen : Screen {
  * @see DeviceDetailScreen Destination screen for device-specific details
  * @see ContentHubScreen Destination screen for viewing all content
  */
-@Inject
+@AssistedInject
 class TrmnlDevicesPresenter
     constructor(
         @Assisted private val navigator: Navigator,
@@ -563,6 +563,7 @@ class TrmnlDevicesPresenter
                                 is ContentItem.Announcement -> {
                                     announcementRepository.markAsRead(event.item.id)
                                 }
+
                                 is ContentItem.BlogPost -> {
                                     blogPostRepository.markAsRead(event.item.id)
                                 }
@@ -623,7 +624,10 @@ class TrmnlDevicesPresenter
                                             )
                                         }
                                     }
-                                    else -> null // Silently fail for preview images
+
+                                    else -> {
+                                        null
+                                    } // Silently fail for preview images
                                 }
                             } catch (e: Exception) {
                                 Timber.d(e, "Error loading preview for %s", device.name)

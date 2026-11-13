@@ -92,9 +92,11 @@ fun BookmarkedRecipesContent(
             state.isLoading -> {
                 LoadingState(modifier = Modifier.padding(innerPadding))
             }
+
             state.bookmarkedRecipes.isEmpty() -> {
                 EmptyState(modifier = Modifier.padding(innerPadding))
             }
+
             else -> {
                 BookmarkedRecipesList(
                     recipes = state.bookmarkedRecipes,

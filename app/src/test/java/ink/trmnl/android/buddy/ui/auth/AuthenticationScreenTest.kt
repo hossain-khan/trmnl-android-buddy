@@ -37,7 +37,10 @@ class AuthenticationScreenTest {
             val navigator = FakeNavigator(AuthenticationScreen)
             val userPrefsRepo = FakeUserPreferencesRepository()
             val biometricHelper = FakeBiometricAuthHelper(isAvailable = true)
-            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+            val presenter =
+                AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper).apply {
+                    contextOverride = { null }
+                }
 
             presenter.test {
                 // Initial state before LaunchedEffect runs
@@ -58,7 +61,10 @@ class AuthenticationScreenTest {
             val navigator = FakeNavigator(AuthenticationScreen)
             val userPrefsRepo = FakeUserPreferencesRepository()
             val biometricHelper = FakeBiometricAuthHelper(isAvailable = false)
-            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+            val presenter =
+                AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper).apply {
+                    contextOverride = { null }
+                }
 
             presenter.test {
                 val state = awaitItem()
@@ -78,7 +84,10 @@ class AuthenticationScreenTest {
                     isAvailable = true,
                     authBehavior = AuthBehavior.ImmediateSuccess,
                 )
-            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+            val presenter =
+                AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper).apply {
+                    contextOverride = { null }
+                }
 
             presenter.test {
                 awaitItem() // Initial frame
@@ -104,7 +113,10 @@ class AuthenticationScreenTest {
                     isAvailable = true,
                     authBehavior = AuthBehavior.ImmediateError,
                 )
-            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+            val presenter =
+                AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper).apply {
+                    contextOverride = { null }
+                }
 
             presenter.test {
                 awaitItem() // Initial frame
@@ -130,7 +142,10 @@ class AuthenticationScreenTest {
                     isAvailable = true,
                     authBehavior = AuthBehavior.ImmediateUserCancelled,
                 )
-            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+            val presenter =
+                AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper).apply {
+                    contextOverride = { null }
+                }
 
             presenter.test {
                 awaitItem() // Initial frame
@@ -155,7 +170,10 @@ class AuthenticationScreenTest {
                     initialPreferences = UserPreferences(isSecurityEnabled = true),
                 )
             val biometricHelper = FakeBiometricAuthHelper(isAvailable = true)
-            val presenter = AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper)
+            val presenter =
+                AuthenticationPresenter(navigator, userPrefsRepo, biometricHelper).apply {
+                    contextOverride = { null }
+                }
 
             presenter.test {
                 awaitItem() // Initial frame

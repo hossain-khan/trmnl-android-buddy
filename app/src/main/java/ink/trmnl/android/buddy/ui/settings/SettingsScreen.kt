@@ -33,7 +33,7 @@ import com.slack.circuit.runtime.screen.Screen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.BuildConfig
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.data.RecipesAnalyticsRepository
@@ -124,7 +124,7 @@ data object SettingsScreen : Screen {
 /**
  * Presenter for SettingsScreen.
  */
-@Inject
+@AssistedInject
 class SettingsPresenter(
     @Assisted private val navigator: Navigator,
     private val userPreferencesRepository: UserPreferencesRepository,
@@ -203,14 +203,17 @@ class SettingsPresenter(
                 SettingsScreen.Event.BackClicked -> {
                     navigator.pop()
                 }
+
                 SettingsScreen.Event.AccountClicked -> {
                     navigator.goTo(UserAccountScreen)
                 }
+
                 is SettingsScreen.Event.BatteryTrackingToggled -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setBatteryTrackingEnabled(event.enabled)
                     }
                 }
+
                 is SettingsScreen.Event.LowBatteryNotificationToggled -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setLowBatteryNotificationEnabled(event.enabled)
@@ -222,6 +225,7 @@ class SettingsPresenter(
                         }
                     }
                 }
+
                 is SettingsScreen.Event.LowBatteryThresholdChanged -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setLowBatteryThreshold(event.percent)
@@ -229,6 +233,7 @@ class SettingsPresenter(
                         workerScheduler.scheduleLowBatteryNotification()
                     }
                 }
+
                 is SettingsScreen.Event.RssFeedContentToggled -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setRssFeedContentEnabled(event.enabled)
@@ -242,33 +247,41 @@ class SettingsPresenter(
                         }
                     }
                 }
+
                 is SettingsScreen.Event.RssFeedContentNotificationToggled -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setRssFeedContentNotificationEnabled(event.enabled)
                     }
                 }
+
                 is SettingsScreen.Event.SecurityToggled -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setSecurityEnabled(event.enabled)
                     }
                 }
+
                 SettingsScreen.Event.DevelopmentClicked -> {
                     navigator.goTo(DevelopmentScreen)
                 }
+
                 SettingsScreen.Event.DeviceCatalogClicked -> {
                     navigator.goTo(DeviceCatalogScreen)
                 }
+
                 SettingsScreen.Event.RecipesCatalogClicked -> {
                     navigator.goTo(RecipesCatalogScreen)
                 }
+
                 SettingsScreen.Event.ContentHubClicked -> {
                     navigator.goTo(ContentHubScreen)
                 }
+
                 is SettingsScreen.Event.RecipesAnalyticsClicked -> {
                     analyticsState.value.getDataOrNull()?.let { data ->
                         navigator.goTo(RecipesAnalyticsScreen(data))
                     }
                 }
+
                 is SettingsScreen.Event.RecipeHealthCardToggled -> {
                     coroutineScope.launch {
                         userPreferencesRepository.setShowRecipeHealthCard(event.enabled)

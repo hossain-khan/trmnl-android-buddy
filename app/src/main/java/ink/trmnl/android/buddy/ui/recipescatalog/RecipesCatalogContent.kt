@@ -192,6 +192,7 @@ fun RecipesCatalogContent(
                 state.isLoading -> {
                     LoadingState()
                 }
+
                 state.error != null && state.recipes.isEmpty() -> {
                     ErrorState(
                         errorMessage = state.error,
@@ -200,6 +201,7 @@ fun RecipesCatalogContent(
                         },
                     )
                 }
+
                 state.recipes.isEmpty() && state.selectedCategories.isNotEmpty() -> {
                     // Empty filtered results - show message with selected categories
                     FilteredEmptyState(
@@ -209,9 +211,11 @@ fun RecipesCatalogContent(
                         },
                     )
                 }
+
                 state.recipes.isEmpty() -> {
                     EmptyState()
                 }
+
                 else -> {
                     RecipesList(
                         recipes = state.recipes,

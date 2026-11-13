@@ -16,7 +16,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
  * Presenter for BlogPostsScreen.
  * Manages blog posts data and interactions.
  */
-@Inject
+@AssistedInject
 class BlogPostsPresenter
     constructor(
         @Assisted private val screen: BlogPostsScreen,

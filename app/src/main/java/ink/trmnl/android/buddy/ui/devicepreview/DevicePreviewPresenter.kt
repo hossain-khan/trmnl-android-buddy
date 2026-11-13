@@ -15,7 +15,7 @@ import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 /**
  * Presenter for DevicePreviewScreen.
  */
-@Inject
+@AssistedInject
 class DevicePreviewPresenter
     constructor(
         @Assisted private val screen: DevicePreviewScreen,
@@ -88,16 +88,19 @@ class DevicePreviewPresenter
                             )
                         navigator.pop(result)
                     }
+
                     DevicePreviewScreen.Event.DownloadImageClicked -> {
                         if (downloadState !is DevicePreviewScreen.DownloadState.Downloading) {
                             downloadState = DevicePreviewScreen.DownloadState.Downloading
                         }
                     }
+
                     DevicePreviewScreen.Event.PreviousImageClicked -> {
                         if (currentImageIndex > 0) {
                             currentImageIndex--
                         }
                     }
+
                     DevicePreviewScreen.Event.NextImageClicked -> {
                         if (currentImageIndex < cachedImages.lastIndex) {
                             currentImageIndex++
@@ -141,6 +144,7 @@ class DevicePreviewPresenter
                                                     )
                                             }
                                         }
+
                                         is ApiResult.Failure -> {
                                             loadNextState =
                                                 DevicePreviewScreen.LoadNextState.Error(
@@ -157,6 +161,7 @@ class DevicePreviewPresenter
                             }
                         }
                     }
+
                     DevicePreviewScreen.Event.RefreshImageClicked -> {
                         if (refreshState !is DevicePreviewScreen.RefreshState.Refreshing) {
                             refreshState = DevicePreviewScreen.RefreshState.Refreshing
@@ -182,6 +187,7 @@ class DevicePreviewPresenter
                                                     )
                                             }
                                         }
+
                                         is ApiResult.Failure -> {
                                             refreshState =
                                                 DevicePreviewScreen.RefreshState.Error(
@@ -198,12 +204,15 @@ class DevicePreviewPresenter
                             }
                         }
                     }
+
                     DevicePreviewScreen.Event.DismissSnackbar -> {
                         downloadState = DevicePreviewScreen.DownloadState.Idle
                     }
+
                     DevicePreviewScreen.Event.DismissRefreshSnackbar -> {
                         refreshState = DevicePreviewScreen.RefreshState.Idle
                     }
+
                     DevicePreviewScreen.Event.DismissLoadNextSnackbar -> {
                         loadNextState = DevicePreviewScreen.LoadNextState.Idle
                     }

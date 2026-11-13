@@ -161,7 +161,9 @@ private fun DeviceListContent(
     val filteredDevices =
         remember(devices, selectedFilter) {
             when (selectedFilter) {
-                null -> devices // All
+                null -> devices
+
+                // All
                 else -> devices.filter { it.deviceKind == selectedFilter }
             }
         }

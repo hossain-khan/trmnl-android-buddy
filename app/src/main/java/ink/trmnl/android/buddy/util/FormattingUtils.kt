@@ -80,11 +80,13 @@ fun formatRefreshRateExplanation(seconds: Int): String {
             val minuteText = if (closestMinutes == 1) "minute" else "minutes"
             "This device checks for new screen content every $closestMinutes $minuteText"
         }
+
         closestMinutes % 60 == 0 -> {
             val hours = closestMinutes / 60
             val hourText = if (hours == 1) "hour" else "hours"
             "This device checks for new screen content every $hours $hourText"
         }
+
         else -> {
             // Handle cases like 90 minutes (1.5 hours)
             val minuteText = if (closestMinutes == 1) "minute" else "minutes"
@@ -121,12 +123,21 @@ fun formatRelativeTime(isoTimestamp: String?): String {
                 .seconds
 
         when {
-            secondsDiff < 0 -> "Just now" // Handle future dates
-            secondsDiff < 60 -> "Just now" // Less than 1 minute
+            secondsDiff < 0 -> {
+                "Just now"
+            }
+
+            // Handle future dates
+            secondsDiff < 60 -> {
+                "Just now"
+            }
+
+            // Less than 1 minute
             secondsDiff < 3600 -> { // Less than 1 hour
                 val minutes = secondsDiff / 60
                 "$minutes minute${if (minutes == 1L) "" else "s"} ago"
             }
+
             secondsDiff < 86400 -> { // Less than 1 day
                 val hours = secondsDiff / 3600
                 val minutes = (secondsDiff % 3600) / 60
@@ -137,6 +148,7 @@ fun formatRelativeTime(isoTimestamp: String?): String {
                     "$hours hour${if (hours == 1L) "" else "s"} ago"
                 }
             }
+
             else -> { // 1 day or more
                 val days = secondsDiff / 86400
                 "$days day${if (days == 1L) "" else "s"} ago"

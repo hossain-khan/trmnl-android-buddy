@@ -373,12 +373,15 @@ internal fun ContentItemCard(
                                 painter =
                                     painterResource(
                                         when (item) {
-                                            is ContentItem.Announcement ->
+                                            is ContentItem.Announcement -> {
                                                 R.drawable
                                                     .campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24
-                                            is ContentItem.BlogPost ->
+                                            }
+
+                                            is ContentItem.BlogPost -> {
                                                 R.drawable
                                                     .newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                            }
                                         },
                                     ),
                                 contentDescription = null, // Decorative

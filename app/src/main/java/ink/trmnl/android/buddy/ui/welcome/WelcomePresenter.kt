@@ -9,7 +9,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.first
  * Presenter for WelcomeScreen.
  * Handles navigation logic based on whether user has configured API token.
  */
-@Inject
+@AssistedInject
 class WelcomePresenter
     constructor(
         @Assisted private val navigator: Navigator,

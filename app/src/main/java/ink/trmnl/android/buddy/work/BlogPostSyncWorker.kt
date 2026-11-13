@@ -6,8 +6,8 @@ import androidx.work.WorkerParameters
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
@@ -28,7 +28,7 @@ import timber.log.Timber
  * - Shows notification when new posts are fetched (if enabled in preferences)
  * - Handles errors gracefully with retry logic
  */
-@Inject
+@AssistedInject
 class BlogPostSyncWorker(
     context: Context,
     @Assisted params: WorkerParameters,

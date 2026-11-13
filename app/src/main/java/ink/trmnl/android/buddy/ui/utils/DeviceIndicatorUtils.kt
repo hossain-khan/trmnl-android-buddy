@@ -16,8 +16,12 @@ fun getBatteryColor(percentCharged: Double): Color {
     val criticalColor = MaterialTheme.colorScheme.error
 
     return when {
-        percentCharged >= 60 -> goodColor // Good battery level
-        percentCharged >= 30 -> warningColor // Warning level
+        percentCharged >= 60 -> goodColor
+
+        // Good battery level
+        percentCharged >= 30 -> warningColor
+
+        // Warning level
         else -> criticalColor // Critical level
     }
 }
@@ -33,8 +37,12 @@ fun getWifiColor(wifiStrength: Double): Color {
     val weakColor = MaterialTheme.colorScheme.error
 
     return when {
-        wifiStrength >= 70 -> strongColor // Strong signal
-        wifiStrength >= 40 -> mediumColor // Medium signal
+        wifiStrength >= 70 -> strongColor
+
+        // Strong signal
+        wifiStrength >= 40 -> mediumColor
+
+        // Medium signal
         else -> weakColor // Weak signal
     }
 }

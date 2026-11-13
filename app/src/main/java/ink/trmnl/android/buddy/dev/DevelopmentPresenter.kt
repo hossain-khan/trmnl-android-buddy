@@ -26,7 +26,7 @@ import com.slack.circuit.runtime.screen.Screen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.RecipesAnalyticsRepository
 import ink.trmnl.android.buddy.dev.DevelopmentScreen.Event
 import ink.trmnl.android.buddy.notification.NotificationHelper
@@ -52,7 +52,7 @@ import timber.log.Timber
  * - WorkManager worker status monitoring
  * - Analytics testing with different scenarios
  */
-@Inject
+@AssistedInject
 class DevelopmentPresenter(
     @Assisted private val navigator: Navigator,
     private val workManagerObserver: WorkManagerObserver,

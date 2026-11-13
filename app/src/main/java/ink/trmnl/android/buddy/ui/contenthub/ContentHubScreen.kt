@@ -50,7 +50,7 @@ import com.slack.circuit.runtime.screen.Screen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
@@ -116,7 +116,7 @@ data object ContentHubScreen : Screen {
  * Presenter for ContentHubScreen.
  * Manages tab selection state and fetches unread counts for each tab.
  */
-@Inject
+@AssistedInject
 class ContentHubPresenter
     constructor(
         @Assisted private val navigator: Navigator,
@@ -500,11 +500,13 @@ private fun ContentHubContentPreview(
                     painter =
                         painterResource(
                             when (state.selectedTab) {
-                                ContentHubScreen.Tab.ANNOUNCEMENTS ->
+                                ContentHubScreen.Tab.ANNOUNCEMENTS -> {
                                     R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                }
 
-                                ContentHubScreen.Tab.BLOG_POSTS ->
+                                ContentHubScreen.Tab.BLOG_POSTS -> {
                                     R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                }
                             },
                         ),
                     contentDescription = null,

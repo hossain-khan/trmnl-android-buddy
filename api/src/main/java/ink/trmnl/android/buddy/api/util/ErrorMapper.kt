@@ -36,15 +36,25 @@ object ErrorMapper {
      */
     fun mapToUserMessage(failure: ApiResult.Failure<*>): String =
         when (failure) {
-            is ApiResult.Failure.HttpFailure -> mapHttpError(failure.code)
-            is ApiResult.Failure.NetworkFailure -> "Network error. Please check your connection."
-            is ApiResult.Failure.ApiFailure<*> ->
+            is ApiResult.Failure.HttpFailure -> {
+                mapHttpError(failure.code)
+            }
+
+            is ApiResult.Failure.NetworkFailure -> {
+                "Network error. Please check your connection."
+            }
+
+            is ApiResult.Failure.ApiFailure<*> -> {
                 when (val error = failure.error) {
                     is ApiError -> error.error
                     null -> "An error occurred."
                     else -> error.toString()
                 }
-            is ApiResult.Failure.UnknownFailure -> "Unexpected error. Please try again."
+            }
+
+            is ApiResult.Failure.UnknownFailure -> {
+                "Unexpected error. Please try again."
+            }
         }
 
     /**

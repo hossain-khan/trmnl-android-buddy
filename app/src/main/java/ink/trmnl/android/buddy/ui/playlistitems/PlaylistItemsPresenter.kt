@@ -14,7 +14,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.PlaylistItemsRepository
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import timber.log.Timber
@@ -37,7 +37,7 @@ import timber.log.Timber
  * @property navigator Circuit navigator for screen transitions
  * @property repository Repository providing cached playlist items
  */
-@Inject
+@AssistedInject
 class PlaylistItemsPresenter
     constructor(
         @Assisted private val screen: PlaylistItemsScreen,
@@ -131,13 +131,16 @@ class PlaylistItemsPresenter
                         PlaylistItemsScreen.Event.BackClicked -> {
                             navigator.pop()
                         }
+
                         PlaylistItemsScreen.Event.Refresh -> {
                             shouldRefresh++
                         }
+
                         is PlaylistItemsScreen.Event.ItemClicked -> {
                             // TODO: Navigate to item detail screen if needed in future phases
                             Timber.d("Item clicked: ${event.item.id}")
                         }
+
                         is PlaylistItemsScreen.Event.ToggleItemVisibility -> {
                             // Trigger visibility toggle via state change
                             toggleRequest = event.itemId to event.newVisibility

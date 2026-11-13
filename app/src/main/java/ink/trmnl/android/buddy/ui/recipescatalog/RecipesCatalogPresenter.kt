@@ -14,7 +14,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.data.BookmarkRepository
 import ink.trmnl.android.buddy.data.RecipesRepository
@@ -43,7 +43,7 @@ private const val DEFAULT_PER_PAGE = 25
  * - Pagination with load more functionality
  * - Error handling and retry
  */
-@Inject
+@AssistedInject
 class RecipesCatalogPresenter(
     @Assisted private val navigator: Navigator,
     private val recipesRepository: RecipesRepository,

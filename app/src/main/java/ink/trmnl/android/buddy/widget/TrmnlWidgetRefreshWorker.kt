@@ -22,8 +22,8 @@ import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit
  * @see TrmnlDeviceWidget
  * @see TrmnlDeviceWidgetReceiver
  */
-@Inject
+@AssistedInject
 class TrmnlWidgetRefreshWorker(
     context: Context,
     @Assisted params: WorkerParameters,
@@ -141,11 +141,13 @@ class TrmnlWidgetRefreshWorker(
                             mutablePrefs[TrmnlDeviceWidget.IMAGE_FILE_PATH_KEY] = filePath
                             mutablePrefs.remove(TrmnlDeviceWidget.ERROR_MESSAGE_KEY)
                         }
+
                         existingImagePath != null -> {
                             // Keep existing cached image; don't surface a transient download error
                             // since the user can still see the last known display image.
                             Timber.d("[$WORK_TAG] Image download failed for widget $appWidgetId; retaining existing cached image")
                         }
+
                         else -> {
                             // No image available at all — surface an actionable error
                             mutablePrefs[TrmnlDeviceWidget.ERROR_MESSAGE_KEY] =
