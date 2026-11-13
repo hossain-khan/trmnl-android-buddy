@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -47,6 +48,9 @@ class MainActivity
         @OptIn(ExperimentalSharedTransitionApi::class)
         override fun onCreate(savedInstanceState: Bundle?) {
             enableEdgeToEdge()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                window.isNavigationBarContrastEnforced = false
+            }
             super.onCreate(savedInstanceState)
 
             val openDevicesScreen = intent?.getBooleanExtra(EXTRA_OPEN_DEVICES_SCREEN, false) == true
