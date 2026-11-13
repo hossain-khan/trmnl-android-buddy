@@ -8,6 +8,7 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.ApiError
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.mockwebserver.MockResponse
@@ -192,5 +193,26 @@ class DeviceDiagnosticsApiTest : BaseApiTest() {
             assertThat(result).isInstanceOf<ApiResult.Failure.HttpFailure<*>>()
             val failure = result as ApiResult.Failure.HttpFailure<*>
             assertThat(failure.code).isEqualTo(404)
+        }
+
+    @Test
+    fun `getDeviceTimeline decodes HTTP 403 legacy API key error body`() =
+        runTest {
+            val message =
+                "This is a legacy API key, which reaches only the endpoints it had before API keys held capabilities. " +
+                    "Create an API key with the capabilities you need at https://trmnl.com/account."
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(403)
+                    .setBody("""{"error":"$message"}""")
+                    .setHeader("Content-Type", "application/json"),
+            )
+
+            val result = apiService.getDeviceTimeline("Bearer legacy_key", deviceId = 41448, hours = 12)
+
+            assertThat(result).isInstanceOf<ApiResult.Failure.HttpFailure<*>>()
+            val failure = result as ApiResult.Failure.HttpFailure<*>
+            assertThat(failure.code).isEqualTo(403)
+            assertThat(failure.error).isEqualTo(ApiError(message))
         }
 }

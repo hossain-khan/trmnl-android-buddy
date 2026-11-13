@@ -4,12 +4,14 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.ApiError
 import ink.trmnl.android.buddy.api.models.DeviceForecast
 import ink.trmnl.android.buddy.api.models.DeviceForecastResponse
 import ink.trmnl.android.buddy.api.models.DeviceLogCursor
@@ -22,6 +24,7 @@ import ink.trmnl.android.buddy.api.models.TimelineStep
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.fakes.FakeTrmnlApiService
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
+import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
@@ -248,8 +251,50 @@ class DeviceDiagnosticsPresenterTest {
                     state = awaitItem()
                 } while (state.isForecastLoading)
 
-                assertThat(state.forecastError).isEqualTo("Missing API token. Please sign in again.")
+                assertThat(state.forecastError).isEqualTo(
+                    DeviceDiagnosticsScreen.DiagnosticsError.General("Missing API token. Please sign in again."),
+                )
                 assertThat(state.logsError).isNull()
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `presenter maps HTTP 403 legacy key error to InsufficientKeyCapabilities and navigates to AccessTokenScreen`() =
+        runTest {
+            val screen = DeviceDiagnosticsScreen(deviceId = 42, deviceName = "Office TRMNL")
+            val navigator = FakeNavigator(screen)
+            val legacyKeyMessage =
+                "This is a legacy API key, which reaches only the endpoints it had before API keys held capabilities. " +
+                    "Create an API key with the capabilities you need at https://trmnl.com/account."
+            val apiService =
+                FakeTrmnlApiService().apply {
+                    getDeviceForecastResult = ApiResult.success(DeviceForecastResponse(DeviceForecast()))
+                    getDeviceTimelineResult = ApiResult.apiFailure(ApiError(legacyKeyMessage))
+                }
+            val prefsRepo = FakeUserPreferencesRepository(UserPreferences(apiToken = "user_legacy"))
+            val presenter = DeviceDiagnosticsPresenter(screen, navigator, apiService, prefsRepo)
+
+            presenter.test {
+                var state: DeviceDiagnosticsScreen.State
+                do {
+                    state = awaitItem()
+                } while (state.isForecastLoading)
+
+                state.eventSink(DeviceDiagnosticsScreen.Event.TabSelected(DeviceDiagnosticsScreen.DiagnosticsTab.TIMELINE))
+                do {
+                    state = awaitItem()
+                } while (state.selectedTab != DeviceDiagnosticsScreen.DiagnosticsTab.TIMELINE || state.isTimelineLoading ||
+                    state.timelineError == null
+                )
+
+                assertThat(state.timelineError).isInstanceOf<DeviceDiagnosticsScreen.DiagnosticsError.InsufficientKeyCapabilities>()
+                val capError = state.timelineError as DeviceDiagnosticsScreen.DiagnosticsError.InsufficientKeyCapabilities
+                assertThat(capError.message).isEqualTo(legacyKeyMessage)
+                assertThat(capError.accountUrl).isEqualTo(DeviceDiagnosticsScreen.TRMNL_ACCOUNT_URL)
+
+                state.eventSink(DeviceDiagnosticsScreen.Event.UpdateApiKeyClicked)
+                assertThat(navigator.awaitNextScreen()).isEqualTo(AccessTokenScreen)
                 cancelAndIgnoreRemainingEvents()
             }
         }

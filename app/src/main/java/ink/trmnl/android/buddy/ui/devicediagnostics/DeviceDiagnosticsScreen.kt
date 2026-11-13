@@ -43,21 +43,34 @@ data class DeviceDiagnosticsScreen(
         val details: String? = null,
     )
 
+    sealed interface DiagnosticsError {
+        val message: String
+
+        data class General(
+            override val message: String,
+        ) : DiagnosticsError
+
+        data class InsufficientKeyCapabilities(
+            override val message: String,
+            val accountUrl: String = TRMNL_ACCOUNT_URL,
+        ) : DiagnosticsError
+    }
+
     data class State(
         val deviceName: String,
         val selectedTab: DiagnosticsTab = DiagnosticsTab.FORECAST,
         val forecastHours: Int = 12,
         val isForecastLoading: Boolean = true,
-        val forecastError: String? = null,
+        val forecastError: DiagnosticsError? = null,
         val forecastSteps: List<TimelineStep> = emptyList(),
         val timelineHours: Int = 12,
         val isTimelineLoading: Boolean = false,
-        val timelineError: String? = null,
+        val timelineError: DiagnosticsError? = null,
         val timeline: DeviceTimeline? = null,
         val selectedLogLevel: LogLevelFilter = LogLevelFilter.ALL,
         val isLogsLoading: Boolean = false,
         val isLoadingMoreLogs: Boolean = false,
-        val logsError: String? = null,
+        val logsError: DiagnosticsError? = null,
         val logs: List<DeviceLogEntry> = emptyList(),
         val hasMoreLogs: Boolean = false,
         val eventSink: (Event) -> Unit = {},
@@ -67,6 +80,8 @@ data class DeviceDiagnosticsScreen(
         data object BackClicked : Event
 
         data object RefreshClicked : Event
+
+        data object UpdateApiKeyClicked : Event
 
         data class TabSelected(
             val tab: DiagnosticsTab,
@@ -85,5 +100,9 @@ data class DeviceDiagnosticsScreen(
         ) : Event
 
         data object LoadMoreLogs : Event
+    }
+
+    companion object {
+        const val TRMNL_ACCOUNT_URL = "https://trmnl.com/account"
     }
 }

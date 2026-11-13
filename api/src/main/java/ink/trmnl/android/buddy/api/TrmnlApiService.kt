@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.api
 
 import com.slack.eithernet.ApiResult
+import com.slack.eithernet.DecodeErrorBody
 import ink.trmnl.android.buddy.api.models.ApiError
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceForecastResponse
@@ -676,6 +677,7 @@ interface TrmnlApiService {
      * @param deviceId Device numeric ID
      * @param hours Optional forecast window in hours (e.g., 12, 24, 48)
      */
+    @DecodeErrorBody
     @GET("devices/{device_id}/forecast")
     suspend fun getDeviceForecast(
         @Header("Authorization") authorization: String,
@@ -692,6 +694,7 @@ interface TrmnlApiService {
      * @param source Optional event source filter
      * @param hours Optional window in hours (3, 12, or 24)
      */
+    @DecodeErrorBody
     @GET("devices/{device_id}/timeline")
     suspend fun getDeviceTimeline(
         @Header("Authorization") authorization: String,
@@ -712,6 +715,7 @@ interface TrmnlApiService {
      * @param beforeTs Optional cursor timestamp for fetching older entries
      * @param beforeEventId Optional cursor event ID for fetching older entries
      */
+    @DecodeErrorBody
     @GET("devices/{device_id}/logs")
     suspend fun getDeviceLogs(
         @Header("Authorization") authorization: String,

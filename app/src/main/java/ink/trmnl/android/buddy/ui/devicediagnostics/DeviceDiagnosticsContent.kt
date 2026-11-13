@@ -34,11 +34,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -134,6 +136,7 @@ fun DeviceDiagnosticsContent(
                         onHoursSelected = { hours ->
                             state.eventSink(DeviceDiagnosticsScreen.Event.ForecastHoursSelected(hours))
                         },
+                        onUpdateApiKey = { state.eventSink(DeviceDiagnosticsScreen.Event.UpdateApiKeyClicked) },
                         onRetry = { state.eventSink(DeviceDiagnosticsScreen.Event.RefreshClicked) },
                     )
                 }
@@ -147,6 +150,7 @@ fun DeviceDiagnosticsContent(
                         onHoursSelected = { hours ->
                             state.eventSink(DeviceDiagnosticsScreen.Event.TimelineHoursSelected(hours))
                         },
+                        onUpdateApiKey = { state.eventSink(DeviceDiagnosticsScreen.Event.UpdateApiKeyClicked) },
                         onRetry = { state.eventSink(DeviceDiagnosticsScreen.Event.RefreshClicked) },
                     )
                 }
@@ -163,6 +167,7 @@ fun DeviceDiagnosticsContent(
                             state.eventSink(DeviceDiagnosticsScreen.Event.LogLevelSelected(level))
                         },
                         onLoadMore = { state.eventSink(DeviceDiagnosticsScreen.Event.LoadMoreLogs) },
+                        onUpdateApiKey = { state.eventSink(DeviceDiagnosticsScreen.Event.UpdateApiKeyClicked) },
                         onRetry = { state.eventSink(DeviceDiagnosticsScreen.Event.RefreshClicked) },
                     )
                 }
@@ -175,9 +180,10 @@ fun DeviceDiagnosticsContent(
 private fun ForecastTabContent(
     selectedHours: Int,
     isLoading: Boolean,
-    error: String?,
+    error: DeviceDiagnosticsScreen.DiagnosticsError?,
     steps: List<TimelineStep>,
     onHoursSelected: (Int) -> Unit,
+    onUpdateApiKey: () -> Unit,
     onRetry: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -193,7 +199,11 @@ private fun ForecastTabContent(
             }
 
             error != null -> {
-                ErrorState(message = error, onRetry = onRetry)
+                ErrorState(
+                    error = error,
+                    onUpdateApiKey = onUpdateApiKey,
+                    onRetry = onRetry,
+                )
             }
 
             steps.isEmpty() -> {
@@ -357,9 +367,10 @@ private fun ForecastStepCard(
 private fun TimelineTabContent(
     selectedHours: Int,
     isLoading: Boolean,
-    error: String?,
+    error: DeviceDiagnosticsScreen.DiagnosticsError?,
     timeline: DeviceTimeline?,
     onHoursSelected: (Int) -> Unit,
+    onUpdateApiKey: () -> Unit,
     onRetry: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -375,7 +386,11 @@ private fun TimelineTabContent(
             }
 
             error != null -> {
-                ErrorState(message = error, onRetry = onRetry)
+                ErrorState(
+                    error = error,
+                    onUpdateApiKey = onUpdateApiKey,
+                    onRetry = onRetry,
+                )
             }
 
             timeline == null -> {
@@ -589,11 +604,12 @@ private fun LogsTabContent(
     selectedLevel: DeviceDiagnosticsScreen.LogLevelFilter,
     isLoading: Boolean,
     isLoadingMore: Boolean,
-    error: String?,
+    error: DeviceDiagnosticsScreen.DiagnosticsError?,
     logs: List<DeviceDiagnosticsScreen.DeviceLogEntry>,
     hasMore: Boolean,
     onLevelSelected: (DeviceDiagnosticsScreen.LogLevelFilter) -> Unit,
     onLoadMore: () -> Unit,
+    onUpdateApiKey: () -> Unit,
     onRetry: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -620,7 +636,11 @@ private fun LogsTabContent(
             }
 
             error != null && logs.isEmpty() -> {
-                ErrorState(message = error, onRetry = onRetry)
+                ErrorState(
+                    error = error,
+                    onUpdateApiKey = onUpdateApiKey,
+                    onRetry = onRetry,
+                )
             }
 
             logs.isEmpty() -> {
@@ -639,7 +659,7 @@ private fun LogsTabContent(
                     if (error != null) {
                         item(key = "logs_inline_error") {
                             Text(
-                                text = error,
+                                text = error.message,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.error,
                             )
@@ -862,9 +882,58 @@ private fun LoadingState(message: String) {
 
 @Composable
 private fun ErrorState(
-    message: String,
+    error: DeviceDiagnosticsScreen.DiagnosticsError,
+    onUpdateApiKey: () -> Unit,
     onRetry: () -> Unit,
 ) {
+    when (error) {
+        is DeviceDiagnosticsScreen.DiagnosticsError.InsufficientKeyCapabilities -> {
+            CapabilityErrorState(
+                error = error,
+                onUpdateApiKey = onUpdateApiKey,
+                onRetry = onRetry,
+            )
+        }
+
+        is DeviceDiagnosticsScreen.DiagnosticsError.General -> {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.data_info_alert_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(36.dp),
+                    )
+                    Text(
+                        text = error.message,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Button(onClick = onRetry) {
+                        Text("Retry")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CapabilityErrorState(
+    error: DeviceDiagnosticsScreen.DiagnosticsError.InsufficientKeyCapabilities,
+    onUpdateApiKey: () -> Unit,
+    onRetry: () -> Unit,
+) {
+    val uriHandler = LocalUriHandler.current
     Box(
         modifier =
             Modifier
@@ -872,23 +941,73 @@ private fun ErrorState(
                 .padding(24.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                ),
         ) {
-            Icon(
-                painter = painterResource(R.drawable.data_info_alert_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(36.dp),
-            )
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Button(onClick = onRetry) {
-                Text("Retry")
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.warning_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                    )
+                    Text(
+                        text = "API Key Capabilities Required",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+
+                Text(
+                    text = error.message,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.9f),
+                )
+
+                Text(
+                    text = "Generate a new key at ${error.accountUrl} with device diagnostics capabilities, then update it in the app.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f),
+                )
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Button(
+                        onClick = { uriHandler.openUri(error.accountUrl) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Create New API Key")
+                    }
+
+                    OutlinedButton(
+                        onClick = onUpdateApiKey,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Update Key in App")
+                    }
+
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        TextButton(onClick = onRetry) {
+                            Text("Retry")
+                        }
+                    }
+                }
             }
         }
     }
@@ -1046,6 +1165,28 @@ private fun DeviceDiagnosticsLogsPreview() {
                             ),
                         ),
                     hasMoreLogs = true,
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun DeviceDiagnosticsCapabilityErrorPreview() {
+    TrmnlBuddyAppTheme {
+        DeviceDiagnosticsContent(
+            state =
+                DeviceDiagnosticsScreen.State(
+                    deviceName = "Living Room TRMNL",
+                    selectedTab = DeviceDiagnosticsScreen.DiagnosticsTab.TIMELINE,
+                    isTimelineLoading = false,
+                    timelineError =
+                        DeviceDiagnosticsScreen.DiagnosticsError.InsufficientKeyCapabilities(
+                            message =
+                                "This is a legacy API key, which reaches only the endpoints it had before " +
+                                    "API keys held capabilities. Create an API key with the capabilities " +
+                                    "you need at https://trmnl.com/account.",
+                        ),
                 ),
         )
     }

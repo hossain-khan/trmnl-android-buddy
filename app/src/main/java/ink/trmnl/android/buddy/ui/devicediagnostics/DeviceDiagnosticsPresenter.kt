@@ -22,6 +22,7 @@ import ink.trmnl.android.buddy.api.models.DeviceLogCursor
 import ink.trmnl.android.buddy.api.models.DeviceTimeline
 import ink.trmnl.android.buddy.api.models.TimelineStep
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -49,13 +50,13 @@ class DeviceDiagnosticsPresenter
 
             var forecastHours by rememberRetained { mutableIntStateOf(12) }
             var isForecastLoading by rememberRetained { mutableStateOf(true) }
-            var forecastError by rememberRetained { mutableStateOf<String?>(null) }
+            var forecastError by rememberRetained { mutableStateOf<DeviceDiagnosticsScreen.DiagnosticsError?>(null) }
             var forecastSteps by rememberRetained { mutableStateOf<List<TimelineStep>>(emptyList()) }
             var forecastRefreshTrigger by rememberRetained { mutableIntStateOf(0) }
 
             var timelineHours by rememberRetained { mutableIntStateOf(12) }
             var isTimelineLoading by rememberRetained { mutableStateOf(false) }
-            var timelineError by rememberRetained { mutableStateOf<String?>(null) }
+            var timelineError by rememberRetained { mutableStateOf<DeviceDiagnosticsScreen.DiagnosticsError?>(null) }
             var timeline by rememberRetained { mutableStateOf<DeviceTimeline?>(null) }
             var hasLoadedTimeline by rememberRetained { mutableStateOf(false) }
             var timelineRefreshTrigger by rememberRetained { mutableIntStateOf(0) }
@@ -63,7 +64,7 @@ class DeviceDiagnosticsPresenter
             var selectedLogLevel by rememberRetained { mutableStateOf(DeviceDiagnosticsScreen.LogLevelFilter.ALL) }
             var isLogsLoading by rememberRetained { mutableStateOf(false) }
             var isLoadingMoreLogs by rememberRetained { mutableStateOf(false) }
-            var logsError by rememberRetained { mutableStateOf<String?>(null) }
+            var logsError by rememberRetained { mutableStateOf<DeviceDiagnosticsScreen.DiagnosticsError?>(null) }
             var logs by rememberRetained { mutableStateOf<List<DeviceDiagnosticsScreen.DeviceLogEntry>>(emptyList()) }
             var oldestCursor by rememberRetained { mutableStateOf<DeviceLogCursor?>(null) }
             var hasMoreLogs by rememberRetained { mutableStateOf(false) }
@@ -78,7 +79,7 @@ class DeviceDiagnosticsPresenter
                 try {
                     val token = userPreferencesRepository.userPreferencesFlow.firstOrNull()?.apiToken
                     if (token.isNullOrBlank()) {
-                        forecastError = "Missing API token. Please sign in again."
+                        forecastError = DeviceDiagnosticsScreen.DiagnosticsError.General("Missing API token. Please sign in again.")
                         return@LaunchedEffect
                     }
                     when (
@@ -103,7 +104,7 @@ class DeviceDiagnosticsPresenter
                     throw e
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to load device forecast")
-                    forecastError = e.message ?: "Failed to load forecast"
+                    forecastError = DeviceDiagnosticsScreen.DiagnosticsError.General(e.message ?: "Failed to load forecast")
                 } finally {
                     isForecastLoading = false
                 }
@@ -121,7 +122,7 @@ class DeviceDiagnosticsPresenter
                 try {
                     val token = userPreferencesRepository.userPreferencesFlow.firstOrNull()?.apiToken
                     if (token.isNullOrBlank()) {
-                        timelineError = "Missing API token. Please sign in again."
+                        timelineError = DeviceDiagnosticsScreen.DiagnosticsError.General("Missing API token. Please sign in again.")
                         return@LaunchedEffect
                     }
                     when (
@@ -147,7 +148,7 @@ class DeviceDiagnosticsPresenter
                     throw e
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to load device timeline")
-                    timelineError = e.message ?: "Failed to load timeline"
+                    timelineError = DeviceDiagnosticsScreen.DiagnosticsError.General(e.message ?: "Failed to load timeline")
                 } finally {
                     isTimelineLoading = false
                 }
@@ -162,7 +163,7 @@ class DeviceDiagnosticsPresenter
                 try {
                     val token = userPreferencesRepository.userPreferencesFlow.firstOrNull()?.apiToken
                     if (token.isNullOrBlank()) {
-                        logsError = "Missing API token. Please sign in again."
+                        logsError = DeviceDiagnosticsScreen.DiagnosticsError.General("Missing API token. Please sign in again.")
                         return@LaunchedEffect
                     }
                     when (
@@ -193,7 +194,7 @@ class DeviceDiagnosticsPresenter
                     throw e
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to load device logs")
-                    logsError = e.message ?: "Failed to load logs"
+                    logsError = DeviceDiagnosticsScreen.DiagnosticsError.General(e.message ?: "Failed to load logs")
                 } finally {
                     isLogsLoading = false
                 }
@@ -228,6 +229,10 @@ class DeviceDiagnosticsPresenter
                             DeviceDiagnosticsScreen.DiagnosticsTab.TIMELINE -> timelineRefreshTrigger++
                             DeviceDiagnosticsScreen.DiagnosticsTab.LOGS -> logsRefreshTrigger++
                         }
+                    }
+
+                    DeviceDiagnosticsScreen.Event.UpdateApiKeyClicked -> {
+                        navigator.goTo(AccessTokenScreen)
                     }
 
                     is DeviceDiagnosticsScreen.Event.TabSelected -> {
@@ -265,7 +270,8 @@ class DeviceDiagnosticsPresenter
                                 try {
                                     val token = userPreferencesRepository.userPreferencesFlow.firstOrNull()?.apiToken
                                     if (token.isNullOrBlank()) {
-                                        logsError = "Missing API token. Please sign in again."
+                                        logsError =
+                                            DeviceDiagnosticsScreen.DiagnosticsError.General("Missing API token. Please sign in again.")
                                         return@launch
                                     }
                                     when (
@@ -300,7 +306,7 @@ class DeviceDiagnosticsPresenter
                                     throw e
                                 } catch (e: Exception) {
                                     Timber.e(e, "Failed to load more device logs")
-                                    logsError = e.message ?: "Failed to load older logs"
+                                    logsError = DeviceDiagnosticsScreen.DiagnosticsError.General(e.message ?: "Failed to load older logs")
                                 } finally {
                                     isLoadingMoreLogs = false
                                 }
@@ -314,13 +320,50 @@ class DeviceDiagnosticsPresenter
         private fun formatApiFailure(
             target: String,
             failure: ApiResult.Failure<ApiError>,
-        ): String =
+        ): DeviceDiagnosticsScreen.DiagnosticsError =
             when (failure) {
-                is ApiResult.Failure.HttpFailure -> "Failed to load $target (HTTP ${failure.code})"
-                is ApiResult.Failure.NetworkFailure -> "Network error while loading $target"
-                is ApiResult.Failure.ApiFailure -> failure.error?.error ?: "Failed to load $target"
-                is ApiResult.Failure.UnknownFailure -> "Unexpected error while loading $target"
+                is ApiResult.Failure.HttpFailure -> {
+                    val serverMessage = failure.error?.error?.takeIf { it.isNotBlank() }
+                    if (failure.code == HTTP_FORBIDDEN || isCapabilityError(serverMessage)) {
+                        DeviceDiagnosticsScreen.DiagnosticsError.InsufficientKeyCapabilities(
+                            message = serverMessage ?: DEFAULT_CAPABILITY_ERROR_MESSAGE,
+                            accountUrl = DeviceDiagnosticsScreen.TRMNL_ACCOUNT_URL,
+                        )
+                    } else {
+                        DeviceDiagnosticsScreen.DiagnosticsError.General(
+                            serverMessage ?: "Failed to load $target (HTTP ${failure.code})",
+                        )
+                    }
+                }
+
+                is ApiResult.Failure.NetworkFailure -> {
+                    DeviceDiagnosticsScreen.DiagnosticsError.General("Network error while loading $target")
+                }
+
+                is ApiResult.Failure.ApiFailure -> {
+                    val serverMessage = failure.error?.error?.takeIf { it.isNotBlank() }
+                    if (isCapabilityError(serverMessage)) {
+                        DeviceDiagnosticsScreen.DiagnosticsError.InsufficientKeyCapabilities(
+                            message = serverMessage ?: DEFAULT_CAPABILITY_ERROR_MESSAGE,
+                            accountUrl = DeviceDiagnosticsScreen.TRMNL_ACCOUNT_URL,
+                        )
+                    } else {
+                        DeviceDiagnosticsScreen.DiagnosticsError.General(serverMessage ?: "Failed to load $target")
+                    }
+                }
+
+                is ApiResult.Failure.UnknownFailure -> {
+                    DeviceDiagnosticsScreen.DiagnosticsError.General("Unexpected error while loading $target")
+                }
             }
+
+        private fun isCapabilityError(message: String?): Boolean {
+            if (message.isNullOrBlank()) return false
+            val lower = message.lowercase()
+            return lower.contains("legacy api key") ||
+                lower.contains("capabilities") ||
+                lower.contains("trmnl.com/account")
+        }
 
         @CircuitInject(DeviceDiagnosticsScreen::class, AppScope::class)
         @AssistedFactory
@@ -333,6 +376,10 @@ class DeviceDiagnosticsPresenter
 
         private companion object {
             const val DEFAULT_LOGS_LIMIT = 50
+            const val HTTP_FORBIDDEN = 403
+            const val DEFAULT_CAPABILITY_ERROR_MESSAGE =
+                "Your current API key does not have the required capabilities for this endpoint. " +
+                    "Create a new API key with the required capabilities at ${DeviceDiagnosticsScreen.TRMNL_ACCOUNT_URL}."
         }
     }
 
