@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.19.1] - 2026-11-12
+
 ### Fixed
 - **Blog post image loading for relative RSS image URLs**: Resolved root-relative and protocol-relative `<img src>` URLs (e.g. `/rails/active_storage/...`) against `https://trmnl.com` in `BlogPostRepository` and normalized cached URLs in `BlogPostsContent` so rotating blog post images load reliably.
 - **Replaced hardcoded UI colors with `MaterialTheme.colorScheme` tokens**:
@@ -1653,7 +1655,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.19.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.19.1...HEAD
+[2.19.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.19.0...2.19.1
 [2.19.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.1...2.19.0
 [2.18.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.0...2.18.1
 [2.18.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.17.0...2.18.0
