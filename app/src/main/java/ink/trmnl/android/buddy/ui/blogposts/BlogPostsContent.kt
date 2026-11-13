@@ -81,6 +81,7 @@ import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.util.formatRelativeDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -429,8 +430,15 @@ private fun ImageCarousel(
                         CircularProgressIndicator(modifier = Modifier.size(32.dp))
                     }
                 },
+                onError = { errorState ->
+                    Timber.w(
+                        errorState.result.throwable,
+                        "Failed to load blog post image: %s",
+                        imageUrls[index],
+                    )
+                },
                 error = {
-                    // Silently fail - don't show error for images
+                    // Silently fail - don't show error UI for images
                 },
             )
 
