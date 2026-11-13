@@ -21,8 +21,8 @@ android {
 
         // Google Play app versioning - keep in sync with release notes and changelog
         // See https://github.com/hossain-khan/trmnl-android-buddy/blob/main/keystore/README.md#release-keystore-production
-        versionCode = 37
-        versionName = "2.18.1"
+        versionCode = 38
+        versionName = "2.19.0"
 
         // Read key or other properties from local.properties
         val localProperties =
