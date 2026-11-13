@@ -7,8 +7,14 @@ import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.User
+import ink.trmnl.android.buddy.api.models.UserResponse
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
+import ink.trmnl.android.buddy.fakes.FakeTrmnlApiService
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
+import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -147,7 +153,11 @@ class UserAccountScreenTest {
             deviceTokenRepo.saveDeviceToken("DEV-001", "token_001")
             deviceTokenRepo.saveDeviceToken("DEV-002", "token_002")
 
-            val presenter = UserAccountPresenter(navigator, userPrefsRepo, deviceTokenRepo)
+            val apiService =
+                FakeTrmnlApiService().apply {
+                    userInfoResult = ApiResult.httpFailure(401, null)
+                }
+            val presenter = UserAccountPresenter(navigator, apiService, userPrefsRepo, deviceTokenRepo)
 
             // When: Trigger logout via presenter
             presenter.test {
@@ -183,6 +193,74 @@ class UserAccountScreenTest {
             // Then: All tokens should be removed and flag should be set
             assertThat(repository.wasCleared).isTrue()
             assertThat(repository.getAllTokens()).isEqualTo(emptyMap())
+        }
+
+    @Test
+    fun `presenter surfaces missing profile permission on HTTP 403 and navigates to AccessTokenScreen`() =
+        runTest {
+            val navigator = FakeNavigator(UserAccountScreen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val deviceTokenRepo = FakeDeviceTokenRepository()
+            userPrefsRepo.saveApiToken("trmnl_scoped_without_profile")
+
+            val apiService =
+                FakeTrmnlApiService().apply {
+                    userInfoResult = ApiResult.httpFailure(403, ApiError("Forbidden. Missing Profile capability."))
+                }
+            val presenter = UserAccountPresenter(navigator, apiService, userPrefsRepo, deviceTokenRepo)
+
+            presenter.test {
+                var state: UserAccountScreen.State
+                do {
+                    state = awaitItem()
+                } while (state.isLoading)
+
+                assertThat(state.isInsufficientProfilePermission).isTrue()
+                assertThat(state.errorMessage).isEqualTo("Forbidden. Missing Profile capability.")
+
+                state.eventSink(UserAccountScreen.Event.UpdateApiKeyClicked)
+                assertThat(navigator.awaitNextScreen()).isEqualTo(AccessTokenScreen)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `presenter loads user profile via injected apiService`() =
+        runTest {
+            val navigator = FakeNavigator(UserAccountScreen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val deviceTokenRepo = FakeDeviceTokenRepository()
+            userPrefsRepo.saveApiToken("trmnl_with_profile")
+
+            val expectedUser =
+                User(
+                    name = "Jane Doe",
+                    email = "jane@example.com",
+                    firstName = "Jane",
+                    lastName = "Doe",
+                    locale = "en",
+                    timeZone = "UTC",
+                    timeZoneIana = "UTC",
+                    utcOffset = 0,
+                    apiKey = "trmnl_with_profile",
+                )
+            val apiService =
+                FakeTrmnlApiService().apply {
+                    userInfoResult = ApiResult.success(UserResponse(data = expectedUser))
+                }
+            val presenter = UserAccountPresenter(navigator, apiService, userPrefsRepo, deviceTokenRepo)
+
+            presenter.test {
+                var state: UserAccountScreen.State
+                do {
+                    state = awaitItem()
+                } while (state.isLoading)
+
+                assertThat(state.user).isEqualTo(expectedUser)
+                assertThat(state.isInsufficientProfilePermission).isFalse()
+                assertThat(apiService.lastAuthorizationHeader).isEqualTo("Bearer trmnl_with_profile")
+                cancelAndIgnoreRemainingEvents()
+            }
         }
 }
 

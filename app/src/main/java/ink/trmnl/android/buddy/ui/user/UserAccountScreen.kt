@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -65,18 +68,22 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.R
-import ink.trmnl.android.buddy.api.TrmnlDeviceRepository
+import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.User
 import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.welcome.WelcomeScreen
 import ink.trmnl.android.buddy.util.GravatarUtils
 import ink.trmnl.android.buddy.util.PrivacyUtils
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -89,6 +96,7 @@ data object UserAccountScreen : ParcelableScreen {
         val user: User? = null,
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
+        val isInsufficientProfilePermission: Boolean = false,
         val showLogoutDialog: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
@@ -97,6 +105,8 @@ data object UserAccountScreen : ParcelableScreen {
         data object BackClicked : Event
 
         data object Refresh : Event
+
+        data object UpdateApiKeyClicked : Event
 
         data object LogoutClicked : Event
 
@@ -113,6 +123,7 @@ data object UserAccountScreen : ParcelableScreen {
 @AssistedInject
 class UserAccountPresenter(
     @Assisted private val navigator: Navigator,
+    private val apiService: TrmnlApiService,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val deviceTokenRepository: DeviceTokenRepository,
 ) : Presenter<UserAccountScreen.State> {
@@ -121,6 +132,7 @@ class UserAccountPresenter(
         var user by rememberRetained { mutableStateOf<User?>(null) }
         var isLoading by rememberRetained { mutableStateOf(true) }
         var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
+        var isInsufficientProfilePermission by rememberRetained { mutableStateOf(false) }
         var showLogoutDialog by rememberRetained { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
 
@@ -131,9 +143,11 @@ class UserAccountPresenter(
                 onSuccess = { loadedUser ->
                     user = loadedUser
                     errorMessage = null
+                    isInsufficientProfilePermission = false
                 },
-                onError = { error ->
+                onError = { error, isProfilePermissionError ->
                     errorMessage = error
+                    isInsufficientProfilePermission = isProfilePermissionError
                 },
             )
         }
@@ -142,6 +156,7 @@ class UserAccountPresenter(
             user = user,
             isLoading = isLoading,
             errorMessage = errorMessage,
+            isInsufficientProfilePermission = isInsufficientProfilePermission,
             showLogoutDialog = showLogoutDialog,
         ) { event ->
             when (event) {
@@ -156,12 +171,18 @@ class UserAccountPresenter(
                             onSuccess = { loadedUser ->
                                 user = loadedUser
                                 errorMessage = null
+                                isInsufficientProfilePermission = false
                             },
-                            onError = { error ->
+                            onError = { error, isProfilePermissionError ->
                                 errorMessage = error
+                                isInsufficientProfilePermission = isProfilePermissionError
                             },
                         )
                     }
+                }
+
+                UserAccountScreen.Event.UpdateApiKeyClicked -> {
+                    navigator.goTo(AccessTokenScreen)
                 }
 
                 UserAccountScreen.Event.LogoutClicked -> {
@@ -189,41 +210,73 @@ class UserAccountPresenter(
     private suspend fun loadUserInfo(
         onLoading: (Boolean) -> Unit,
         onSuccess: (User) -> Unit,
-        onError: (String) -> Unit,
+        onError: (String, Boolean) -> Unit,
     ) {
         onLoading(true)
 
-        // Get API token from preferences
-        val preferences = userPreferencesRepository.userPreferencesFlow.first()
-        val apiToken = preferences.apiToken
+        try {
+            // Get API token from preferences
+            val preferences = userPreferencesRepository.userPreferencesFlow.first()
+            val apiToken = preferences.apiToken
 
-        if (apiToken.isNullOrBlank()) {
+            if (apiToken.isNullOrBlank()) {
+                onLoading(false)
+                onError("API token not found. Please sign in again.", false)
+                return
+            }
+
+            // Fetch user info using DI-injected TrmnlApiService
+            when (
+                val result =
+                    withContext(Dispatchers.IO) {
+                        apiService.userInfo("Bearer $apiToken")
+                    }
+            ) {
+                is ApiResult.Success -> {
+                    onSuccess(result.value.data)
+                    onLoading(false)
+                }
+
+                is ApiResult.Failure.HttpFailure -> {
+                    onLoading(false)
+                    val serverMessage = result.error?.error?.takeIf { it.isNotBlank() }
+                    if (result.code == HTTP_FORBIDDEN) {
+                        onError(serverMessage ?: DEFAULT_PROFILE_SCOPE_MESSAGE, true)
+                    } else {
+                        onError(serverMessage ?: result.toUserMessage(), false)
+                    }
+                }
+
+                is ApiResult.Failure.ApiFailure -> {
+                    onLoading(false)
+                    val serverMessage = result.error?.error?.takeIf { it.isNotBlank() }
+                    val isProfileScopeError =
+                        serverMessage?.lowercase()?.let { lower ->
+                            lower.contains("profile") ||
+                                lower.contains("capabilities") ||
+                                lower.contains("forbidden")
+                        } == true
+                    onError(serverMessage ?: result.toUserMessage(), isProfileScopeError)
+                }
+
+                is ApiResult.Failure -> {
+                    onLoading(false)
+                    onError(result.toUserMessage(), false)
+                }
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
             onLoading(false)
-            onError("API token not found. Please sign in again.")
-            return
+            onError(e.message ?: "Failed to load account info.", false)
         }
+    }
 
-        // Create repository with API token
-        val repository =
-            TrmnlDeviceRepository(
-                apiService =
-                    ink.trmnl.android.buddy.api.TrmnlApiClient
-                        .create(),
-                apiKey = apiToken,
-            )
-
-        // Fetch user info
-        when (val result = repository.userInfo()) {
-            is ApiResult.Success -> {
-                onSuccess(result.value)
-                onLoading(false)
-            }
-
-            is ApiResult.Failure -> {
-                onLoading(false)
-                onError(result.toUserMessage())
-            }
-        }
+    private companion object {
+        const val HTTP_FORBIDDEN = 403
+        const val TRMNL_ACCOUNT_URL = "https://trmnl.com/account"
+        const val DEFAULT_PROFILE_SCOPE_MESSAGE =
+            "Your current API key does not have the Profile permission needed to view account details."
     }
 
     @CircuitInject(UserAccountScreen::class, AppScope::class)
@@ -289,6 +342,9 @@ fun UserAccountContent(
             state.errorMessage != null -> {
                 ErrorState(
                     errorMessage = state.errorMessage,
+                    isInsufficientProfilePermission = state.isInsufficientProfilePermission,
+                    onUpdateApiKey = { state.eventSink(UserAccountScreen.Event.UpdateApiKeyClicked) },
+                    onRetry = { state.eventSink(UserAccountScreen.Event.Refresh) },
                     modifier = Modifier.padding(innerPadding),
                 )
             }
@@ -335,33 +391,130 @@ private fun LoadingState(modifier: Modifier = Modifier) {
 @Composable
 private fun ErrorState(
     errorMessage: String,
+    isInsufficientProfilePermission: Boolean = false,
+    onUpdateApiKey: () -> Unit = {},
+    onRetry: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            modifier = Modifier.padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+    if (isInsufficientProfilePermission) {
+        val uriHandler = LocalUriHandler.current
+        Box(
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+            contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                painter = painterResource(R.drawable.baseline_person_24),
-                contentDescription = "Error",
-                modifier = Modifier.size(64.dp),
-                tint = MaterialTheme.colorScheme.error,
-            )
-            Text(
-                text = "Error",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.error,
-            )
-            Text(
-                text = errorMessage,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.warning_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                            contentDescription = null,
+                            modifier = Modifier.size(28.dp),
+                        )
+                        Text(
+                            text = "Profile Permission Required",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+
+                    Text(
+                        text =
+                            "Your current API key doesn't have the Profile scope permission enabled, " +
+                                "so your account details cannot be loaded.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.92f),
+                    )
+
+                    Text(
+                        text =
+                            "To fix this, create a new API key at https://trmnl.com/account with " +
+                                "Profile checked under \"What it can do\", then update your key in the app.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f),
+                    )
+
+                    Text(
+                        text = "Server response: $errorMessage",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.72f),
+                    )
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Button(
+                            onClick = { uriHandler.openUri("https://trmnl.com/account") },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Create / Update API Key")
+                        }
+
+                        OutlinedButton(
+                            onClick = onUpdateApiKey,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Update Key in App")
+                        }
+
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            TextButton(onClick = onRetry) {
+                                Text("Retry")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(
+                modifier = Modifier.padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_person_24),
+                    contentDescription = "Error",
+                    modifier = Modifier.size(64.dp),
+                    tint = MaterialTheme.colorScheme.error,
+                )
+                Text(
+                    text = "Error",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+                Text(
+                    text = errorMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Button(onClick = onRetry) {
+                    Text("Retry")
+                }
+            }
         }
     }
 }
@@ -828,6 +981,24 @@ private fun UserAccountContentSuccessPreview() {
                         ),
                     isLoading = false,
                     errorMessage = null,
+                    showLogoutDialog = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun UserAccountProfilePermissionErrorPreview() {
+    TrmnlBuddyAppTheme {
+        UserAccountContent(
+            state =
+                UserAccountScreen.State(
+                    user = null,
+                    isLoading = false,
+                    errorMessage = "Forbidden. You don't have access to this resource.",
+                    isInsufficientProfilePermission = true,
                     showLogoutDialog = false,
                     eventSink = {},
                 ),
