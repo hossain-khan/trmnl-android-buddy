@@ -183,6 +183,8 @@ class WidgetConfigurationActivity(
                         isLoading = false
                     }
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "[WidgetConfig] Error loading devices")
                 errorMessage = "Error loading devices: ${e.message}"
@@ -468,6 +470,8 @@ class WidgetConfigurationActivity(
                     Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                 setResult(Activity.RESULT_OK, resultValue)
                 finish()
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "[WidgetConfig] Error configuring widget")
                 // Reset the configuring flag so the device list reappears and the

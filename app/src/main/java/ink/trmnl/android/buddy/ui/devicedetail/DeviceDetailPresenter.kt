@@ -24,6 +24,7 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
 import ink.trmnl.android.buddy.ui.playlistitems.PlaylistItemsScreen
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -109,6 +110,8 @@ class DeviceDetailPresenter
                         withContext(Dispatchers.IO) {
                             playlistItemsRepository.getPlaylistItemsForDevice(screen.deviceNumericId)
                         }
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         // Silently handle error - playlist items will load when user clicks "View"
                     } finally {

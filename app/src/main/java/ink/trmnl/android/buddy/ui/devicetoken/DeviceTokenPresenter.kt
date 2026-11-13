@@ -15,6 +15,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 /**
@@ -76,6 +77,8 @@ class DeviceTokenPresenter
                                 deviceTokenRepository.saveDeviceToken(screen.deviceFriendlyId, trimmedToken)
                                 // Navigate back to devices list
                                 navigator.pop()
+                            } catch (e: CancellationException) {
+                                throw e
                             } catch (e: Exception) {
                                 errorMessage = "Failed to save token: ${e.message}"
                                 isSaving = false
@@ -92,6 +95,8 @@ class DeviceTokenPresenter
                                 currentToken = ""
                                 tokenInput = ""
                                 isSaving = false
+                            } catch (e: CancellationException) {
+                                throw e
                             } catch (e: Exception) {
                                 errorMessage = "Failed to clear token: ${e.message}"
                                 isSaving = false

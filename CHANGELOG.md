@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Proper `CancellationException` propagation in coroutines**: Added `catch (e: CancellationException) { throw e }` before generic `catch (e: Exception)` blocks across Circuit presenters, WorkManager workers, repositories, `WorkManagerObserver`, `WidgetConfigurationActivity`, and `ImageDownloadUtils` to preserve structured concurrency and coroutine cancellation.
+
 ## [2.19.0] - 2026-11-12
 
 ### Added

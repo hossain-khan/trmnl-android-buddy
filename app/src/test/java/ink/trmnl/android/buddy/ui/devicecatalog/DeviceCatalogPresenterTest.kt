@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.ui.devicecatalog
 
 import assertk.assertThat
 import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
@@ -24,6 +25,7 @@ import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -332,6 +334,37 @@ class DeviceCatalogPresenterTest {
 
                 assertThat(errorState.isLoading).isFalse()
                 assertThat(errorState.error).isEqualTo("API key not found. Please log in again.")
+            }
+        }
+
+    @Test
+    fun `presenter rethrows CancellationException instead of setting error state`() =
+        runTest {
+            val navigator = FakeNavigator(DeviceCatalogScreen)
+            val apiService =
+                object : FakeApiService(
+                    deviceModelsResponse = ApiResult.success(DeviceModelsResponse(data = emptyList())),
+                ) {
+                    override suspend fun getDeviceModels(authorization: String): ApiResult<DeviceModelsResponse, ApiError> =
+                        throw CancellationException("Cancelled")
+                }
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
+            val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
+
+            presenter.test {
+                // Wait for loading to finish; CancellationException must not populate error state
+                var state: DeviceCatalogScreen.State
+                do {
+                    state = awaitItem()
+                } while (state.isLoading)
+
+                assertThat(state.isLoading).isFalse()
+                assertThat(state.error).isNull()
+                assertThat(state.devices).isEmpty()
+                cancelAndIgnoreRemainingEvents()
             }
         }
 

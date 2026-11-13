@@ -29,6 +29,7 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
 import ink.trmnl.android.buddy.di.WorkerKey
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -121,6 +122,8 @@ class TrmnlWidgetRefreshWorker(
                             )
                         downloadAndSaveImage(imageUrl, imageFile)
                         imageFilePath = imageFile.absolutePath
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         Timber.e(e, "[$WORK_TAG] Failed to download image from $imageUrl")
                         downloadError = "Failed to download display image."

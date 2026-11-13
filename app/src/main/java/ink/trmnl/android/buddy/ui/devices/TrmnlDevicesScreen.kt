@@ -70,6 +70,7 @@ import ink.trmnl.android.buddy.ui.recipesanalytics.toUi
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.first
@@ -339,6 +340,8 @@ class TrmnlDevicesPresenter
                                     error.message ?: "Failed to load analytics",
                                 )
                         }
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         analyticsState =
                             RecipesAnalyticsState.Error(
@@ -629,6 +632,8 @@ class TrmnlDevicesPresenter
                                         null
                                     } // Silently fail for preview images
                                 }
+                            } catch (e: CancellationException) {
+                                throw e
                             } catch (e: Exception) {
                                 Timber.d(e, "Error loading preview for %s", device.name)
                                 null // Silently fail for preview images
@@ -667,6 +672,8 @@ class TrmnlDevicesPresenter
                         onError(result.toUserMessage(), isUnauthorized)
                     }
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 onError("Error loading devices: ${e.message}", false)
             }

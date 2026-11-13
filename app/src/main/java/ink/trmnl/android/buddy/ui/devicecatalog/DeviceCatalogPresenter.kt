@@ -19,6 +19,7 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -146,6 +147,8 @@ class DeviceCatalogPresenter
                         onError(result.toUserMessage())
                     }
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "Exception fetching device models")
                 onError("Error: ${e.message}")
