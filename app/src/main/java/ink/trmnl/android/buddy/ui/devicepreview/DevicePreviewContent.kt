@@ -76,14 +76,17 @@ fun DevicePreviewContent(
                 }
                 state.eventSink(DevicePreviewScreen.Event.DismissSnackbar)
             }
+
             is DevicePreviewScreen.DownloadState.Success -> {
                 snackbarHostState.showSnackbar(downloadState.message)
                 state.eventSink(DevicePreviewScreen.Event.DismissSnackbar)
             }
+
             is DevicePreviewScreen.DownloadState.Error -> {
                 snackbarHostState.showSnackbar(downloadState.message)
                 state.eventSink(DevicePreviewScreen.Event.DismissSnackbar)
             }
+
             DevicePreviewScreen.DownloadState.Idle -> {
                 // No action needed
             }
@@ -97,10 +100,12 @@ fun DevicePreviewContent(
                 snackbarHostState.showSnackbar(refreshState.message)
                 state.eventSink(DevicePreviewScreen.Event.DismissRefreshSnackbar)
             }
+
             is DevicePreviewScreen.RefreshState.Error -> {
                 snackbarHostState.showSnackbar(refreshState.message)
                 state.eventSink(DevicePreviewScreen.Event.DismissRefreshSnackbar)
             }
+
             DevicePreviewScreen.RefreshState.Idle,
             DevicePreviewScreen.RefreshState.Refreshing,
             -> {
@@ -116,6 +121,7 @@ fun DevicePreviewContent(
                 snackbarHostState.showSnackbar(loadNextState.message)
                 state.eventSink(DevicePreviewScreen.Event.DismissLoadNextSnackbar)
             }
+
             DevicePreviewScreen.LoadNextState.Idle,
             DevicePreviewScreen.LoadNextState.Loading,
             is DevicePreviewScreen.LoadNextState.Success,

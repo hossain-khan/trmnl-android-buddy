@@ -7,7 +7,6 @@ import coil3.ImageLoader
 import com.slack.circuit.foundation.Circuit
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import ink.trmnl.android.buddy.api.TrmnlApiService
@@ -26,7 +25,7 @@ import kotlin.reflect.KClass
 @DependencyGraph(scope = AppScope::class)
 @SingleIn(AppScope::class)
 interface AppGraph {
-    val activityProviders: Map<KClass<out Activity>, Provider<Activity>>
+    val activityProviders: Map<KClass<out Activity>, () -> Activity>
     val circuit: Circuit
     val workManager: WorkManager
     val workerFactory: AppWorkerFactory

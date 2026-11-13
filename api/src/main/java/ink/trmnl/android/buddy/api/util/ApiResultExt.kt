@@ -51,23 +51,32 @@ inline fun <T : Any, R : Any> ApiResult<T, *>.toResult(
     transform: (T) -> R,
 ): Result<R> =
     when (this) {
-        is ApiResult.Success -> Result.success(transform(value))
+        is ApiResult.Success -> {
+            Result.success(transform(value))
+        }
+
         is ApiResult.Failure.HttpFailure -> {
             val message = if (context != null) "HTTP $code: $context" else "HTTP $code"
             Result.failure(Exception(message))
         }
-        is ApiResult.Failure.NetworkFailure ->
+
+        is ApiResult.Failure.NetworkFailure -> {
             Result.failure(
                 Exception("Network error: ${error.message ?: "Unknown network issue"}"),
             )
-        is ApiResult.Failure.ApiFailure ->
+        }
+
+        is ApiResult.Failure.ApiFailure -> {
             Result.failure(
                 Exception("API error: $error"),
             )
-        is ApiResult.Failure.UnknownFailure ->
+        }
+
+        is ApiResult.Failure.UnknownFailure -> {
             Result.failure(
                 Exception("Unknown error: ${error.message ?: "Unexpected error occurred"}"),
             )
+        }
     }
 
 /**

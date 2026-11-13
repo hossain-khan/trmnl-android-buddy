@@ -1,14 +1,14 @@
 [versions]
 # Android SDK versions (https://apilevels.com/)
-compileSdk = "36" # Android 16 (Baklava)
+compileSdk = "37" # Android 17
 minSdk = "28" # Android 9 (Pie)
 targetSdk = "36" # Android 16 (Baklava)
 
 activityCompose = "1.11.0"
 # https://developer.android.com/build/releases/gradle-plugin
-agp = "8.13.0"
+agp = "9.5.1"
 assertk = "0.28.1"
-circuit = "0.33.1"
+circuit = "0.39.0"
 composeBom = "2025.09.01"
 coreKtx = "1.17.0"
 espressoCore = "3.7.0"
@@ -17,20 +17,20 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 
 # https://kotlinlang.org/docs/releases.html
-kotlin = "2.2.20"
-# The KSP (Kotlin Symbol Processing) plugin version must align with the Kotlin compiler version (2.2.20 in this case)
-ksp = "2.2.20-2.0.3"
+kotlin = "2.4.21"
+# The KSP (Kotlin Symbol Processing) plugin version
+ksp = "2.3.13"
 
 # Kotlin linter with built-in formatter
 # https://github.com/jeremymailen/kotlinter-gradle
 # https://github.com/pinterest/ktlint
-kotlinter = "5.2.0"
+kotlinter = "5.7.0"
 
 # Kover - Kotlin code coverage
 # https://github.com/Kotlin/kotlinx-kover
-kover = "0.9.9"
+kover = "0.9.11"
 lifecycleRuntimeKtx = "2.9.4"
-metro = "0.6.8"
+metro = "1.5.2"
 androidxWork = "2.10.5"
 # https://developer.android.com/topic/libraries/architecture/datastore
 androidxDataStore = "1.1.2"
@@ -77,11 +77,11 @@ browser = "1.8.0"
 
 # Robolectric - Android unit testing framework
 # https://github.com/robolectric/robolectric
-robolectric = "4.15"
+robolectric = "4.17"
 
 # AndroidX Biometric - Biometric authentication
 # https://developer.android.com/jetpack/androidx/releases/biometric
-biometric = "1.4.0-alpha07"
+biometric = "1.4.0-beta01"
 
 # Turbine - Testing library for Kotlin Flow
 # https://github.com/cashapp/turbine
@@ -216,9 +216,7 @@ glance-material3 = { group = "androidx.glance", name = "glance-material3", versi
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 
 # Kotlinx Serialization plugin
 # https://github.com/Kotlin/kotlinx.serialization

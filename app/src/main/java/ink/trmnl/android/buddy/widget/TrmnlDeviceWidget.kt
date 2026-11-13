@@ -160,23 +160,30 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     .padding(8.dp),
         ) {
             when {
-                deviceFriendlyId == null -> UnconfiguredContent(appWidgetId = appWidgetId)
-                errorMessage != null ->
+                deviceFriendlyId == null -> {
+                    UnconfiguredContent(appWidgetId = appWidgetId)
+                }
+
+                errorMessage != null -> {
                     ErrorContent(
                         deviceName = deviceName,
                         appWidgetId = appWidgetId,
                         isRefreshing = isRefreshing,
                     )
+                }
 
-                bitmap != null ->
+                bitmap != null -> {
                     DisplayContent(
                         deviceName = deviceName,
                         bitmap = bitmap,
                         appWidgetId = appWidgetId,
                         isRefreshing = isRefreshing,
                     )
+                }
 
-                else -> LoadingContent(deviceName = deviceName)
+                else -> {
+                    LoadingContent(deviceName = deviceName)
+                }
             }
         }
     }

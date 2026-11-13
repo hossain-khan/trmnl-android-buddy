@@ -34,6 +34,9 @@ class TestBatteryCollectionWorkerFactory(
                     batteryHistoryRepository = batteryHistoryRepository,
                 )
             }
-            else -> null
+
+            else -> {
+                null
+            }
         }
 }

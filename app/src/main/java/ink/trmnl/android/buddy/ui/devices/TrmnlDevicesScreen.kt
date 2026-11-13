@@ -24,18 +24,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.foundation.rememberAnsweringNavigator
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.rememberAnsweringNavigator
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
@@ -97,7 +97,7 @@ data class DevicePreviewInfo(
  * Supports privacy mode to blur sensitive information and uses Material You theming.
  */
 @Parcelize
-data object TrmnlDevicesScreen : Screen {
+data object TrmnlDevicesScreen : ParcelableScreen {
     /**
      * UI state for the devices dashboard.
      *
@@ -258,7 +258,7 @@ data object TrmnlDevicesScreen : Screen {
  * @see DeviceDetailScreen Destination screen for device-specific details
  * @see ContentHubScreen Destination screen for viewing all content
  */
-@Inject
+@AssistedInject
 class TrmnlDevicesPresenter
     constructor(
         @Assisted private val navigator: Navigator,
@@ -563,6 +563,7 @@ class TrmnlDevicesPresenter
                                 is ContentItem.Announcement -> {
                                     announcementRepository.markAsRead(event.item.id)
                                 }
+
                                 is ContentItem.BlogPost -> {
                                     blogPostRepository.markAsRead(event.item.id)
                                 }
@@ -623,7 +624,10 @@ class TrmnlDevicesPresenter
                                             )
                                         }
                                     }
-                                    else -> null // Silently fail for preview images
+
+                                    else -> {
+                                        null
+                                    } // Silently fail for preview images
                                 }
                             } catch (e: Exception) {
                                 Timber.d(e, "Error loading preview for %s", device.name)

@@ -129,19 +129,22 @@ internal fun ClearBatteryHistoryCard(
  */
 private fun getMessageForReason(reason: BatteryHistoryAnalyzer.ClearHistoryReason): String =
     when (reason) {
-        BatteryHistoryAnalyzer.ClearHistoryReason.CHARGING_DETECTED ->
+        BatteryHistoryAnalyzer.ClearHistoryReason.CHARGING_DETECTED -> {
             "We detected that your device has likely been charged (battery level increased by more than 50%). " +
                 "This can affect battery drain predictions. Consider clearing the history to start fresh tracking."
+        }
 
-        BatteryHistoryAnalyzer.ClearHistoryReason.STALE_DATA ->
+        BatteryHistoryAnalyzer.ClearHistoryReason.STALE_DATA -> {
             "Your battery history data is older than 6 months. " +
                 "Old data may not accurately reflect current battery health. " +
                 "Consider clearing the history to start fresh tracking."
+        }
 
-        BatteryHistoryAnalyzer.ClearHistoryReason.BOTH ->
+        BatteryHistoryAnalyzer.ClearHistoryReason.BOTH -> {
             "We detected charging events and your battery history is older than 6 months. " +
                 "This data may not accurately reflect current battery health. " +
                 "Consider clearing the history to start fresh tracking."
+        }
     }
 
 /**
@@ -213,14 +216,17 @@ private fun ClearHistoryConfirmationDialog(
  */
 private fun getDialogReasonText(reason: BatteryHistoryAnalyzer.ClearHistoryReason): String =
     when (reason) {
-        BatteryHistoryAnalyzer.ClearHistoryReason.CHARGING_DETECTED ->
+        BatteryHistoryAnalyzer.ClearHistoryReason.CHARGING_DETECTED -> {
             "Reason: Charging event detected in history."
+        }
 
-        BatteryHistoryAnalyzer.ClearHistoryReason.STALE_DATA ->
+        BatteryHistoryAnalyzer.ClearHistoryReason.STALE_DATA -> {
             "Reason: Data is older than 6 months."
+        }
 
-        BatteryHistoryAnalyzer.ClearHistoryReason.BOTH ->
+        BatteryHistoryAnalyzer.ClearHistoryReason.BOTH -> {
             "Reason: Charging event detected and data is older than 6 months."
+        }
     }
 
 // Preview Composables

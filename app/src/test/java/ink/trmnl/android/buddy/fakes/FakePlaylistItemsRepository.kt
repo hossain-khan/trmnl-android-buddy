@@ -129,8 +129,14 @@ class FakePlaylistItemsRepository(
             updateVisibilityError != null -> {
                 Result.failure(Exception(updateVisibilityError))
             }
-            updateVisibilityResult != null -> updateVisibilityResult!!
-            else -> Result.success(null)
+
+            updateVisibilityResult != null -> {
+                updateVisibilityResult!!
+            }
+
+            else -> {
+                Result.success(null)
+            }
         }
     }
 

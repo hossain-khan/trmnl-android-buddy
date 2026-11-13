@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.announcements
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import ink.trmnl.android.buddy.content.db.AnnouncementEntity
 import kotlinx.parcelize.Parcelize
 
@@ -14,7 +14,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class AnnouncementsScreen(
     val isEmbedded: Boolean = false,
-) : Screen {
+) : ParcelableScreen {
     data class State(
         val announcements: List<AnnouncementEntity> = emptyList(),
         val isLoading: Boolean = true,

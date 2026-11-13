@@ -16,7 +16,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.PlaylistItemsRepository
 import ink.trmnl.android.buddy.data.getCurrentlyPlayingItem
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
@@ -68,7 +68,7 @@ import kotlinx.coroutines.withContext
  * @see BatteryChartPresenter Separate presenter for battery history management
  * @see PlaylistItemsRepository Shared repository with intelligent caching
  */
-@Inject
+@AssistedInject
 class DeviceDetailPresenter
     constructor(
         @Assisted private val screen: DeviceDetailScreen,
@@ -172,7 +172,10 @@ class DeviceDetailPresenter
                 upNextItem = upNextItem,
             ) { event ->
                 when (event) {
-                    DeviceDetailScreen.Event.BackClicked -> navigator.pop()
+                    DeviceDetailScreen.Event.BackClicked -> {
+                        navigator.pop()
+                    }
+
                     DeviceDetailScreen.Event.SettingsClicked -> {
                         navigator.goTo(
                             DeviceTokenScreen(
@@ -181,6 +184,7 @@ class DeviceDetailPresenter
                             ),
                         )
                     }
+
                     DeviceDetailScreen.Event.ViewPlaylistItems -> {
                         navigator.goTo(
                             PlaylistItemsScreen(

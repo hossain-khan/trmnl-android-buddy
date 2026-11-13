@@ -471,26 +471,29 @@ private fun OverallHealthStatus(
 
     val (bgColor, fgColor, label) =
         when (overallState) {
-            "healthy" ->
+            "healthy" -> {
                 Triple(
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                     MaterialTheme.colorScheme.primary,
                     "Healthy",
                 )
+            }
 
-            "degraded" ->
+            "degraded" -> {
                 Triple(
                     MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
                     MaterialTheme.colorScheme.tertiary,
                     "Degraded",
                 )
+            }
 
-            else ->
+            else -> {
                 Triple(
                     MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
                     MaterialTheme.colorScheme.error,
                     "Erroring",
                 )
+            }
         }
 
     AssistChip(
@@ -560,24 +563,29 @@ private fun HealthBadge(
 ) {
     val (bgColor, fgColor, label) =
         when (state) {
-            "healthy" ->
+            "healthy" -> {
                 Triple(
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                     MaterialTheme.colorScheme.primary,
                     "Healthy",
                 )
-            "degraded" ->
+            }
+
+            "degraded" -> {
                 Triple(
                     MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
                     MaterialTheme.colorScheme.tertiary,
                     "Degraded",
                 )
-            else ->
+            }
+
+            else -> {
                 Triple(
                     MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
                     MaterialTheme.colorScheme.error,
                     "Erroring",
                 )
+            }
         }
 
     AssistChip(

@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.devicecatalog
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import kotlinx.parcelize.Parcelize
 
@@ -13,7 +13,7 @@ import kotlinx.parcelize.Parcelize
  * by device kind (TRMNL, Kindle, BYOD).
  */
 @Parcelize
-data object DeviceCatalogScreen : Screen {
+data object DeviceCatalogScreen : ParcelableScreen {
     /**
      * UI state for the device catalog screen.
      *

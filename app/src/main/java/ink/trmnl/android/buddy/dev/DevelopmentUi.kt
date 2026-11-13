@@ -568,14 +568,17 @@ private fun AnalyticsTestingSection(
                     supportingContent = {
                         val stateLabel =
                             when (analyticsState) {
-                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Success ->
+                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Success -> {
                                     "Loaded (${analyticsState.data.totalPlugins} plugins)"
+                                }
 
-                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Loading ->
+                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Loading -> {
                                     "Loading..."
+                                }
 
-                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Error ->
+                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Error -> {
                                     "Error: ${analyticsState.message}"
+                                }
                             }
                         Text(
                             text = "State: $stateLabel",

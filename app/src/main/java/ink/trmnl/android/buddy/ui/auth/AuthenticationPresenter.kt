@@ -17,7 +17,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.security.BiometricAuthHelper
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
@@ -53,19 +53,26 @@ import kotlinx.coroutines.launch
  * @see AuthenticationScreen Screen definition with State and Event sealed interfaces
  * @see BiometricAuthHelper Android biometric authentication wrapper
  */
-@Inject
+@AssistedInject
 class AuthenticationPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val biometricAuthHelper: BiometricAuthHelper,
     ) : Presenter<AuthenticationScreen.State> {
+        internal var contextOverride: (() -> Context?)? = null
+
         @Composable
         override fun present(): AuthenticationScreen.State {
             var isAuthenticationAvailable by remember { mutableStateOf(false) }
             var showRetryPrompt by remember { mutableStateOf(false) }
             val coroutineScope = rememberCoroutineScope()
-            val context = runCatching { LocalContext.current }.getOrNull()
+            val context =
+                if (contextOverride != null) {
+                    contextOverride?.invoke()
+                } else {
+                    LocalContext.current
+                }
 
             // Check authentication availability
             LaunchedEffect(Unit) {

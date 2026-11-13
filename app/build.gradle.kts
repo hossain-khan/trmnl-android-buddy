@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
@@ -126,7 +125,6 @@ dependencies {
     implementation(libs.circuitx.effects)
     implementation(libs.circuitx.gestureNav)
     implementation(libs.circuitx.overlays)
-    ksp(libs.circuit.codegen)
 
     implementation(libs.javax.inject)
 
@@ -192,18 +190,18 @@ dependencies {
 }
 
 ksp {
-    // Circuit-KSP for Metro
-    arg("circuit.codegen.mode", "metro")
-    
     // Metro 0.4.0 feature: Enable scoped inject class hints for better performance
     // This allows child graphs to depend on parent-scoped dependencies that are unused
     // See https://zacsweers.github.io/metro/dependency-graphs/
     arg("metro.enableScopedInjectClassHints", "true")
 }
 
-
 metro {
     // Enable Metro debug mode for better logging and debugging support
     // See https://zacsweers.github.io/metro/debugging/
-  debug.set(true)
+    debug.set(true)
+
+    // Use Metro's built-in Circuit codegen instead of Circuit's KSP processor
+    // See https://zacsweers.github.io/metro/circuit/
+    enableCircuitCodegen.set(true)
 }

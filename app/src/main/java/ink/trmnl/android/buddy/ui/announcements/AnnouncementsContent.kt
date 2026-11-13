@@ -421,12 +421,17 @@ private fun FilterChips(
                         painter =
                             painterResource(
                                 when (filter) {
-                                    AnnouncementsScreen.Filter.ALL ->
+                                    AnnouncementsScreen.Filter.ALL -> {
                                         R.drawable.list_24dp_e3e3e3_fill0_wght400_grad0_opsz24
-                                    AnnouncementsScreen.Filter.UNREAD ->
+                                    }
+
+                                    AnnouncementsScreen.Filter.UNREAD -> {
                                         R.drawable.markunread_mailbox_24dp_e8eaed_fill0_wght400_grad0_opsz24
-                                    AnnouncementsScreen.Filter.READ ->
+                                    }
+
+                                    AnnouncementsScreen.Filter.READ -> {
                                         R.drawable.done_all_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                    }
                                 },
                             ),
                         contentDescription = null,

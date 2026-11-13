@@ -17,7 +17,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.BookmarkRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
 import kotlinx.coroutines.launch
@@ -31,7 +31,7 @@ import timber.log.Timber
  * - Handling bookmark removal
  * - Navigation
  */
-@Inject
+@AssistedInject
 class BookmarkedRecipesPresenter
     constructor(
         @Assisted private val navigator: Navigator,

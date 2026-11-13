@@ -217,7 +217,11 @@ class WidgetConfigurationActivity(
                             )
                         }
                     }
-                    isLoading -> CircularProgressIndicator()
+
+                    isLoading -> {
+                        CircularProgressIndicator()
+                    }
+
                     errorMessage != null -> {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -522,6 +526,7 @@ class WidgetConfigurationActivity(
                                 null
                             }
                         }
+
                         else -> {
                             Timber.d("[WidgetConfig] Inline fetch API call failed — worker will retry")
                             null

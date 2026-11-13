@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.bookmarkedrecipes
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import ink.trmnl.android.buddy.api.models.Recipe
 import kotlinx.parcelize.Parcelize
 
@@ -13,7 +13,7 @@ import kotlinx.parcelize.Parcelize
  * Users can view bookmarked recipes, navigate to recipe details, or remove bookmarks.
  */
 @Parcelize
-data object BookmarkedRecipesScreen : Screen {
+data object BookmarkedRecipesScreen : ParcelableScreen {
     /**
      * UI state for the Bookmarked Recipes Screen.
      *

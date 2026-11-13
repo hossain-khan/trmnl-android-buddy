@@ -54,9 +54,15 @@ enum class ColorCapability {
 val DeviceModel.colorCapability: ColorCapability
     get() =
         when {
-            colors > 1000 -> ColorCapability.FULL_COLOR // >1000 colors
-            colors > 16 -> ColorCapability.GRAYSCALE // 17-1000 colors
-            colors >= 4 -> ColorCapability.MULTI_TONE // 4-16 colors
+            colors > 1000 -> ColorCapability.FULL_COLOR
+
+            // >1000 colors
+            colors > 16 -> ColorCapability.GRAYSCALE
+
+            // 17-1000 colors
+            colors >= 4 -> ColorCapability.MULTI_TONE
+
+            // 4-16 colors
             else -> ColorCapability.MONOCHROME // 2-3 colors
         }
 

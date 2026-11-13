@@ -2,8 +2,8 @@ package ink.trmnl.android.buddy.ui.devicepreview
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.PopResult
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelablePopResult
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -15,7 +15,7 @@ data class DevicePreviewScreen(
     val deviceId: String,
     val deviceName: String,
     val imageUrl: String,
-) : Screen {
+) : ParcelableScreen {
     /**
      * Result returned when the preview screen is popped.
      * Contains the device ID and new image URL if the preview was refreshed.
@@ -24,7 +24,7 @@ data class DevicePreviewScreen(
     data class Result(
         val deviceId: String,
         val newImageUrl: String?,
-    ) : PopResult
+    ) : ParcelablePopResult
 
     data class State(
         val deviceId: String,

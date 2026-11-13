@@ -19,23 +19,27 @@ object RecipesAnalyticsMockData {
      */
     fun generateMockAnalytics(scenario: DevelopmentScreen.AnalyticsScenario): RecipesAnalyticsUi? =
         when (scenario) {
-            DevelopmentScreen.AnalyticsScenario.NoRecipes -> null
+            DevelopmentScreen.AnalyticsScenario.NoRecipes -> {
+                null
+            }
 
-            DevelopmentScreen.AnalyticsScenario.AllHealthy ->
+            DevelopmentScreen.AnalyticsScenario.AllHealthy -> {
                 createAnalytics(
                     pluginCount = 5,
                     healthyPercent = 100.0,
                     degradedPercent = 0.0,
                     erroringPercent = 0.0,
                 )
+            }
 
-            DevelopmentScreen.AnalyticsScenario.AllUnhealthy ->
+            DevelopmentScreen.AnalyticsScenario.AllUnhealthy -> {
                 createAnalytics(
                     pluginCount = 5,
                     healthyPercent = 0.0,
                     degradedPercent = 50.0,
                     erroringPercent = 50.0,
                 )
+            }
 
             is DevelopmentScreen.AnalyticsScenario.PartiallyHealthy -> {
                 val pluginCount = scenario.unhealthyCount + 3
@@ -50,9 +54,17 @@ object RecipesAnalyticsMockData {
                 )
             }
 
-            DevelopmentScreen.AnalyticsScenario.Loading -> null // Handled separately in presenter
+            DevelopmentScreen.AnalyticsScenario.Loading -> {
+                null
+            }
 
-            DevelopmentScreen.AnalyticsScenario.Error -> null // Handled separately in presenter
+            // Handled separately in presenter
+
+            DevelopmentScreen.AnalyticsScenario.Error -> {
+                null
+            }
+
+            // Handled separately in presenter
 
             is DevelopmentScreen.AnalyticsScenario.LargeDataset -> {
                 val unhealthyCount = (scenario.recipeCount * scenario.unhealthyPercent) / 100

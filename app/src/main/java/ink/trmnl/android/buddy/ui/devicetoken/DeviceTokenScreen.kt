@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.devicetoken
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -17,7 +17,7 @@ import kotlinx.parcelize.Parcelize
 data class DeviceTokenScreen(
     val deviceFriendlyId: String,
     val deviceName: String,
-) : Screen {
+) : ParcelableScreen {
     data class State(
         val deviceFriendlyId: String = "",
         val deviceName: String = "",

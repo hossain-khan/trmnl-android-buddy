@@ -24,7 +24,7 @@ class TestTrmnlWidgetRefreshWorkerFactory(
         workerParameters: WorkerParameters,
     ): ListenableWorker? =
         when (workerClassName) {
-            TrmnlWidgetRefreshWorker::class.java.name ->
+            TrmnlWidgetRefreshWorker::class.java.name -> {
                 TrmnlWidgetRefreshWorker(
                     context = appContext,
                     params = workerParameters,
@@ -32,7 +32,10 @@ class TestTrmnlWidgetRefreshWorkerFactory(
                     deviceTokenRepository = deviceTokenRepository,
                     okHttpClient = okHttpClient,
                 )
+            }
 
-            else -> null
+            else -> {
+                null
+            }
         }
 }

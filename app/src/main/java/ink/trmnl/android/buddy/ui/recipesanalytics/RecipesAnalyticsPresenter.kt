@@ -7,7 +7,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 
 /**
  * Presenter for [RecipesAnalyticsScreen].
@@ -15,7 +15,7 @@ import dev.zacsweers.metro.Inject
  * Handles navigation events and passes the pre-fetched analytics data
  * directly to the UI without making additional API calls.
  */
-@Inject
+@AssistedInject
 class RecipesAnalyticsPresenter(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: RecipesAnalyticsScreen,

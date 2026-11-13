@@ -193,7 +193,11 @@ class UserAccountScreenTest {
  */
 private fun redactApiKey(apiKey: String): String =
     when {
-        apiKey.length <= 8 -> "****" // Too short, fully redact
+        apiKey.length <= 8 -> {
+            "****"
+        }
+
+        // Too short, fully redact
         else -> {
             val prefix = apiKey.take(4)
             val suffix = apiKey.takeLast(4)

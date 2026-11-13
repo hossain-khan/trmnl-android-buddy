@@ -235,10 +235,11 @@ class PlaylistItemsRepositoryImpl
                     Result.success(items)
                 }
 
-                is ApiResult.Failure ->
+                is ApiResult.Failure -> {
                     Result.failure(
                         Exception(result.toUserMessage()),
                     )
+                }
             }
         }
 
@@ -347,6 +348,7 @@ class PlaylistItemsRepositoryImpl
                             Timber.d("API confirmed visibility update for item $itemId")
                             Result.success(updatedItem)
                         }
+
                         is ApiResult.Failure -> {
                             // Revert optimistic update on API failure
                             cache = CachedData(originalItems, cache?.timestamp ?: Clock.System.now())

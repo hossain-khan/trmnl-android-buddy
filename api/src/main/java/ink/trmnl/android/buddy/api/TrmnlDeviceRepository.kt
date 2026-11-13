@@ -159,7 +159,10 @@ class TrmnlDeviceRepository(
                         } ?: items
                     ApiResult.success(filteredItems)
                 }
-                is ApiResult.Failure -> result
+
+                is ApiResult.Failure -> {
+                    result
+                }
             }
         }
 
@@ -176,7 +179,10 @@ class TrmnlDeviceRepository(
                 val lowBatteryDevices = result.value.filter { it.isBatteryLow() }
                 ApiResult.success(lowBatteryDevices)
             }
-            is ApiResult.Failure -> result
+
+            is ApiResult.Failure -> {
+                result
+            }
         }
 
     /**
@@ -192,7 +198,10 @@ class TrmnlDeviceRepository(
                 val weakWifiDevices = result.value.filter { it.isWifiWeak() }
                 ApiResult.success(weakWifiDevices)
             }
-            is ApiResult.Failure -> result
+
+            is ApiResult.Failure -> {
+                result
+            }
         }
 
     /**

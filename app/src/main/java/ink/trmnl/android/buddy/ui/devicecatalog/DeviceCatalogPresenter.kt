@@ -14,7 +14,7 @@ import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.DeviceModel
 import ink.trmnl.android.buddy.api.util.toUserMessage
@@ -32,7 +32,7 @@ import timber.log.Timber
  * - Handling navigation events
  * - Managing loading and error states
  */
-@Inject
+@AssistedInject
 class DeviceCatalogPresenter
     constructor(
         @Assisted private val navigator: Navigator,

@@ -58,12 +58,12 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.TrmnlDeviceRepository
 import ink.trmnl.android.buddy.api.models.User
@@ -84,7 +84,7 @@ import kotlinx.parcelize.Parcelize
  * Shows user profile data from the /me endpoint.
  */
 @Parcelize
-data object UserAccountScreen : Screen {
+data object UserAccountScreen : ParcelableScreen {
     data class State(
         val user: User? = null,
         val isLoading: Boolean = true,
@@ -110,7 +110,7 @@ data object UserAccountScreen : Screen {
  * Presenter for UserAccountScreen.
  * Fetches user info from API and manages state.
  */
-@Inject
+@AssistedInject
 class UserAccountPresenter(
     @Assisted private val navigator: Navigator,
     private val userPreferencesRepository: UserPreferencesRepository,
@@ -148,6 +148,7 @@ class UserAccountPresenter(
                 UserAccountScreen.Event.BackClicked -> {
                     navigator.pop()
                 }
+
                 UserAccountScreen.Event.Refresh -> {
                     coroutineScope.launch {
                         loadUserInfo(
@@ -162,12 +163,15 @@ class UserAccountPresenter(
                         )
                     }
                 }
+
                 UserAccountScreen.Event.LogoutClicked -> {
                     showLogoutDialog = true
                 }
+
                 UserAccountScreen.Event.DismissLogoutDialog -> {
                     showLogoutDialog = false
                 }
+
                 UserAccountScreen.Event.ConfirmLogout -> {
                     showLogoutDialog = false
                     coroutineScope.launch {
@@ -214,6 +218,7 @@ class UserAccountPresenter(
                 onSuccess(result.value)
                 onLoading(false)
             }
+
             is ApiResult.Failure -> {
                 onLoading(false)
                 onError(result.toUserMessage())
@@ -277,17 +282,23 @@ fun UserAccountContent(
         },
     ) { innerPadding ->
         when {
-            state.isLoading -> LoadingState(modifier = Modifier.padding(innerPadding))
-            state.errorMessage != null ->
+            state.isLoading -> {
+                LoadingState(modifier = Modifier.padding(innerPadding))
+            }
+
+            state.errorMessage != null -> {
                 ErrorState(
                     errorMessage = state.errorMessage,
                     modifier = Modifier.padding(innerPadding),
                 )
-            state.user != null ->
+            }
+
+            state.user != null -> {
                 UserAccountSuccessContent(
                     user = state.user,
                     modifier = Modifier.padding(innerPadding),
                 )
+            }
         }
 
         if (state.showLogoutDialog) {

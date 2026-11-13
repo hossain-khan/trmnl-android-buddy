@@ -6,8 +6,8 @@ import androidx.work.WorkerParameters
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
@@ -25,7 +25,7 @@ import timber.log.Timber
  * Shows notification when new announcements are fetched (if enabled in preferences).
  * Uses exponential backoff for retry on failure.
  */
-@Inject
+@AssistedInject
 class AnnouncementSyncWorker(
     context: Context,
     @Assisted params: WorkerParameters,

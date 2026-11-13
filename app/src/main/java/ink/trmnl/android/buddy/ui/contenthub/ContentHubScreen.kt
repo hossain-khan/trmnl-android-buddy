@@ -46,11 +46,11 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
@@ -72,7 +72,7 @@ import kotlinx.parcelize.Parcelize
  * - Single TopAppBar with tab-specific actions (no nested toolbars)
  */
 @Parcelize
-data object ContentHubScreen : Screen {
+data object ContentHubScreen : ParcelableScreen {
     /**
      * Sealed class representing available tabs in the content hub.
      */
@@ -116,7 +116,7 @@ data object ContentHubScreen : Screen {
  * Presenter for ContentHubScreen.
  * Manages tab selection state and fetches unread counts for each tab.
  */
-@Inject
+@AssistedInject
 class ContentHubPresenter
     constructor(
         @Assisted private val navigator: Navigator,
@@ -500,11 +500,13 @@ private fun ContentHubContentPreview(
                     painter =
                         painterResource(
                             when (state.selectedTab) {
-                                ContentHubScreen.Tab.ANNOUNCEMENTS ->
+                                ContentHubScreen.Tab.ANNOUNCEMENTS -> {
                                     R.drawable.campaign_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                }
 
-                                ContentHubScreen.Tab.BLOG_POSTS ->
+                                ContentHubScreen.Tab.BLOG_POSTS -> {
                                     R.drawable.newspaper_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                                }
                             },
                         ),
                     contentDescription = null,

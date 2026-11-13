@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.devicedetail
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -45,7 +45,7 @@ data class DeviceDetailScreen(
     val rssi: Int?,
     val refreshRate: Int?, // in seconds, null if not available
     val deviceNumericId: Int? = null, // Numeric device ID for API calls, null if not available
-) : Screen {
+) : ParcelableScreen {
     /**
      * UI state for the device detail screen.
      *

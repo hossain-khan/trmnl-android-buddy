@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.devicedetail
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import ink.trmnl.android.buddy.data.battery.BatteryHistoryAnalyzer
 import ink.trmnl.android.buddy.data.database.BatteryHistoryEntity
 import kotlinx.parcelize.Parcelize
@@ -36,7 +36,7 @@ data class BatteryChartScreen(
     val deviceName: String,
     val currentBattery: Double,
     val currentVoltage: Double?,
-) : Screen {
+) : ParcelableScreen {
     /**
      * UI state for the battery chart section.
      *
