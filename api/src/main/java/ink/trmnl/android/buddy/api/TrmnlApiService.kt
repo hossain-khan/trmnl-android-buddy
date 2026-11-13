@@ -343,6 +343,7 @@ interface TrmnlApiService {
      * }
      * ```
      */
+    @DecodeErrorBody
     @GET("me")
     suspend fun userInfo(
         @Header("Authorization") authorization: String,

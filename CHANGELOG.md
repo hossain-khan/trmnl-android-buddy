@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **API Key Capability Prompt**: Surfaces HTTP 403 legacy/insufficient-capability key errors with direct actions to create a new key at `trmnl.com/account` or update the key in-app.
 - Diagnostics summary card on Device Details with prefetched next check-in time.
 
+### Fixed
+- **Account screen missing `Profile` scope handling & logging**:
+  - Injected `TrmnlApiService` via Metro DI in `UserAccountPresenter` instead of creating an unlogged `TrmnlApiClient.create()` instance, restoring OkHttp debug logging for `GET /api/me`.
+  - Added `@DecodeErrorBody` to `TrmnlApiService.userInfo()`.
+  - Added a Material 3 **Profile Permission Required** card on `UserAccountScreen` when `GET /api/me` returns HTTP `403`, explaining that the **Profile** capability is required and providing actions to open `trmnl.com/account`, update the key in-app, or retry.
+
 ## [2.19.1] - 2026-11-12
 
 ### Fixed
