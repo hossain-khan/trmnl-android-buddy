@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.20.0] - 2026-11-13
+
 ### Added
 - **Device Diagnostics & Check-in Forecast** (`DeviceDiagnosticsScreen`) accessible from Device Details:
   - **Forecast tab**: Shows the next expected wake-up time, scheduled screen, and upcoming check-in steps (`12h`, `24h`, `48h`).
@@ -1684,7 +1686,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.19.1...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.20.0...HEAD
+[2.20.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.19.1...2.20.0
 [2.19.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.19.0...2.19.1
 [2.19.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.1...2.19.0
 [2.18.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.0...2.18.1
