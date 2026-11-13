@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Device Catalog brand logo & filter (`Waveshare`)**: Added `DeviceKind.WAVESHARE` (`waveshare_logo.png`), filter chip, and `waveshare_` device model mapping in `DeviceCatalogScreen`.
+- **Device Catalog Info & Statistics Sheet**: Added an info icon button in the `DeviceCatalogScreen` top app bar that opens a bottom sheet showing catalog summary, brand and color capability distribution stats (with tap-to-filter support), and `GET https://trmnl.com/api/models` source attribution.
 
 ### Changed
 - Updated Waveshare brand logo (`waveshare_logo.png`) to higher-resolution asset.

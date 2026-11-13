@@ -77,6 +77,7 @@ fun DeviceCatalogContent(
     modifier: Modifier = Modifier,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val infoSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -90,6 +91,16 @@ fun DeviceCatalogContent(
                             painter = painterResource(R.drawable.arrow_back_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                             contentDescription = "Back",
                         )
+                    }
+                },
+                actions = {
+                    if (state.devices.isNotEmpty()) {
+                        IconButton(onClick = { state.eventSink(DeviceCatalogScreen.Event.InfoClicked) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.info_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Catalog info and statistics",
+                            )
+                        }
                     }
                 },
             )
@@ -141,6 +152,33 @@ fun DeviceCatalogContent(
                         scope.launch {
                             sheetState.hide()
                             state.eventSink(DeviceCatalogScreen.Event.DismissBottomSheet)
+                        }
+                    },
+                )
+            }
+        }
+
+        // Bottom sheet for catalog info and statistics
+        if (state.showInfoSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    state.eventSink(DeviceCatalogScreen.Event.DismissInfoSheet)
+                },
+                sheetState = infoSheetState,
+            ) {
+                DeviceCatalogInfoBottomSheet(
+                    devices = state.devices,
+                    onFilterSelected = { kind ->
+                        scope.launch {
+                            infoSheetState.hide()
+                            state.eventSink(DeviceCatalogScreen.Event.FilterSelected(kind))
+                            state.eventSink(DeviceCatalogScreen.Event.DismissInfoSheet)
+                        }
+                    },
+                    onDismiss = {
+                        scope.launch {
+                            infoSheetState.hide()
+                            state.eventSink(DeviceCatalogScreen.Event.DismissInfoSheet)
                         }
                     },
                 )

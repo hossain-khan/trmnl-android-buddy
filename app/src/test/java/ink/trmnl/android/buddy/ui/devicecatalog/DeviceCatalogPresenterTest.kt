@@ -100,6 +100,39 @@ class DeviceCatalogPresenterTest {
         }
 
     @Test
+    fun `presenter toggles info bottom sheet on InfoClicked and DismissInfoSheet`() =
+        runTest {
+            val navigator = FakeNavigator(DeviceCatalogScreen)
+            val deviceModels = createTestDeviceModels()
+            val apiService =
+                FakeApiService(
+                    deviceModelsResponse = ApiResult.success(DeviceModelsResponse(data = deviceModels)),
+                )
+            val repository =
+                FakeUserPreferencesRepository(
+                    initialPreferences = UserPreferences(apiToken = "test_token"),
+                )
+            val presenter = DeviceCatalogPresenter(navigator, apiService, repository)
+
+            presenter.test {
+                var loadedState: DeviceCatalogScreen.State
+                do {
+                    loadedState = awaitItem()
+                } while (loadedState.devices.isEmpty())
+
+                assertThat(loadedState.showInfoSheet).isFalse()
+
+                loadedState.eventSink(DeviceCatalogScreen.Event.InfoClicked)
+                val openState = awaitItem()
+                assertThat(openState.showInfoSheet).isTrue()
+
+                openState.eventSink(DeviceCatalogScreen.Event.DismissInfoSheet)
+                val closedState = awaitItem()
+                assertThat(closedState.showInfoSheet).isFalse()
+            }
+        }
+
+    @Test
     fun `presenter handles filter selection to Kindle`() =
         runTest {
             val navigator = FakeNavigator(DeviceCatalogScreen)

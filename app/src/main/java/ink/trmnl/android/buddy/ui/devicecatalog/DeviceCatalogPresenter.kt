@@ -47,6 +47,7 @@ class DeviceCatalogPresenter
             var isLoading by rememberRetained { mutableStateOf(false) }
             var error by rememberRetained { mutableStateOf<String?>(null) }
             var selectedDevice by rememberRetained { mutableStateOf<DeviceModel?>(null) }
+            var showInfoSheet by rememberRetained { mutableStateOf(false) }
             val coroutineScope = rememberCoroutineScope()
 
             // Fetch device models on initial load
@@ -69,6 +70,7 @@ class DeviceCatalogPresenter
                 isLoading = isLoading,
                 error = error,
                 selectedDevice = selectedDevice,
+                showInfoSheet = showInfoSheet,
             ) { event ->
                 when (event) {
                     DeviceCatalogScreen.Event.BackClicked -> {
@@ -85,6 +87,14 @@ class DeviceCatalogPresenter
 
                     DeviceCatalogScreen.Event.DismissBottomSheet -> {
                         selectedDevice = null
+                    }
+
+                    DeviceCatalogScreen.Event.InfoClicked -> {
+                        showInfoSheet = true
+                    }
+
+                    DeviceCatalogScreen.Event.DismissInfoSheet -> {
+                        showInfoSheet = false
                     }
 
                     DeviceCatalogScreen.Event.RetryClicked -> {

@@ -22,6 +22,7 @@ data object DeviceCatalogScreen : ParcelableScreen {
      * @property isLoading Whether data is being loaded from API
      * @property error Error message if API call failed
      * @property selectedDevice Device currently shown in bottom sheet (null = bottom sheet hidden)
+     * @property showInfoSheet Whether the catalog info & statistics bottom sheet is visible
      * @property eventSink Event handler for user interactions
      */
     data class State(
@@ -30,6 +31,7 @@ data object DeviceCatalogScreen : ParcelableScreen {
         val isLoading: Boolean = false,
         val error: String? = null,
         val selectedDevice: DeviceModel? = null,
+        val showInfoSheet: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -69,6 +71,16 @@ data object DeviceCatalogScreen : ParcelableScreen {
          * User dismissed the device details bottom sheet.
          */
         data object DismissBottomSheet : Event
+
+        /**
+         * User clicked the info icon in the app bar to view catalog stats and data source.
+         */
+        data object InfoClicked : Event
+
+        /**
+         * User dismissed the catalog info bottom sheet.
+         */
+        data object DismissInfoSheet : Event
     }
 }
 

@@ -43,3 +43,20 @@ internal val DeviceKind.logoResource: Int?
             DeviceKind.WAVESHARE -> R.drawable.waveshare_logo
             DeviceKind.BYOD -> null
         }
+
+/**
+ * Human-readable display label for this [DeviceKind].
+ */
+internal val DeviceKind.displayName: String
+    get() =
+        when (this) {
+            DeviceKind.TRMNL -> "TRMNL"
+            DeviceKind.KINDLE -> "Kindle"
+            DeviceKind.SEEED_STUDIO -> "Seeed Studio"
+            DeviceKind.KOBO -> "Kobo"
+            DeviceKind.BOOX -> "BOOX"
+            DeviceKind.JOAN -> "Joan"
+            DeviceKind.INKPLATE -> "Inkplate"
+            DeviceKind.WAVESHARE -> "Waveshare"
+            DeviceKind.BYOD -> "Other BYOD"
+        }
