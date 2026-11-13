@@ -272,8 +272,8 @@ private fun DistributionRow(
 
 private fun ColorCapability.displayLabel(): String =
     when (this) {
-        ColorCapability.FULL_COLOR -> "Full Color (>1,000 colors)"
-        ColorCapability.GRAYSCALE -> "Grayscale (17–1,000 colors)"
+        ColorCapability.FULL_COLOR -> "Full Color (4,096+ colors)"
+        ColorCapability.GRAYSCALE -> "Grayscale (256 colors)"
         ColorCapability.MULTI_TONE -> "Multi-tone (4–16 colors)"
         ColorCapability.MONOCHROME -> "Monochrome (2–3 colors)"
     }
