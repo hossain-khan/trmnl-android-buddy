@@ -96,15 +96,7 @@ fun DeviceDetailsBottomSheet(
                 }
 
                 // Device logo
-                val logoResource =
-                    when (device.deviceKind) {
-                        DeviceKind.TRMNL -> R.drawable.trmnl_logo_brand_orange
-                        DeviceKind.KINDLE -> R.drawable.amazon_kindle_logo
-                        DeviceKind.SEEED_STUDIO -> R.drawable.seed_studio_color_logo
-                        DeviceKind.KOBO -> R.drawable.kobo_logo
-                        DeviceKind.BOOX -> R.drawable.boox_logo_vector
-                        DeviceKind.BYOD -> null
-                    }
+                val logoResource = device.deviceKind.logoResource
 
                 logoResource?.let {
                     Image(
