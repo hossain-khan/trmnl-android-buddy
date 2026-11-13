@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Lists recommended capabilities (**Read**, **Content**, **Profile**, **Whole account (no limit)**) with a direct **Create `trmnl_` Key** link to `https://trmnl.com/account`, while allowing users to replace the key or explicitly **Continue with Legacy Key**.
   - Updated token placeholder and setup hints for `trmnl_` capability-scoped keys.
 
+### Changed
+- Disabled automatic GitHub Actions triggers for JetBrains Junie workflows (`junie.yml` and `junie-code-review.yml`), leaving `workflow_dispatch` for manual runs.
+
 ### Fixed
 - **Account screen missing `Profile` scope handling & logging**:
   - Injected `TrmnlApiService` via Metro DI in `UserAccountPresenter` instead of creating an unlogged `TrmnlApiClient.create()` instance, restoring OkHttp debug logging for `GET /api/me`.

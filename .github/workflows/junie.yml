@@ -8,15 +8,17 @@
 
 name: Junie Interactive Agent
 
+# Disabled automatic triggers; keep workflow_dispatch for manual runs if needed.
 on:
-  issue_comment:
-    types: [created]
-  pull_request_review_comment:
-    types: [created]
-  issues:
-    types: [opened, assigned]
-  pull_request_review:
-    types: [submitted]
+  workflow_dispatch:
+  # issue_comment:
+  #   types: [created]
+  # pull_request_review_comment:
+  #   types: [created]
+  # issues:
+  #   types: [opened, assigned]
+  # pull_request_review:
+  #   types: [submitted]
 
 jobs:
   junie:
