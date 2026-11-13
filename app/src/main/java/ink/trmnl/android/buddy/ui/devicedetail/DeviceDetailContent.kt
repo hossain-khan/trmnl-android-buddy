@@ -151,6 +151,15 @@ fun DeviceDetailContent(
                 upNextItem = state.upNextItem,
             )
 
+            if (state.showDiagnosticsCard) {
+                DiagnosticsSummaryCard(
+                    onViewDiagnostics = { state.eventSink(DeviceDetailScreen.Event.ViewDiagnostics) },
+                    isLoading = state.isDiagnosticsLoading,
+                    nextCheckInTime = state.nextCheckInTime,
+                    nextCheckInScreenName = state.nextCheckInScreenName,
+                )
+            }
+
             // Battery Chart Section — managed by BatteryChartPresenter
             CircuitContent(
                 screen =
@@ -462,6 +471,86 @@ private fun PlaylistItemsCard(
                     OutlinedButton(
                         onClick = onViewPlaylist,
                     ) {
+                        Text("View")
+                    }
+                }
+            },
+            colors =
+                ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+        )
+    }
+}
+
+@Composable
+private fun DiagnosticsSummaryCard(
+    onViewDiagnostics: () -> Unit,
+    isLoading: Boolean,
+    nextCheckInTime: String?,
+    nextCheckInScreenName: String?,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Diagnostics & Forecast",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            },
+            supportingContent = {
+                when {
+                    isLoading -> {
+                        Text(
+                            text = "Checking next wake-up...",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+
+                    nextCheckInTime != null -> {
+                        val formattedTime =
+                            ink.trmnl.android.buddy.ui.devicediagnostics
+                                .formatDisplayTimestamp(nextCheckInTime)
+                        val screenSuffix = nextCheckInScreenName?.let { " • $it" }.orEmpty()
+                        Text(
+                            text = "Next: $formattedTime$screenSuffix",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        )
+                    }
+
+                    else -> {
+                        Text(
+                            text = "Forecast, activity timeline, and device logs",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            },
+            leadingContent = {
+                Icon(
+                    painter = painterResource(R.drawable.timeline_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            },
+            trailingContent = {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                    )
+                } else {
+                    OutlinedButton(onClick = onViewDiagnostics) {
                         Text("View")
                     }
                 }

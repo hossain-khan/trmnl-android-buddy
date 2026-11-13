@@ -7,11 +7,17 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.DeviceForecast
+import ink.trmnl.android.buddy.api.models.DeviceForecastResponse
+import ink.trmnl.android.buddy.api.models.TimelineStep
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import ink.trmnl.android.buddy.fakes.FakeDeviceTokenRepository
 import ink.trmnl.android.buddy.fakes.FakePlaylistItemsRepository
+import ink.trmnl.android.buddy.fakes.FakeTrmnlApiService
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
+import ink.trmnl.android.buddy.ui.devicediagnostics.DeviceDiagnosticsScreen
 import ink.trmnl.android.buddy.ui.playlistitems.PlaylistItemsScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -49,7 +55,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -77,7 +84,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository(hasToken = true)
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -103,7 +111,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository(hasToken = false)
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -136,7 +145,8 @@ class DeviceDetailScreenTest {
                 )
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -163,7 +173,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -192,7 +203,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -231,7 +243,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -266,7 +279,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -302,7 +316,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -346,7 +361,8 @@ class DeviceDetailScreenTest {
                 FakePlaylistItemsRepository(
                     initialResult = Result.failure(Exception("Network error")),
                 )
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -382,7 +398,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -419,7 +436,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             // When/Then
             presenter.test {
@@ -458,7 +476,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository()
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             presenter.test {
                 val state = awaitItem()
@@ -497,7 +516,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository(initialResult = Result.success(listOf(item1, item2, item3)))
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             presenter.test {
                 var state: DeviceDetailScreen.State
@@ -533,7 +553,8 @@ class DeviceDetailScreenTest {
             val userPrefsRepo = FakeUserPreferencesRepository()
             val deviceTokenRepo = FakeDeviceTokenRepository()
             val playlistItemsRepo = FakePlaylistItemsRepository(initialResult = Result.success(listOf(item1, item2)))
-            val presenter = DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo)
+            val presenter =
+                DeviceDetailPresenter(screen, navigator, userPrefsRepo, deviceTokenRepo, playlistItemsRepo, FakeTrmnlApiService())
 
             presenter.test {
                 var state: DeviceDetailScreen.State
@@ -544,6 +565,92 @@ class DeviceDetailScreenTest {
                 assertThat(state.playlistItemsCount).isEqualTo(2)
                 assertThat(state.nowPlayingItem).isEqualTo("Clock")
                 assertThat(state.upNextItem).isEqualTo("")
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `presenter prefetches next check-in forecast when numeric device ID and token are available`() =
+        runTest {
+            val screen =
+                createTestScreen().copy(
+                    deviceNumericId = 101,
+                )
+            val navigator = FakeNavigator(screen)
+            val userPrefsRepo = FakeUserPreferencesRepository(UserPreferences(apiToken = "user_token"))
+            val deviceTokenRepo = FakeDeviceTokenRepository()
+            val playlistItemsRepo = FakePlaylistItemsRepository()
+            val apiService =
+                FakeTrmnlApiService().apply {
+                    getDeviceForecastResult =
+                        ApiResult.success(
+                            DeviceForecastResponse(
+                                data =
+                                    DeviceForecast(
+                                        steps =
+                                            listOf(
+                                                TimelineStep(
+                                                    at = "2026-11-13T05:15:00Z",
+                                                    name = "Weather Dashboard",
+                                                    refreshRateSeconds = 900,
+                                                ),
+                                            ),
+                                    ),
+                            ),
+                        )
+                }
+            val presenter =
+                DeviceDetailPresenter(
+                    screen,
+                    navigator,
+                    userPrefsRepo,
+                    deviceTokenRepo,
+                    playlistItemsRepo,
+                    apiService,
+                )
+
+            presenter.test {
+                var state: DeviceDetailScreen.State
+                do {
+                    state = awaitItem()
+                } while (state.isDiagnosticsLoading)
+
+                assertThat(state.showDiagnosticsCard).isTrue()
+                assertThat(state.nextCheckInTime).isEqualTo("2026-11-13T05:15:00Z")
+                assertThat(state.nextCheckInScreenName).isEqualTo("Weather Dashboard")
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `presenter navigates to DeviceDiagnosticsScreen on ViewDiagnostics event`() =
+        runTest {
+            val screen = createTestScreen().copy(deviceNumericId = 101)
+            val navigator = FakeNavigator(screen)
+            val userPrefsRepo = FakeUserPreferencesRepository()
+            val deviceTokenRepo = FakeDeviceTokenRepository()
+            val playlistItemsRepo = FakePlaylistItemsRepository()
+            val presenter =
+                DeviceDetailPresenter(
+                    screen,
+                    navigator,
+                    userPrefsRepo,
+                    deviceTokenRepo,
+                    playlistItemsRepo,
+                    FakeTrmnlApiService(),
+                )
+
+            presenter.test {
+                val state = awaitItem()
+                state.eventSink(DeviceDetailScreen.Event.ViewDiagnostics)
+
+                val nextScreen = navigator.awaitNextScreen()
+                assertThat(nextScreen).isEqualTo(
+                    DeviceDiagnosticsScreen(
+                        deviceId = 101,
+                        deviceName = "Test Device",
+                    ),
+                )
                 cancelAndIgnoreRemainingEvents()
             }
         }

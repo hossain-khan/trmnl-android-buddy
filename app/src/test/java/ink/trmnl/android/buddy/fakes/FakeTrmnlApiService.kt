@@ -4,8 +4,11 @@ import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
+import ink.trmnl.android.buddy.api.models.DeviceForecastResponse
+import ink.trmnl.android.buddy.api.models.DeviceLogsResponse
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
+import ink.trmnl.android.buddy.api.models.DeviceTimelineResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
@@ -113,4 +116,51 @@ class FakeTrmnlApiService : TrmnlApiService {
 
     override suspend fun getCategories(): ApiResult<CategoriesResponse, ApiError> =
         throw NotImplementedError("getCategories not implemented")
+
+    var getDeviceForecastResult: ApiResult<DeviceForecastResponse, ApiError>? = null
+    var getDeviceTimelineResult: ApiResult<DeviceTimelineResponse, ApiError>? = null
+    var getDeviceLogsResult: ApiResult<DeviceLogsResponse, ApiError>? = null
+    var lastForecastHours: Int? = null
+    var lastTimelineHours: Int? = null
+    var lastLogsLevel: String? = null
+    var lastLogsBeforeTs: String? = null
+    var lastLogsBeforeEventId: String? = null
+
+    override suspend fun getDeviceForecast(
+        authorization: String,
+        deviceId: Int,
+        hours: Int?,
+    ): ApiResult<DeviceForecastResponse, ApiError> {
+        lastAuthorizationHeader = authorization
+        lastForecastHours = hours
+        return getDeviceForecastResult ?: throw NotImplementedError("getDeviceForecastResult not implemented")
+    }
+
+    override suspend fun getDeviceTimeline(
+        authorization: String,
+        deviceId: Int,
+        date: String?,
+        source: String?,
+        hours: Int?,
+    ): ApiResult<DeviceTimelineResponse, ApiError> {
+        lastAuthorizationHeader = authorization
+        lastTimelineHours = hours
+        return getDeviceTimelineResult ?: throw NotImplementedError("getDeviceTimelineResult not implemented")
+    }
+
+    override suspend fun getDeviceLogs(
+        authorization: String,
+        deviceId: Int,
+        level: String?,
+        source: String?,
+        limit: Int?,
+        beforeTs: String?,
+        beforeEventId: String?,
+    ): ApiResult<DeviceLogsResponse, ApiError> {
+        lastAuthorizationHeader = authorization
+        lastLogsLevel = level
+        lastLogsBeforeTs = beforeTs
+        lastLogsBeforeEventId = beforeEventId
+        return getDeviceLogsResult ?: throw NotImplementedError("getDeviceLogsResult not implemented")
+    }
 }

@@ -13,15 +13,18 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.data.PlaylistItemsRepository
 import ink.trmnl.android.buddy.data.getCurrentlyPlayingItem
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
+import ink.trmnl.android.buddy.ui.devicediagnostics.DeviceDiagnosticsScreen
 import ink.trmnl.android.buddy.ui.devicetoken.DeviceTokenScreen
 import ink.trmnl.android.buddy.ui.playlistitems.PlaylistItemsScreen
 import kotlinx.coroutines.CancellationException
@@ -77,11 +80,15 @@ class DeviceDetailPresenter
         private val userPreferencesRepository: UserPreferencesRepository,
         private val deviceTokenRepository: DeviceTokenRepository,
         private val playlistItemsRepository: PlaylistItemsRepository,
+        private val apiService: TrmnlApiService,
     ) : Presenter<DeviceDetailScreen.State> {
         @Composable
         override fun present(): DeviceDetailScreen.State {
             val allPlaylistItems by playlistItemsRepository.itemsFlow.collectAsState()
             var isPlaylistItemsLoading by rememberRetained { mutableStateOf(true) }
+            var isDiagnosticsLoading by rememberRetained { mutableStateOf(screen.deviceNumericId != null) }
+            var nextCheckInTime by rememberRetained { mutableStateOf<String?>(null) }
+            var nextCheckInScreenName by rememberRetained { mutableStateOf<String?>(null) }
             var hasDeviceToken by rememberRetained { mutableStateOf(false) }
             var isLowBatteryNotificationEnabled by rememberRetained { mutableStateOf(false) }
             var lowBatteryThresholdPercent by rememberRetained { mutableStateOf(20) }
@@ -121,6 +128,40 @@ class DeviceDetailPresenter
                 } else {
                     // No numeric device ID; nothing to prefetch, ensure loading state is cleared
                     isPlaylistItemsLoading = false
+                }
+            }
+
+            // Lightly prefetch next check-in forecast for Diagnostics summary card
+            LaunchedEffect(screen.deviceNumericId, preferences.apiToken) {
+                val deviceId = screen.deviceNumericId
+                val token = preferences.apiToken
+                if (deviceId != null && !token.isNullOrBlank()) {
+                    isDiagnosticsLoading = true
+                    try {
+                        val result =
+                            withContext(Dispatchers.IO) {
+                                apiService.getDeviceForecast(
+                                    authorization = "Bearer $token",
+                                    deviceId = deviceId,
+                                    hours = 12,
+                                )
+                            }
+                        if (result is ApiResult.Success) {
+                            val nextStep =
+                                result.value.data.steps
+                                    .firstOrNull()
+                            nextCheckInTime = nextStep?.at
+                            nextCheckInScreenName = nextStep?.name
+                        }
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        // Silently fall back; full diagnostics load when user opens the screen
+                    } finally {
+                        isDiagnosticsLoading = false
+                    }
+                } else {
+                    isDiagnosticsLoading = false
                 }
             }
 
@@ -173,6 +214,10 @@ class DeviceDetailPresenter
                 playlistItemsCount = playlistItemsCount,
                 nowPlayingItem = nowPlayingItem,
                 upNextItem = upNextItem,
+                isDiagnosticsLoading = isDiagnosticsLoading,
+                nextCheckInTime = nextCheckInTime,
+                nextCheckInScreenName = nextCheckInScreenName,
+                showDiagnosticsCard = screen.deviceNumericId != null,
             ) { event ->
                 when (event) {
                     DeviceDetailScreen.Event.BackClicked -> {
@@ -195,6 +240,17 @@ class DeviceDetailPresenter
                                 deviceName = screen.deviceName,
                             ),
                         )
+                    }
+
+                    DeviceDetailScreen.Event.ViewDiagnostics -> {
+                        screen.deviceNumericId?.let { numericId ->
+                            navigator.goTo(
+                                DeviceDiagnosticsScreen(
+                                    deviceId = numericId,
+                                    deviceName = screen.deviceName,
+                                ),
+                            )
+                        }
                     }
                 }
             }

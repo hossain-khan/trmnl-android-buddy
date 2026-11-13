@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Device Diagnostics & Check-in Forecast** (`DeviceDiagnosticsScreen`) accessible from Device Details:
+  - **Forecast tab**: Shows the next expected wake-up time, scheduled screen, and upcoming check-in steps (`12h`, `24h`, `48h`).
+  - **Timeline tab**: Displays device check-in health (`On Time`, `Overdue`, `Asleep`), recorded activity events, and expected steps (`3h`, `12h`, `24h`).
+  - **Logs tab**: Shows filterable device logs (`All`, `Error`, `Warn`, `Info`, `Debug`) with cursor-based pagination for older entries.
+  - **API Key Capability Prompt**: Surfaces HTTP 403 legacy/insufficient-capability key errors with direct actions to create a new key at `trmnl.com/account` or update the key in-app.
+- Diagnostics summary card on Device Details with prefetched next check-in time.
+
 ## [2.19.1] - 2026-11-12
 
 ### Fixed

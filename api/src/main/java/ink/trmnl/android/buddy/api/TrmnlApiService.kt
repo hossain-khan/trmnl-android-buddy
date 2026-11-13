@@ -1,10 +1,14 @@
 package ink.trmnl.android.buddy.api
 
 import com.slack.eithernet.ApiResult
+import com.slack.eithernet.DecodeErrorBody
 import ink.trmnl.android.buddy.api.models.ApiError
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
+import ink.trmnl.android.buddy.api.models.DeviceForecastResponse
+import ink.trmnl.android.buddy.api.models.DeviceLogsResponse
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
+import ink.trmnl.android.buddy.api.models.DeviceTimelineResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
@@ -665,4 +669,61 @@ interface TrmnlApiService {
     suspend fun getDeviceModels(
         @Header("Authorization") authorization: String,
     ): ApiResult<DeviceModelsResponse, ApiError>
+
+    /**
+     * Get upcoming check-in and screen render forecast for a device.
+     *
+     * @param authorization Bearer token (`Bearer user_xxxxx`)
+     * @param deviceId Device numeric ID
+     * @param hours Optional forecast window in hours (e.g., 12, 24, 48)
+     */
+    @DecodeErrorBody
+    @GET("devices/{device_id}/forecast")
+    suspend fun getDeviceForecast(
+        @Header("Authorization") authorization: String,
+        @Path("device_id") deviceId: Int,
+        @Query("hours") hours: Int? = null,
+    ): ApiResult<DeviceForecastResponse, ApiError>
+
+    /**
+     * Get recorded activity timeline, expected steps, and check-in health for a device.
+     *
+     * @param authorization Bearer token (`Bearer user_xxxxx`)
+     * @param deviceId Device numeric ID
+     * @param date Optional target date (`YYYY-MM-DD`)
+     * @param source Optional event source filter
+     * @param hours Optional window in hours (3, 12, or 24)
+     */
+    @DecodeErrorBody
+    @GET("devices/{device_id}/timeline")
+    suspend fun getDeviceTimeline(
+        @Header("Authorization") authorization: String,
+        @Path("device_id") deviceId: Int,
+        @Query("date") date: String? = null,
+        @Query("source") source: String? = null,
+        @Query("hours") hours: Int? = null,
+    ): ApiResult<DeviceTimelineResponse, ApiError>
+
+    /**
+     * Get paginated device logs with optional level/source filtering and cursor pagination.
+     *
+     * @param authorization Bearer token (`Bearer user_xxxxx`)
+     * @param deviceId Device numeric ID
+     * @param level Optional severity level filter (`debug`, `info`, `warn`, `error`)
+     * @param source Optional source filter (`device`, `plugin`, `custom_plugin`, `private_plugin`, `mashup`, `support`)
+     * @param limit Optional maximum number of logs to return
+     * @param beforeTs Optional cursor timestamp for fetching older entries
+     * @param beforeEventId Optional cursor event ID for fetching older entries
+     */
+    @DecodeErrorBody
+    @GET("devices/{device_id}/logs")
+    suspend fun getDeviceLogs(
+        @Header("Authorization") authorization: String,
+        @Path("device_id") deviceId: Int,
+        @Query("level") level: String? = null,
+        @Query("source") source: String? = null,
+        @Query("limit") limit: Int? = null,
+        @Query("before_ts") beforeTs: String? = null,
+        @Query("before_event_id") beforeEventId: String? = null,
+    ): ApiResult<DeviceLogsResponse, ApiError>
 }
