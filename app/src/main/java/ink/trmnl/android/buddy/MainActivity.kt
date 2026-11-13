@@ -54,12 +54,12 @@ class MainActivity
 
             setContent {
                 TrmnlBuddyAppTheme {
-                    // See https://slackhq.github.io/circuit/navigation/
-                    val backStack = rememberSaveableBackStack(root = rootScreen)
-                    val navigator = rememberCircuitNavigator(backStack)
-
                     // See https://slackhq.github.io/circuit/circuit-content/
                     CircuitCompositionLocals(circuit) {
+                        // See https://slackhq.github.io/circuit/navigation/
+                        val backStack = rememberSaveableBackStack(root = rootScreen)
+                        val navigator = rememberCircuitNavigator(backStack)
+
                         // See https://slackhq.github.io/circuit/shared-elements/
                         SharedElementTransitionLayout {
                             // See https://slackhq.github.io/circuit/overlays/
