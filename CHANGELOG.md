@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **API Key Capability Prompt**: Surfaces HTTP 403 legacy/insufficient-capability key errors with direct actions to create a new key at `trmnl.com/account` or update the key in-app.
 - Diagnostics summary card on Device Details with prefetched next check-in time.
 
+### Changed
+- Disabled automatic GitHub Actions triggers for JetBrains Junie workflows (`junie.yml` and `junie-code-review.yml`), leaving `workflow_dispatch` for manual runs.
+
 ### Fixed
 - **Account screen missing `Profile` scope handling & logging**:
   - Injected `TrmnlApiService` via Metro DI in `UserAccountPresenter` instead of creating an unlogged `TrmnlApiClient.create()` instance, restoring OkHttp debug logging for `GET /api/me`.
