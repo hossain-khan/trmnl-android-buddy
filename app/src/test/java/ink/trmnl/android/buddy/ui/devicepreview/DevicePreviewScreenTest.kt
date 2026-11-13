@@ -631,4 +631,28 @@ private class FakeApiService(
     ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 
     override suspend fun getRecipesAnalytics(authorization: String) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
+
+    override suspend fun getDeviceForecast(
+        authorization: String,
+        deviceId: Int,
+        hours: Int?,
+    ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
+
+    override suspend fun getDeviceTimeline(
+        authorization: String,
+        deviceId: Int,
+        date: String?,
+        source: String?,
+        hours: Int?,
+    ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
+
+    override suspend fun getDeviceLogs(
+        authorization: String,
+        deviceId: Int,
+        level: String?,
+        source: String?,
+        limit: Int?,
+        beforeTs: String?,
+        beforeEventId: String?,
+    ) = throw NotImplementedError("Not needed for DevicePreviewScreen tests")
 }

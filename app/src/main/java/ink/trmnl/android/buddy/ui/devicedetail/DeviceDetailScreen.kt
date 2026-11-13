@@ -115,6 +115,10 @@ data class DeviceDetailScreen(
          */
         val nowPlayingItem: String = "",
         val upNextItem: String = "", // Name of next queue item to play
+        val isDiagnosticsLoading: Boolean = false,
+        val nextCheckInTime: String? = null,
+        val nextCheckInScreenName: String? = null,
+        val showDiagnosticsCard: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -150,5 +154,10 @@ data class DeviceDetailScreen(
          * User tapped to view playlist items. Opens full playlist items screen.
          */
         data object ViewPlaylistItems : Event
+
+        /**
+         * User tapped to view device diagnostics, timeline, and forecast.
+         */
+        data object ViewDiagnostics : Event
     }
 }

@@ -41,7 +41,7 @@ kotlin {
 dependencies {
     // Kotlin
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.serialization.json)
 
     // Networking
     implementation(libs.okhttp)
