@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Device Catalog brand logo & filter (`Waveshare`)**: Added `DeviceKind.WAVESHARE` (`waveshare_logo.png`), filter chip, and `waveshare_` device model mapping in `DeviceCatalogScreen`.
+
 ## [2.20.0] - 2026-11-13
 
 ### Added

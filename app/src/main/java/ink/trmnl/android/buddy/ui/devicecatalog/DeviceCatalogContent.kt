@@ -57,6 +57,7 @@ private data class FilterCounts(
     val boox: Int,
     val joan: Int,
     val inkplate: Int,
+    val waveshare: Int,
 )
 
 /**
@@ -183,6 +184,7 @@ private fun DeviceListContent(
                 boox = devices.count { it.deviceKind == DeviceKind.BOOX },
                 joan = devices.count { it.deviceKind == DeviceKind.JOAN },
                 inkplate = devices.count { it.deviceKind == DeviceKind.INKPLATE },
+                waveshare = devices.count { it.deviceKind == DeviceKind.WAVESHARE },
             )
         }
 
@@ -240,6 +242,11 @@ private fun DeviceListContent(
                 selected = selectedFilter == DeviceKind.INKPLATE,
                 onClick = { onFilterSelected(DeviceKind.INKPLATE) },
                 label = { Text("Inkplate (${filterCounts.inkplate})") },
+            )
+            FilterChip(
+                selected = selectedFilter == DeviceKind.WAVESHARE,
+                onClick = { onFilterSelected(DeviceKind.WAVESHARE) },
+                label = { Text("Waveshare (${filterCounts.waveshare})") },
             )
         }
 

@@ -32,7 +32,8 @@ class DeviceModelExtTest {
         assertThat(createDeviceModel(name = "og_png", kind = "trmnl").deviceKind).isEqualTo(DeviceKind.TRMNL)
         assertThat(createDeviceModel(name = "amazon_kindle_2024", kind = "kindle").deviceKind).isEqualTo(DeviceKind.KINDLE)
         assertThat(createDeviceModel(name = "boox_palma", kind = "byod").deviceKind).isEqualTo(DeviceKind.BOOX)
-        assertThat(createDeviceModel(name = "waveshare_75", kind = "byod").deviceKind).isEqualTo(DeviceKind.BYOD)
+        assertThat(createDeviceModel(name = "waveshare_75", kind = "byod").deviceKind).isEqualTo(DeviceKind.WAVESHARE)
+        assertThat(createDeviceModel(name = "generic_epaper_diy", kind = "byod").deviceKind).isEqualTo(DeviceKind.BYOD)
     }
 
     @Test
@@ -44,6 +45,7 @@ class DeviceModelExtTest {
         assertThat(DeviceKind.BOOX.logoResource).isEqualTo(R.drawable.boox_logo_vector)
         assertThat(DeviceKind.JOAN.logoResource).isEqualTo(R.drawable.joan_logo)
         assertThat(DeviceKind.INKPLATE.logoResource).isEqualTo(R.drawable.soldered_inkplate_logo)
+        assertThat(DeviceKind.WAVESHARE.logoResource).isEqualTo(R.drawable.waveshare_logo)
         assertThat(DeviceKind.BYOD.logoResource).isNull()
     }
 

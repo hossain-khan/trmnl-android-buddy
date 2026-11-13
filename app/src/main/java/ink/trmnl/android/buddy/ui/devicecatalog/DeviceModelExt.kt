@@ -22,6 +22,7 @@ val DeviceModel.deviceKind: DeviceKind
             name.startsWith("kobo_") -> DeviceKind.KOBO
             name.contains("boox") || name == "palma" -> DeviceKind.BOOX
             name.startsWith("inkplate_") -> DeviceKind.INKPLATE
+            name.startsWith("waveshare_") -> DeviceKind.WAVESHARE
             else -> DeviceKind.BYOD
         }
 
@@ -39,5 +40,6 @@ internal val DeviceKind.logoResource: Int?
             DeviceKind.BOOX -> R.drawable.boox_logo_vector
             DeviceKind.JOAN -> R.drawable.joan_logo
             DeviceKind.INKPLATE -> R.drawable.soldered_inkplate_logo
+            DeviceKind.WAVESHARE -> R.drawable.waveshare_logo
             DeviceKind.BYOD -> null
         }
