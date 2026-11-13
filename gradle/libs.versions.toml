@@ -81,7 +81,7 @@ robolectric = "4.15"
 
 # AndroidX Biometric - Biometric authentication
 # https://developer.android.com/jetpack/androidx/releases/biometric
-biometric = "1.4.0-alpha07"
+biometric = "1.4.0-beta01"
 
 # Turbine - Testing library for Kotlin Flow
 # https://github.com/cashapp/turbine
