@@ -422,12 +422,8 @@ private fun UserProfileCard(
         modifier = modifier.fillMaxWidth(),
         colors =
             CardDefaults.cardColors(
-                containerColor =
-                    androidx.compose.ui.graphics
-                        .Color(colorResource(R.color.trmnl_orange_container).value),
-                contentColor =
-                    androidx.compose.ui.graphics
-                        .Color(colorResource(R.color.trmnl_orange_on_container).value),
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ),
     ) {
         Row(
@@ -463,11 +459,7 @@ private fun UserProfileCard(
                 Text(
                     text = user.email,
                     style = MaterialTheme.typography.bodyLarge,
-                    color =
-                        androidx.compose.ui.graphics
-                            .Color(
-                                colorResource(R.color.trmnl_orange_on_container).value,
-                            ).copy(alpha = CARD_BACKGROUND_ALPHA),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = CARD_BACKGROUND_ALPHA),
                 )
             }
         }

@@ -20,7 +20,7 @@ import androidx.core.text.HtmlCompat
  */
 fun htmlToAnnotatedString(
     html: String,
-    linkColor: Color = Color.Blue,
+    linkColor: Color,
 ): AnnotatedString {
     val spanned = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
     return buildAnnotatedString {
