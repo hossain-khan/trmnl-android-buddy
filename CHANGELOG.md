@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.19.0] - 2026-11-12
+
 ### Added
 - **JetBrains Junie GitHub Actions automation**: Integrated JetBrains Junie (`@junie-agent`) for automated PR code reviews and interactive issue/PR assistance powered by OpenRouter BYOK.
   - Interactive agent workflow (`.github/workflows/junie.yml`) with trusted-user authorization (`OWNER`, `MEMBER`, `COLLABORATOR`).
@@ -1643,7 +1645,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.1...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.19.0...HEAD
+[2.19.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.1...2.19.0
 [2.18.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.0...2.18.1
 [2.18.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.17.0...2.18.0
 [2.17.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.16.0...2.17.0
