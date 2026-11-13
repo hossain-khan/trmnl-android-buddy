@@ -247,18 +247,21 @@ class DeviceDiagnosticsPresenter
                     is DeviceDiagnosticsScreen.Event.ForecastHoursSelected -> {
                         if (forecastHours != event.hours) {
                             forecastHours = event.hours
+                            isForecastLoading = true
                         }
                     }
 
                     is DeviceDiagnosticsScreen.Event.TimelineHoursSelected -> {
                         if (timelineHours != event.hours) {
                             timelineHours = event.hours
+                            isTimelineLoading = true
                         }
                     }
 
                     is DeviceDiagnosticsScreen.Event.LogLevelSelected -> {
                         if (selectedLogLevel != event.level) {
                             selectedLogLevel = event.level
+                            isLogsLoading = true
                         }
                     }
 
