@@ -2,6 +2,9 @@ openapi: 3.0.1
 info:
   title: TRMNL API
   version: "1"
+  license:
+    name: Proprietary
+    url: https://trmnl.com/terms
   description: >
     Send an account API key, or the access token of an app a user connected with
     OAuth, as a bearer
@@ -71,13 +74,9 @@ paths:
       tags:
         - Device API
       x-cli-ignore: true
+      security:
+        - access_token: []
       parameters:
-        - name: Access-Token
-          in: header
-          required: true
-          description: Device API Key (eg. abc-123)
-          schema:
-            type: string
         - name: Battery-Voltage
           in: header
           required: false
@@ -144,6 +143,13 @@ paths:
           description: Identifier of the ePaper panel fitted to the device
           schema:
             type: string
+        - name: Panel-Vcom
+          in: header
+          required: false
+          description: VCOM_DC code the factory programmed into the panel (volts = -0.10 -
+            0.05 x code); -1 when none
+          schema:
+            type: integer
         - name: FW-Version
           in: header
           required: false
@@ -178,9 +184,20 @@ paths:
         - name: Special-Function
           in: header
           required: false
-          description: Device special function (eg. true)
           schema:
-            type: boolean
+            type: string
+            enum:
+              - "true"
+              - identify
+              - sleep
+              - restart_playlist
+              - rewind
+              - send_to_me
+              - guest_mode
+              - refresh
+              - toggle_hold
+          description: "Run a special function: true for the one set for the button, or a
+            function name"
         - name: BASE64
           in: header
           required: false
@@ -253,13 +270,8 @@ paths:
       tags:
         - Device API
       x-cli-ignore: true
-      parameters:
-        - name: Access-Token
-          in: header
-          required: true
-          description: Device API Key (eg. abc-123)
-          schema:
-            type: string
+      security:
+        - access_token: []
       responses:
         "200":
           description: Success
@@ -293,13 +305,9 @@ paths:
       tags:
         - Device API
       x-cli-ignore: true
-      parameters:
-        - name: Access-Token
-          in: header
-          required: true
-          description: Device API Key (eg. abc-123)
-          schema:
-            type: string
+      security:
+        - access_token: []
+      parameters: []
       responses:
         "204":
           description: Logs created when ignore_log_messages is not set
@@ -311,7 +319,7 @@ paths:
               properties:
                 logs:
                   type: array
-                  items: { }
+                  items: {}
               required:
                 - logs
               additionalProperties: false
@@ -325,6 +333,7 @@ paths:
       tags:
         - Device API
       x-cli-ignore: true
+      security: []
       parameters:
         - name: ID
           in: header
@@ -376,12 +385,145 @@ paths:
                   message:
                     type: string
                     example: Register at trmnl.com/start with Device ID 'ABC-123'
+  /api/firmware:
+    get:
+      summary: List the stable firmware release of each TRMNL device model
+      operationId: listFirmware
+      tags:
+        - Firmware
+      security: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Firmware"
+                required:
+                  - data
+  /api/firmware/{id}:
+    get:
+      summary: Show a device model's stable firmware release
+      operationId: showFirmware
+      tags:
+        - Firmware
+      security: []
+      parameters:
+        - name: id
+          in: path
+          example: v2
+          description: Device model name from the models API
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Firmware"
+                required:
+                  - data
+        "404":
+          description: Not a TRMNL model the models API lists
+  /api/oauth/migrations:
+    post:
+      summary: Trade an account API key for OAuth tokens
+      operationId: migrateToOauth
+      tags:
+        - OAuth
+      description: For a first-party integration that stored an account API key.
+        Answers the token response of an OAuth sign-in, and the connection shows
+        under Account, Connected agents. A scoped API key gets no more than its
+        own capabilities and devices.
+      security:
+        - bearer_auth: []
+      parameters: []
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - access_token
+                  - refresh_token
+                  - token_type
+                  - expires_in
+                  - scope
+                  - created_at
+                  - sub
+                properties:
+                  access_token:
+                    type: string
+                  refresh_token:
+                    type: string
+                  token_type:
+                    type: string
+                    example: Bearer
+                  expires_in:
+                    type: integer
+                    example: 7200
+                  scope:
+                    type: string
+                    example: openid profile read devices content delete
+                  created_at:
+                    type: integer
+                  sub:
+                    type: string
+                    description: The OpenID subject of the account
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: The bearer is an OAuth token, not an API key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: The client may not migrate API keys
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - client_id
+              properties:
+                client_id:
+                  type: string
+                  example: home-assistant
+                name:
+                  type: string
+                  example: Home
+                  description: The install. A retry with the same name replaces its connection;
+                    another name keeps both.
+        required: true
   /api/categories:
     get:
       summary: List all plugin categories
       operationId: listCategories
       tags:
         - Categories
+      security: []
       description: Returns a list of approved plugin categories.
       responses:
         "200":
@@ -405,6 +547,7 @@ paths:
       operationId: listFlashFirmwares
       tags:
         - Flash Firmwares
+      security: []
       description: |
         Firmware builds flashable via the TRMNL web flasher (/flash).
       responses:
@@ -438,6 +581,9 @@ paths:
                                     type: string
                                   url:
                                     type: string
+                                  elf_url:
+                                    type: string
+                                    description: Debug symbols for this build. Omitted when the build has none.
                                 required:
                                   - version
                                   - url
@@ -450,12 +596,32 @@ paths:
                       - models
                 required:
                   - data
+  /api/framework:
+    get:
+      summary: Show the framework and its versions
+      operationId: showFramework
+      tags:
+        - Framework
+      security: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Framework"
+                required:
+                  - data
   /api/ips:
     get:
       summary: List all TRMNL server IP addresses
       operationId: listServerIps
       tags:
         - Server IPs
+      security: []
       description: |
         Returns a list of public IP addresses for all TRMNL core servers.
 
@@ -479,60 +645,13 @@ paths:
                         type: array
                         items:
                           type: string
-  /api/markup:
-    post:
-      summary: Render Liquid template
-      operationId: renderMarkup
-      tags:
-        - Markup
-      parameters: [ ]
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    oneOf:
-                      - type: string
-                      - type: array
-                        items:
-                          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                markup:
-                  oneOf:
-                    - type: string
-                      example: Hello, {{ name }}!
-                    - type: array
-                      items:
-                        type: string
-                      example:
-                        - Hello, {{ name }}!
-                        - Goodbye, {{ name }}!
-                variables:
-                  type: object
-                  example:
-                    name: World
-              required:
-                - markup
-                - variables
-              additionalProperties: false
-        required: true
-        description: The Liquid markup(s) to render and an optional set of variables to
-          use in the rendering process.
   /api/models:
     get:
       summary: List all device models
       operationId: listModels
       tags:
         - Models
+      security: []
       responses:
         "200":
           description: Success
@@ -551,6 +670,7 @@ paths:
       operationId: listPalettes
       tags:
         - Palettes
+      security: []
       responses:
         "200":
           description: Success
@@ -572,14 +692,16 @@ paths:
         schema:
           type: string
     get:
-      summary: List the bookings a walk-up visitor sees
+      summary: List the bookings a visitor sees
       tags:
         - Public booking
       operationId: listPublicBookingEvents
+      security: []
       description: "Public: no bearer token, so it is not an account operation and no
-        agent tool offers it. The rolling week from start_at, as the walk-up
-        page shows it, with times in the room time zone. A collection token also
-        takes resource_type and resource_id to pick one of its rooms."
+        agent tool offers it. The rolling week from start_at, as the public
+        booking page shows it, with times in the room time zone. A collection
+        token also takes resource_type and resource_id to pick one of its
+        rooms."
       parameters:
         - name: start_at
           in: query
@@ -589,22 +711,14 @@ paths:
             type: string
         - name: resource_type
           in: query
-          required: false
-          enum:
-            - ical
-            - google
-            - microsoft
-          description: "Collection tokens only:
-
-            \ * `ical`\ 
-
-            \ * `google`\ 
-
-            \ * `microsoft`\ 
-
-            \ "
           schema:
             type: string
+            enum:
+              - ical
+              - google
+              - microsoft
+          required: false
+          description: Collection tokens only
         - name: resource_id
           in: query
           required: false
@@ -633,7 +747,7 @@ paths:
         "400":
           description: start_at is missing
         "410":
-          description: "Unknown token, walk-up booking off, or a room that cannot be
+          description: "Unknown token, Booking with TRMNL off, or a room that cannot be
             booked: all look the same"
   /api/book/{token}/bookings:
     parameters:
@@ -644,12 +758,13 @@ paths:
         schema:
           type: string
     post:
-      summary: Book a room as a walk-up visitor
+      summary: Book a room as a visitor
       tags:
         - Public booking
       operationId: createPublicBooking
-      description: "Public: no bearer token. The same rules as the walk-up page:
-        within the room booking window, ending before midnight, and on an
+      security: []
+      description: "Public: no bearer token. The same rules as the public booking
+        page: within the room booking window, ending before midnight, and on an
         on-demand room duration_minutes (15, 30 or 60) from now instead of
         times. The title is capped and defaults when blank. Limited per token."
       parameters:
@@ -678,7 +793,7 @@ paths:
         "409":
           description: The slot was just taken
         "410":
-          description: "Unknown token, walk-up booking off, or a room that cannot be
+          description: "Unknown token, Booking with TRMNL off, or a room that cannot be
             booked: all look the same"
         "422":
           description: Outside the booking window
@@ -721,10 +836,11 @@ paths:
         schema:
           type: integer
     delete:
-      summary: Cancel an upcoming walk-up booking
+      summary: Cancel an upcoming public booking
       tags:
         - Public booking
       operationId: cancelPublicBooking
+      security: []
       description: "Public: no bearer token. Only a booking made through TRMNL that
         has not started."
       responses:
@@ -733,7 +849,7 @@ paths:
         "404":
           description: A booking made outside TRMNL, or one on another room
         "410":
-          description: "Unknown token, walk-up booking off, or a room that cannot be
+          description: "Unknown token, Booking with TRMNL off, or a room that cannot be
             booked: all look the same"
   /api/book/{token}/bookings/{id}/end:
     parameters:
@@ -750,10 +866,11 @@ paths:
         schema:
           type: integer
     patch:
-      summary: End a walk-up booking in progress
+      summary: End a public booking in progress
       tags:
         - Public booking
       operationId: endPublicBooking
+      security: []
       description: "Public: no bearer token. Frees the room now; only a booking made
         through TRMNL that is in progress."
       responses:
@@ -769,7 +886,7 @@ paths:
         "404":
           description: A booking that has not started
         "410":
-          description: "Unknown token, walk-up booking off, or a room that cannot be
+          description: "Unknown token, Booking with TRMNL off, or a room that cannot be
             booked: all look the same"
   /api/analytics:
     get:
@@ -781,7 +898,7 @@ paths:
         forks and health, the totals, the share of live installs in each health
         state and a 90-day install growth series.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -834,7 +951,7 @@ paths:
                         type: array
                         items:
                           type: array
-                          items: { }
+                          items: {}
                           description: "[date, installs to date]"
         "401":
           description: Unauthorized
@@ -853,7 +970,7 @@ paths:
         source), installer_connection or installer_setup. Rows you hid stay
         listed with hidden true."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -909,8 +1026,8 @@ paths:
         listAuthorPluginErrors row. The row stops showing on the dashboard and
         in the emails about it; unhideAuthorPluginError puts it back.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Hidden
@@ -973,17 +1090,16 @@ paths:
       operationId: unhideAuthorPluginError
       description: Takes the same kind, subject_id, owner and message that hid the row.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: kind
           in: query
           required: true
-          enum:
-            - recipe
-            - third_party
           schema:
             type: string
-          description: ":\n * `recipe`\ \n * `third_party`\ \n "
+            enum:
+              - recipe
+              - third_party
         - name: subject_id
           in: query
           required: true
@@ -992,13 +1108,13 @@ paths:
         - name: owner
           in: query
           required: true
-          enum:
-            - author
-            - upstream
-            - installer_connection
-            - installer_setup
           schema:
             type: string
+            enum:
+              - author
+              - upstream
+              - installer_connection
+              - installer_setup
         - name: message
           in: query
           required: true
@@ -1034,7 +1150,7 @@ paths:
         published: the total, a count per reason, the latest written comments
         and the typical days installed. Never names the installer."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -1055,7 +1171,7 @@ paths:
                         type: array
                         items:
                           type: array
-                          items: { }
+                          items: {}
                           description: "[reason, count]"
                       recent_comments:
                         type: array
@@ -1100,7 +1216,7 @@ paths:
       description: The master device, how many mirrors need a push, the settings
         mirrors inherit and the overdue alert. listFleetDevices has each member.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -1135,7 +1251,7 @@ paths:
       description: "The master first, then the mirrors by urgency: overdue, on time,
         asleep, never seen."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -1164,8 +1280,8 @@ paths:
       description: The device joins as a mirror; setFleetMaster promotes one. A device
         can be in one fleet only.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Added
@@ -1218,7 +1334,7 @@ paths:
       operationId: removeFleetDevice
       description: Leaves the last pushed playlist on the device.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Removed
@@ -1252,7 +1368,7 @@ paths:
       description: Queues the push; the mirror shows the master playlist and inherited
         settings once it runs.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "202":
           description: Queued
@@ -1286,7 +1402,7 @@ paths:
       description: Queues one push for the whole fleet. Each mirror gets a copy of the
         master playlist and the inherited settings.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "202":
           description: Queued
@@ -1322,8 +1438,8 @@ paths:
       description: Replaces the list. Each push copies these settings from the master;
         an empty list copies the playlist only.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Updated
@@ -1379,8 +1495,8 @@ paths:
         left out keep their value; a null email sends the digest to the account
         owner.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Updated
@@ -1435,8 +1551,8 @@ paths:
       description: The device whose playlist and settings the mirrors copy. A mirror
         of this fleet is promoted; the previous master leaves the fleet.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Set
@@ -1475,7 +1591,7 @@ paths:
       operationId: removeFleetMaster
       description: The fleet keeps its mirrors but cannot push until a new master is set.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Removed
@@ -1496,7 +1612,7 @@ paths:
       description: Every app the platform offers, with whether this account holds an
         active installation of it.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -1524,7 +1640,7 @@ paths:
       description: The active installations of this account. Their ids are the
         installation_id the fleet and room booking operations take.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -1551,8 +1667,8 @@ paths:
       description: Installs the app for this account. An app already installed answers
         its existing installation with 200.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Installed, or already was
@@ -1599,7 +1715,7 @@ paths:
       description: Retires the installation. Its calendars, fleet memberships and
         device bindings go with it.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Uninstalled
@@ -1631,7 +1747,7 @@ paths:
         selected for sync. integration_type and id address one in the other
         integration operations.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -1662,14 +1778,14 @@ paths:
           type: string
       - name: integration_type
         in: path
-        enum:
-          - google_user
-          - google_workspace
-          - microsoft_user
-          - microsoft_workspace
-        required: true
         schema:
           type: string
+          enum:
+            - google_user
+            - google_workspace
+            - microsoft_user
+            - microsoft_workspace
+        required: true
     get:
       summary: Where to send the owner to connect an account
       tags:
@@ -1680,7 +1796,7 @@ paths:
         it: an HTML form the owner submits with the given method, from a TRMNL
         page (it is CSRF-protected)."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -1716,14 +1832,14 @@ paths:
           type: string
       - name: integration_type
         in: path
-        enum:
-          - google_user
-          - google_workspace
-          - microsoft_user
-          - microsoft_workspace
-        required: true
         schema:
           type: string
+          enum:
+            - google_user
+            - google_workspace
+            - microsoft_user
+            - microsoft_workspace
+        required: true
       - name: id
         in: path
         description: Integration id
@@ -1738,7 +1854,7 @@ paths:
       description: Reads the calendars the account can see from the provider, so a new
         room shows up in listRoomBookingCalendars once selected.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Synchronized
@@ -1775,14 +1891,14 @@ paths:
           type: string
       - name: integration_type
         in: path
-        enum:
-          - google_user
-          - google_workspace
-          - microsoft_user
-          - microsoft_workspace
-        required: true
         schema:
           type: string
+          enum:
+            - google_user
+            - google_workspace
+            - microsoft_user
+            - microsoft_workspace
+        required: true
       - name: id
         in: path
         description: Integration id
@@ -1801,8 +1917,8 @@ paths:
         booking_organizer_email and parking_resource_group_id apply to a
         Microsoft workspace and are verified against Graph."
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Updated
@@ -1848,7 +1964,7 @@ paths:
       description: Forgets the credentials and removes the account's calendars from
         every screen and collection.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Disconnected
@@ -1877,7 +1993,7 @@ paths:
         which devices show one, and the billing state. Google and Microsoft
         accounts are connected in the browser.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -1914,7 +2030,7 @@ paths:
         on the billing page (checkout_url and portal_url), because each opens a
         Stripe session for the owner; the API never starts one.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: The billing state
@@ -1947,7 +2063,7 @@ paths:
         - Apps - Room Booking
       operationId: getRoomBookingSettings
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -1974,8 +2090,8 @@ paths:
       description: Keys left out keep their value. The company logo images are
         uploaded in the browser; show_company_logo only switches them on.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Updated
@@ -2009,11 +2125,14 @@ paths:
                     owner
                 public_bookings:
                   type: boolean
-                  description: Walk-up QR booking
+                  description: Booking with TRMNL
                 dark_mode:
                   type: boolean
                 show_company_logo:
                   type: boolean
+                show_next_meeting:
+                  type: boolean
+                  description: Busy room screens show the next meeting instead of the organizer
                 daily_public_booking_url_rotation:
                   type: boolean
                 time_format:
@@ -2026,7 +2145,7 @@ paths:
                   description: null detects it from the time zone
                 walk_up_calendar:
                   type: boolean
-                  description: Upcoming bookings on the walk-up page
+                  description: Upcoming bookings on the public booking page
                 walk_up_booking_window_days:
                   type: integer
                   enum:
@@ -2051,8 +2170,8 @@ paths:
       description: PNG, JPEG or SVG up to 2 MB, as JSON with the bytes in base64.
         Shown once show_company_logo is on.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Uploaded
@@ -2093,7 +2212,7 @@ paths:
       description: Removes the color logo with it, since the color one is only ever
         shown in its place.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Removed
@@ -2122,8 +2241,8 @@ paths:
         accepted while the account has a color device or a color logo already
         uploaded.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Uploaded
@@ -2161,7 +2280,7 @@ paths:
         - Apps - Room Booking
       operationId: removeRoomBookingColorCompanyLogo
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Removed
@@ -2190,7 +2309,7 @@ paths:
         for sync. A calendar id is "<kind>:<number>", kind being ical, google or
         microsoft, and is what the other calendar operations take.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -2220,8 +2339,8 @@ paths:
         bookings are made in the source calendar. Google and Microsoft calendars
         are connected in the browser, since they need the owner to sign in."
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Created
@@ -2264,6 +2383,8 @@ paths:
                   nullable: true
                 show_booking_qr:
                   type: boolean
+                show_company_logo:
+                  type: boolean
               required:
                 - name
                 - ics_url
@@ -2291,7 +2412,7 @@ paths:
         (last_synced_at says how old); refetchRoomBookingCalendar reads the
         source again.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -2315,12 +2436,13 @@ paths:
       tags:
         - Apps - Room Booking
       operationId: updateRoomBookingCalendar
-      description: An iCal calendar takes name, ics_url, timezone, capacity and
-        show_booking_qr. A Google or Microsoft calendar keeps its provider name
-        and takes override_name and show_booking_qr.
+      description: An iCal calendar takes name, ics_url, timezone, capacity,
+        show_booking_qr and show_company_logo. A Google or Microsoft calendar
+        keeps its provider name and takes override_name, show_booking_qr and
+        show_company_logo.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Updated
@@ -2363,6 +2485,8 @@ paths:
                   description: Google and Microsoft calendars only
                 show_booking_qr:
                   type: boolean
+                show_company_logo:
+                  type: boolean
         required: true
     delete:
       summary: Remove an iCal calendar
@@ -2372,7 +2496,7 @@ paths:
       description: "Takes it off every device. A Google or Microsoft calendar is not
         deleted here: deselect it from its account in the browser."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Removed
@@ -2407,7 +2531,7 @@ paths:
       operationId: refetchRoomBookingCalendar
       description: Reads the source calendar and updates the mirror the screens show.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Refetched
@@ -2450,10 +2574,14 @@ paths:
           type: string
       - name: device_id
         in: path
-        description: Device id
-        required: true
         schema:
-          type: integer
+          oneOf:
+            - type: integer
+            - type: string
+              enum:
+                - url
+        description: Device ID, or url for the browser display
+        required: true
     put:
       summary: Show a calendar on a device
       tags:
@@ -2464,7 +2592,7 @@ paths:
         billing: subscription_required is then true and billing_url is where the
         owner subscribes, and until they do the other changes answer 402."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Showing
@@ -2503,7 +2631,7 @@ paths:
       operationId: unbindRoomBookingCalendarDevice
       description: Removes the room screen from that device playlist only.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Removed
@@ -2541,7 +2669,7 @@ paths:
         link (expires after ActiveStorage.service_urls_expire_in, 5 minutes by
         default); fetch it promptly.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: The devices showing it
@@ -2584,37 +2712,31 @@ paths:
       description: Confirmed bookings in a window, soonest first. The window defaults
         to the next seven days.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: from
           in: query
-          format: date-time
+          schema:
+            type: string
+            format: date-time
           required: false
           description: Window start; now when left out
-          schema:
-            type: string
         - name: to
           in: query
-          format: date-time
+          schema:
+            type: string
+            format: date-time
           required: false
           description: Window end; seven days after from when left out
-          schema:
-            type: string
         - name: status
           in: query
-          enum:
-            - confirmed
-            - cancelled
-          required: false
-          description: "confirmed when left out:
-
-            \ * `confirmed`\ 
-
-            \ * `cancelled`\ 
-
-            \ "
           schema:
             type: string
+            enum:
+              - confirmed
+              - cancelled
+          required: false
+          description: confirmed when left out
       responses:
         "200":
           description: Success
@@ -2646,8 +2768,8 @@ paths:
         8601; a time without a zone is read in the calendar time zone. An iCal
         calendar is read-only and refuses; an overlap answers 409.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Booked
@@ -2719,7 +2841,7 @@ paths:
       description: Only a booking made through TRMNL that has not started yet;
         endRoomBooking is for one in progress.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Canceled
@@ -2761,7 +2883,7 @@ paths:
       description: "Frees the room: the booking ends at the current time. Only a
         booking made through TRMNL that is in progress."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Ended
@@ -2797,7 +2919,7 @@ paths:
       operationId: listRoomBookingCollections
       description: A collection puts several calendars on one screen, as a list or a grid.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -2826,8 +2948,8 @@ paths:
       description: resource_ids are calendar ids from listRoomBookingCalendars; at
         least one is needed.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Created
@@ -2880,6 +3002,8 @@ paths:
                   description: list when left out
                 show_booking_qr:
                   type: boolean
+                show_company_logo:
+                  type: boolean
                 resource_ids:
                   type: array
                   items:
@@ -2911,8 +3035,8 @@ paths:
       description: Keys left out keep their value; resource_ids, when given, replaces
         the whole set.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Updated
@@ -2963,6 +3087,8 @@ paths:
                     - grid
                 show_booking_qr:
                   type: boolean
+                show_company_logo:
+                  type: boolean
                 resource_ids:
                   type: array
                   items:
@@ -2975,7 +3101,7 @@ paths:
       operationId: deleteRoomBookingCollection
       description: Takes it off every device. The calendars in it stay.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Removed
@@ -3003,10 +3129,14 @@ paths:
           type: integer
       - name: device_id
         in: path
-        description: Device id
-        required: true
         schema:
-          type: integer
+          oneOf:
+            - type: integer
+            - type: string
+              enum:
+                - url
+        description: Device ID, or url for the browser display
+        required: true
     put:
       summary: Show a collection on a device
       tags:
@@ -3015,7 +3145,7 @@ paths:
       description: Adds the collection screen to the device playlist once. Billing
         works as for bindRoomBookingCalendarDevice.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Showing
@@ -3047,7 +3177,7 @@ paths:
         - Apps - Room Booking
       operationId: unbindRoomBookingCollectionDevice
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Removed
@@ -3080,7 +3210,7 @@ paths:
       operationId: listRoomBookingCollectionScreens
       description: The same answer as listRoomBookingCalendarScreens, for a collection.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: The devices showing it
@@ -3108,7 +3238,7 @@ paths:
         - Installations
       operationId: prepareInstallation
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: Idempotency-Key
           in: header
@@ -3188,7 +3318,7 @@ paths:
         - Installations
       operationId: getInstallation
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Installation
@@ -3199,16 +3329,28 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginInstallation"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
     delete:
       summary: Cancel a pending installation
       tags:
         - Installations
       operationId: cancelInstallation
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "204":
           description: Cancelled
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
   /api/plugin_installations/{plugin_installation_id}/completion:
     post:
       summary: Complete an installation once
@@ -3216,7 +3358,7 @@ paths:
         - Installations
       operationId: completeInstallation
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_installation_id
           in: path
@@ -3250,7 +3392,7 @@ paths:
         - Installations
       operationId: getInstallationConfiguration
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Pending configuration
@@ -3263,14 +3405,20 @@ paths:
                     oneOf:
                       - $ref: "#/components/schemas/PluginConfiguration"
                       - $ref: "#/components/schemas/PluginInstallation"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
     patch:
       summary: Save pending configuration
       tags:
         - Installations
       operationId: updateInstallationConfiguration
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Updated pending configuration
@@ -3281,6 +3429,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConfiguration"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
       requestBody:
         content:
           application/json:
@@ -3294,7 +3448,7 @@ paths:
         - Installations
       operationId: evaluateInstallationConfiguration
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_installation_id
           in: path
@@ -3312,6 +3466,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConfiguration"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
       requestBody:
         content:
           application/json:
@@ -3336,7 +3496,7 @@ paths:
         - Installations
       operationId: getInstallationConfigurationChoices
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_installation_id
           in: path
@@ -3350,6 +3510,15 @@ paths:
           schema:
             type: string
       responses:
+        "200":
+          description: One page of choices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/ConfigurationChoices"
         "404":
           description: Unknown resolver
       requestBody:
@@ -3381,7 +3550,7 @@ paths:
         - Plugin Settings
       operationId: getPluginSettingRemovalPreview
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -3424,6 +3593,12 @@ paths:
                               enum:
                                 - removed
                                 - source_removed
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
   /api/capabilities:
     get:
       summary: Read supported Companion contract versions
@@ -3431,7 +3606,7 @@ paths:
         - Companion
       operationId: getCompanionCapabilities
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Exact supported versions; missing features are unavailable
@@ -3444,6 +3619,12 @@ paths:
                     type: object
                     additionalProperties:
                       type: integer
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /api/devices/{device_id}/association:
     delete:
       summary: Unlink an owned physical device
@@ -3451,7 +3632,7 @@ paths:
         - Devices
       operationId: deleteDeviceAssociation
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -3461,6 +3642,12 @@ paths:
       responses:
         "204":
           description: Device unlinked; the device record remains
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /api/devices/{device_id}/mashups/options:
     get:
       summary: Read preset layouts and compatible plugin settings
@@ -3468,7 +3655,7 @@ paths:
         - Mashups
       operationId: getMashupOptions
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -3490,6 +3677,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/MashupOptions"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /api/playlists/items/{item_id}/preview:
     get:
       summary: Read the current rendered playlist image
@@ -3497,7 +3690,7 @@ paths:
         - Playlists
       operationId: getPlaylistItemPreview
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: item_id
           in: path
@@ -3507,6 +3700,18 @@ paths:
       responses:
         "200":
           description: Private image; no storage redirect or device check-in
+        "401":
+          description: Unauthorized
+          content:
+            image/bmp:
+              schema:
+                $ref: "#/components/schemas/Error"
+            image/png:
+              schema:
+                $ref: "#/components/schemas/Error"
+            image/jpeg:
+              schema:
+                $ref: "#/components/schemas/Error"
   /api/plugin_settings/{plugin_setting_id}/connections/{connection_id}/attempts:
     post:
       summary: Start provider authorization for the exact target
@@ -3514,7 +3719,7 @@ paths:
         - Provider authorization
       operationId: startPluginSettingsConnection
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -3536,6 +3741,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConnectionAttempt"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
       requestBody:
         content:
           application/json:
@@ -3562,7 +3773,7 @@ paths:
         - Provider authorization
       operationId: disconnectPluginSettingsConnection
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -3584,6 +3795,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConfiguration"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
       requestBody:
         content:
           application/json:
@@ -3602,7 +3819,7 @@ paths:
         - Provider authorization
       operationId: startPluginInstallationsConnection
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_installation_id
           in: path
@@ -3624,6 +3841,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConnectionAttempt"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
       requestBody:
         content:
           application/json:
@@ -3650,7 +3873,7 @@ paths:
         - Provider authorization
       operationId: disconnectPluginInstallationsConnection
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_installation_id
           in: path
@@ -3672,6 +3895,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConfiguration"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
       requestBody:
         content:
           application/json:
@@ -3690,7 +3919,7 @@ paths:
         - Provider authorization
       operationId: getConnectionAttempt
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -3708,13 +3937,19 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConnectionAttempt"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
     delete:
       summary: Cancel an owned pending or exchanging attempt
       tags:
         - Provider authorization
       operationId: cancelConnectionAttempt
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -3732,6 +3967,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConnectionAttempt"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
   /api/plugin_connection_attempts/{id}/confirmation:
     post:
       summary: Attach the exchanged grant with the confirmation from the provider
@@ -3740,7 +3981,7 @@ paths:
         - Provider authorization
       operationId: confirmConnectionAttempt
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -3759,6 +4000,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConnectionAttempt"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
       requestBody:
         content:
           application/json:
@@ -3780,8 +4027,8 @@ paths:
         code scan) to this account. Sets up the starter playlist item the first
         time. friendly_id is printed on the device screen during setup.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Claimed
@@ -3834,7 +4081,7 @@ paths:
         - Devices
       operationId: listDevices
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -3862,7 +4109,7 @@ paths:
       description: Windows carry minutes since midnight in the account timezone, end
         inclusive.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -3929,7 +4176,7 @@ paths:
       description: Clears the backoff on a device stuck on an available firmware
         update, so the next check-in offers it again.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -3958,7 +4205,7 @@ paths:
       description: Simulates upcoming check-ins without writing anything. reason
         explains a step's wait (e.g. asleep, or an extended refresh rate).
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4043,7 +4290,7 @@ paths:
         the background. The device receives the screen when it next checks in;
         this does not wake a sleeping device.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4095,7 +4342,7 @@ paths:
       description: Mirroring copies the master device's sharable playlist onto this
         device. The master must have visibility set to sharable.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4146,7 +4393,7 @@ paths:
       description: Clears the device's mirror. This is a DELETE on the mirror link,
         not on the device — the device keeps its own playlist history.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4175,7 +4422,7 @@ paths:
         synced. Only playlist items are copied automatically otherwise; use this
         after adding new content to the master.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4207,7 +4454,7 @@ paths:
         this request adds the configured items again. Refreshes are queued after
         copying.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4275,7 +4522,7 @@ paths:
         - Playlists
       operationId: listDevicePlaylist
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4307,7 +4554,7 @@ paths:
         - Playlists
       operationId: addDevicePlaylistItem
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4352,7 +4599,7 @@ paths:
         - Playlists
       operationId: reorderDevicePlaylist
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4411,7 +4658,7 @@ paths:
         - Devices
       operationId: getDevice
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -4442,9 +4689,9 @@ paths:
       description: The same settings as the device page. Keys the device cannot take
         (custom dimensions on a fixed-size model, appearance on a native device)
         are dropped; a native device can only switch between the OG models.
-      parameters: [ ]
+      parameters: []
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Updated
@@ -4583,6 +4830,11 @@ paths:
                     - xlarge
                 theme:
                   type: string
+                auto_advance:
+                  type: boolean
+                  description: "Beta: may change or go away. false keeps the current screen until
+                    a button press; taken only when management.writable_fields
+                    lists it"
                 playlist_item_ttl:
                   type: integer
                   nullable: true
@@ -4635,7 +4887,7 @@ paths:
       description: Removes every item from the device playlist. The plugin settings
         stay in the account.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4675,7 +4927,7 @@ paths:
         first. before_ts and before_event_id from the last row page further
         back.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4686,36 +4938,25 @@ paths:
         - name: level
           in: query
           required: false
-          enum:
-            - debug
-            - info
-            - warn
-            - error
           schema:
             type: string
-          description: ":
-
-            \ * `debug`\ 
-
-            \ * `info`\ 
-
-            \ * `warn`\ 
-
-            \ * `error`\ 
-
-            \ "
+            enum:
+              - debug
+              - info
+              - warn
+              - error
         - name: source
           in: query
           required: false
-          enum:
-            - device
-            - plugin
-            - custom_plugin
-            - private_plugin
-            - mashup
-            - support
           schema:
             type: string
+            enum:
+              - device
+              - plugin
+              - custom_plugin
+              - private_plugin
+              - mashup
+              - support
         - name: limit
           in: query
           required: false
@@ -4767,6 +5008,60 @@ paths:
           description: Device belongs to another user
         "422":
           description: A level the logs do not have
+  /api/markup:
+    post:
+      summary: Render Liquid template
+      operationId: renderMarkup
+      tags:
+        - Markup
+      security:
+        - bearer_auth: []
+      parameters: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    oneOf:
+                      - type: string
+                      - type: array
+                        items:
+                          type: string
+        "401":
+          description: No API key or session
+        "403":
+          description: API key without the read capability
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                markup:
+                  oneOf:
+                    - type: string
+                      example: Hello, {{ name }}!
+                    - type: array
+                      items:
+                        type: string
+                      example:
+                        - Hello, {{ name }}!
+                        - Goodbye, {{ name }}!
+                variables:
+                  type: object
+                  example:
+                    name: World
+              required:
+                - markup
+                - variables
+              additionalProperties: false
+        required: true
+        description: The Liquid markup(s) to render and an optional set of variables to
+          use in the rendering process.
   /api/devices/{device_id}/mashups:
     post:
       summary: Add a mashup to a device playlist
@@ -4777,7 +5072,7 @@ paths:
         layouts the device can show and the positions each layout has. The 1x1
         layout adds a plain playlist item instead of a mashup.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -4846,6 +5141,16 @@ paths:
                   additionalProperties:
                     type: integer
                   description: Plugin setting id by position; a position left out renders empty
+                text_scales:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    enum:
+                      - small
+                      - regular
+                      - large
+                      - xlarge
+                  description: Text scale by position; a position left out follows the device
               required:
                 - layout
                 - contents
@@ -4857,7 +5162,7 @@ paths:
         - Mashups
       operationId: getMashup
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -4890,7 +5195,7 @@ paths:
       operationId: updateMashup
       description: Positions left out keep their plugin setting.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -4929,8 +5234,23 @@ paths:
                   additionalProperties:
                     type: integer
                   description: Plugin setting id by position
+                text_scales:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    enum:
+                      - small
+                      - regular
+                      - large
+                      - xlarge
+                    nullable: true
+                  description: Text scale by position, for the positions in contents. Blank goes
+                    back to the device scale
                 health_notification_enabled:
                   type: boolean
+                stopped_notification_enabled:
+                  type: boolean
+                  description: Email the owner when the mashup stops refreshing
         required: true
   /api/mashups/{id}/health_resets:
     post:
@@ -4941,7 +5261,7 @@ paths:
       description: Returns an erroring mashup to healthy and re-schedules its renders,
         the same as the reset link on the mashup page.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -4978,7 +5298,7 @@ paths:
       tags:
         - Users
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -5003,8 +5323,8 @@ paths:
       description: Name, time zone, locale and the account-wide display settings.
         Email, password and keys stay on the account page.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Takes a Rails zone name as well
@@ -5060,7 +5380,7 @@ paths:
         their status: development, in_review or published. Recipes are plugin
         settings, not listed here."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -5088,8 +5408,8 @@ paths:
         dashboard after review, not from here. The icon is an upload the
         dashboard takes. Needs a developer edition device on the account.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Created
@@ -5124,7 +5444,7 @@ paths:
       operationId: updateMyPlugin
       description: Fields left out keep their value. Status cannot change here.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -5171,8 +5491,8 @@ paths:
         - Plugin Configuration
       operationId: startPhotoSelection
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Picker URI and account-bound ticket
@@ -5194,6 +5514,12 @@ paths:
                         type: string
                       revision:
                         type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
       requestBody:
         content:
           application/json:
@@ -5211,8 +5537,8 @@ paths:
         - Plugin Configuration
       operationId: completePhotoSelection
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Updated configuration
@@ -5223,6 +5549,12 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/PluginConfiguration"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigurationError"
       requestBody:
         content:
           application/json:
@@ -5246,7 +5578,7 @@ paths:
       description: action_type is hide or show. To remove items use deletePlaylistItem
         instead.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -5302,7 +5634,7 @@ paths:
         - Playlists
       operationId: getPlaylistItemSchedule
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: item_id
           in: path
@@ -5337,10 +5669,30 @@ paths:
                             end_time:
                               type: string
                               example: 17:00
+                      date_range:
+                        type: object
+                        nullable: true
+                        description: Only display between these dates. Null when no dates are set
+                        properties:
+                          start_on:
+                            type: string
+                            format: date
+                            nullable: true
+                            description: First day shown. Null for no start
+                          end_on:
+                            type: string
+                            format: date
+                            nullable: true
+                            description: Last day shown. Null for no end
+                          repeats_yearly:
+                            type: boolean
+                            description: Ignore the years and repeat every year. Needs both dates, and a
+                              start after the end runs across the new year
                       always_active:
                         type: boolean
                         example: false
-                        description: True when no window is set, so the item always displays
+                        description: True when no window and no dates are set, so the item always
+                          displays
         "401":
           description: Unauthorized
           content:
@@ -5355,7 +5707,7 @@ paths:
         - Playlists
       operationId: replacePlaylistItemSchedule
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: item_id
           in: path
@@ -5365,7 +5717,8 @@ paths:
             type: integer
       responses:
         "200":
-          description: An empty array clears the schedule, so the item always displays
+          description: An empty array and no date_range clear the schedule, so the item
+            always displays
           content:
             application/json:
               schema:
@@ -5390,10 +5743,30 @@ paths:
                             end_time:
                               type: string
                               example: 17:00
+                      date_range:
+                        type: object
+                        nullable: true
+                        description: Only display between these dates. Null when no dates are set
+                        properties:
+                          start_on:
+                            type: string
+                            format: date
+                            nullable: true
+                            description: First day shown. Null for no start
+                          end_on:
+                            type: string
+                            format: date
+                            nullable: true
+                            description: Last day shown. Null for no end
+                          repeats_yearly:
+                            type: boolean
+                            description: Ignore the years and repeat every year. Needs both dates, and a
+                              start after the end runs across the new year
                       always_active:
                         type: boolean
                         example: false
-                        description: True when no window is set, so the item always displays
+                        description: True when no window and no dates are set, so the item always
+                          displays
         "401":
           description: Unauthorized
           content:
@@ -5426,6 +5799,25 @@ paths:
                       end_time:
                         type: string
                         description: HH:MM, 00:00 to 23:59
+                date_range:
+                  type: object
+                  nullable: true
+                  description: Only display between these dates. Null when no dates are set
+                  properties:
+                    start_on:
+                      type: string
+                      format: date
+                      nullable: true
+                      description: First day shown. Null for no start
+                    end_on:
+                      type: string
+                      format: date
+                      nullable: true
+                      description: Last day shown. Null for no end
+                    repeats_yearly:
+                      type: boolean
+                      description: Ignore the years and repeat every year. Needs both dates, and a
+                        start after the end runs across the new year
               required:
                 - week_schedules
         required: true
@@ -5436,7 +5828,7 @@ paths:
         - Playlists
       operationId: listPlaylistItems
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -5472,7 +5864,7 @@ paths:
           schema:
             type: integer
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: item that is not an object is read as no change
@@ -5533,7 +5925,7 @@ paths:
           schema:
             type: integer
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Removed
@@ -5565,7 +5957,7 @@ paths:
       description: Copies the plugin setting or mashup and places the copy on the same
         device.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -5606,6 +5998,9 @@ paths:
       tags:
         - Plugin Settings
       operationId: downloadPluginSettingArchive
+      security:
+        - bearer_auth: []
+        - {}
       description: >
         Answers a zip, not JSON: settings.yml, one .liquid per markup size, and
 
@@ -5624,8 +6019,6 @@ paths:
 
         An archive of another user's recipe leaves polling_headers and
         polling_body empty.
-      security:
-        - bearer_auth: [ ]
       responses:
         "200":
           description: Success
@@ -5647,8 +6040,8 @@ paths:
         - Plugin Settings
       operationId: uploadPluginSettingArchive
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Success
@@ -5675,7 +6068,14 @@ paths:
         content:
           multipart/form-data:
             schema:
-              type: file
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: A .zip archive, 10 MB at most
         required: true
         description: Plugin setting archive file
   /api/plugin_settings/{plugin_setting_id}/configuration/evaluation:
@@ -5685,7 +6085,7 @@ paths:
         - Plugin Configuration
       operationId: evaluatePluginConfiguration
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -5728,7 +6128,7 @@ paths:
         - Plugin Configuration
       operationId: getPluginConfigurationChoices
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -5741,6 +6141,15 @@ paths:
           schema:
             type: string
       responses:
+        "200":
+          description: One page of choices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/ConfigurationChoices"
         "404":
           description: Unknown resolver for owned target
       requestBody:
@@ -5774,7 +6183,7 @@ paths:
         - Plugin Configuration
       operationId: getPluginConfiguration
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -5807,7 +6216,7 @@ paths:
         - Plugin Configuration
       operationId: updatePluginConfiguration
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -5837,8 +6246,8 @@ paths:
         form its installers fill in, without saving it. Each entry needs
         keyname, field_type and name.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Valid
@@ -5891,7 +6300,7 @@ paths:
       tags:
         - Plugin Settings
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -5929,8 +6338,8 @@ paths:
       tags:
         - Plugin Settings
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Success with UUID (no auth required)
@@ -5968,18 +6377,20 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
         "422":
-          description: Data cannot be modified
+          description: Data is badly formatted, too large, or cannot be modified
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                anyOf:
+                  - $ref: "#/components/schemas/PluginSettingDataParams"
+                  - $ref: "#/components/schemas/Error"
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                merge_variables: { }
+                merge_variables: {}
               required:
                 - merge_variables
               additionalProperties: false
@@ -5996,7 +6407,7 @@ paths:
         per instance; a request while one runs is answered the same way and
         queues nothing.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6035,7 +6446,7 @@ paths:
       description: Deletes the featured image; the recipe listing then shows a
         screenshot instead.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6074,7 +6485,7 @@ paths:
         recipe can be read; another author's recipe comes without its polling
         headers and body."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Reads another author's published recipe without its secrets
@@ -6109,8 +6520,8 @@ paths:
         filename. settings.yml is required; a markup file left out keeps its
         current content.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Persists a settings-only import, with no markup file to save through
@@ -6163,10 +6574,13 @@ paths:
       tags:
         - Plugin Settings
       operationId: uploadPluginSettingImage
+      security:
+        - bearer_auth: []
+        - {}
       description: Send the image as JSON with the bytes in base64, or as the raw
         request body with its image Content-Type (not multipart form data). PNG,
         JPEG and WebP.
-      parameters: [ ]
+      parameters: []
       responses:
         "200":
           description: Full-color image on a color device
@@ -6180,6 +6594,11 @@ paths:
                     properties:
                       message:
                         type: string
+                      next_check_in_at:
+                        type: string
+                        format: date-time
+                        description: When a device next checks in to show this image; absent when none
+                          is due
         "401":
           description: Numeric id without an API key
         "404":
@@ -6234,7 +6653,7 @@ paths:
         - Plugin Settings - Logs
       operationId: getPluginSettingLogs
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -6245,24 +6664,14 @@ paths:
         - name: level
           in: query
           required: false
-          enum:
-            - debug
-            - info
-            - warn
-            - error
-          description: "Only return logs at this level:
-
-            \ * `debug`\ 
-
-            \ * `info`\ 
-
-            \ * `warn`\ 
-
-            \ * `error`\ 
-
-            \ "
           schema:
             type: string
+            enum:
+              - debug
+              - info
+              - warn
+              - error
+          description: Only return logs at this level
         - name: limit
           in: query
           required: false
@@ -6351,7 +6760,7 @@ paths:
         - Plugin Settings - Markup
       operationId: readMarkup
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -6372,6 +6781,7 @@ paths:
               - markup_quadrant
               - markup_shared
               - tidbyt_canvas
+              - vestaboard_canvas
               - transform_js
       responses:
         "200":
@@ -6411,7 +6821,7 @@ paths:
         - Plugin Settings - Markup
       operationId: writeMarkup
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -6432,6 +6842,7 @@ paths:
               - markup_quadrant
               - markup_shared
               - tidbyt_canvas
+              - vestaboard_canvas
               - transform_js
       responses:
         "200":
@@ -6476,7 +6887,7 @@ paths:
         - Plugin Settings - Merge Variables
       operationId: getMergeVariables
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -6529,7 +6940,7 @@ paths:
         updatePluginSettingFields, its markup writeMarkup. A refresh_interval
         faster than the plan allows is raised to the nearest allowed value.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6585,7 +6996,10 @@ paths:
                   description: Minutes between renders
                 health_notification_enabled:
                   type: boolean
-                  description: Email the owner when the instance stops rendering
+                  description: Email the owner when the instance starts failing
+                stopped_notification_enabled:
+                  type: boolean
+                  description: Email the owner when the instance stops refreshing
         required: true
     delete:
       summary: Delete a plugin setting
@@ -6593,7 +7007,7 @@ paths:
         - Plugin Settings
       operationId: deletePluginSetting
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6625,7 +7039,7 @@ paths:
       description: Adds a new instance with the same settings and markup, named
         "[Copy] <name>", and answers it.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6662,7 +7076,7 @@ paths:
       description: Forgets the trmnl.state a private plugin carries between renders.
         Its data and settings stay.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6691,7 +7105,7 @@ paths:
         deletes the plugin setting, so the plugin can be set up again from
         scratch. Destructive: the setting is gone afterwards."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6721,7 +7135,7 @@ paths:
       description: A private plugin then records the request and response of each
         fetch for 24 hours; read them with getPluginSettingLogs.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6763,7 +7177,7 @@ paths:
         schedule. include_forks=true also resets every install of a recipe this
         setting publishes.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6797,7 +7211,7 @@ paths:
       description: Deletes the serverless transform file and forgets its language;
         renders then use the fetched data as is.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -6828,7 +7242,7 @@ paths:
         poll with getRefresh. Any other instance queues a render of its current
         data and answers without one.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -6881,7 +7295,7 @@ paths:
         - Plugin Settings - Refresh
       operationId: getRefresh
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -6971,7 +7385,7 @@ paths:
         resolution and is not sized for a panel; a device is driven through
         /api/display.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -7038,7 +7452,7 @@ paths:
         - Plugin Settings - Preview
       operationId: getPreview
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -7095,7 +7509,7 @@ paths:
         - Plugin Settings - Settings
       operationId: updatePluginSettingFields
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -7150,7 +7564,7 @@ paths:
         - Plugin Settings
       operationId: listPluginSettings
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_id
           in: query
@@ -7184,8 +7598,8 @@ paths:
       description: listPlugins gives the plugin_id to send here; getPlugin lists the
         fields to send updatePluginSettingFields next.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Success
@@ -7221,7 +7635,7 @@ paths:
         - Plugin Settings
       operationId: getPluginSettingDetails
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -7300,7 +7714,7 @@ paths:
         third-party plugins at any status. Send a plugin id to
         createPluginSetting.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: category
           in: query
@@ -7311,7 +7725,7 @@ paths:
         - name: query
           in: query
           required: false
-          description: Matches the plugin name
+          description: Words to find in the plugin name, description or categories
           schema:
             type: string
         - name: page_size
@@ -7356,7 +7770,7 @@ paths:
       description: form_fields lists what to send updatePluginSettingFields, keyed by
         the same keyname.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -7391,7 +7805,7 @@ paths:
       description: "Recipes are plugin settings other users published. Use one or two
         keywords, or #category to filter by category."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: query
           in: query
@@ -7402,27 +7816,15 @@ paths:
         - name: sort_by
           in: query
           required: false
-          enum:
-            - newest
-            - oldest
-            - popularity
-            - install
-            - fork
           schema:
             type: string
-          description: ":
-
-            \ * `newest`\ 
-
-            \ * `oldest`\ 
-
-            \ * `popularity`\ 
-
-            \ * `install`\ 
-
-            \ * `fork`\ 
-
-            \ "
+            enum:
+              - newest
+              - oldest
+              - popularity
+              - trending
+              - install
+              - fork
         - name: limit
           in: query
           required: false
@@ -7473,7 +7875,7 @@ paths:
         installer fills its custom fields; oauth_choice is a fork that can also
         carry the author's OAuth connection when inherit_oauth is true."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -7509,7 +7911,7 @@ paths:
       description: A starting point for a private plugin of your own; writeMarkup
         takes each size.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -7571,7 +7973,7 @@ paths:
       description: Adds the recipe to the account the way getRecipe's install_method
         says, and to the device playlist when a device_id is given.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -7618,6 +8020,40 @@ paths:
                 inherit_oauth:
                   type: boolean
                   description: "For an oauth_choice recipe: carry the author's OAuth connection"
+  /api/search_insights:
+    get:
+      summary: Read what users search for and find nothing
+      tags:
+        - Search insights
+      operationId: getSearchInsights
+      description: Search terms that found no plugin or recipe for at least 5 users in
+        the last 30 days, most searched first. Demand is a band (5+, 10+, 15+,
+        20+), never an exact count. Refreshed hourly.
+      security:
+        - bearer_auth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        query:
+                          type: string
+                        demand:
+                          type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /api/devices/{device_id}/timeline:
     get:
       summary: Read a device timeline
@@ -7629,7 +8065,7 @@ paths:
         simulated from its playlist and settings). source narrows both halves to
         one plugin setting or mashup."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: device_id
           in: path
@@ -7653,21 +8089,13 @@ paths:
         - name: hours
           in: query
           required: false
-          enum:
-            - 3
-            - 12
-            - 24
-          description: "How far ahead the strip looks, default 24:
-
-            \ * `3`\ 
-
-            \ * `12`\ 
-
-            \ * `24`\ 
-
-            \ "
           schema:
             type: integer
+            enum:
+              - 3
+              - 12
+              - 24
+          description: How far ahead the strip looks, default 24
       responses:
         "200":
           description: Success
@@ -7696,7 +8124,7 @@ paths:
         check-ins that served it (recorded) and, on today, the ones that will
         (expected), each naming its device."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: plugin_setting_id
           in: path
@@ -7738,7 +8166,7 @@ paths:
         check-ins that served it (recorded) and, on today, the ones that will
         (expected), each naming its device."
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: mashup_id
           in: path
@@ -7776,9 +8204,8 @@ paths:
       tags:
         - User Themes
       operationId: listUserThemes
-      description: Requires the theme builder to be enabled for the account.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       responses:
         "200":
           description: Success
@@ -7797,22 +8224,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-        "404":
-          description: The theme builder is not enabled for the account
     post:
       summary: Create a theme
       tags:
         - User Themes
       operationId: createUserTheme
-      description: "Requires the theme builder to be enabled for the account. settings
-        is validated the same way the theme builder validates it: a value
-        outside the vocabulary (an unrecognized token, surface, hue, or advanced
-        channel) answers 422; a key the recipe does not read is ignored.
-        advanced is either a mapping (channels/slots restated on one token) or
-        the same mapping as YAML text."
+      description: "settings is validated the same way the theme builder validates it:
+        a value outside the vocabulary (an unrecognized token, surface, hue, or
+        advanced channel) answers 422; a key the recipe does not read is
+        ignored. advanced is either a mapping (channels/slots restated on one
+        token) or the same mapping as YAML text."
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Created
@@ -7852,10 +8276,9 @@ paths:
         - User Themes
       operationId: getUserTheme
       description: scss is the framework stylesheet this theme exports, the same file
-        the builder downloads. Requires the theme builder to be enabled for the
-        account.
+        the builder downloads.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -7886,9 +8309,8 @@ paths:
       tags:
         - User Themes
       operationId: updateUserTheme
-      description: Requires the theme builder to be enabled for the account.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -7932,9 +8354,8 @@ paths:
       tags:
         - User Themes
       operationId: deleteUserTheme
-      description: Requires the theme builder to be enabled for the account.
       security:
-        - bearer_auth: [ ]
+        - bearer_auth: []
       parameters:
         - name: id
           in: path
@@ -7961,10 +8382,10 @@ paths:
       operationId: importUserTheme
       description: Decodes a /t/:token share link (the "Copy share link" button on a
         theme) through the same settings parse createUserTheme uses, and saves
-        it under name. Requires the theme builder to be enabled for the account.
+        it under name.
       security:
-        - bearer_auth: [ ]
-      parameters: [ ]
+        - bearer_auth: []
+      parameters: []
       responses:
         "200":
           description: Created
@@ -7981,8 +8402,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-        "404":
-          description: The theme builder is not enabled for the account
         "422":
           description: name is missing
       requestBody:
@@ -8013,6 +8432,11 @@ components:
       type: http
       scheme: bearer
       bearerFormat: API key or OAuth access token
+    access_token:
+      type: apiKey
+      in: header
+      name: Access-Token
+      description: Device API Key (eg. abc-123)
   schemas:
     PluginConnectionAttempt:
       type: object
@@ -8062,58 +8486,6 @@ components:
                 - type: integer
                 - type: string
                   format: uuid
-    CatalogEntry:
-      type: object
-      required:
-        - kind
-        - id
-        - name
-        - description
-        - categories
-      properties:
-        kind:
-          type: string
-          enum:
-            - official
-            - recipe
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-          nullable: true
-        categories:
-          type: array
-          items:
-            type: string
-        source_revision:
-          type: string
-        requirements:
-          type: array
-          items:
-            type: string
-        compatibility:
-          type: object
-        install_choices:
-          type: array
-          items:
-            type: object
-            required:
-              - id
-              - label
-              - requirements
-            properties:
-              id:
-                type: string
-              label:
-                type: string
-              help:
-                type: string
-              requirements:
-                type: array
-                items:
-                  type: string
     PluginInstallation:
       type: object
       required:
@@ -8198,7 +8570,7 @@ components:
                 properties:
                   label:
                     type: string
-                  value: { }
+                  value: {}
             - type: object
               required:
                 - resolver_id
@@ -8312,6 +8684,29 @@ components:
               nullable: true
         sync:
           $ref: "#/components/schemas/PluginSync"
+    ConfigurationChoices:
+      type: object
+      required:
+        - items
+        - next_cursor
+      properties:
+        items:
+          type: array
+          maxItems: 100
+          items:
+            type: object
+            required:
+              - label
+              - value
+            properties:
+              label:
+                type: string
+              value:
+                description: A string, number, boolean or null
+        next_cursor:
+          type: string
+          nullable: true
+          description: Send back as cursor for the next page; null on the last page
     ConfigurationChange:
       type: object
       required:
@@ -8328,7 +8723,7 @@ components:
         path:
           type: string
           pattern: ^/values/
-        value: { }
+        value: {}
     ConfigurationWrite:
       type: object
       required:
@@ -8452,6 +8847,28 @@ components:
       properties:
         management:
           type: object
+        ble_pairing:
+          type: object
+          nullable: true
+          readOnly: true
+          description: Private BLE pairing credentials for the device owner. Keep in
+            memory only; cleared on reset.
+          required:
+            - v
+            - sid
+            - pop
+          additionalProperties: false
+          properties:
+            v:
+              type: integer
+              enum:
+                - 1
+            sid:
+              type: string
+              format: uuid
+            pop:
+              type: string
+              pattern: ^[0-9A-HJKMNP-TV-Z]{16}$
         id:
           type: integer
           example: 123
@@ -8461,6 +8878,11 @@ components:
         friendly_id:
           type: string
           example: ABC-123
+        model:
+          type: string
+          example: og_png
+          description: Model keyname, the name listModels returns. listModels leaves out
+            hidden models, such as og (OG, 1-bit BMP).
         mac_address:
           type: string
           example: ••:••:••:••:9A:BC
@@ -8510,6 +8932,10 @@ components:
         low_battery_notification_enabled:
           type: boolean
           example: true
+        auto_advance:
+          type: boolean
+          description: "Beta: may change or go away. Present only when
+            management.writable_fields lists it"
         sleep_mode_enabled:
           type: boolean
           nullable: false
@@ -8624,6 +9050,8 @@ components:
             - kindle
             - byod
             - tidbyt
+            - vestaboard
+            - joan
         palette_ids:
           type: array
           items:
@@ -8632,7 +9060,11 @@ components:
             - bw
             - gray-4
             - gray-16
-          description: Supported color palette IDs
+          description: Supported color palette IDs; the first is the default
+        default_palette_id:
+          type: string
+          example: bw
+          description: The palette a new device of this model starts on
         preview_white_point:
           type: string
           example: true_white
@@ -8719,6 +9151,69 @@ components:
           example: 1
           description: For color palettes, bit depth for grayscale areas (1 for 3/4-color
             limited, 2 for 6/7-color, 4 for full-spectrum)
+    Firmware:
+      type: object
+      additionalProperties: false
+      required:
+        - model
+        - label
+        - chip_family
+        - latest
+        - url
+      properties:
+        model:
+          type: string
+          example: v2
+          description: Device model name from the models API
+        label:
+          type: string
+          example: TRMNL X
+          description: Device model display name
+        chip_family:
+          type: string
+          nullable: true
+          example: ESP32-S3
+          description: Chip the firmware is built for
+        latest:
+          type: string
+          nullable: true
+          example: 1.8.17
+          description: Stable firmware version, null before the first release
+        url:
+          type: string
+          nullable: true
+          example: https://trmnl-fw.s3.us-east-2.amazonaws.com/trmnl_x/FW1.8.17.bin
+          description: Download URL for the stable version
+    Framework:
+      type: object
+      additionalProperties: false
+      required:
+        - latest
+        - versions
+      properties:
+        latest:
+          type: string
+          example: 3.4.3
+          description: The version plugins on "latest" render with
+        versions:
+          type: array
+          description: Every release, newest first
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - version
+              - released_at
+            properties:
+              version:
+                type: string
+                example: 3.4.3
+                description: Release version, the value a plugin pins
+              released_at:
+                type: string
+                format: date
+                example: 2026-10-15
+                description: Release date
     PlaylistItem:
       type: object
       additionalProperties: false
@@ -8867,9 +9362,40 @@ components:
             a: 1
             b: 2
           description: Plugin setting id by position
+        text_scales:
+          type: object
+          additionalProperties:
+            type: string
+            enum:
+              - small
+              - regular
+              - large
+              - xlarge
+          example:
+            a: xlarge
+          description: Text scale by position; a position left out follows the device
         health_notification_enabled:
           type: boolean
           example: true
+        stopped_notification_enabled:
+          type: boolean
+          example: true
+        state:
+          type: string
+          enum:
+            - healthy
+            - degraded
+            - erroring
+          example: healthy
+          description: erroring means refreshes stopped
+        error_message:
+          type: string
+          nullable: true
+          example: Request timed out
+        error_retry_count:
+          type: integer
+          example: 0
+          description: Failed refreshes since the last success
         created_at:
           type: string
           format: date_time
@@ -8988,13 +9514,6 @@ components:
         filename:
           type: string
           example: weather-1696161600
-    PlaylistItemParams:
-      type: object
-      additionalProperties: false
-      properties:
-        visible:
-          type: boolean
-          example: true
     Plugin:
       type: object
       additionalProperties: false
@@ -9100,10 +9619,8 @@ components:
                 type: boolean
                 nullable: true
               options:
-                nullable: true
                 description: An array of choices, or a string naming a dynamic source
-              default:
-                nullable: true
+              default: {}
     PluginSetting:
       type: object
       additionalProperties: false
@@ -9131,6 +9648,25 @@ components:
         health_notification_enabled:
           type: boolean
           example: false
+        stopped_notification_enabled:
+          type: boolean
+          example: true
+        state:
+          type: string
+          enum:
+            - healthy
+            - degraded
+            - erroring
+          example: healthy
+          description: erroring means refreshes stopped
+        error_message:
+          type: string
+          nullable: true
+          example: Request timed out
+        error_retry_count:
+          type: integer
+          example: 0
+          description: Failed refreshes since the last success
         icon_url:
           type: string
           example: https://trmnl-public.s3.com/qwertyasdf
@@ -9498,6 +10034,11 @@ components:
         low_battery_notification_email:
           type: string
           nullable: true
+        api_key:
+          type: string
+          example: user_xxxxxx
+          description: The key the request authenticated with, either the account API key
+            or the scoped key itself. Absent for connected apps
     TimelineStep:
       type: object
       description: "One simulated check-in: what the device fetches then, and how long
@@ -9723,6 +10264,7 @@ components:
           type: string
           example: Fleet
         master:
+          type: object
           nullable: true
           allOf:
             - $ref: "#/components/schemas/FleetMember"
@@ -9786,6 +10328,8 @@ components:
           nullable: true
         show_booking_qr:
           type: boolean
+        show_company_logo:
+          type: boolean
         feed_backed:
           type: boolean
           description: "Read-only feed: bookings are made in the source calendar, not here"
@@ -9819,10 +10363,14 @@ components:
           items:
             type: integer
           description: Devices showing this calendar
+        url_display_url:
+          type: string
+          nullable: true
+          description: Browser display URL, or null when no URL display is configured
         public_booking_token:
           type: string
           nullable: true
-          description: Walk-up QR booking token, when walk-up booking is open
+          description: Public booking token, when Booking with TRMNL is open
         public_booking_url:
           type: string
           nullable: true
@@ -9886,6 +10434,8 @@ components:
             - grid
         show_booking_qr:
           type: boolean
+        show_company_logo:
+          type: boolean
         resource_ids:
           type: array
           items:
@@ -9899,6 +10449,9 @@ components:
           items:
             type: integer
           description: Devices showing this collection
+        url_display_url:
+          type: string
+          nullable: true
         public_booking_token:
           type: string
           nullable: true
@@ -9971,11 +10524,14 @@ components:
           example: Europe/Amsterdam
         public_bookings:
           type: boolean
-          description: Walk-up QR booking
+          description: Booking with TRMNL
         dark_mode:
           type: boolean
         show_company_logo:
           type: boolean
+        show_next_meeting:
+          type: boolean
+          description: Busy room screens show the next meeting instead of the organizer
         daily_public_booking_url_rotation:
           type: boolean
         time_format:
@@ -10053,8 +10609,8 @@ components:
     PublicBookingEvent:
       type: object
       additionalProperties: false
-      description: "The shape the walk-up page uses: times are local to the room,
-        without a zone"
+      description: "The shape the public booking page uses: times are local to the
+        room, without a zone"
       properties:
         id:
           type: integer
@@ -10143,6 +10699,7 @@ components:
           type: string
           example: Boardroom display
         screen:
+          type: object
           nullable: true
           allOf:
             - $ref: "#/components/schemas/Screen"
@@ -10172,6 +10729,8 @@ components:
           type: integer
           nullable: true
         show_booking_qr:
+          type: boolean
+        show_company_logo:
           type: boolean
         feed_backed:
           type: boolean
@@ -10206,14 +10765,19 @@ components:
           items:
             type: integer
           description: Devices showing this calendar
+        url_display_url:
+          type: string
+          nullable: true
+          description: Browser display URL, or null when no URL display is configured
         public_booking_token:
           type: string
           nullable: true
-          description: Walk-up QR booking token, when walk-up booking is open
+          description: Public booking token, when Booking with TRMNL is open
         public_booking_url:
           type: string
           nullable: true
         current_booking:
+          type: object
           nullable: true
           allOf:
             - $ref: "#/components/schemas/RoomBooking"
