@@ -49,6 +49,19 @@ class DeviceModelExtTest {
         assertThat(DeviceKind.BYOD.logoResource).isNull()
     }
 
+    @Test
+    fun `displayName returns human-readable labels for each DeviceKind`() {
+        assertThat(DeviceKind.TRMNL.displayName).isEqualTo("TRMNL")
+        assertThat(DeviceKind.KINDLE.displayName).isEqualTo("Kindle")
+        assertThat(DeviceKind.SEEED_STUDIO.displayName).isEqualTo("Seeed Studio")
+        assertThat(DeviceKind.KOBO.displayName).isEqualTo("Kobo")
+        assertThat(DeviceKind.BOOX.displayName).isEqualTo("BOOX")
+        assertThat(DeviceKind.JOAN.displayName).isEqualTo("Joan")
+        assertThat(DeviceKind.INKPLATE.displayName).isEqualTo("Inkplate")
+        assertThat(DeviceKind.WAVESHARE.displayName).isEqualTo("Waveshare")
+        assertThat(DeviceKind.BYOD.displayName).isEqualTo("Other BYOD")
+    }
+
     private fun createDeviceModel(
         name: String,
         kind: String,
