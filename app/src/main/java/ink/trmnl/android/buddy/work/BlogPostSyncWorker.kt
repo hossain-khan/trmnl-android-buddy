@@ -15,6 +15,7 @@ import ink.trmnl.android.buddy.dev.AppDevConfig
 import ink.trmnl.android.buddy.di.AppWorkerFactory
 import ink.trmnl.android.buddy.di.WorkerKey
 import ink.trmnl.android.buddy.notification.NotificationHelper
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
@@ -86,6 +87,8 @@ class BlogPostSyncWorker(
                 // Retry on failure (WorkManager will use exponential backoff)
                 Result.retry()
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             val executionTime = System.currentTimeMillis() - startTime
             Timber.e(e, "[$WORK_NAME] Unexpected error during sync (execution time: %d ms), scheduling retry", executionTime)

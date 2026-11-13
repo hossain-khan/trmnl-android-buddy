@@ -20,6 +20,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.BookmarkRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -97,6 +98,8 @@ class BookmarkedRecipesPresenter
                             try {
                                 bookmarkRepository.clearAllBookmarks()
                                 Timber.d("All bookmarks cleared")
+                            } catch (e: CancellationException) {
+                                throw e
                             } catch (e: Exception) {
                                 Timber.e(e, "Failed to clear all bookmarks")
                             }
@@ -117,6 +120,8 @@ class BookmarkedRecipesPresenter
                             try {
                                 bookmarkRepository.toggleBookmark(event.recipe)
                                 Timber.d("Bookmark removed for recipe: ${event.recipe.name} (ID: ${event.recipe.id})")
+                            } catch (e: CancellationException) {
+                                throw e
                             } catch (e: Exception) {
                                 Timber.e(e, "Failed to remove bookmark for recipe: ${event.recipe.name}")
                             }

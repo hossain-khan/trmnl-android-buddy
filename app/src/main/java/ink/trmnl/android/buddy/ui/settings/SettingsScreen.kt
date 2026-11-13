@@ -53,6 +53,7 @@ import ink.trmnl.android.buddy.ui.recipescatalog.RecipesCatalogScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.ui.user.UserAccountScreen
 import ink.trmnl.android.buddy.work.WorkerScheduler
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -179,6 +180,8 @@ class SettingsPresenter(
                             )
                     }
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 analyticsState.value =
                     ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Error(

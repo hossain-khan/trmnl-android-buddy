@@ -15,6 +15,7 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.di.AppWorkerFactory.WorkerInstanceFactory
 import ink.trmnl.android.buddy.di.WorkerKey
 import ink.trmnl.android.buddy.notification.NotificationHelper
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
@@ -137,6 +138,8 @@ class LowBatteryNotificationWorker(
                     return Result.failure()
                 }
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             val executionTime = System.currentTimeMillis() - startTime
             Timber.e(e, "[$WORK_NAME] Error checking low battery (execution time: %d ms)", executionTime)
