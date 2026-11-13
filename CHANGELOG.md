@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated Waveshare brand logo (`waveshare_logo.png`) to higher-resolution asset.
+- Updated color capability labels in `DeviceCatalogInfoBottomSheet` to show accurate color counts (`Grayscale (256 colors)`, `Full Color (4,096+ colors)`).
 
 ## [2.20.0] - 2026-11-13
 
