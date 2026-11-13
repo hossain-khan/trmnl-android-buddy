@@ -41,7 +41,7 @@ androidxRoom = "2.8.5"
 
 # Chart Library
 # https://github.com/patrykandpatrick/vico
-vico = "2.2.1"
+vico = "3.3.1"
 
 # Networking
 # https://github.com/square/okhttp/releases
@@ -153,7 +153,6 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 # Vico Chart Library - https://github.com/patrykandpatrick/vico
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
-vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
 
 # Networking
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
