@@ -1,21 +1,27 @@
 package ink.trmnl.android.buddy.ui.devicediagnostics
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,10 +45,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -275,23 +283,29 @@ private fun NextCheckInHeroCard(step: TimelineStep) {
             )
 
             Text(
-                text = "Screen: ${step.name ?: "Scheduled item"}",
-                style = MaterialTheme.typography.bodyMedium,
+                text = formatStepTitle(step),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Medium,
             )
 
             val cadenceSeconds = step.refreshRateSeconds ?: step.refreshSeconds
-            val reasonText = step.reason?.takeIf { it.isNotBlank() }
-            if (cadenceSeconds != null || reasonText != null) {
+            val reasonLabel = formatStepReason(step.reason)
+            val isSleepWakeup = step.name == null && step.reason?.equals("asleep", ignoreCase = true) == true
+            if (cadenceSeconds != null || reasonLabel != null) {
                 val metaParts =
                     buildList {
-                        if (cadenceSeconds != null) add("Every ${formatDurationSeconds(cadenceSeconds)}")
-                        if (reasonText != null) add(reasonText.replace('_', ' '))
+                        if (cadenceSeconds != null && !isSleepWakeup) {
+                            add("Stays active ${formatDurationSeconds(cadenceSeconds)}")
+                        }
+                        if (reasonLabel != null) add(reasonLabel)
                     }
-                Text(
-                    text = metaParts.joinToString(" • "),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f),
-                )
+                if (metaParts.isNotEmpty()) {
+                    Text(
+                        text = metaParts.joinToString(" • "),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f),
+                    )
+                }
             }
         }
     }
@@ -302,19 +316,26 @@ private fun ForecastStepCard(
     step: TimelineStep,
     isNext: Boolean,
 ) {
+    val cadence = step.refreshRateSeconds ?: step.refreshSeconds
+    val isSleepWakeup = step.name == null && step.reason?.equals("asleep", ignoreCase = true) == true
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
+                containerColor =
+                    if (isNext) {
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+                    },
             ),
     ) {
         ListItem(
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
             headlineContent = {
                 Text(
-                    text = step.name ?: "Scheduled Render",
-                    fontWeight = FontWeight.Medium,
+                    text = formatStepTitle(step),
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -327,8 +348,8 @@ private fun ForecastStepCard(
                     )
                     val renderInfo =
                         listOfNotNull(
-                            step.reason?.replace('_', ' '),
-                            step.renderReason?.replace('_', ' '),
+                            formatStepReason(step.reason),
+                            formatStepReason(step.renderReason),
                         ).distinct().joinToString(" • ")
                     if (renderInfo.isNotBlank()) {
                         Text(
@@ -340,8 +361,10 @@ private fun ForecastStepCard(
                 }
             },
             trailingContent = {
-                val cadence = step.refreshRateSeconds ?: step.refreshSeconds
-                Column(horizontalAlignment = Alignment.End) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
                     if (isNext) {
                         StatusBadge(
                             label = "Next",
@@ -349,12 +372,11 @@ private fun ForecastStepCard(
                             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     }
-                    if (cadence != null) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = formatDurationSeconds(cadence),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    if (cadence != null && !isSleepWakeup) {
+                        StatusBadge(
+                            label = "Active ${formatDurationSeconds(cadence)}",
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         )
                     }
                 }
@@ -408,10 +430,11 @@ private fun TimelineTabContent(
             }
 
             else -> {
+                val totalNodes = timeline.recorded.size + timeline.expected.size
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
                 ) {
                     timeline.checkIn?.let { checkIn ->
                         item(key = "check_in_status") {
@@ -420,30 +443,109 @@ private fun TimelineTabContent(
                                 zone = timeline.zone,
                                 truncated = timeline.truncated,
                             )
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
 
                     if (timeline.recorded.isNotEmpty()) {
                         item(key = "recorded_header") {
-                            SectionHeader(title = "Recorded Events (${timeline.recorded.size})")
+                            SectionHeader(title = "Recorded (${timeline.recorded.size})")
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                         itemsIndexed(
                             items = timeline.recorded,
                             key = { index, item -> "rec_${item.at}_$index" },
-                        ) { _, item ->
-                            RecordedTimelineCard(item = item)
+                        ) { index, item ->
+                            val outcomeLower = item.outcome?.lowercase().orEmpty()
+                            val isFailure =
+                                outcomeLower.contains("fail") ||
+                                    outcomeLower.contains("error") ||
+                                    outcomeLower.contains("miss")
+                            val globalIndex = index
+                            VerticalTimelineRow(
+                                timeLabel = formatShortTime(item.at),
+                                nodeType =
+                                    if (isFailure) {
+                                        TimelineNodeType.RECORDED_FAILURE
+                                    } else {
+                                        TimelineNodeType.RECORDED_SUCCESS
+                                    },
+                                isFirst = globalIndex == 0,
+                                isLast = globalIndex == totalNodes - 1,
+                                title = item.name ?: "Device Check-in",
+                                subtitle =
+                                    if (item.supporting.isNotEmpty() || item.traceEntries.isNotEmpty()) {
+                                        "${item.supporting.size} supporting • ${item.traceEntries.size} trace entries"
+                                    } else {
+                                        formatDisplayTimestamp(item.at)
+                                    },
+                                badgeLabel = item.outcome?.takeIf { it.isNotBlank() }?.replace('_', ' '),
+                                badgeContainerColor =
+                                    if (isFailure) {
+                                        MaterialTheme.colorScheme.errorContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.primaryContainer
+                                    },
+                                badgeContentColor =
+                                    if (isFailure) {
+                                        MaterialTheme.colorScheme.onErrorContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.onPrimaryContainer
+                                    },
+                            )
                         }
                     }
 
                     if (timeline.expected.isNotEmpty()) {
                         item(key = "expected_header") {
-                            SectionHeader(title = "Expected Next (${timeline.expected.size})")
+                            SectionHeader(
+                                title =
+                                    if (timeline.recorded.isNotEmpty()) {
+                                        "Upcoming Schedule (${timeline.expected.size})"
+                                    } else {
+                                        "Upcoming Schedule (${timeline.expected.size}) — No recorded activity yet"
+                                    },
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                         itemsIndexed(
                             items = timeline.expected,
                             key = { index, step -> "exp_${step.at}_$index" },
-                        ) { _, step ->
-                            ForecastStepCard(step = step, isNext = false)
+                        ) { index, step ->
+                            val globalIndex = timeline.recorded.size + index
+                            val isNext = index == 0
+                            val cadence = step.refreshRateSeconds ?: step.refreshSeconds
+                            val isSleepWakeup = step.name == null && step.reason?.equals("asleep", ignoreCase = true) == true
+                            VerticalTimelineRow(
+                                timeLabel = formatShortTime(step.at),
+                                nodeType = if (isNext) TimelineNodeType.NEXT_UP else TimelineNodeType.UPCOMING,
+                                isFirst = globalIndex == 0,
+                                isLast = globalIndex == totalNodes - 1,
+                                title = formatStepTitle(step),
+                                subtitle =
+                                    listOfNotNull(
+                                        formatStepReason(step.reason),
+                                        formatStepReason(step.renderReason),
+                                    ).distinct().joinToString(" • ").ifBlank { formatDisplayTimestamp(step.at) },
+                                badgeLabel =
+                                    when {
+                                        isSleepWakeup -> "Wake-up"
+                                        cadence != null -> "Active ${formatDurationSeconds(cadence)}"
+                                        else -> null
+                                    },
+                                badgeContainerColor =
+                                    if (isNext) {
+                                        MaterialTheme.colorScheme.primaryContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.secondaryContainer
+                                    },
+                                badgeContentColor =
+                                    if (isNext) {
+                                        MaterialTheme.colorScheme.onPrimaryContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.onSecondaryContainer
+                                    },
+                            )
                         }
                     }
 
@@ -540,62 +642,206 @@ private fun CheckInHealthCard(
     }
 }
 
+private enum class TimelineNodeType {
+    RECORDED_SUCCESS,
+    RECORDED_FAILURE,
+    NEXT_UP,
+    UPCOMING,
+}
+
 @Composable
-private fun RecordedTimelineCard(item: TimelineRecordedItem) {
-    val outcomeLower = item.outcome?.lowercase().orEmpty()
-    val isFailure = outcomeLower.contains("fail") || outcomeLower.contains("error") || outcomeLower.contains("miss")
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
-            ),
+private fun VerticalTimelineRow(
+    timeLabel: String,
+    nodeType: TimelineNodeType,
+    isFirst: Boolean,
+    isLast: Boolean,
+    title: String,
+    subtitle: String,
+    badgeLabel: String?,
+    badgeContainerColor: Color,
+    badgeContentColor: Color,
+) {
+    val railColor = MaterialTheme.colorScheme.outlineVariant
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val primaryContainer = MaterialTheme.colorScheme.primaryContainer
+    val errorColor = MaterialTheme.colorScheme.error
+    val surfaceColor = MaterialTheme.colorScheme.surface
+
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
     ) {
-        ListItem(
-            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-            headlineContent = {
-                Text(
-                    text = item.name ?: "Device Activity",
-                    fontWeight = FontWeight.Medium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
+        Text(
+            text = timeLabel,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = if (nodeType == TimelineNodeType.NEXT_UP) FontWeight.Bold else FontWeight.Medium,
+            color =
+                if (nodeType == TimelineNodeType.NEXT_UP) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            textAlign = TextAlign.End,
+            modifier =
+                Modifier
+                    .width(68.dp)
+                    .padding(top = 14.dp, end = 6.dp),
+        )
+
+        Box(
+            modifier =
+                Modifier
+                    .width(28.dp)
+                    .fillMaxHeight(),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            if (!isFirst) {
+                Box(
+                    modifier =
+                        Modifier
+                            .width(2.dp)
+                            .height(14.dp)
+                            .background(railColor),
                 )
-            },
-            supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(
-                        text = formatDisplayTimestamp(item.at),
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    if (item.supporting.isNotEmpty() || item.traceEntries.isNotEmpty()) {
-                        Text(
-                            text = "${item.supporting.size} supporting • ${item.traceEntries.size} trace entries",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            }
+            if (!isLast) {
+                Box(
+                    modifier =
+                        Modifier
+                            .padding(top = 24.dp)
+                            .width(2.dp)
+                            .fillMaxHeight()
+                            .background(railColor),
+                )
+            }
+
+            Box(
+                modifier =
+                    Modifier
+                        .padding(top = 12.dp)
+                        .size(20.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                when (nodeType) {
+                    TimelineNodeType.RECORDED_SUCCESS -> {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .size(20.dp)
+                                    .clip(CircleShape)
+                                    .background(primaryColor),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.check_24dp_e8eaed_fill1_wght400_grad0_opsz24),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(13.dp),
+                            )
+                        }
+                    }
+
+                    TimelineNodeType.RECORDED_FAILURE -> {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .size(20.dp)
+                                    .clip(CircleShape)
+                                    .background(errorColor),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.data_info_alert_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onError,
+                                modifier = Modifier.size(13.dp),
+                            )
+                        }
+                    }
+
+                    TimelineNodeType.NEXT_UP -> {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .size(20.dp)
+                                    .clip(CircleShape)
+                                    .background(primaryContainer)
+                                    .border(2.dp, primaryColor, CircleShape),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(primaryColor),
+                            )
+                        }
+                    }
+
+                    TimelineNodeType.UPCOMING -> {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .size(14.dp)
+                                    .clip(CircleShape)
+                                    .background(surfaceColor)
+                                    .border(2.dp, MaterialTheme.colorScheme.outline, CircleShape),
                         )
                     }
                 }
-            },
-            trailingContent = {
-                item.outcome?.takeIf { it.isNotBlank() }?.let { outcome ->
-                    StatusBadge(
-                        label = outcome.replace('_', ' '),
-                        containerColor =
-                            if (isFailure) {
-                                MaterialTheme.colorScheme.errorContainer
-                            } else {
-                                MaterialTheme.colorScheme.primaryContainer
-                            },
-                        contentColor =
-                            if (isFailure) {
-                                MaterialTheme.colorScheme.onErrorContainer
-                            } else {
-                                MaterialTheme.colorScheme.onPrimaryContainer
-                            },
+            }
+        }
+
+        Card(
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(start = 6.dp, bottom = 10.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor =
+                        if (nodeType == TimelineNodeType.NEXT_UP) {
+                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+                        },
+                ),
+        ) {
+            Column(
+                modifier = Modifier.padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top,
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f).padding(end = 8.dp),
                     )
+                    if (badgeLabel != null) {
+                        StatusBadge(
+                            label = badgeLabel,
+                            containerColor = badgeContainerColor,
+                            contentColor = badgeContentColor,
+                        )
+                    }
                 }
-            },
-        )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
     }
 }
 
@@ -1059,6 +1305,32 @@ internal fun formatDisplayTimestamp(isoTimestamp: String): String =
                 .withZone(ZoneId.systemDefault())
         formatter.format(instant)
     }.getOrDefault(isoTimestamp)
+
+internal fun formatShortTime(isoTimestamp: String): String =
+    runCatching {
+        val instant = Instant.parse(isoTimestamp)
+        val formatter =
+            DateTimeFormatter
+                .ofLocalizedTime(FormatStyle.SHORT)
+                .withZone(ZoneId.systemDefault())
+        formatter.format(instant)
+    }.getOrDefault(isoTimestamp)
+
+internal fun formatStepTitle(step: TimelineStep): String =
+    step.name?.takeIf { it.isNotBlank() }
+        ?: if (step.reason.equals("asleep", ignoreCase = true)) {
+            "Waking from sleep"
+        } else {
+            "Scheduled Screen"
+        }
+
+internal fun formatStepReason(reason: String?): String? =
+    when (reason?.lowercase()?.trim()) {
+        null, "" -> null
+        "asleep" -> "Sleep mode ends"
+        "rotation" -> "Playlist rotation"
+        else -> reason.replace('_', ' ').replaceFirstChar { it.uppercase() }
+    }
 
 internal fun formatDurationSeconds(seconds: Int): String =
     when {
