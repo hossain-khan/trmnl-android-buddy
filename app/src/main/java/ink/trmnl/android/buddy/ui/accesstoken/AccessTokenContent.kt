@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,11 +23,14 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -38,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -114,11 +120,15 @@ fun AccessTokenContent(
                 onSaveClick = { state.eventSink(AccessTokenScreen.Event.SaveClicked) },
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            LegacyTokenWarningCard(
+                visible = state.isLegacyToken,
+                isLoading = state.isLoading,
+            )
 
             SaveTokenButton(
                 isLoading = state.isLoading,
                 isEnabled = state.token.isNotBlank(),
+                isLegacyToken = state.isLegacyToken,
                 onClick = { state.eventSink(AccessTokenScreen.Event.SaveClicked) },
             )
 
@@ -255,12 +265,28 @@ private fun HelpLinksSection(modifier: Modifier = Modifier) {
             }
         }
 
-    Text(
-        text = annotatedString,
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    Column(
         modifier = modifier,
-    )
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = annotatedString,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        Text(
+            text =
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                        append("Recommended capabilities: ")
+                    }
+                    append("Read, Content, Profile, and Whole account (no limit).")
+                },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }
 
 /**
@@ -281,7 +307,7 @@ private fun TokenInputField(
         value = token,
         onValueChange = onTokenChange,
         label = { Text("User API Key") },
-        placeholder = { Text("user_abcxyz...") },
+        placeholder = { Text("trmnl_abcxyz...") },
         modifier = modifier.fillMaxWidth(),
         enabled = !isLoading,
         isError = errorMessage != null,
@@ -330,27 +356,142 @@ private fun TokenInputField(
 }
 
 /**
+ * Warning card shown when a legacy `user_` token is detected, guiding the user
+ * to create a capability-scoped `trmnl_` API key instead.
+ */
+@Composable
+private fun LegacyTokenWarningCard(
+    visible: Boolean,
+    isLoading: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val uriHandler = LocalUriHandler.current
+
+    AnimatedVisibility(
+        visible = visible,
+        modifier = modifier,
+        enter = slideInVertically(initialOffsetY = { -it / 2 }) + fadeIn(),
+        exit = slideOutVertically(targetOffsetY = { -it / 2 }) + fadeOut(),
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            shape = RoundedCornerShape(12.dp),
+        ) {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.warning_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Text(
+                        text = "Legacy API Key Detected",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+
+                Text(
+                    text =
+                        "Keys starting with \"user_\" are legacy tokens and only reach older endpoints. " +
+                            "Newer features like Device Diagnostics, Timeline & Logs, and Account Info " +
+                            "require a capability-scoped \"trmnl_\" key.",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+
+                Text(
+                    text =
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                append("Recommended capabilities on trmnl.com/account:\n")
+                            }
+                            append("• Read — devices, logs, playlists & diagnostics\n")
+                            append("• Content — playlist & mashup updates\n")
+                            append("• Profile — account info (GET /api/me)\n")
+                            append("• Access control — Whole account (no limit)")
+                        },
+                    style = MaterialTheme.typography.bodySmall,
+                )
+
+                Button(
+                    onClick = { uriHandler.openUri("https://trmnl.com/account") },
+                    enabled = !isLoading,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("Create trmnl_ Key")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        painter = painterResource(R.drawable.open_in_new_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
  * Save token button with loading state.
  */
 @Composable
 private fun SaveTokenButton(
     isLoading: Boolean,
     isEnabled: Boolean,
+    isLegacyToken: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        enabled = isEnabled && !isLoading,
-    ) {
-        if (isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.padding(end = 8.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
-            )
+    val buttonLabel =
+        when {
+            isLoading -> "Saving..."
+            isLegacyToken -> "Continue with Legacy Key"
+            else -> "Save Token"
         }
-        Text(if (isLoading) "Saving..." else "Save Token")
+
+    if (isLegacyToken) {
+        OutlinedButton(
+            onClick = onClick,
+            modifier = modifier.fillMaxWidth(),
+            enabled = isEnabled && !isLoading,
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(end = 8.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+            Text(buttonLabel)
+        }
+    } else {
+        Button(
+            onClick = onClick,
+            modifier = modifier.fillMaxWidth(),
+            enabled = isEnabled && !isLoading,
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(end = 8.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+            }
+            Text(buttonLabel)
+        }
     }
 }
 
@@ -398,9 +539,30 @@ private fun AccessTokenContentWithTokenPreview() {
         AccessTokenContent(
             state =
                 AccessTokenScreen.State(
+                    token = "trmnl_abc123xyz456",
+                    isLoading = false,
+                    errorMessage = null,
+                    isLegacyToken = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+/**
+ * Preview of AccessTokenScreen with legacy `user_` token warning shown.
+ */
+@PreviewLightDark
+@Composable
+private fun AccessTokenContentLegacyTokenPreview() {
+    TrmnlBuddyAppTheme {
+        AccessTokenContent(
+            state =
+                AccessTokenScreen.State(
                     token = "user_abc123xyz456",
                     isLoading = false,
                     errorMessage = null,
+                    isLegacyToken = true,
                     eventSink = {},
                 ),
         )
