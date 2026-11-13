@@ -105,6 +105,18 @@ enum class DeviceKind {
     BOOX,
 
     /**
+     * Joan / Visionect meeting room e-paper displays (kind = "joan").
+     * - https://getjoan.com/
+     */
+    JOAN,
+
+    /**
+     * Soldered Electronics Inkplate e-paper displays using name id `inkplate_` (kind = "byod").
+     * - https://soldered.com/
+     */
+    INKPLATE,
+
+    /**
      * Bring Your Own Device / Third-party (kind = "byod").
      */
     BYOD,
