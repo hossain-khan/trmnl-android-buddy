@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Injected `TrmnlApiService` via Metro DI in `UserAccountPresenter` instead of creating an unlogged `TrmnlApiClient.create()` instance, restoring OkHttp debug logging for `GET /api/me`.
   - Added `@DecodeErrorBody` to `TrmnlApiService.userInfo()`.
   - Added a Material 3 **Profile Permission Required** card on `UserAccountScreen` when `GET /api/me` returns HTTP `403`, explaining that the **Profile** capability is required and providing actions to open `trmnl.com/account`, update the key in-app, or retry.
+- **Content Hub double top/bottom insets**: Disabled redundant `Scaffold` window insets in embedded `AnnouncementsContent` and `BlogPostsContent` (`showTopBar == false`) so `ContentHubScreen` no longer adds extra blank space below the top app bar.
 
 ## [2.19.1] - 2026-11-12
 
