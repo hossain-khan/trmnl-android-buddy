@@ -7,6 +7,7 @@ import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
@@ -25,7 +26,8 @@ import ink.trmnl.android.buddy.data.database.TrmnlDatabase
 import okio.Path.Companion.toOkioPath
 
 @ContributesTo(AppScope::class)
-interface AppBindings {
+@BindingContainer
+object AppBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun provideTrmnlApiService(

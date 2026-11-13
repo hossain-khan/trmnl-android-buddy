@@ -58,7 +58,7 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -84,7 +84,7 @@ import kotlinx.parcelize.Parcelize
  * Shows user profile data from the /me endpoint.
  */
 @Parcelize
-data object UserAccountScreen : Screen {
+data object UserAccountScreen : ParcelableScreen {
     data class State(
         val user: User? = null,
         val isLoading: Boolean = true,

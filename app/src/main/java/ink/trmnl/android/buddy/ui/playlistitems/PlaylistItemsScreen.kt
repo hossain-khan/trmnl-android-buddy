@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.playlistitems
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import kotlinx.parcelize.Parcelize
 
@@ -19,7 +19,7 @@ import kotlinx.parcelize.Parcelize
 data class PlaylistItemsScreen(
     val deviceId: Int?,
     val deviceName: String,
-) : Screen {
+) : ParcelableScreen {
     /**
      * UI state for the Playlist Items Screen.
      *

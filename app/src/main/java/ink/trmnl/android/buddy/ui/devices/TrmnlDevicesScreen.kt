@@ -24,13 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.foundation.rememberAnsweringNavigator
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.rememberAnsweringNavigator
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import com.slack.eithernet.ApiResult
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -97,7 +97,7 @@ data class DevicePreviewInfo(
  * Supports privacy mode to blur sensitive information and uses Material You theming.
  */
 @Parcelize
-data object TrmnlDevicesScreen : Screen {
+data object TrmnlDevicesScreen : ParcelableScreen {
     /**
      * UI state for the devices dashboard.
      *

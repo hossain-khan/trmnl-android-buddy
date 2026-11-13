@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.recipesanalytics
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -19,7 +19,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class RecipesAnalyticsScreen(
     val analytics: RecipesAnalyticsUi,
-) : Screen {
+) : ParcelableScreen {
     /**
      * State for the recipes analytics screen.
      */

@@ -3,7 +3,7 @@ package ink.trmnl.android.buddy.dev
 import androidx.work.WorkInfo
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
 import ink.trmnl.android.buddy.work.WorkerStatus
 import kotlinx.parcelize.Parcelize
@@ -21,7 +21,7 @@ import kotlinx.parcelize.Parcelize
  * - Monitor WorkManager worker status and execution
  */
 @Parcelize
-data object DevelopmentScreen : Screen {
+data object DevelopmentScreen : ParcelableScreen {
     /**
      * UI state for the Development screen.
      */

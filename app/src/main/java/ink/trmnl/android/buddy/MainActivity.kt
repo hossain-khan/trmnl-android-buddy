@@ -68,8 +68,8 @@ class MainActivity
                                     navigator = navigator,
                                     backStack = backStack,
                                     decoratorFactory =
-                                        remember(navigator) {
-                                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                                        remember {
+                                            GestureNavigationDecorationFactory()
                                         },
                                 )
                             }

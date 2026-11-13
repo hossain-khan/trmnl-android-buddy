@@ -29,7 +29,7 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -60,7 +60,7 @@ import kotlinx.parcelize.Parcelize
  * Screen for app settings.
  */
 @Parcelize
-data object SettingsScreen : Screen {
+data object SettingsScreen : ParcelableScreen {
     data class State(
         val isBatteryTrackingEnabled: Boolean = true,
         val isLowBatteryNotificationEnabled: Boolean = false,

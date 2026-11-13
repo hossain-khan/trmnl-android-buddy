@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.auth
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
  * - https://medium.com/androiddevelopers/migrating-from-fingerprintmanager-to-biometricprompt-4bc5f570dccd
  */
 @Parcelize
-data object AuthenticationScreen : Screen {
+data object AuthenticationScreen : ParcelableScreen {
     /**
      * UI state for the authentication screen.
      *

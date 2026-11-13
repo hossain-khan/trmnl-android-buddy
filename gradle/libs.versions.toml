@@ -8,7 +8,7 @@ activityCompose = "1.11.0"
 # https://developer.android.com/build/releases/gradle-plugin
 agp = "9.5.1"
 assertk = "0.28.1"
-circuit = "0.33.1"
+circuit = "0.39.0"
 composeBom = "2025.09.01"
 coreKtx = "1.17.0"
 espressoCore = "3.7.0"
@@ -77,7 +77,7 @@ browser = "1.8.0"
 
 # Robolectric - Android unit testing framework
 # https://github.com/robolectric/robolectric
-robolectric = "4.15"
+robolectric = "4.17"
 
 # AndroidX Biometric - Biometric authentication
 # https://developer.android.com/jetpack/androidx/releases/biometric

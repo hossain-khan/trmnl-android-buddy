@@ -18,7 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Upgraded to Android Gradle Plugin (AGP) 9.5.1 and Gradle 9.6.0**:
   - Migrated to AGP built-in Kotlin (removed `org.jetbrains.kotlin.android` and unused `org.jetbrains.kotlin.kapt` plugins, removed deprecated `android.kotlinOptions` block in `:content`).
   - Updated `compileSdk` to `37` to satisfy `androidx.biometric:1.4.0-beta01` AAR metadata requirements, and updated `androidx.biometric` from `1.4.0-alpha07` to `1.4.0-beta01`.
-  - Updated Kotlin (`2.4.21`), KSP (`2.3.13`), Metro (`1.5.2`), Kotlinter (`5.7.0`), and Kover (`0.9.11`).
+  - Updated Kotlin (`2.4.21`), KSP (`2.3.13`), Metro (`1.5.2`), Circuit (`0.39.0`), Robolectric (`4.17`), Kotlinter (`5.7.0`), and Kover (`0.9.11`).
+  - Migrated to Metro's built-in Circuit codegen (`enableCircuitCodegen.set(true)`), `@BindingContainer` on `AppBindings`/`CircuitProviders`, and `() -> Activity` function syntax in `AppGraph`/`ComposeAppComponentFactory`.
+  - Migrated `@Parcelize` screens/results to `ParcelableScreen`/`ParcelablePopResult`, updated `GestureNavigationDecorationFactory()` and `rememberAnsweringNavigator` import for Circuit `0.39.0`.
   - Migrated `@AssistedFactory` targets from `@Inject` to `@AssistedInject`, added `AnnotationTarget.FUNCTION` to `WorkerKey`, and updated `AuthenticationPresenter` Compose `LocalContext` handling for Kotlin 2.4 / Metro 1.5.2 compatibility.
 
 ## [2.18.1] - 2026-08-17

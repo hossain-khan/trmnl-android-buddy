@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.blogposts
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
 import kotlinx.parcelize.Parcelize
 
@@ -22,7 +22,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class BlogPostsScreen(
     val isEmbedded: Boolean = false,
-) : Screen {
+) : ParcelableScreen {
     data class State(
         val blogPosts: List<BlogPostEntity> = emptyList(),
         val isLoading: Boolean = true,

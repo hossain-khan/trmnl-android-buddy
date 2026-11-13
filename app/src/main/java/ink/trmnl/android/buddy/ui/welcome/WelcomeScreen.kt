@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.welcome
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  * Checks if API token exists and routes accordingly.
  */
 @Parcelize
-data object WelcomeScreen : Screen {
+data object WelcomeScreen : ParcelableScreen {
     data class State(
         val isLoading: Boolean = true,
         val hasExistingToken: Boolean = false,

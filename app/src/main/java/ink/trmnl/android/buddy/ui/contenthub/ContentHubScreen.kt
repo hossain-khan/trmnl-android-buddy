@@ -46,7 +46,7 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -72,7 +72,7 @@ import kotlinx.parcelize.Parcelize
  * - Single TopAppBar with tab-specific actions (no nested toolbars)
  */
 @Parcelize
-data object ContentHubScreen : Screen {
+data object ContentHubScreen : ParcelableScreen {
     /**
      * Sealed class representing available tabs in the content hub.
      */

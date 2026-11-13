@@ -2,7 +2,7 @@ package ink.trmnl.android.buddy.ui.recipescatalog
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.ParcelableScreen
 import ink.trmnl.android.buddy.api.models.Recipe
 import kotlinx.parcelize.Parcelize
 
@@ -15,7 +15,7 @@ import kotlinx.parcelize.Parcelize
  * **Note**: The recipes API is in alpha testing and may be moved in a future update.
  */
 @Parcelize
-data object RecipesCatalogScreen : Screen {
+data object RecipesCatalogScreen : ParcelableScreen {
     /**
      * UI state for the Recipes Catalog Screen.
      *
