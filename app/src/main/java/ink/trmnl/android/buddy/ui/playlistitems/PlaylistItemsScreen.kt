@@ -28,6 +28,8 @@ data class PlaylistItemsScreen(
      * @property items List of playlist items to display
      * @property isLoading Whether data is being loaded from API
      * @property errorMessage Error message if API call failed
+     * @property previewItem Currently previewed playlist item (null when preview sheet is hidden)
+     * @property apiToken User API token used to authenticate private preview image requests
      * @property eventSink Event handler for user interactions
      */
     data class State(
@@ -36,6 +38,8 @@ data class PlaylistItemsScreen(
         val items: List<PlaylistItemUi> = emptyList(),
         val isLoading: Boolean = true,
         val errorMessage: String? = null,
+        val previewItem: PlaylistItemUi? = null,
+        val apiToken: String? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -67,5 +71,10 @@ data class PlaylistItemsScreen(
             val itemId: Int,
             val newVisibility: Boolean,
         ) : Event
+
+        /**
+         * User dismissed the playlist item preview bottom sheet.
+         */
+        data object DismissPreview : Event
     }
 }

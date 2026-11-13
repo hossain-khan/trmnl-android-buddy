@@ -23,12 +23,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -43,6 +46,7 @@ import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.formatRelativeTime
+import kotlinx.coroutines.launch
 import java.time.Instant
 
 /**
@@ -61,6 +65,9 @@ fun PlaylistItemsContent(
     state: PlaylistItemsScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val previewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -122,6 +129,26 @@ fun PlaylistItemsContent(
                                     newVisibility = newVisibility,
                                 ),
                             )
+                        },
+                    )
+                }
+            }
+
+            if (state.previewItem != null) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        state.eventSink(PlaylistItemsScreen.Event.DismissPreview)
+                    },
+                    sheetState = previewSheetState,
+                ) {
+                    PlaylistItemPreviewBottomSheet(
+                        item = state.previewItem,
+                        apiToken = state.apiToken,
+                        onDismiss = {
+                            scope.launch {
+                                previewSheetState.hide()
+                                state.eventSink(PlaylistItemsScreen.Event.DismissPreview)
+                            }
                         },
                     )
                 }

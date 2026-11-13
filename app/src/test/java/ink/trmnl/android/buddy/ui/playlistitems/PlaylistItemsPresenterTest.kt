@@ -10,8 +10,11 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import ink.trmnl.android.buddy.data.preferences.UserPreferences
+import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import ink.trmnl.android.buddy.fakes.FakePlaylistItemsRepository
+import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -339,7 +342,7 @@ class PlaylistItemsPresenterTest {
 
     /**
      * Test 11: User Interactions - ItemClicked event
-     * Verify that clicking an item is logged (no navigation yet - future phase)
+     * Verify that clicking an item opens the preview bottom sheet
      */
     @Test
     fun `item clicked event is handled`() =
@@ -361,9 +364,8 @@ class PlaylistItemsPresenterTest {
                 val item = loadedState.items.first()
                 loadedState.eventSink(PlaylistItemsScreen.Event.ItemClicked(item))
 
-                // No navigation happens yet - just verify no crash
-                // In future phases, this might navigate to an item detail screen
-                expectNoEvents()
+                val previewState = awaitItem()
+                assertThat(previewState.previewItem).isEqualTo(item)
             }
         }
 
@@ -504,16 +506,52 @@ class PlaylistItemsPresenterTest {
             }
         }
 
+    @Test
+    fun `presenter opens and dismisses item preview on ItemClicked and DismissPreview`() =
+        runTest {
+            val item1 = createTestPlaylistItem(id = 42, displayName = "Weather")
+            val repository = FakePlaylistItemsRepository(initialResult = Result.success(listOf(item1)))
+            val userPreferencesRepository =
+                FakeUserPreferencesRepository(UserPreferences(apiToken = "trmnl_test_token"))
+            val presenter =
+                createPresenter(
+                    screen = PlaylistItemsScreen(deviceId = 1, deviceName = "Office"),
+                    navigator = FakeNavigator(PlaylistItemsScreen(deviceId = 1, deviceName = "Office")),
+                    repository = repository,
+                    userPreferencesRepository = userPreferencesRepository,
+                )
+
+            presenter.test {
+                var state: PlaylistItemsScreen.State
+                do {
+                    state = awaitItem()
+                } while (state.isLoading)
+
+                assertThat(state.previewItem).isNull()
+                assertThat(state.apiToken).isEqualTo("trmnl_test_token")
+
+                state.eventSink(PlaylistItemsScreen.Event.ItemClicked(item1))
+                val previewState = awaitItem()
+                assertThat(previewState.previewItem).isEqualTo(item1)
+
+                previewState.eventSink(PlaylistItemsScreen.Event.DismissPreview)
+                val dismissedState = awaitItem()
+                assertThat(dismissedState.previewItem).isNull()
+            }
+        }
+
     // Helper function to create presenter with dependencies
     private fun createPresenter(
         screen: PlaylistItemsScreen,
         navigator: FakeNavigator,
         repository: FakePlaylistItemsRepository,
+        userPreferencesRepository: UserPreferencesRepository = FakeUserPreferencesRepository(),
     ): PlaylistItemsPresenter =
         PlaylistItemsPresenter(
             screen = screen,
             navigator = navigator,
             repository = repository,
+            userPreferencesRepository = userPreferencesRepository,
         )
 
     // Helper function to create test playlist items

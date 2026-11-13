@@ -16,6 +16,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.PlaylistItemsRepository
+import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.domain.models.PlaylistItemUi
 import timber.log.Timber
 
@@ -43,14 +44,17 @@ class PlaylistItemsPresenter
         @Assisted private val screen: PlaylistItemsScreen,
         @Assisted private val navigator: Navigator,
         private val repository: PlaylistItemsRepository,
+        private val userPreferencesRepository: UserPreferencesRepository,
     ) : Presenter<PlaylistItemsScreen.State> {
         @Composable
         override fun present(): PlaylistItemsScreen.State {
             var items by rememberRetained { mutableStateOf<List<PlaylistItemUi>>(emptyList()) }
             var isLoading by rememberRetained { mutableStateOf(true) }
             var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
+            var previewItem by rememberRetained { mutableStateOf<PlaylistItemUi?>(null) }
             var shouldRefresh by remember { mutableStateOf(0) }
             var toggleRequest by remember { mutableStateOf<Pair<Int, Boolean>?>(null) }
+            val userPreferences by userPreferencesRepository.userPreferencesFlow.collectAsState(initial = null)
 
             // Load playlist items via repository (benefits from caching)
             LaunchedEffect(shouldRefresh) {
@@ -126,6 +130,8 @@ class PlaylistItemsPresenter
                 items = items,
                 isLoading = isLoading,
                 errorMessage = errorMessage,
+                previewItem = previewItem,
+                apiToken = userPreferences?.apiToken,
                 eventSink = { event ->
                     when (event) {
                         PlaylistItemsScreen.Event.BackClicked -> {
@@ -137,13 +143,16 @@ class PlaylistItemsPresenter
                         }
 
                         is PlaylistItemsScreen.Event.ItemClicked -> {
-                            // TODO: Navigate to item detail screen if needed in future phases
-                            Timber.d("Item clicked: ${event.item.id}")
+                            previewItem = event.item
                         }
 
                         is PlaylistItemsScreen.Event.ToggleItemVisibility -> {
                             // Trigger visibility toggle via state change
                             toggleRequest = event.itemId to event.newVisibility
+                        }
+
+                        PlaylistItemsScreen.Event.DismissPreview -> {
+                            previewItem = null
                         }
                     }
                 },
