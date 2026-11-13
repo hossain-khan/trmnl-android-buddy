@@ -76,6 +76,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
+import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.util.formatRelativeDate
 import kotlinx.coroutines.delay
@@ -268,8 +269,10 @@ private fun BlogPostCard(
         interactionSource = interactionSource,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // Image carousel if images are available
-            val imageUrls = blogPost.imageUrls ?: blogPost.featuredImageUrl?.let { listOf(it) }
+            // Image carousel if images are available (normalize cached relative paths if needed)
+            val imageUrls =
+                (blogPost.imageUrls ?: blogPost.featuredImageUrl?.let { listOf(it) })
+                    ?.map(BlogPostRepository::normalizeImageUrl)
             if (!imageUrls.isNullOrEmpty()) {
                 ImageCarousel(
                     imageUrls = imageUrls,
