@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive documentation in `docs/JUNIE_AUTOMATION.md`.
 
 ### Changed
+- **Updated documentation tech stack versions**: Synced `.github/copilot-instructions.md` (`AGENTS.md`), `docs/PRD.md`, and `docs/project-analysis.html` with the latest AGP (`9.5.1`), Gradle (`9.6.0`), Kotlin (`2.4.21`), Metro (`1.5.2`), Circuit (`0.39.0`), Compose BOM (`2026.09.00`), OkHttp (`5.5.1`), Coroutines (`1.11.0`), Coil (`3.6.3`), Telephoto (`0.19.0`), and Kover (`0.9.11`) versions.
 - **Upgraded Vico chart library to `3.3.1`**:
   - Removed deprecated `com.patrykandpatrick.vico:core` dependency and migrated `BatteryChartContent` to Vico 3 `com.patrykandpatrick.vico.compose.*` APIs (`Fill(Color)`, `CircleShape`, `size = 8.dp`, and lambda axis titles).
 - **Updated AndroidX, Compose, networking, and testing libraries to latest stable**:

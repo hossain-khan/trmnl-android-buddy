@@ -6,17 +6,17 @@
 
 ### Tech Stack
 
-- **Language**: Kotlin 2.2.20
-- **Architecture**: [Circuit](https://github.com/slackhq/circuit) - Compose-driven UDF architecture
-- **Dependency Injection**: [Metro](https://zacsweers.github.io/metro/) with KSP
+- **Language**: Kotlin 2.4.21
+- **Architecture**: [Circuit](https://github.com/slackhq/circuit) - Compose-driven UDF architecture (with Metro built-in Circuit codegen)
+- **Dependency Injection**: [Metro](https://zacsweers.github.io/metro/) (`enableCircuitCodegen`, `@BindingContainer`, `@AssistedInject`)
 - **UI Framework**: Jetpack Compose with Material Design 3
 - **Networking**: 
   - Retrofit 3.0.0 (HTTP client)
-  - OkHttp 5.1.0 (HTTP engine)
+  - OkHttp 5.5.1 (HTTP engine)
   - kotlinx.serialization (JSON parsing)
   - [EitherNet](https://github.com/slackhq/EitherNet) 2.0.0 (Type-safe API results)
-- **Async**: Kotlinx Coroutines 1.10.2
-- **Build System**: Gradle 9.1.0 with Kotlin DSL
+- **Async**: Kotlinx Coroutines 1.11.0
+- **Build System**: Gradle 9.6.0 with Kotlin DSL and AGP 9.5.1
 - **Code Quality**: Kotlinter (ktlint wrapper) for formatting and linting
 
 ### Project Structure
@@ -420,12 +420,13 @@ data class Device(
 All dependency versions are centralized in `gradle/libs.versions.toml`:
 
 - **Major Dependencies**:
-  - Kotlin: 2.2.20
-  - Circuit: 0.30.0
-  - Metro: 0.6.8
-  - Compose BOM: 2025.09.01
+  - AGP: 9.5.1
+  - Kotlin: 2.4.21
+  - Circuit: 0.39.0
+  - Metro: 1.5.2
+  - Compose BOM: 2026.09.00
   - Retrofit: 3.0.0
-  - OkHttp: 5.1.0
+  - OkHttp: 5.5.1
   - EitherNet: 2.0.0
   - AssertK: 0.28.1 (testing assertions)
 

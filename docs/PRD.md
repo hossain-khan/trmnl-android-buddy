@@ -36,18 +36,18 @@ To be the essential mobile companion for TRMNL device owners, providing seamless
 ## 2. Product Architecture
 
 ### 2.1 Technical Stack
-- **Language**: Kotlin 2.2.20
+- **Language**: Kotlin 2.4.21
 - **UI Framework**: Jetpack Compose with Material Design 3
-- **Architecture**: Circuit (Compose-driven UDF architecture)
-- **Dependency Injection**: Metro with KSP
-- **Networking**: Retrofit 3.0.0, OkHttp 5.1.0, EitherNet 2.0.0
+- **Architecture**: Circuit 0.39.0 (Compose-driven UDF architecture)
+- **Dependency Injection**: Metro 1.5.2 (Kotlin compiler plugin with built-in Circuit codegen)
+- **Networking**: Retrofit 3.0.0, OkHttp 5.5.1, EitherNet 2.0.0
 - **Database**: Room (TrmnlDatabase, ContentDatabase)
 - **Background Processing**: WorkManager
-- **Image Loading**: Coil 3.3.0
-- **Image Zoom**: Telephoto 0.18.0
+- **Image Loading**: Coil 3.6.3
+- **Image Zoom**: Telephoto 0.19.0
 - **Authentication**: AndroidX Biometric library
-- **Code Coverage**: Kotlinx Kover 0.9.1
-- **Build**: Gradle 9.1.0 with Kotlin DSL
+- **Code Coverage**: Kotlinx Kover 0.9.11
+- **Build**: Gradle 9.6.0 with Kotlin DSL and AGP 9.5.1
 
 ### 2.2 Module Structure
 ```
@@ -1008,7 +1008,7 @@ trmnl-android-buddy/
   - Includes app version from BuildConfig.VERSION_NAME
   - Includes Android API level and device model
   - Includes OkHttp version
-- API-1.1.6: Retrofit 3.0.0 with OkHttp 5.1.0
+- API-1.1.6: Retrofit 3.0.0 with OkHttp 5.5.1
 - API-1.1.7: kotlinx.serialization for JSON parsing
 
 #### 5.1.2 Available Endpoints
