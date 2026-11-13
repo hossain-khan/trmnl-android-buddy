@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,23 +35,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.patrykandpatrick.vico.compose.cartesian.AutoScrollCondition
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.Scroll
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.compose.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.compose.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
+import com.patrykandpatrick.vico.compose.common.Fill
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
-import com.patrykandpatrick.vico.core.cartesian.AutoScrollCondition
-import com.patrykandpatrick.vico.core.cartesian.Scroll
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
-import com.patrykandpatrick.vico.core.common.Fill
-import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.BuildConfig
@@ -282,18 +280,17 @@ private fun BatteryChart(
                     LineCartesianLayer.Line(
                         fill =
                             LineCartesianLayer.LineFill.single(
-                                com.patrykandpatrick.vico.core.common
-                                    .Fill(primaryColor.hashCode()),
+                                Fill(primaryColor),
                             ),
                         pointProvider =
                             LineCartesianLayer.PointProvider.single(
                                 LineCartesianLayer.Point(
                                     component =
                                         rememberShapeComponent(
-                                            fill = Fill(primaryColor.hashCode()),
-                                            shape = CorneredShape.Pill,
+                                            fill = Fill(primaryColor),
+                                            shape = CircleShape,
                                         ),
-                                    sizeDp = 8f,
+                                    size = 8.dp,
                                 ),
                             ),
                     ),
@@ -307,10 +304,10 @@ private fun BatteryChart(
             chart =
                 rememberCartesianChart(
                     lineLayer,
-                    startAxis = VerticalAxis.rememberStart(title = "Battery %"),
+                    startAxis = VerticalAxis.rememberStart(title = { "Battery %" }),
                     bottomAxis =
                         HorizontalAxis.rememberBottom(
-                            title = "Time",
+                            title = { "Time" },
                             valueFormatter = { _, value, _ ->
                                 // Convert index to date using pre-sorted history
                                 val index = value.toInt()

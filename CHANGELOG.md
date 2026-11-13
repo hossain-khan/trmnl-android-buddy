@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive documentation in `docs/JUNIE_AUTOMATION.md`.
 
 ### Changed
+- **Upgraded Vico chart library to `3.3.1`**:
+  - Removed deprecated `com.patrykandpatrick.vico:core` dependency and migrated `BatteryChartContent` to Vico 3 `com.patrykandpatrick.vico.compose.*` APIs (`Fill(Color)`, `CircleShape`, `size = 8.dp`, and lambda axis titles).
 - **Updated AndroidX, Compose, networking, and testing libraries to latest stable**:
   - Updated Compose BOM (`2025.09.01` → `2026.09.00`), `activity-compose` (`1.11.0` → `1.13.0`), `core-ktx` (`1.17.0` → `1.19.1`), `ui-text-google-fonts` (`1.9.2` → `1.12.1`), `lifecycle-runtime-ktx` (`2.9.4` → `2.11.0`), `work-runtime-ktx` (`2.10.5` → `2.12.0`), `datastore-preferences` (`1.1.2` → `1.3.0`), `room` (`2.8.3` → `2.8.5`), `browser` (`1.8.0` → `1.10.0`), and `glance` (`1.2.0-rc01` → `1.2.0`).
   - Updated `okhttp` (`5.1.0` → `5.5.1`), `kotlinx-serialization-json` (`1.9.0` → `1.13.0`), `kotlinx-coroutines` (`1.10.2` → `1.11.0`), `coil` (`3.3.0` → `3.6.3`), `rssparser` (`6.0.8` → `6.2.0`), `turbine` (`1.2.0` → `1.2.1`), and `androidx.test:core` (`1.6.1` → `1.7.0`).
