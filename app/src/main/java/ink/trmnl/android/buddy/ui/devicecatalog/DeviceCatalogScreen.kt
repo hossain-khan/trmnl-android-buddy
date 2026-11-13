@@ -117,6 +117,12 @@ enum class DeviceKind {
     INKPLATE,
 
     /**
+     * Waveshare e-paper displays using name id `waveshare_` (kind = "byod").
+     * - https://www.waveshare.com/
+     */
+    WAVESHARE,
+
+    /**
      * Bring Your Own Device / Third-party (kind = "byod").
      */
     BYOD,
