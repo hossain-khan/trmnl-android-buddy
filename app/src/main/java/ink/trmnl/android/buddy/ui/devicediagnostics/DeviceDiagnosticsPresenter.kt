@@ -28,6 +28,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
@@ -180,7 +182,7 @@ class DeviceDiagnosticsPresenter
                         is ApiResult.Success -> {
                             logs =
                                 result.value.data.logs
-                                    .mapIndexed { index, obj -> parseLogEntry(obj, index) }
+                                    .mapIndexed { index, obj -> obj.toDeviceLogEntry(index) }
                             oldestCursor = result.value.data.oldestCursor
                             hasMoreLogs = result.value.data.more && result.value.data.oldestCursor != null
                             hasLoadedLogs = true
@@ -294,7 +296,7 @@ class DeviceDiagnosticsPresenter
                                             val startIndex = logs.size
                                             val newEntries =
                                                 result.value.data.logs.mapIndexed { idx, obj ->
-                                                    parseLogEntry(obj, startIndex + idx)
+                                                    obj.toDeviceLogEntry(startIndex + idx)
                                                 }
                                             logs = logs + newEntries
                                             oldestCursor = result.value.data.oldestCursor
@@ -386,13 +388,12 @@ class DeviceDiagnosticsPresenter
         }
     }
 
-internal fun parseLogEntry(
-    jsonObject: JsonObject,
-    index: Int,
-): DeviceDiagnosticsScreen.DeviceLogEntry {
+private val logPrettyJson = Json { prettyPrint = true }
+
+internal fun JsonObject.toDeviceLogEntry(index: Int): DeviceDiagnosticsScreen.DeviceLogEntry {
     fun stringField(vararg keys: String): String? =
         keys.firstNotNullOfOrNull { key ->
-            jsonObject[key]
+            this[key]
                 ?.let { element ->
                     runCatching { element.jsonPrimitive.contentOrNull }.getOrNull()
                 }?.takeIf { it.isNotBlank() }
@@ -402,39 +403,9 @@ internal fun parseLogEntry(
     val level = stringField("level", "severity")
     val source = stringField("source", "origin", "category")
     val eventId = stringField("event_id", "id") ?: "${timestamp}_$index"
-    val message =
-        stringField("message", "msg", "event", "name", "summary", "description", "title")
-            ?: jsonObject.entries
-                .filterNot { it.key in setOf("ts", "at", "created_at", "timestamp", "level", "severity", "source", "event_id", "id") }
-                .joinToString(" • ") { "${it.key}: ${it.value}" }
-                .ifBlank { jsonObject.toString() }
-
-    val excludedKeys =
-        setOf(
-            "ts",
-            "at",
-            "created_at",
-            "timestamp",
-            "level",
-            "severity",
-            "source",
-            "origin",
-            "category",
-            "event_id",
-            "id",
-            "message",
-            "msg",
-            "event",
-            "name",
-            "summary",
-            "description",
-            "title",
-        )
-    val details =
-        jsonObject.entries
-            .filterNot { it.key in excludedKeys }
-            .takeIf { it.isNotEmpty() }
-            ?.joinToString(" • ") { "${it.key}: ${it.value.toString().trim('"')}" }
+    val message = stringField("message", "msg", "event", "name", "summary", "description", "title")
+    val dumpLogCount = (this["dump"] as? JsonObject)?.get("logs")?.let { it as? JsonArray }?.size
+    val rawJson = logPrettyJson.encodeToString(JsonObject.serializer(), this)
 
     return DeviceDiagnosticsScreen.DeviceLogEntry(
         id = eventId,
@@ -442,6 +413,7 @@ internal fun parseLogEntry(
         level = level,
         source = source,
         message = message,
-        details = details,
+        dumpLogCount = dumpLogCount,
+        rawJson = rawJson,
     )
 }

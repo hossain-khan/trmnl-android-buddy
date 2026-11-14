@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.ui.devicediagnostics
 
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
@@ -27,7 +28,9 @@ import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.putJsonObject
 import org.junit.Test
 import java.io.IOException
 
@@ -302,4 +305,54 @@ class DeviceDiagnosticsPresenterTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+
+    @Test
+    fun `toDeviceLogEntry extracts top-level fields dump log count and pretty rawJson`() {
+        val logObject =
+            buildJsonObject {
+                put("event_id", JsonPrimitive("evt_9341"))
+                put("ts", JsonPrimitive("2026-11-14T07:19:44.067Z"))
+                put("source", JsonPrimitive("device"))
+                put("level", JsonPrimitive("info"))
+                put("device_id", JsonPrimitive(6956))
+                putJsonObject("dump") {
+                    put(
+                        "logs",
+                        buildJsonArray {
+                            add(buildJsonObject { put("message", JsonPrimitive("HTTP failed")) })
+                            add(buildJsonObject { put("message", JsonPrimitive("File writing ERROR")) })
+                        },
+                    )
+                }
+            }
+
+        val entry = logObject.toDeviceLogEntry(index = 0)
+
+        assertThat(entry.id).isEqualTo("evt_9341")
+        assertThat(entry.timestamp).isEqualTo("2026-11-14T07:19:44.067Z")
+        assertThat(entry.level).isEqualTo("info")
+        assertThat(entry.source).isEqualTo("device")
+        assertThat(entry.message).isNull()
+        assertThat(entry.dumpLogCount).isEqualTo(2)
+        assertThat(entry.rawJson).contains("\"event_id\": \"evt_9341\"")
+        assertThat(entry.rawJson).contains("\"File writing ERROR\"")
+    }
+
+    @Test
+    fun `toDeviceLogEntry preserves optional top-level message when present`() {
+        val logObject =
+            buildJsonObject {
+                put("id", JsonPrimitive("evt_2"))
+                put("timestamp", JsonPrimitive("2026-11-14T08:00:00Z"))
+                put("level", JsonPrimitive("warn"))
+                put("message", JsonPrimitive("Slow upstream response"))
+            }
+
+        val entry = logObject.toDeviceLogEntry(index = 1)
+
+        assertThat(entry.id).isEqualTo("evt_2")
+        assertThat(entry.message).isEqualTo("Slow upstream response")
+        assertThat(entry.dumpLogCount).isNull()
+        assertThat(entry.rawJson).contains("\"Slow upstream response\"")
+    }
 }

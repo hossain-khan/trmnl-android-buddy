@@ -39,8 +39,9 @@ data class DeviceDiagnosticsScreen(
         val timestamp: String,
         val level: String?,
         val source: String?,
-        val message: String,
-        val details: String? = null,
+        val message: String? = null,
+        val dumpLogCount: Int? = null,
+        val rawJson: String = "",
     )
 
     sealed interface DiagnosticsError {

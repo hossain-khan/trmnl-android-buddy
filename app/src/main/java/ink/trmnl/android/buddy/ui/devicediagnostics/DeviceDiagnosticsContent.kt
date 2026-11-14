@@ -1,7 +1,9 @@
 package ink.trmnl.android.buddy.ui.devicediagnostics
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +24,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,12 +47,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -988,8 +997,13 @@ private fun LogEntryCard(entry: DeviceDiagnosticsScreen.DeviceLogEntry) {
             }
         }
 
+    var isExpanded by rememberSaveable(entry.id) { mutableStateOf(false) }
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(enabled = entry.rawJson.isNotEmpty()) { isExpanded = !isExpanded },
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
@@ -1036,18 +1050,63 @@ private fun LogEntryCard(entry: DeviceDiagnosticsScreen.DeviceLogEntry) {
                 )
             }
 
-            Text(
-                text = entry.message,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-
-            entry.details?.let { details ->
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            entry.message?.let { message ->
                 Text(
-                    text = details,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = message,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
+            }
+
+            if (entry.dumpLogCount != null || entry.rawJson.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    entry.dumpLogCount?.let { count ->
+                        val countText =
+                            if (count == 1) {
+                                "1 log record in dump"
+                            } else {
+                                "$count log records in dump"
+                            }
+                        Text(
+                            text = countText,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    if (entry.rawJson.isNotEmpty()) {
+                        Text(
+                            text = if (isExpanded) "Hide JSON" else "Tap to inspect JSON",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+            }
+
+            AnimatedVisibility(visible = isExpanded && entry.rawJson.isNotEmpty()) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                    ) {
+                        SelectionContainer {
+                            Text(
+                                text = entry.rawJson,
+                                modifier = Modifier.padding(10.dp),
+                                style =
+                                    MaterialTheme.typography.labelSmall.copy(
+                                        fontFamily = FontFamily.Monospace,
+                                    ),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -1425,8 +1484,16 @@ private fun DeviceDiagnosticsLogsPreview() {
                                 timestamp = "2026-11-13T05:00:00Z",
                                 level = "info",
                                 source = "device",
-                                message = "Screen fetched successfully",
-                                details = "rssi: -62 • battery_voltage: 4.12",
+                                dumpLogCount = 2,
+                                rawJson =
+                                    """
+                                    {
+                                        "event_id": "evt_1",
+                                        "ts": "2026-11-13T05:00:00Z",
+                                        "source": "device",
+                                        "level": "info"
+                                    }
+                                    """.trimIndent(),
                             ),
                             DeviceDiagnosticsScreen.DeviceLogEntry(
                                 id = "evt_2",
@@ -1434,6 +1501,7 @@ private fun DeviceDiagnosticsLogsPreview() {
                                 level = "warn",
                                 source = "plugin",
                                 message = "Slow upstream response (2.4s)",
+                                dumpLogCount = 1,
                             ),
                         ),
                     hasMoreLogs = true,
