@@ -3,7 +3,7 @@ package ink.trmnl.android.buddy.util
 private const val LEGACY_API_TOKEN_PREFIX = "user_"
 
 /**
- * Returns `true` if this TRMNL API token uses the legacy `user_` prefix.
+ * Returns `true` if this TRMNL API token uses the legacy `user_` prefix (case-insensitive).
  *
  * TRMNL distinguishes between two Account API key formats:
  * - **Scoped Account API Keys (`trmnl_...`)**: Generated under `Account > Developer`
@@ -14,4 +14,4 @@ private const val LEGACY_API_TOKEN_PREFIX = "user_"
  *
  * See [TRMNL Account API Keys](https://help.trmnl.com/en/articles/11195228-account-api-keys).
  */
-fun String?.isLegacyApiToken(): Boolean = this?.trim()?.startsWith(LEGACY_API_TOKEN_PREFIX) == true
+fun String?.isLegacyApiToken(): Boolean = this?.trim()?.startsWith(LEGACY_API_TOKEN_PREFIX, ignoreCase = true) == true

@@ -15,6 +15,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.devices.TrmnlDevicesScreen
+import ink.trmnl.android.buddy.util.isLegacyApiToken
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
@@ -39,7 +40,7 @@ class AccessTokenPresenter
                 token = token,
                 isLoading = isLoading,
                 errorMessage = errorMessage,
-                isLegacyToken = isLegacyUserToken(token),
+                isLegacyToken = token.isLegacyApiToken(),
             ) { event ->
                 when (event) {
                     is AccessTokenScreen.Event.TokenChanged -> {
@@ -96,9 +97,3 @@ class AccessTokenPresenter
             fun create(navigator: Navigator): AccessTokenPresenter
         }
     }
-
-/**
- * Returns true if [token] uses the legacy `user_` prefix instead of the newer
- * capability-scoped `trmnl_` prefix.
- */
-internal fun isLegacyUserToken(token: String): Boolean = token.trim().startsWith("user_", ignoreCase = true)
