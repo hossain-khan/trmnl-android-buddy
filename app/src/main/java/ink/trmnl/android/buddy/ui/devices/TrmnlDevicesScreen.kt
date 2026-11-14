@@ -324,11 +324,15 @@ class TrmnlDevicesPresenter
                 }
             }
 
-            // Fetch recipes analytics in background (silently, no loading indicator shown)
+            // Fetch recipes analytics in background (silently, no loading indicator shown).
+            // Skip for legacy `user_` tokens because `/api/analytics` requires a scoped `trmnl_` key.
             LaunchedEffect(Unit) {
                 val preferences = userPreferencesRepository.userPreferencesFlow.first()
                 val apiToken = preferences.apiToken
-                if (!apiToken.isNullOrEmpty()) {
+                if (preferences.isLegacyApiToken) {
+                    Timber.d("Skipping home recipes analytics fetch: legacy user_ API token is not supported by /api/analytics")
+                    analyticsState = RecipesAnalyticsState.Error("Legacy API token is not supported")
+                } else if (!apiToken.isNullOrEmpty()) {
                     try {
                         val result = recipesAnalyticsRepository.getRecipesAnalytics("Bearer $apiToken")
                         result.onSuccess { analytics ->
