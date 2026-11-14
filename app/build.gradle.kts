@@ -140,6 +140,9 @@ dependencies {
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)
 
+    // Syntax Highlighting for Compose (JSON log inspection)
+    implementation(libs.compose.highlight)
+
     // EitherNet for type-safe API results (needed to handle ApiResult from :api module)
     implementation(libs.eithernet)
 
