@@ -24,10 +24,8 @@ import ink.trmnl.android.buddy.api.models.TimelineStep
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -86,13 +84,11 @@ class DeviceDiagnosticsPresenter
                     }
                     when (
                         val result =
-                            withContext(Dispatchers.IO) {
-                                apiService.getDeviceForecast(
-                                    authorization = "Bearer $token",
-                                    deviceId = screen.deviceId,
-                                    hours = forecastHours,
-                                )
-                            }
+                            apiService.getDeviceForecast(
+                                authorization = "Bearer $token",
+                                deviceId = screen.deviceId,
+                                hours = forecastHours,
+                            )
                     ) {
                         is ApiResult.Success -> {
                             forecastSteps = result.value.data.steps
@@ -129,13 +125,11 @@ class DeviceDiagnosticsPresenter
                     }
                     when (
                         val result =
-                            withContext(Dispatchers.IO) {
-                                apiService.getDeviceTimeline(
-                                    authorization = "Bearer $token",
-                                    deviceId = screen.deviceId,
-                                    hours = timelineHours,
-                                )
-                            }
+                            apiService.getDeviceTimeline(
+                                authorization = "Bearer $token",
+                                deviceId = screen.deviceId,
+                                hours = timelineHours,
+                            )
                     ) {
                         is ApiResult.Success -> {
                             timeline = result.value.data
@@ -170,14 +164,12 @@ class DeviceDiagnosticsPresenter
                     }
                     when (
                         val result =
-                            withContext(Dispatchers.IO) {
-                                apiService.getDeviceLogs(
-                                    authorization = "Bearer $token",
-                                    deviceId = screen.deviceId,
-                                    level = selectedLogLevel.apiValue,
-                                    limit = DEFAULT_LOGS_LIMIT,
-                                )
-                            }
+                            apiService.getDeviceLogs(
+                                authorization = "Bearer $token",
+                                deviceId = screen.deviceId,
+                                level = selectedLogLevel.apiValue,
+                                limit = DEFAULT_LOGS_LIMIT,
+                            )
                     ) {
                         is ApiResult.Success -> {
                             logs =
@@ -281,16 +273,14 @@ class DeviceDiagnosticsPresenter
                                     }
                                     when (
                                         val result =
-                                            withContext(Dispatchers.IO) {
-                                                apiService.getDeviceLogs(
-                                                    authorization = "Bearer $token",
-                                                    deviceId = screen.deviceId,
-                                                    level = selectedLogLevel.apiValue,
-                                                    limit = DEFAULT_LOGS_LIMIT,
-                                                    beforeTs = cursor.ts,
-                                                    beforeEventId = cursor.eventId,
-                                                )
-                                            }
+                                            apiService.getDeviceLogs(
+                                                authorization = "Bearer $token",
+                                                deviceId = screen.deviceId,
+                                                level = selectedLogLevel.apiValue,
+                                                limit = DEFAULT_LOGS_LIMIT,
+                                                beforeTs = cursor.ts,
+                                                beforeEventId = cursor.eventId,
+                                            )
                                     ) {
                                         is ApiResult.Success -> {
                                             val startIndex = logs.size
