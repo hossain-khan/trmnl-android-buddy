@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.21.0] - 2026-11-14
+
 ### Added
 - **Creator Analytics: Plugin Errors & Uninstall Feedback**:
   - Migrated `getRecipesAnalytics` to `GET /api/analytics` (from legacy `/analytics.json`) so scoped `trmnl_` API keys work without HTTP 401, and handled nullable plugin `state` and 90-day growth series.
@@ -1706,7 +1708,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sensitive information (Device IDs, MAC addresses) obfuscated in UI
 - Debug keystore for development (production releases require separate keystore)
 
-[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.20.0...HEAD
+[unreleased]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.21.0...HEAD
+[2.21.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.20.0...2.21.0
 [2.20.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.19.1...2.20.0
 [2.19.1]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.19.0...2.19.1
 [2.19.0]: https://github.com/hossain-khan/trmnl-android-buddy/compare/2.18.1...2.19.0
