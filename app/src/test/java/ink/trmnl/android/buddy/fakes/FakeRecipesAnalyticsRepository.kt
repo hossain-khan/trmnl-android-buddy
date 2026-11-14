@@ -14,9 +14,11 @@ class FakeRecipesAnalyticsRepository : RecipesAnalyticsRepository {
 
     // Track the last token used
     var lastAuthorizationToken: String? = null
+    var getRecipesAnalyticsCallCount = 0
 
     override suspend fun getRecipesAnalytics(authorization: String): Result<RecipesAnalytics> {
         lastAuthorizationToken = authorization
+        getRecipesAnalyticsCallCount++
         return analyticsResult ?: throw NotImplementedError("analyticsResult not set - configure it in the test if needed")
     }
 

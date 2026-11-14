@@ -1,5 +1,7 @@
 package ink.trmnl.android.buddy.data.preferences
 
+import ink.trmnl.android.buddy.util.isLegacyApiToken
+
 /**
  * Data class representing user preferences stored in DataStore.
  *
@@ -26,6 +28,12 @@ data class UserPreferences(
     val isSecurityEnabled: Boolean = false,
     val isShowRecipeHealthCardEnabled: Boolean = true,
 ) {
+    /**
+     * Whether [apiToken] is a legacy `user_` token that lacks scoped capabilities.
+     */
+    val isLegacyApiToken: Boolean
+        get() = apiToken.isLegacyApiToken()
+
     companion object {
         /**
          * Default battery threshold percentage for low battery notifications.
