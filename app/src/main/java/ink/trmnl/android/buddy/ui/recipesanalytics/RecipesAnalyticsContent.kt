@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -36,6 +37,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -43,13 +46,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.patrykandpatrick.vico.compose.cartesian.AutoScrollCondition
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.Scroll
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianLayerRangeProvider
+import com.patrykandpatrick.vico.compose.cartesian.data.lineModel
+import com.patrykandpatrick.vico.compose.cartesian.layer.LineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
+import com.patrykandpatrick.vico.compose.common.Fill
+import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
-import kotlin.math.floor
-import kotlin.math.log10
-import kotlin.math.pow
 
 /**
  * UI content for [RecipesAnalyticsScreen].
@@ -339,13 +354,17 @@ private fun MetricRow(
 }
 
 /**
- * Card displaying growth trend as a bar chart for last 8 days.
+ * Card displaying install growth trend using a Vico line chart.
  */
 @Composable
 private fun GrowthChartCard(
     growthData: List<GrowthDataPointUi>,
     modifier: Modifier = Modifier,
 ) {
+    val firstValue = growthData.firstOrNull()?.value ?: 0
+    val latestValue = growthData.lastOrNull()?.value ?: 0
+    val delta = latestValue - firstValue
+
     Card(
         modifier = modifier.fillMaxWidth(),
         colors =
@@ -355,14 +374,30 @@ private fun GrowthChartCard(
         shape = RoundedCornerShape(12.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "Growth Trend (Last 8 Days)",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 12.dp),
-            )
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Growth Trend (Last ${growthData.size} Days)",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                if (growthData.size > 1 && delta > 0) {
+                    Text(
+                        text = "+$delta",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
 
             SimpleGrowthChart(
-                growthData = growthData.takeLast(8),
+                growthData = growthData,
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -373,90 +408,108 @@ private fun GrowthChartCard(
 }
 
 /**
- * Simple bar chart showing growth data points with date labels and Y-axis scale.
- * Y-axis shows only the maximum value for reference.
+ * Vico line chart showing growth data points with auto-fitted Y-axis range and date labels.
  */
 @Composable
 private fun SimpleGrowthChart(
     growthData: List<GrowthDataPointUi>,
     modifier: Modifier = Modifier,
 ) {
-    val maxValue = growthData.maxOfOrNull { it.value }?.toFloat() ?: 1f
-    val dataMaxValue = growthData.maxOfOrNull { it.value }?.toFloat() ?: 1f
-    val (_, niceMaxValue) = calculateNiceScale(dataMaxValue)
+    if (growthData.isEmpty()) return
 
-    // TODO - Put this in a box with a line on top showing max value label and grid line for better readability
-    // Also show the label value in the top right corner of the chart area for better readability
+    val modelProducer = remember { CartesianChartModelProducer() }
 
-    Row(
-        modifier = modifier.padding(horizontal = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.Bottom,
-    ) {
-        growthData.forEach { point ->
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                // Bar
-                Box(
-                    modifier =
-                        Modifier
-                            .width(24.dp)
-                            .fillMaxHeight(
-                                fraction =
-                                    (if (maxValue > 0) point.value / maxValue else 0f)
-                                        .coerceAtMost(0.8f),
-                            ).background(
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp),
-                            ),
-                )
-
-                // Date label
-                Text(
-                    text = point.date.takeLast(2), // Show day only
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(top = 4.dp),
-                    maxLines = 1,
-                )
+    LaunchedEffect(growthData) {
+        modelProducer.runTransaction {
+            lineModel {
+                series(growthData.map { it.value.toFloat() })
             }
         }
     }
-}
 
-/**
- * Calculate a nice scale for the chart Y-axis.
- * Rounds the max value up to a nice number (1, 2, 5, 10, 20, 50, 100, etc.)
- * so that Y-axis labels are readable round numbers.
- *
- * @param maxValue The actual maximum value in the data
- * @return Pair of (minValue, niceMaxValue) for the scale
- *
- * Examples:
- * - maxValue=8 → niceMaxValue=10
- * - maxValue=45 → niceMaxValue=50
- * - maxValue=200 → niceMaxValue=200
- * - maxValue=1234 → niceMaxValue=1500
- */
-private fun calculateNiceScale(maxValue: Float): Pair<Float, Float> {
-    if (maxValue <= 0) return Pair(0f, 1f)
-
-    // Find the order of magnitude (10^n)
-    val magnitude = 10f.pow(floor(log10(maxValue)).toInt().toFloat())
-    val normalized = maxValue / magnitude
-
-    // Round up to nice values: 1, 2, 5, 10
-    val niceMax =
-        when {
-            normalized <= 1 -> 1f * magnitude
-            normalized <= 2 -> 2f * magnitude
-            normalized <= 5 -> 5f * magnitude
-            else -> 10f * magnitude
+    val dataMin = remember(growthData) { growthData.minOf { it.value } }
+    val dataMax = remember(growthData) { growthData.maxOf { it.value } }
+    val rangeProvider =
+        remember(dataMin, dataMax) {
+            if (dataMin == dataMax) {
+                CartesianLayerRangeProvider.fixed(
+                    minY = (dataMin - 1).coerceAtLeast(0).toDouble(),
+                    maxY = (dataMax + 1).toDouble(),
+                )
+            } else {
+                val padding = ((dataMax - dataMin) * 0.15).coerceAtLeast(1.0)
+                CartesianLayerRangeProvider.fixed(
+                    minY = (dataMin - padding).coerceAtLeast(0.0),
+                    maxY = dataMax + padding,
+                )
+            }
         }
 
-    return Pair(0f, niceMax)
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val showPoints = growthData.size <= 31
+    val lineLayer =
+        rememberLineCartesianLayer(
+            lineProvider =
+                LineCartesianLayer.LineProvider.series(
+                    LineCartesianLayer.Line(
+                        fill = LineCartesianLayer.LineFill.single(Fill(primaryColor)),
+                        areaFill =
+                            LineCartesianLayer.AreaFill.single(
+                                Fill(primaryColor.copy(alpha = 0.15f)),
+                            ),
+                        pointProvider =
+                            if (showPoints) {
+                                LineCartesianLayer.PointProvider.single(
+                                    LineCartesianLayer.Point(
+                                        component =
+                                            rememberShapeComponent(
+                                                fill = Fill(primaryColor),
+                                                shape = CircleShape,
+                                            ),
+                                        size = 6.dp,
+                                    ),
+                                )
+                            } else {
+                                null
+                            },
+                    ),
+                ),
+            rangeProvider = rangeProvider,
+        )
+
+    CartesianChartHost(
+        chart =
+            rememberCartesianChart(
+                lineLayer,
+                startAxis =
+                    VerticalAxis.rememberStart(
+                        valueFormatter = { _, value, _ ->
+                            value.toInt().toString()
+                        },
+                    ),
+                bottomAxis =
+                    HorizontalAxis.rememberBottom(
+                        valueFormatter = { _, value, _ ->
+                            val index = value.toInt()
+                            if (index in growthData.indices) {
+                                // Format "YYYY-MM-DD" as "MM/DD"
+                                growthData[index].date.takeLast(5).replace('-', '/')
+                            } else {
+                                ""
+                            }
+                        },
+                    ),
+            ),
+        modelProducer = modelProducer,
+        modifier = modifier,
+        scrollState =
+            rememberVicoScrollState(
+                scrollEnabled = growthData.size > 14,
+                initialScroll = Scroll.Absolute.End,
+                autoScrollCondition = AutoScrollCondition.OnModelGrowth,
+            ),
+        zoomState = rememberVicoZoomState(zoomEnabled = growthData.size > 14),
+    )
 }
 
 /**

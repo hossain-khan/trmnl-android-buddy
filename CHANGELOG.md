@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Creator Analytics: Plugin Errors & Uninstall Feedback**:
   - Migrated `getRecipesAnalytics` to `GET /api/analytics` (from legacy `/analytics.json`) so scoped `trmnl_` API keys work without HTTP 401, and handled nullable plugin `state` and 90-day growth series.
+  - Upgraded the `RecipesAnalyticsScreen` growth trend chart to a Vico line & area chart with auto-fitted Y-axis bounds and horizontal scrolling across the 90-day install growth series.
   - Added `GET /api/analytics/errors` and `GET /api/analytics/uninstall_feedback` API models and `TrmnlApiService` endpoints.
   - Enhanced `RecipesAnalyticsScreen` to display failing plugin installs (with owner attribution, error count, and last-seen date) and 30-day uninstall feedback (total uninstalls, typical days installed, reason breakdown, and recent user comments).
   - Added a dedicated empty state on `RecipesAnalyticsScreen` for accounts without published recipes, plus clear positive/empty states when there are no failing installs or uninstall feedback.
