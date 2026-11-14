@@ -24,8 +24,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -57,13 +55,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.highlight.ui.CodeBlockStyle
+import dev.hossain.highlight.ui.HighlightThemeProvider
+import dev.hossain.highlight.ui.SyntaxHighlightedCode
+import dev.hossain.highlight.ui.rememberTomorrowLightTheme
+import dev.hossain.highlight.ui.rememberTomorrowNightTheme
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.DeviceTimeline
@@ -867,88 +869,93 @@ private fun LogsTabContent(
     onUpdateApiKey: () -> Unit,
     onRetry: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            DeviceDiagnosticsScreen.LogLevelFilter.entries.forEach { level ->
-                FilterChip(
-                    selected = selectedLevel == level,
-                    onClick = { onLevelSelected(level) },
-                    label = { Text(level.label) },
-                )
-            }
-        }
-
-        when {
-            isLoading -> {
-                LoadingState(message = "Loading device logs...")
-            }
-
-            error != null && logs.isEmpty() -> {
-                ErrorState(
-                    error = error,
-                    onUpdateApiKey = onUpdateApiKey,
-                    onRetry = onRetry,
-                )
+    HighlightThemeProvider(
+        lightHighlightTheme = rememberTomorrowLightTheme(),
+        darkHighlightTheme = rememberTomorrowNightTheme(),
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                DeviceDiagnosticsScreen.LogLevelFilter.entries.forEach { level ->
+                    FilterChip(
+                        selected = selectedLevel == level,
+                        onClick = { onLevelSelected(level) },
+                        label = { Text(level.label) },
+                    )
+                }
             }
 
-            logs.isEmpty() -> {
-                EmptyState(
-                    title = "No logs found",
-                    subtitle = "No ${selectedLevel.label.lowercase()} log entries recorded for this device.",
-                )
-            }
+            when {
+                isLoading -> {
+                    LoadingState(message = "Loading device logs...")
+                }
 
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    if (error != null) {
-                        item(key = "logs_inline_error") {
-                            Text(
-                                text = error.message,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.error,
-                            )
+                error != null && logs.isEmpty() -> {
+                    ErrorState(
+                        error = error,
+                        onUpdateApiKey = onUpdateApiKey,
+                        onRetry = onRetry,
+                    )
+                }
+
+                logs.isEmpty() -> {
+                    EmptyState(
+                        title = "No logs found",
+                        subtitle = "No ${selectedLevel.label.lowercase()} log entries recorded for this device.",
+                    )
+                }
+
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        if (error != null) {
+                            item(key = "logs_inline_error") {
+                                Text(
+                                    text = error.message,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
                         }
-                    }
 
-                    items(
-                        items = logs,
-                        key = { it.id },
-                    ) { entry ->
-                        LogEntryCard(entry = entry)
-                    }
+                        items(
+                            items = logs,
+                            key = { it.id },
+                        ) { entry ->
+                            LogEntryCard(entry = entry)
+                        }
 
-                    if (hasMore) {
-                        item(key = "load_more_logs") {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 8.dp),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                OutlinedButton(
-                                    onClick = onLoadMore,
-                                    enabled = !isLoadingMore,
+                        if (hasMore) {
+                            item(key = "load_more_logs") {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 8.dp),
+                                    contentAlignment = Alignment.Center,
                                 ) {
-                                    if (isLoadingMore) {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier.size(16.dp),
-                                            strokeWidth = 2.dp,
-                                        )
-                                        Spacer(modifier = Modifier.size(8.dp))
+                                    OutlinedButton(
+                                        onClick = onLoadMore,
+                                        enabled = !isLoadingMore,
+                                    ) {
+                                        if (isLoadingMore) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.size(16.dp),
+                                                strokeWidth = 2.dp,
+                                            )
+                                            Spacer(modifier = Modifier.size(8.dp))
+                                        }
+                                        Text(if (isLoadingMore) "Loading..." else "Load Older Logs")
                                     }
-                                    Text(if (isLoadingMore) "Loading..." else "Load Older Logs")
                                 }
                             }
                         }
@@ -1089,23 +1096,12 @@ private fun LogEntryCard(entry: DeviceDiagnosticsScreen.DeviceLogEntry) {
             AnimatedVisibility(visible = isExpanded && entry.rawJson.isNotEmpty()) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-                    Surface(
+                    SyntaxHighlightedCode(
+                        code = entry.rawJson,
+                        language = "json",
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
-                    ) {
-                        SelectionContainer {
-                            Text(
-                                text = entry.rawJson,
-                                modifier = Modifier.padding(10.dp),
-                                style =
-                                    MaterialTheme.typography.labelSmall.copy(
-                                        fontFamily = FontFamily.Monospace,
-                                    ),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
+                        style = CodeBlockStyle.Compact,
+                    )
                 }
             }
         }

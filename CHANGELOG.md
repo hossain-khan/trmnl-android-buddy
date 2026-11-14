@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Redesigned device log cards on `DeviceDiagnosticsScreen` (`Logs` tab) to show minimal top-level event metadata (level, source, timestamp, optional message, and dump log record count) with tap-to-expand pretty-printed, selectable JSON inspection instead of duplicating unparsed raw dump text.
+- Redesigned device log cards on `DeviceDiagnosticsScreen` (`Logs` tab) to show minimal top-level event metadata (level, source, timestamp, optional message, and dump log record count) with tap-to-expand syntax-highlighted JSON inspection (powered by `compose-highlight`) instead of duplicating unparsed raw dump text.
 
 ## [2.21.0] - 2026-11-14
 
