@@ -47,6 +47,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,10 +61,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.highlight.ui.CodeBlockStyle
 import dev.hossain.highlight.ui.HighlightThemeProvider
 import dev.hossain.highlight.ui.SyntaxHighlightedCode
+import dev.hossain.highlight.ui.SyntaxHighlightedCodeDefaults
 import dev.hossain.highlight.ui.rememberTomorrowLightTheme
 import dev.hossain.highlight.ui.rememberTomorrowNightTheme
 import dev.zacsweers.metro.AppScope
@@ -1094,13 +1097,23 @@ private fun LogEntryCard(entry: DeviceDiagnosticsScreen.DeviceLogEntry) {
             }
 
             AnimatedVisibility(visible = isExpanded && entry.rawJson.isNotEmpty()) {
+                val codeBlockStyle =
+                    remember {
+                        CodeBlockStyle.Compact.copy(
+                            textStyle =
+                                SyntaxHighlightedCodeDefaults.codeTextStyle.copy(
+                                    fontSize = 11.sp,
+                                    lineHeight = 16.sp,
+                                ),
+                        )
+                    }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
                     SyntaxHighlightedCode(
                         code = entry.rawJson,
                         language = "json",
                         modifier = Modifier.fillMaxWidth(),
-                        style = CodeBlockStyle.Compact,
+                        style = codeBlockStyle,
                     )
                 }
             }
