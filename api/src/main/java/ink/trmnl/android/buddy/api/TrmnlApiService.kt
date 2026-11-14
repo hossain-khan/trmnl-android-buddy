@@ -41,7 +41,7 @@ import retrofit2.http.Query
  * **Token Types:**
  * - **Scoped Account API Keys (`trmnl_...`)**: Created at `Account > Developer`
  *   (`https://trmnl.com/account/developer/edit`) with granular capability scopes
- *   (`read`, `content`, `devices`, `delete`, `profile`, `apps`, `analytics`). Required for newer
+ *   (`read`, `content`, `devices`, `delete`, `profile`, `apps`). The `read` scope is required for
  *   endpoints such as `/api/analytics`, `/api/analytics/errors`, `/api/analytics/uninstall_feedback`,
  *   and device diagnostics (`/api/devices/{id}/forecast`, `/timeline`, `/logs`).
  * - **Legacy Account API Keys (`user_...`)**: Older un-scoped account keys that only reach the
