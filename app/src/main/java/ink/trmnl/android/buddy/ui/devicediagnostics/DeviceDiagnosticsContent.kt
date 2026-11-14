@@ -64,8 +64,8 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.highlight.ui.CodeBlockStyle
 import dev.hossain.highlight.ui.HighlightThemeProvider
 import dev.hossain.highlight.ui.SyntaxHighlightedCode
-import dev.hossain.highlight.ui.rememberAtomOneDarkTheme
-import dev.hossain.highlight.ui.rememberAtomOneLightTheme
+import dev.hossain.highlight.ui.rememberGithubDarkTheme
+import dev.hossain.highlight.ui.rememberGithubLightTheme
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.api.models.DeviceTimeline
@@ -870,8 +870,8 @@ private fun LogsTabContent(
     onRetry: () -> Unit,
 ) {
     HighlightThemeProvider(
-        lightHighlightTheme = rememberAtomOneLightTheme(),
-        darkHighlightTheme = rememberAtomOneDarkTheme(),
+        lightHighlightTheme = rememberGithubLightTheme(),
+        darkHighlightTheme = rememberGithubDarkTheme(),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
