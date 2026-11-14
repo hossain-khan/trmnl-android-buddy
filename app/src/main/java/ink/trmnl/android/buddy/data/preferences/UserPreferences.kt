@@ -5,7 +5,9 @@ import ink.trmnl.android.buddy.util.isLegacyApiToken
 /**
  * Data class representing user preferences stored in DataStore.
  *
- * @property apiToken TRMNL User API key (Bearer token)
+ * @property apiToken TRMNL Account API key passed as a Bearer token (`trmnl_...` for scoped
+ *   Account API keys, or `user_...` for legacy un-scoped keys).
+ *   See [TRMNL Account API Keys](https://help.trmnl.com/en/articles/11195228-account-api-keys).
  * @property isOnboardingCompleted Whether the user has finished the initial setup
  * @property isBatteryTrackingEnabled Whether automatic weekly battery data collection is enabled
  * @property isLowBatteryNotificationEnabled Whether notifications for low battery are enabled
@@ -29,7 +31,11 @@ data class UserPreferences(
     val isShowRecipeHealthCardEnabled: Boolean = true,
 ) {
     /**
-     * Whether [apiToken] is a legacy `user_` token that lacks scoped capabilities.
+     * Whether [apiToken] is a legacy `user_` key rather than a capability-scoped `trmnl_` key.
+     *
+     * Legacy `user_` keys only reach older endpoints and cannot access `/api/analytics*` or
+     * device diagnostics endpoints.
+     * See [TRMNL Account API Keys](https://help.trmnl.com/en/articles/11195228-account-api-keys).
      */
     val isLegacyApiToken: Boolean
         get() = apiToken.isLegacyApiToken()

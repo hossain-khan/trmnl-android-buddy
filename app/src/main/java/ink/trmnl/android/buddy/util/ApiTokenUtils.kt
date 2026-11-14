@@ -5,7 +5,13 @@ private const val LEGACY_API_TOKEN_PREFIX = "user_"
 /**
  * Returns `true` if this TRMNL API token uses the legacy `user_` prefix.
  *
- * Legacy `user_` API keys predate capability-scoped keys (`trmnl_...`) and are not
- * supported by newer endpoints such as `/api/analytics` and device diagnostics.
+ * TRMNL distinguishes between two Account API key formats:
+ * - **Scoped Account API Keys (`trmnl_...`)**: Generated under `Account > Developer`
+ *   (`https://trmnl.com/account/developer/edit`) with explicit capability scopes
+ *   (`read`, `content`, `devices`, `delete`, `profile`, `apps`, `analytics`).
+ * - **Legacy Account API Keys (`user_...`)**: Older un-scoped account keys that only reach
+ *   legacy endpoints and cannot access `/api/analytics*` or device diagnostics endpoints.
+ *
+ * See [TRMNL Account API Keys](https://help.trmnl.com/en/articles/11195228-account-api-keys).
  */
 fun String?.isLegacyApiToken(): Boolean = this?.trim()?.startsWith(LEGACY_API_TOKEN_PREFIX) == true

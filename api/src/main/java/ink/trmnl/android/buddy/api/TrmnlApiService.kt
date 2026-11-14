@@ -35,8 +35,22 @@ import retrofit2.http.Query
  * Most endpoints require authentication via Bearer token (Account API key).
  * Pass the API key via the Authorization header:
  * ```
- * Authorization: Bearer user_xxxxxx
+ * Authorization: Bearer trmnl_xxxxxx
  * ```
+ *
+ * **Token Types:**
+ * - **Scoped Account API Keys (`trmnl_...`)**: Created at `Account > Developer`
+ *   (`https://trmnl.com/account/developer/edit`) with granular capability scopes
+ *   (`read`, `content`, `devices`, `delete`, `profile`, `apps`, `analytics`). Required for newer
+ *   endpoints such as `/api/analytics`, `/api/analytics/errors`, `/api/analytics/uninstall_feedback`,
+ *   and device diagnostics (`/api/devices/{id}/forecast`, `/timeline`, `/logs`).
+ * - **Legacy Account API Keys (`user_...`)**: Older un-scoped account keys that only reach the
+ *   endpoints available before capability-scoped keys were introduced and return HTTP 403/401 on
+ *   newer endpoints.
+ * - **Device API Keys**: Per-device keys (not prefixed with `trmnl_` or `user_`) passed in the
+ *   `Access-Token` header for single-device display rendering (`/api/display`, `/api/current_screen`).
+ *
+ * See [TRMNL Account API Keys](https://help.trmnl.com/en/articles/11195228-account-api-keys).
  *
  * ## Base URL
  * Production: `https://trmnl.com/api`
