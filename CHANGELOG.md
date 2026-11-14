@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated color capability labels in `DeviceCatalogInfoBottomSheet` to show accurate color counts (`Grayscale (256 colors)`, `Full Color (4,096+ colors)`).
 - Migrated deprecated Compose `SwipeToDismissBox` (`AnnouncementsContent`), Vico `lineModel` (`BatteryChartContent`), and removed unnecessary `!!` (`PlaylistItemsContent`) compiler warnings.
 
+### Fixed
+- Skipped calling `/api/analytics` on `TrmnlDevicesScreen` startup when using a legacy `user_` API token (with debug logging), avoiding wasted HTTP 403 requests.
+
 ## [2.20.0] - 2026-11-13
 
 ### Added
