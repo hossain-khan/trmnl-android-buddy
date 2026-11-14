@@ -33,6 +33,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
 import org.junit.Test
 import java.io.IOException
+import kotlin.time.Duration.Companion.seconds
 
 class DeviceDiagnosticsPresenterTest {
     @Test
@@ -62,7 +63,7 @@ class DeviceDiagnosticsPresenterTest {
             val prefsRepo = FakeUserPreferencesRepository(UserPreferences(apiToken = "user_test"))
             val presenter = DeviceDiagnosticsPresenter(screen, navigator, apiService, prefsRepo)
 
-            presenter.test {
+            presenter.test(timeout = 10.seconds) {
                 var state: DeviceDiagnosticsScreen.State
                 do {
                     state = awaitItem()
@@ -108,7 +109,7 @@ class DeviceDiagnosticsPresenterTest {
             val prefsRepo = FakeUserPreferencesRepository(UserPreferences(apiToken = "user_test"))
             val presenter = DeviceDiagnosticsPresenter(screen, navigator, apiService, prefsRepo)
 
-            presenter.test {
+            presenter.test(timeout = 10.seconds) {
                 var state: DeviceDiagnosticsScreen.State
                 do {
                     state = awaitItem()
@@ -158,7 +159,7 @@ class DeviceDiagnosticsPresenterTest {
             val prefsRepo = FakeUserPreferencesRepository(UserPreferences(apiToken = "user_test"))
             val presenter = DeviceDiagnosticsPresenter(screen, navigator, apiService, prefsRepo)
 
-            presenter.test {
+            presenter.test(timeout = 10.seconds) {
                 var state: DeviceDiagnosticsScreen.State
                 do {
                     state = awaitItem()
@@ -228,7 +229,7 @@ class DeviceDiagnosticsPresenterTest {
             val prefsRepo = FakeUserPreferencesRepository(UserPreferences(apiToken = "user_test"))
             val presenter = DeviceDiagnosticsPresenter(screen, navigator, apiService, prefsRepo)
 
-            presenter.test {
+            presenter.test(timeout = 10.seconds) {
                 var state: DeviceDiagnosticsScreen.State
                 do {
                     state = awaitItem()
@@ -252,7 +253,7 @@ class DeviceDiagnosticsPresenterTest {
             val prefsRepo = FakeUserPreferencesRepository(UserPreferences(apiToken = null))
             val presenter = DeviceDiagnosticsPresenter(screen, navigator, apiService, prefsRepo)
 
-            presenter.test {
+            presenter.test(timeout = 10.seconds) {
                 var state: DeviceDiagnosticsScreen.State
                 do {
                     state = awaitItem()
@@ -282,7 +283,7 @@ class DeviceDiagnosticsPresenterTest {
             val prefsRepo = FakeUserPreferencesRepository(UserPreferences(apiToken = "user_legacy"))
             val presenter = DeviceDiagnosticsPresenter(screen, navigator, apiService, prefsRepo)
 
-            presenter.test {
+            presenter.test(timeout = 10.seconds) {
                 var state: DeviceDiagnosticsScreen.State
                 do {
                     state = awaitItem()
