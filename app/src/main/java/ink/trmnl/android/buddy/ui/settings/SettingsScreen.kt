@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,7 +20,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -41,6 +45,7 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.dev.DevelopmentScreen
 import ink.trmnl.android.buddy.security.BiometricAuthHelper
+import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicecatalog.DeviceCatalogScreen
@@ -56,6 +61,7 @@ import ink.trmnl.android.buddy.work.WorkerScheduler
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 
 /**
  * Screen for app settings.
@@ -74,6 +80,7 @@ data object SettingsScreen : ParcelableScreen {
             ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
                 .Loading(),
         val showRecipeHealthCard: Boolean = true,
+        val showLegacyTokenAnalyticsDialog: Boolean = false,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -119,6 +126,10 @@ data object SettingsScreen : ParcelableScreen {
         data class RecipeHealthCardToggled(
             val enabled: Boolean,
         ) : Event
+
+        data object DismissLegacyTokenDialog : Event
+
+        data object UpdateApiTokenClicked : Event
     }
 }
 
@@ -141,40 +152,48 @@ class SettingsPresenter(
         )
         val coroutineScope = rememberCoroutineScope()
         val analyticsState =
-            androidx.compose.runtime.remember {
-                androidx.compose.runtime.mutableStateOf<ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState>(
-                    ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
-                        .Loading(),
+            remember {
+                mutableStateOf<RecipesAnalyticsState>(
+                    RecipesAnalyticsState.Loading(),
                 )
             }
+        var showLegacyTokenAnalyticsDialog by remember { mutableStateOf(false) }
 
         // Check biometric availability using the injected helper.
         val isAuthenticationAvailable = biometricAuthHelper.isBiometricAvailable()
 
-        // Fetch recipes analytics when the API token becomes available
+        // Pre-fetch recipes analytics when the API token becomes available so Settings can:
+        // 1. Show/hide the "Recipe Health" card toggle when the user has published plugins.
+        // 2. Pre-populate RecipesAnalyticsScreen when the user taps "Recipes Analytics".
+        //
+        // Legacy `user_` tokens are skipped here because `/api/analytics` requires a scoped
+        // `trmnl_` API key; tapping "Recipes Analytics" shows an upgrade prompt instead.
         androidx.compose.runtime.LaunchedEffect(preferences.apiToken) {
             val apiToken = preferences.apiToken
             try {
                 if (apiToken.isNullOrEmpty()) {
+                    analyticsState.value = RecipesAnalyticsState.Loading(null)
+                } else if (preferences.isLegacyApiToken) {
+                    Timber.d("Skipping recipes analytics fetch: legacy user_ API token is not supported by /api/analytics")
                     analyticsState.value =
-                        ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
-                            .Loading(null)
+                        RecipesAnalyticsState.Error(
+                            "Legacy API token is not supported for Recipes Analytics",
+                            null,
+                        )
                 } else {
                     analyticsState.value =
-                        ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Loading(
+                        RecipesAnalyticsState.Loading(
                             analyticsState.value.getDataOrNull(),
                         )
                     val result = recipesAnalyticsRepository.getRecipesAnalytics("Bearer $apiToken")
                     result.onSuccess { analytics ->
                         val uiData = analytics.toUi()
-                        analyticsState.value =
-                            ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
-                                .Success(uiData)
+                        analyticsState.value = RecipesAnalyticsState.Success(uiData)
                     }
                     result.onFailure { error ->
                         // Silently handle errors - keep previous data or show empty state
                         analyticsState.value =
-                            ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Error(
+                            RecipesAnalyticsState.Error(
                                 error.message ?: "Failed to load analytics",
                                 analyticsState.value.getDataOrNull(),
                             )
@@ -184,7 +203,7 @@ class SettingsPresenter(
                 throw e
             } catch (e: Exception) {
                 analyticsState.value =
-                    ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Error(
+                    RecipesAnalyticsState.Error(
                         e.message ?: "Unexpected error",
                         analyticsState.value.getDataOrNull(),
                     )
@@ -201,6 +220,7 @@ class SettingsPresenter(
             isAuthenticationAvailable = isAuthenticationAvailable,
             analyticsState = analyticsState.value,
             showRecipeHealthCard = preferences.isShowRecipeHealthCardEnabled,
+            showLegacyTokenAnalyticsDialog = showLegacyTokenAnalyticsDialog,
         ) { event ->
             when (event) {
                 SettingsScreen.Event.BackClicked -> {
@@ -280,8 +300,12 @@ class SettingsPresenter(
                 }
 
                 is SettingsScreen.Event.RecipesAnalyticsClicked -> {
-                    analyticsState.value.getDataOrNull()?.let { data ->
-                        navigator.goTo(RecipesAnalyticsScreen(data))
+                    if (preferences.isLegacyApiToken) {
+                        showLegacyTokenAnalyticsDialog = true
+                    } else {
+                        analyticsState.value.getDataOrNull()?.let { data ->
+                            navigator.goTo(RecipesAnalyticsScreen(data))
+                        }
                     }
                 }
 
@@ -289,6 +313,15 @@ class SettingsPresenter(
                     coroutineScope.launch {
                         userPreferencesRepository.setShowRecipeHealthCard(event.enabled)
                     }
+                }
+
+                SettingsScreen.Event.DismissLegacyTokenDialog -> {
+                    showLegacyTokenAnalyticsDialog = false
+                }
+
+                SettingsScreen.Event.UpdateApiTokenClicked -> {
+                    showLegacyTokenAnalyticsDialog = false
+                    navigator.goTo(AccessTokenScreen)
                 }
             }
         }
@@ -426,6 +459,42 @@ fun SettingsContent(
 
             // App Information Section
             AppInformationSection()
+        }
+
+        if (state.showLegacyTokenAnalyticsDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    state.eventSink(SettingsScreen.Event.DismissLegacyTokenDialog)
+                },
+                title = {
+                    Text(text = "Legacy API Token Not Supported")
+                },
+                text = {
+                    Text(
+                        text =
+                            "Your current legacy token (user_…) is no longer supported for Recipes Analytics. " +
+                                "Generate a new scoped API key (trmnl_…) at trmnl.com/account and update it in the app to use this feature.",
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            state.eventSink(SettingsScreen.Event.UpdateApiTokenClicked)
+                        },
+                    ) {
+                        Text("Update Token")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            state.eventSink(SettingsScreen.Event.DismissLegacyTokenDialog)
+                        },
+                    ) {
+                        Text("Dismiss")
+                    }
+                },
+            )
         }
     }
 }

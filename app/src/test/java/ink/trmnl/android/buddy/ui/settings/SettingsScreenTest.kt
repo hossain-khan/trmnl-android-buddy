@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.ui.settings
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
@@ -10,6 +11,8 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.fakes.FakeRecipesAnalyticsRepository
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
 import ink.trmnl.android.buddy.security.FakeBiometricAuthHelper
+import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
 import ink.trmnl.android.buddy.work.WorkerScheduler
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -352,6 +355,44 @@ class SettingsScreenTest {
                 val updatedState = awaitItem()
                 assertThat(updatedState.showRecipeHealthCard).isTrue()
                 assertThat(repository.showRecipeHealthCardEnabled).isTrue()
+            }
+        }
+
+    @Test
+    fun `presenter skips analytics API call for legacy user_ token and shows dialog on tap`() =
+        runTest {
+            val navigator = FakeNavigator(SettingsScreen)
+            val repository = FakeUserPreferencesRepository(UserPreferences(apiToken = "user_legacy123"))
+            val workerScheduler = FakeWorkerScheduler()
+            val biometricAuthHelper = FakeBiometricAuthHelper()
+            val analyticsRepository = FakeRecipesAnalyticsRepository()
+            val presenter = SettingsPresenter(navigator, repository, workerScheduler, biometricAuthHelper, analyticsRepository)
+
+            presenter.test {
+                skipItems(1)
+                val state = awaitItem()
+
+                assertThat(analyticsRepository.getRecipesAnalyticsCallCount).isEqualTo(0)
+                assertThat(state.analyticsState).isInstanceOf(RecipesAnalyticsState.Error::class)
+                assertThat(state.showLegacyTokenAnalyticsDialog).isFalse()
+
+                // Tapping Recipes Analytics shows the legacy token dialog
+                state.eventSink(SettingsScreen.Event.RecipesAnalyticsClicked)
+                val dialogState = awaitItem()
+                assertThat(dialogState.showLegacyTokenAnalyticsDialog).isTrue()
+
+                // Tapping Dismiss hides the dialog
+                dialogState.eventSink(SettingsScreen.Event.DismissLegacyTokenDialog)
+                val dismissedState = awaitItem()
+                assertThat(dismissedState.showLegacyTokenAnalyticsDialog).isFalse()
+
+                // Tapping Update Token hides dialog and navigates to AccessTokenScreen
+                dismissedState.eventSink(SettingsScreen.Event.RecipesAnalyticsClicked)
+                val reopenedState = awaitItem()
+                reopenedState.eventSink(SettingsScreen.Event.UpdateApiTokenClicked)
+                val afterUpdateState = awaitItem()
+                assertThat(afterUpdateState.showLegacyTokenAnalyticsDialog).isFalse()
+                assertThat(navigator.awaitNextScreen()).isEqualTo(AccessTokenScreen)
             }
         }
 

@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.api
 import com.slack.eithernet.ApiResult
 import com.slack.eithernet.DecodeErrorBody
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.AuthorPluginErrorsResponse
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceForecastResponse
 import ink.trmnl.android.buddy.api.models.DeviceLogsResponse
@@ -15,6 +16,7 @@ import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
+import ink.trmnl.android.buddy.api.models.UninstallFeedbackResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -33,8 +35,22 @@ import retrofit2.http.Query
  * Most endpoints require authentication via Bearer token (Account API key).
  * Pass the API key via the Authorization header:
  * ```
- * Authorization: Bearer user_xxxxxx
+ * Authorization: Bearer trmnl_xxxxxx
  * ```
+ *
+ * **Token Types:**
+ * - **Scoped Account API Keys (`trmnl_...`)**: Created at `Account > Developer`
+ *   (`https://trmnl.com/account/developer/edit`) with granular capability scopes
+ *   (`read`, `content`, `devices`, `delete`, `profile`, `apps`). The `read` scope is required for
+ *   endpoints such as `/api/analytics`, `/api/analytics/errors`, `/api/analytics/uninstall_feedback`,
+ *   and device diagnostics (`/api/devices/{id}/forecast`, `/timeline`, `/logs`).
+ * - **Legacy Account API Keys (`user_...`)**: Older un-scoped account keys that only reach the
+ *   endpoints available before capability-scoped keys were introduced and return HTTP 403/401 on
+ *   newer endpoints.
+ * - **Device API Keys**: Per-device keys (not prefixed with `trmnl_` or `user_`) passed in the
+ *   `Access-Token` header for single-device display rendering (`/api/display`, `/api/current_screen`).
+ *
+ * See [TRMNL Account API Keys](https://help.trmnl.com/en/articles/11195228-account-api-keys).
  *
  * ## Base URL
  * Production: `https://trmnl.com/api`
@@ -504,10 +520,32 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @GET("https://trmnl.com/analytics.json")
+    @GET("analytics")
     suspend fun getRecipesAnalytics(
         @Header("Authorization") authorization: String,
     ): ApiResult<RecipesAnalyticsResponse, ApiError>
+
+    /**
+     * Get failing plugin installs for the authenticated creator's published plugins.
+     *
+     * @param authorization Bearer token in format `"Bearer <api_key>"`
+     * @return ApiResult containing list of [ink.trmnl.android.buddy.api.models.AuthorPluginError] or error
+     */
+    @GET("analytics/errors")
+    suspend fun getAuthorPluginErrors(
+        @Header("Authorization") authorization: String,
+    ): ApiResult<AuthorPluginErrorsResponse, ApiError>
+
+    /**
+     * Get aggregated 30-day uninstall feedback for the authenticated creator's published plugins.
+     *
+     * @param authorization Bearer token in format `"Bearer <api_key>"`
+     * @return ApiResult containing [ink.trmnl.android.buddy.api.models.UninstallFeedback] or error
+     */
+    @GET("analytics/uninstall_feedback")
+    suspend fun getUninstallFeedback(
+        @Header("Authorization") authorization: String,
+    ): ApiResult<UninstallFeedbackResponse, ApiError>
 
     // ========================================
     // Categories API

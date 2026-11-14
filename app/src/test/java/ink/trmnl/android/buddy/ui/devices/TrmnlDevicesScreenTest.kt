@@ -778,6 +778,10 @@ private class FakeApiService(
 
     override suspend fun getRecipesAnalytics(authorization: String) = throw NotImplementedError()
 
+    override suspend fun getAuthorPluginErrors(authorization: String) = throw NotImplementedError()
+
+    override suspend fun getUninstallFeedback(authorization: String) = throw NotImplementedError()
+
     override suspend fun getDeviceForecast(
         authorization: String,
         deviceId: Int,
