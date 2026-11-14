@@ -227,21 +227,20 @@ private fun getClockLoaderIconForItem(
     item: PlaylistItemUi,
     allItems: List<PlaylistItemUi>,
 ): Int {
-    val renderedItems = allItems.filter { it.renderedAt != null }
-    if (renderedItems.isEmpty() || item.renderedAt == null) {
+    val renderedAt = item.renderedAt
+    val renderedTimestamps = allItems.mapNotNull { it.renderedAt }.map { Instant.parse(it).epochSecond }
+    if (renderedTimestamps.isEmpty() || renderedAt == null) {
         return R.drawable.clock_loader_10_24dp_999999_fill0_wght400_grad0_opsz24
     }
 
-    val minTimestamp =
-        renderedItems.minOf { Instant.parse(it.renderedAt!!).epochSecond }
-    val maxTimestamp =
-        renderedItems.maxOf { Instant.parse(it.renderedAt!!).epochSecond }
+    val minTimestamp = renderedTimestamps.min()
+    val maxTimestamp = renderedTimestamps.max()
 
     if (minTimestamp == maxTimestamp) {
         return R.drawable.clock_loader_10_24dp_999999_fill0_wght400_grad0_opsz24
     }
 
-    val timeInSeconds = Instant.parse(item.renderedAt!!).epochSecond
+    val timeInSeconds = Instant.parse(renderedAt).epochSecond
     val progress =
         (maxTimestamp - timeInSeconds).toFloat() / (maxTimestamp - minTimestamp)
     val percentage = (progress * 80 + 10).toInt()

@@ -613,7 +613,7 @@ class DeviceDetailScreenTest {
                 var state: DeviceDetailScreen.State
                 do {
                     state = awaitItem()
-                } while (state.isDiagnosticsLoading)
+                } while (state.isDiagnosticsLoading || state.nextCheckInTime == null)
 
                 assertThat(state.showDiagnosticsCard).isTrue()
                 assertThat(state.nextCheckInTime).isEqualTo("2026-11-13T05:15:00Z")
