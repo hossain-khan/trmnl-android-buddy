@@ -202,7 +202,11 @@ class DeviceDiagnosticsPresenterTest {
                 state.eventSink(DeviceDiagnosticsScreen.Event.LogLevelSelected(DeviceDiagnosticsScreen.LogLevelFilter.ERROR))
                 do {
                     state = awaitItem()
-                } while (state.selectedLogLevel != DeviceDiagnosticsScreen.LogLevelFilter.ERROR || state.isLogsLoading)
+                } while (
+                    state.selectedLogLevel != DeviceDiagnosticsScreen.LogLevelFilter.ERROR ||
+                    state.isLogsLoading ||
+                    apiService.lastLogsLevel != "error"
+                )
 
                 assertThat(apiService.lastLogsLevel).isEqualTo("error")
                 cancelAndIgnoreRemainingEvents()
