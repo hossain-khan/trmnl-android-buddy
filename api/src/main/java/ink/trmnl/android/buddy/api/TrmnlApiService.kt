@@ -506,7 +506,7 @@ interface TrmnlApiService {
      * }
      * ```
      */
-    @GET("https://trmnl.com/analytics.json")
+    @GET("analytics")
     suspend fun getRecipesAnalytics(
         @Header("Authorization") authorization: String,
     ): ApiResult<RecipesAnalyticsResponse, ApiError>

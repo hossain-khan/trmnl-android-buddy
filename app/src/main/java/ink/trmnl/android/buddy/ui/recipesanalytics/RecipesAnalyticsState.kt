@@ -75,7 +75,7 @@ fun ink.trmnl.android.buddy.api.models.RecipesAnalytics.toUi(): RecipesAnalytics
             plugins.map { plugin ->
                 PluginAnalyticsUi(
                     name = plugin.name,
-                    state = plugin.state,
+                    state = plugin.state ?: "healthy",
                     installs = plugin.installs,
                     forks = plugin.forks,
                 )

@@ -362,7 +362,7 @@ private fun GrowthChartCard(
             )
 
             SimpleGrowthChart(
-                growthData = growthData,
+                growthData = growthData.takeLast(8),
                 modifier =
                     Modifier
                         .fillMaxWidth()
