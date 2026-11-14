@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Creator Analytics: Plugin Errors & Uninstall Feedback**:
+  - Migrated `getRecipesAnalytics` to `GET /api/analytics` (from legacy `/analytics.json`) so scoped `trmnl_` API keys work without HTTP 401, and handled nullable plugin `state` and 90-day growth series.
+  - Upgraded the `RecipesAnalyticsScreen` growth trend chart to a Vico line & area chart with auto-fitted Y-axis bounds and horizontal scrolling across the 90-day install growth series.
+  - Added `GET /api/analytics/errors` and `GET /api/analytics/uninstall_feedback` API models and `TrmnlApiService` endpoints.
+  - Enhanced `RecipesAnalyticsScreen` to display failing plugin installs (with owner attribution, error count, and last-seen date) and 30-day uninstall feedback (total uninstalls, typical days installed, reason breakdown, and recent user comments).
+  - Added a dedicated empty state on `RecipesAnalyticsScreen` for accounts without published recipes, plus clear positive/empty states when there are no failing installs or uninstall feedback.
+  - Added `String?.isLegacyApiToken()` / `UserPreferences.isLegacyApiToken` utility so `SettingsScreen` skips calling `/api/analytics` (with debug logging) for legacy `user_` tokens and shows an upgrade dialog prompting the user to generate a scoped token when tapping **Recipes Analytics**.
 - **Device Catalog brand logo & filter (`Waveshare`)**: Added `DeviceKind.WAVESHARE` (`waveshare_logo.png`), filter chip, and `waveshare_` device model mapping in `DeviceCatalogScreen`.
 - **Device Catalog Info & Statistics Sheet**: Added an info icon button in the `DeviceCatalogScreen` top app bar that opens a bottom sheet showing catalog summary, brand and color capability distribution stats (with tap-to-filter support), and `GET https://trmnl.com/api/models` source attribution.
 

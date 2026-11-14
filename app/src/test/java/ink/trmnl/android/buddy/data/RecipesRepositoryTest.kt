@@ -207,6 +207,14 @@ class RecipesRepositoryTest {
         override suspend fun getRecipesAnalytics(authorization: String): ApiResult<RecipesAnalyticsResponse, ApiError> =
             throw NotImplementedError()
 
+        override suspend fun getAuthorPluginErrors(
+            authorization: String,
+        ): ApiResult<ink.trmnl.android.buddy.api.models.AuthorPluginErrorsResponse, ApiError> = throw NotImplementedError()
+
+        override suspend fun getUninstallFeedback(
+            authorization: String,
+        ): ApiResult<ink.trmnl.android.buddy.api.models.UninstallFeedbackResponse, ApiError> = throw NotImplementedError()
+
         override suspend fun getDeviceForecast(
             authorization: String,
             deviceId: Int,

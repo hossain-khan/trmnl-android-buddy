@@ -523,6 +523,12 @@ private open class FakeApiService(
     override suspend fun getRecipesAnalytics(authorization: String) =
         throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
 
+    override suspend fun getAuthorPluginErrors(authorization: String) =
+        throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
+
+    override suspend fun getUninstallFeedback(authorization: String) =
+        throw NotImplementedError("Not needed for DeviceCatalogPresenter tests")
+
     override suspend fun getDeviceForecast(
         authorization: String,
         deviceId: Int,

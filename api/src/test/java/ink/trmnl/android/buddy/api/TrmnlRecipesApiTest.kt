@@ -712,4 +712,193 @@ class TrmnlRecipesApiTest : BaseApiTest() {
             // the custom serializer's ability to handle array-based JSON format
             assertThat(testJson).isEqualTo("[\"2026-04-13\", 5], [\"2026-04-14\", 10], [\"2026-04-15\", 15]")
         }
+
+    @Test
+    fun `getAuthorPluginErrors returns success with failing installs`() =
+        runTest {
+            val responseBody =
+                """
+                {
+                  "data": [
+                    {
+                      "kind": "recipe",
+                      "subject_id": 101,
+                      "plugin_name": "Weather Station",
+                      "owner": "author",
+                      "message": "HTTP 502 Bad Gateway",
+                      "count": 7,
+                      "last_seen": "2026-11-12T10:15:30Z",
+                      "hidden": false
+                    },
+                    {
+                      "kind": "third_party",
+                      "subject_id": 202,
+                      "plugin_name": null,
+                      "owner": "upstream",
+                      "message": "Connection timeout",
+                      "count": 2,
+                      "last_seen": "2026-11-11T08:00:00Z",
+                      "hidden": true
+                    }
+                  ]
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            val result = apiService.getAuthorPluginErrors("Bearer trmnl_test_token")
+
+            val recordedRequest = mockWebServer.takeRequest()
+            assertThat(recordedRequest.path).isEqualTo("/analytics/errors")
+            assertThat(recordedRequest.getHeader("Authorization")).isEqualTo("Bearer trmnl_test_token")
+
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val errors = (result as ApiResult.Success).value.data
+            assertThat(errors).hasSize(2)
+            assertThat(errors[0].kind).isEqualTo("recipe")
+            assertThat(errors[0].subjectId).isEqualTo(101)
+            assertThat(errors[0].pluginName).isEqualTo("Weather Station")
+            assertThat(errors[0].owner).isEqualTo("author")
+            assertThat(errors[0].message).isEqualTo("HTTP 502 Bad Gateway")
+            assertThat(errors[0].count).isEqualTo(7)
+            assertThat(errors[0].lastSeen).isEqualTo("2026-11-12T10:15:30Z")
+            assertThat(errors[0].hidden).isFalse()
+
+            assertThat(errors[1].pluginName).isNull()
+            assertThat(errors[1].owner).isEqualTo("upstream")
+            assertThat(errors[1].hidden).isTrue()
+        }
+
+    @Test
+    fun `getAuthorPluginErrors handles empty data array`() =
+        runTest {
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody("""{"data":[]}""")
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            val result = apiService.getAuthorPluginErrors("Bearer trmnl_test_token")
+
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val errors = (result as ApiResult.Success).value.data
+            assertThat(errors).isEmpty()
+        }
+
+    @Test
+    fun `getUninstallFeedback returns success with breakdown and comments`() =
+        runTest {
+            val responseBody =
+                """
+                {
+                  "data": {
+                    "window_days": 30,
+                    "total": 15,
+                    "reason_breakdown": [
+                      ["Other", 5],
+                      ["Just testing / temporary", 4],
+                      ["No longer need it", 3],
+                      ["Didn't work as expected", 3]
+                    ],
+                    "recent_comments": [
+                      {
+                        "detail": "Stops refreshing after a day",
+                        "plugin_name": "Weather Station",
+                        "reason_label": "Didn't work as expected",
+                        "kind_label": "Recipe",
+                        "created_at": "2026-11-10T18:30:00Z"
+                      }
+                    ],
+                    "typical_days_installed": 4
+                  }
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            val result = apiService.getUninstallFeedback("Bearer trmnl_test_token")
+
+            val recordedRequest = mockWebServer.takeRequest()
+            assertThat(recordedRequest.path).isEqualTo("/analytics/uninstall_feedback")
+            assertThat(recordedRequest.getHeader("Authorization")).isEqualTo("Bearer trmnl_test_token")
+
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val feedback = (result as ApiResult.Success).value.data
+            assertThat(feedback.windowDays).isEqualTo(30)
+            assertThat(feedback.total).isEqualTo(15)
+            assertThat(feedback.typicalDaysInstalled).isEqualTo(4)
+            assertThat(feedback.reasonBreakdown).hasSize(4)
+            assertThat(feedback.reasonBreakdown[0].reason).isEqualTo("Other")
+            assertThat(feedback.reasonBreakdown[0].count).isEqualTo(5)
+            assertThat(feedback.reasonBreakdown[1].reason).isEqualTo("Just testing / temporary")
+            assertThat(feedback.reasonBreakdown[1].count).isEqualTo(4)
+
+            assertThat(feedback.recentComments).hasSize(1)
+            assertThat(feedback.recentComments[0].detail).isEqualTo("Stops refreshing after a day")
+            assertThat(feedback.recentComments[0].pluginName).isEqualTo("Weather Station")
+            assertThat(feedback.recentComments[0].reasonLabel).isEqualTo("Didn't work as expected")
+            assertThat(feedback.recentComments[0].kindLabel).isEqualTo("Recipe")
+            assertThat(feedback.recentComments[0].createdAt).isEqualTo("2026-11-10T18:30:00Z")
+        }
+
+    @Test
+    fun `getUninstallFeedback handles empty feedback and nullable typical days`() =
+        runTest {
+            val responseBody =
+                """
+                {
+                  "data": {
+                    "total": 0,
+                    "reason_breakdown": [],
+                    "recent_comments": [],
+                    "typical_days_installed": null,
+                    "window_days": 30
+                  }
+                }
+                """.trimIndent()
+
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(responseBody)
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            val result = apiService.getUninstallFeedback("Bearer trmnl_test_token")
+
+            assertThat(result).isInstanceOf(ApiResult.Success::class)
+            val feedback = (result as ApiResult.Success).value.data
+            assertThat(feedback.total).isEqualTo(0)
+            assertThat(feedback.typicalDaysInstalled).isNull()
+            assertThat(feedback.reasonBreakdown).isEmpty()
+            assertThat(feedback.recentComments).isEmpty()
+        }
+
+    @Test
+    fun `getUninstallFeedback handles 403 insufficient scope error`() =
+        runTest {
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(403)
+                    .setBody("""{"error":"Insufficient scope"}""")
+                    .addHeader("Content-Type", "application/json"),
+            )
+
+            val result = apiService.getUninstallFeedback("Bearer user_legacy_token")
+
+            assertThat(result).isInstanceOf(ApiResult.Failure.HttpFailure::class)
+            val httpFailure = result as ApiResult.Failure.HttpFailure
+            assertThat(httpFailure.code).isEqualTo(403)
+        }
 }

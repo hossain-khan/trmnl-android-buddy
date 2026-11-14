@@ -79,7 +79,7 @@ data class RecipesAnalytics(
 @Serializable
 data class RecipeAnalyticsPlugin(
     val name: String,
-    val state: String,
+    val state: String? = null,
     val installs: Int,
     val forks: Int,
 )
