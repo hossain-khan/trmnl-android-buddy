@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Device Catalog Info & Statistics Sheet**: Added an info icon button in the `DeviceCatalogScreen` top app bar that opens a bottom sheet showing catalog summary, brand and color capability distribution stats (with tap-to-filter support), and `GET https://trmnl.com/api/models` source attribution.
 
 ### Changed
+- Unified legacy `user_` token detection in `AccessTokenPresenter` to reuse `String?.isLegacyApiToken()` (case-insensitive) instead of a duplicate helper.
 - Updated Waveshare brand logo (`waveshare_logo.png`) to higher-resolution asset.
 - Updated color capability labels in `DeviceCatalogInfoBottomSheet` to show accurate color counts (`Grayscale (256 colors)`, `Full Color (4,096+ colors)`).
 - Migrated deprecated Compose `SwipeToDismissBox` (`AnnouncementsContent`), Vico `lineModel` (`BatteryChartContent`), and removed unnecessary `!!` (`PlaylistItemsContent`) compiler warnings.

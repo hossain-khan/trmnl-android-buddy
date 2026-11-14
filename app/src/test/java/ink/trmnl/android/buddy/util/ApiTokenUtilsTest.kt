@@ -13,6 +13,7 @@ class ApiTokenUtilsTest {
     @Test
     fun `isLegacyApiToken returns true for user_ prefix`() {
         assertThat("user_abc123".isLegacyApiToken()).isTrue()
+        assertThat("USER_abc123".isLegacyApiToken()).isTrue()
         assertThat("  user_abc123  ".isLegacyApiToken()).isTrue()
         assertThat(UserPreferences(apiToken = "user_abc123").isLegacyApiToken).isTrue()
     }
