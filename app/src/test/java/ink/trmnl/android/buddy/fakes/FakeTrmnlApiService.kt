@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.fakes
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.AuthorPluginErrorsResponse
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceForecastResponse
 import ink.trmnl.android.buddy.api.models.DeviceLogsResponse
@@ -15,6 +16,7 @@ import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
+import ink.trmnl.android.buddy.api.models.UninstallFeedbackResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 
 /**
@@ -39,6 +41,8 @@ class FakeTrmnlApiService : TrmnlApiService {
     var getDisplayResult: ApiResult<Display, ApiError>? = null
     var getPlaylistItemsResult: ApiResult<PlaylistItemsResponse, ApiError>? = null
     var getRecipesAnalyticsResult: ApiResult<RecipesAnalyticsResponse, ApiError>? = null
+    var getAuthorPluginErrorsResult: ApiResult<AuthorPluginErrorsResponse, ApiError>? = null
+    var getUninstallFeedbackResult: ApiResult<UninstallFeedbackResponse, ApiError>? = null
 
     var lastAuthorizationHeader: String? = null
     var getDevicesCallCount = 0
@@ -99,6 +103,16 @@ class FakeTrmnlApiService : TrmnlApiService {
     override suspend fun getRecipesAnalytics(authorization: String): ApiResult<RecipesAnalyticsResponse, ApiError> {
         lastAuthorizationHeader = authorization
         return getRecipesAnalyticsResult ?: throw NotImplementedError("getRecipesAnalyticsResult not set")
+    }
+
+    override suspend fun getAuthorPluginErrors(authorization: String): ApiResult<AuthorPluginErrorsResponse, ApiError> {
+        lastAuthorizationHeader = authorization
+        return getAuthorPluginErrorsResult ?: throw NotImplementedError("getAuthorPluginErrorsResult not set")
+    }
+
+    override suspend fun getUninstallFeedback(authorization: String): ApiResult<UninstallFeedbackResponse, ApiError> {
+        lastAuthorizationHeader = authorization
+        return getUninstallFeedbackResult ?: throw NotImplementedError("getUninstallFeedbackResult not set")
     }
 
     override suspend fun updatePlaylistItemVisibility(

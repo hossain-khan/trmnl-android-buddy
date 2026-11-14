@@ -25,6 +25,11 @@ data class RecipesAnalyticsScreen(
      */
     data class State(
         val analytics: RecipesAnalyticsUi,
+        val isLoadingCreatorInsights: Boolean = false,
+        val pluginErrors: List<AuthorPluginErrorUi> = emptyList(),
+        val pluginErrorsError: String? = null,
+        val uninstallFeedback: UninstallFeedbackUi? = null,
+        val uninstallFeedbackError: String? = null,
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
@@ -34,5 +39,51 @@ data class RecipesAnalyticsScreen(
     sealed interface Event : CircuitUiEvent {
         /** User tapped back to return to previous screen */
         data object BackClicked : Event
+
+        /** User tapped retry to reload creator insights */
+        data object RefreshCreatorInsights : Event
     }
 }
+
+/**
+ * UI model for a failing plugin install entry.
+ */
+data class AuthorPluginErrorUi(
+    val pluginName: String,
+    val kind: String,
+    val owner: String,
+    val message: String,
+    val count: Int,
+    val lastSeen: String,
+    val hidden: Boolean,
+)
+
+/**
+ * UI model for an uninstall reason breakdown row.
+ */
+data class UninstallReasonUi(
+    val reason: String,
+    val count: Int,
+)
+
+/**
+ * UI model for an individual uninstall comment.
+ */
+data class UninstallCommentUi(
+    val detail: String,
+    val pluginName: String,
+    val reasonLabel: String?,
+    val kindLabel: String?,
+    val createdAt: String,
+)
+
+/**
+ * UI model for 30-day uninstall feedback summary.
+ */
+data class UninstallFeedbackUi(
+    val windowDays: Int,
+    val total: Int,
+    val typicalDaysInstalled: Int?,
+    val reasonBreakdown: List<UninstallReasonUi>,
+    val recentComments: List<UninstallCommentUi>,
+)

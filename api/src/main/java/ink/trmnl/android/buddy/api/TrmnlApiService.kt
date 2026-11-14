@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.api
 import com.slack.eithernet.ApiResult
 import com.slack.eithernet.DecodeErrorBody
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.AuthorPluginErrorsResponse
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
 import ink.trmnl.android.buddy.api.models.DeviceForecastResponse
 import ink.trmnl.android.buddy.api.models.DeviceLogsResponse
@@ -15,6 +16,7 @@ import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
 import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
+import ink.trmnl.android.buddy.api.models.UninstallFeedbackResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -508,6 +510,28 @@ interface TrmnlApiService {
     suspend fun getRecipesAnalytics(
         @Header("Authorization") authorization: String,
     ): ApiResult<RecipesAnalyticsResponse, ApiError>
+
+    /**
+     * Get failing plugin installs for the authenticated creator's published plugins.
+     *
+     * @param authorization Bearer token in format `"Bearer <api_key>"`
+     * @return ApiResult containing list of [ink.trmnl.android.buddy.api.models.AuthorPluginError] or error
+     */
+    @GET("analytics/errors")
+    suspend fun getAuthorPluginErrors(
+        @Header("Authorization") authorization: String,
+    ): ApiResult<AuthorPluginErrorsResponse, ApiError>
+
+    /**
+     * Get aggregated 30-day uninstall feedback for the authenticated creator's published plugins.
+     *
+     * @param authorization Bearer token in format `"Bearer <api_key>"`
+     * @return ApiResult containing [ink.trmnl.android.buddy.api.models.UninstallFeedback] or error
+     */
+    @GET("analytics/uninstall_feedback")
+    suspend fun getUninstallFeedback(
+        @Header("Authorization") authorization: String,
+    ): ApiResult<UninstallFeedbackResponse, ApiError>
 
     // ========================================
     // Categories API
