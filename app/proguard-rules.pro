@@ -38,3 +38,8 @@
 
 # Keep Metro Provider interface
 -keep interface dev.zacsweers.metro.Provider { *; }
+
+# Keep Glance ActionCallback zero-argument constructors (instantiated via reflection)
+-keep class * implements androidx.glance.appwidget.action.ActionCallback {
+    public <init>();
+}

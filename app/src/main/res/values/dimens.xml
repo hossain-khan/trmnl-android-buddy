@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TRMNL Device Widget sizing -->
+    <dimen name="trmnl_widget_min_width">250dp</dimen>
+    <dimen name="trmnl_widget_min_height">130dp</dimen>
+    <dimen name="trmnl_widget_min_resize_width">130dp</dimen>
+    <dimen name="trmnl_widget_min_resize_height">80dp</dimen>
+</resources>

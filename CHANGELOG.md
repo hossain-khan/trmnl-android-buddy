@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Replaced fully qualified class names with explicit `import` statements across `api`, `app`, and `content` modules and formatted Kotlin sources with Kotlinter.
 - Updated Gradle dependencies: Metro (`1.6.0`), KSP (`2.3.14`), Lifecycle Runtime KTX (`2.11.1`), Robolectric (`4.18.1`), and AndroidX Biometric (`1.4.0-rc01`).
+- Updated `TrmnlDeviceWidget` to follow Glance canonical layout guidelines: set `SizeMode.Exact` with `LocalSize`-responsive padding, moved widget provider dimensions to `dimens.xml`, applied theme-aware `ColorFilter.tint` to widget icons, enlarged the refresh tap target, and added Glance `@Preview` composables with `glance-preview` / `glance-appwidget-preview` dependencies.
+- Added `WidgetBitmapUtils` to downsample widget bitmaps to target widget dimensions and enforce the `RemoteViews` memory cap, hoisted/cached bitmap decoding in `TrmnlDeviceWidget.provideGlance` outside `provideContent`, added a zero-bitmap `onCompositionError` fallback, and added the `ActionCallback` ProGuard keep rule in `app/proguard-rules.pro`.
 
 ## [2.21.0] - 2026-11-14
 
