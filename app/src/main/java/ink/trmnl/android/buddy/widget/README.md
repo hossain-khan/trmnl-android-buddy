@@ -10,11 +10,12 @@ The widget fetches the live display image via the TRMNL API and renders it direc
 
 | File | Description |
 |------|-------------|
-| [`TrmnlDeviceWidget.kt`](TrmnlDeviceWidget.kt) | `GlanceAppWidget` — widget UI with four states |
+| [`TrmnlDeviceWidget.kt`](TrmnlDeviceWidget.kt) | `GlanceAppWidget` (`SizeMode.Exact`) — widget UI with four states, Glance `@Preview`s, and `onCompositionError` fallback |
 | [`TrmnlDeviceWidgetReceiver.kt`](TrmnlDeviceWidgetReceiver.kt) | `GlanceAppWidgetReceiver` — system lifecycle (add, remove, reboot) |
 | [`TrmnlWidgetRefreshWorker.kt`](TrmnlWidgetRefreshWorker.kt) | `CoroutineWorker` — fetches display image, caches it, schedules next refresh |
 | [`RefreshWidgetCallback.kt`](RefreshWidgetCallback.kt) | `ActionCallback` — handles in-widget refresh button tap |
 | [`WidgetConfigurationActivity.kt`](WidgetConfigurationActivity.kt) | `ComponentActivity` — device-picker shown when adding the widget |
+| [`WidgetBitmapUtils.kt`](WidgetBitmapUtils.kt) | Bitmap memory cap estimation and two-stage `RGB_565` downsampling helpers |
 
 ## Widget States
 
@@ -81,6 +82,8 @@ Context.filesDir/
 
 The file is deleted automatically when the widget is removed from the home screen (`onDeleted`).
 
+When rendering, `TrmnlDeviceWidget.provideGlance` hoists and caches the decoded `Bitmap` outside `provideContent` (keyed by file path and `last_updated`) so `SizeMode.Exact` shares a single bitmap across size passes, and uses `WidgetBitmapUtils.decodeDownsampledWidgetBitmap` (`RGB_565`) to stay within `RemoteViews` bitmap memory limits.
+
 ## Refresh Scheduling
 
 Refreshes use chained one-time [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) work requests rather than periodic work, so the next delay is always taken directly from the API's `refresh_rate` response field.
@@ -99,8 +102,9 @@ The widget uses a **device-specific token** (`Access-Token` header) obtained fro
 
 ## Widget Metadata
 
-- Default size: 4 × 3 cells
-- Resizable: horizontal and vertical
+- Default size: 3 × 2 cells (`targetCellWidth="3"`, `targetCellHeight="2"`)
+- Resizable: horizontal and vertical (`SizeMode.Exact`)
+- Dimensions: `res/values/dimens.xml`
 - Provider XML: `res/xml/trmnl_device_widget_info.xml`
-- Initial placeholder layout: `res/layout/trmnl_widget_initial_layout.xml`
+- Initial placeholder & error fallback layout: `res/layout/trmnl_widget_initial_layout.xml`
 - Configuration activity registered in `AndroidManifest.xml`
