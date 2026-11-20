@@ -20,8 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -29,10 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -52,8 +48,6 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.PrivacyUtils
-import ink.trmnl.android.buddy.widget.WidgetPinHelper
-import kotlinx.coroutines.launch
 
 /**
  * UI content for DeviceTokenScreen.
@@ -65,15 +59,10 @@ fun DeviceTokenContent(
     state: DeviceTokenScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val isWidgetPinSupported = remember(context) { WidgetPinHelper.isPinSupported(context) }
     var passwordVisible by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { TrmnlTitle("Device API Key") },
@@ -124,55 +113,6 @@ fun DeviceTokenContent(
                 onClearClicked = { state.eventSink(DeviceTokenScreen.Event.ClearToken) },
                 onCancelClicked = { state.eventSink(DeviceTokenScreen.Event.BackClicked) },
             )
-
-            if (state.currentToken.isNotEmpty() && isWidgetPinSupported) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = "Home Screen Widget",
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                text = "Pin this device's live e-ink display to your home screen",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                        leadingContent = {
-                            Icon(
-                                painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        },
-                        trailingContent = {
-                            OutlinedButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        val pinned =
-                                            WidgetPinHelper.requestPinWidget(
-                                                context = context,
-                                                deviceFriendlyId = state.deviceFriendlyId,
-                                                deviceName = state.deviceName,
-                                            )
-                                        if (!pinned) {
-                                            snackbarHostState.showSnackbar("Unable to open launcher widget pin prompt.")
-                                        }
-                                    }
-                                },
-                            ) {
-                                Text("Add")
-                            }
-                        },
-                    )
-                }
-            }
         }
     }
 }

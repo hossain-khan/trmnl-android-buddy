@@ -39,7 +39,6 @@ fun ExtrasSection(
     onContentHubClick: () -> Unit,
     analyticsState: RecipesAnalyticsState = RecipesAnalyticsState.Loading(),
     onRecipesAnalyticsClick: () -> Unit = {},
-    onAddWidgetClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -215,45 +214,6 @@ fun ExtrasSection(
                         ),
                     modifier = Modifier.clickable { onContentHubClick() },
                 )
-
-                // Home Screen Widget (shown when launcher supports in-app pinning)
-                if (onAddWidgetClick != null) {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = "Home Screen Widget",
-                                style = MaterialTheme.typography.titleSmall,
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                text = "Pin a TRMNL device display widget to your home screen",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                        leadingContent = {
-                            Icon(
-                                painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier.size(26.dp),
-                            )
-                        },
-                        trailingContent = {
-                            Icon(
-                                painter = painterResource(R.drawable.arrow_forward_24dp_e8eaed_fill0_wght400_grad0_opsz24),
-                                contentDescription = "Pin TRMNL widget to home screen",
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                        colors =
-                            ListItemDefaults.colors(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                            ),
-                        modifier = Modifier.clickable { onAddWidgetClick() },
-                    )
-                }
             }
         }
     }

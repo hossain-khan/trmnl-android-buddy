@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **In-App Home Screen Widget Pinning** ([#579](https://github.com/hossain-khan/trmnl-android-buddy/issues/579)):
   - Added `WidgetPinHelper` and `WidgetPinReceiver` using `GlanceAppWidgetManager.requestPinGlanceAppWidget` with launcher support detection (`isRequestPinAppWidgetSupported`) and automatic per-device pre-configuration on pin.
-  - Surfaced non-blocking in-app widget pinning entry points in `DeviceDetailScreen`, `DevicePreviewScreen` (top app bar action), `DeviceTokenScreen` (when a device token is configured), and `SettingsScreen` (`Extras` section).
+  - Surfaced non-blocking in-app widget pinning entry points in `DeviceDetailScreen` (hidden when no device token is set or a widget already exists for the device, with immediate `Added` confirmation on pin) and `DevicePreviewScreen` (top app bar action).
 
 ### Changed
 - Replaced fully qualified class names with explicit `import` statements across `api`, `app`, and `content` modules and formatted Kotlin sources with Kotlinter.
