@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -41,6 +42,8 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.sharedelements.DevicePreviewImageKey
 import ink.trmnl.android.buddy.util.ImageDownloadUtils
+import ink.trmnl.android.buddy.widget.WidgetPinHelper
+import kotlinx.coroutines.launch
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.rememberZoomableState
 import me.saket.telephoto.zoomable.zoomable
@@ -57,7 +60,9 @@ fun DevicePreviewContent(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val isWidgetPinSupported = remember(context) { WidgetPinHelper.isPinSupported(context) }
 
     // Handle image download when triggered
     LaunchedEffect(state.downloadState) {
@@ -145,6 +150,30 @@ fun DevicePreviewContent(
                     }
                 },
                 actions = {
+                    if (isWidgetPinSupported) {
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    val pinned =
+                                        WidgetPinHelper.requestPinWidget(
+                                            context = context,
+                                            deviceFriendlyId = state.deviceId,
+                                            deviceName = state.deviceName,
+                                        )
+                                    if (!pinned) {
+                                        snackbarHostState.showSnackbar("Unable to open launcher widget pin prompt.")
+                                    }
+                                }
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                                contentDescription = "Add widget to home screen",
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
                     // Refresh button
                     IconButton(
                         onClick = { state.eventSink(DevicePreviewScreen.Event.RefreshImageClicked) },

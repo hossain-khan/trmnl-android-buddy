@@ -46,6 +46,10 @@
                 android:resource="@xml/trmnl_device_widget_info" />
         </receiver>
 
+        <receiver
+            android:name=".widget.WidgetPinReceiver"
+            android:exported="false" />
+
         <activity
             android:name=".widget.WidgetConfigurationActivity"
             android:exported="true"
