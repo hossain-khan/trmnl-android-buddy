@@ -78,6 +78,7 @@ class WidgetPinReceiver : BroadcastReceiver() {
                     appWidgetId = appWidgetId,
                     initialDelayMinutes = 0,
                 )
+                WidgetPinHelper.notifyDevicePinned(deviceFriendlyId)
                 Timber.d("[WidgetPinReceiver] Pre-configured pinned widget $appWidgetId for $deviceFriendlyId")
             } catch (e: Exception) {
                 Timber.e(e, "[WidgetPinReceiver] Failed to pre-configure pinned widget $appWidgetId")

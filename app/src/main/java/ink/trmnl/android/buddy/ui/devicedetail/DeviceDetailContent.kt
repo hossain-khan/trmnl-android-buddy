@@ -31,8 +31,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -75,6 +79,22 @@ fun DeviceDetailContent(
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val isWidgetPinSupported = remember(context) { WidgetPinHelper.isPinSupported(context) }
+    var hasExistingWidget by remember(state.deviceId) { mutableStateOf<Boolean?>(null) }
+    var isAddedThisSession by remember(state.deviceId) { mutableStateOf(false) }
+
+    LaunchedEffect(state.deviceId, isWidgetPinSupported) {
+        if (isWidgetPinSupported) {
+            hasExistingWidget = WidgetPinHelper.hasWidgetForDevice(context, state.deviceId)
+        }
+    }
+
+    LaunchedEffect(state.deviceId) {
+        WidgetPinHelper.pinnedDeviceEvents.collect { pinnedDeviceId ->
+            if (pinnedDeviceId == state.deviceId) {
+                isAddedThisSession = true
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -174,9 +194,10 @@ fun DeviceDetailContent(
                 )
             }
 
-            if (isWidgetPinSupported && state.hasDeviceToken) {
+            if (isWidgetPinSupported && state.hasDeviceToken && (hasExistingWidget == false || isAddedThisSession)) {
                 HomeScreenWidgetCard(
                     hasDeviceToken = state.hasDeviceToken,
+                    isAdded = isAddedThisSession,
                     onAddWidget = {
                         coroutineScope.launch {
                             val pinned =
@@ -672,6 +693,7 @@ private fun getRefreshRateLabel(refreshRateSeconds: Int): String {
 @Composable
 private fun HomeScreenWidgetCard(
     hasDeviceToken: Boolean,
+    isAdded: Boolean,
     onAddWidget: () -> Unit,
     onConfigureToken: () -> Unit,
     modifier: Modifier = Modifier,
@@ -691,10 +713,10 @@ private fun HomeScreenWidgetCard(
             supportingContent = {
                 Text(
                     text =
-                        if (hasDeviceToken) {
-                            "Pin this device's live e-ink display to your home screen"
-                        } else {
-                            "Configure your device API key to show live display updates on your home screen"
+                        when {
+                            isAdded -> "Widget added to your home screen"
+                            hasDeviceToken -> "Pin this device's live e-ink display to your home screen"
+                            else -> "Configure your device API key to show live display updates on your home screen"
                         },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -709,10 +731,25 @@ private fun HomeScreenWidgetCard(
                 )
             },
             trailingContent = {
-                OutlinedButton(
-                    onClick = if (hasDeviceToken) onAddWidget else onConfigureToken,
-                ) {
-                    Text(if (hasDeviceToken) "Add Widget" else "Configure")
+                if (isAdded) {
+                    OutlinedButton(
+                        onClick = {},
+                        enabled = false,
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.check_24dp_e8eaed_fill1_wght400_grad0_opsz24),
+                            contentDescription = null,
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
+                        )
+                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                        Text("Added")
+                    }
+                } else {
+                    OutlinedButton(
+                        onClick = if (hasDeviceToken) onAddWidget else onConfigureToken,
+                    ) {
+                        Text(if (hasDeviceToken) "Add Widget" else "Configure")
+                    }
                 }
             },
             colors =

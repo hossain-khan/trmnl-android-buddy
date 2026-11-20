@@ -7,7 +7,12 @@ import android.content.Intent
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesOf
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.getAppWidgetState
+import androidx.glance.state.PreferencesGlanceStateDefinition
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import timber.log.Timber
 
 /**
@@ -15,6 +20,41 @@ import timber.log.Timber
  * using [GlanceAppWidgetManager.requestPinGlanceAppWidget].
  */
 object WidgetPinHelper {
+    private val _pinnedDeviceEvents = MutableSharedFlow<String>(extraBufferCapacity = 4)
+
+    /**
+     * Emits the `deviceFriendlyId` whenever [WidgetPinReceiver] finishes configuring
+     * a newly pinned widget, allowing active UI screens to show immediate confirmation.
+     */
+    val pinnedDeviceEvents: SharedFlow<String> = _pinnedDeviceEvents.asSharedFlow()
+
+    /** Notifies collectors that a widget for [deviceFriendlyId] was just pinned. */
+    fun notifyDevicePinned(deviceFriendlyId: String) {
+        _pinnedDeviceEvents.tryEmit(deviceFriendlyId)
+    }
+
+    /**
+     * Returns `true` if at least one [TrmnlDeviceWidget] instance on the home screen
+     * is currently configured for [deviceFriendlyId].
+     */
+    suspend fun hasWidgetForDevice(
+        context: Context,
+        deviceFriendlyId: String,
+    ): Boolean =
+        try {
+            val manager = GlanceAppWidgetManager(context)
+            val glanceIds = manager.getGlanceIds(TrmnlDeviceWidget::class.java)
+            glanceIds.any { glanceId ->
+                val prefs = getAppWidgetState(context, PreferencesGlanceStateDefinition, glanceId)
+                prefs[TrmnlDeviceWidget.DEVICE_FRIENDLY_ID_KEY] == deviceFriendlyId
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Timber.w(e, "[WidgetPinHelper] Failed to check existing widgets for $deviceFriendlyId")
+            false
+        }
+
     /**
      * Returns `true` if the current default launcher supports pinning app widgets from in-app.
      */

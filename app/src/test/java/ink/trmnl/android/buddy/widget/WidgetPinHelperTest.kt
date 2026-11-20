@@ -4,7 +4,9 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
+import app.cash.turbine.test
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -63,4 +65,20 @@ class WidgetPinHelperTest {
         // Should not throw when deviceFriendlyId is missing
         receiver.onReceive(context, intent)
     }
+
+    @Test
+    fun `hasWidgetForDevice returns false when no widgets are pinned`() =
+        runTest {
+            assertThat(WidgetPinHelper.hasWidgetForDevice(context, "ABC123")).isFalse()
+        }
+
+    @Test
+    fun `notifyDevicePinned emits deviceFriendlyId on pinnedDeviceEvents`() =
+        runTest {
+            WidgetPinHelper.pinnedDeviceEvents.test {
+                WidgetPinHelper.notifyDevicePinned("ABC123")
+                assertThat(awaitItem()).isEqualTo("ABC123")
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
 }
