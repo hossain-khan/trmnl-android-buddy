@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -101,8 +102,8 @@ data object ContentHubScreen : ParcelableScreen {
     // Placeholder for announcements state (to be provided by embedded presenter)
     data class AnnouncementsScreenState(
         val unreadCount: Int = 0,
-        val filter: ink.trmnl.android.buddy.ui.announcements.AnnouncementsScreen.Filter =
-            ink.trmnl.android.buddy.ui.announcements.AnnouncementsScreen.Filter.ALL,
+        val filter: AnnouncementsScreen.Filter =
+            AnnouncementsScreen.Filter.ALL,
     )
 
     // Placeholder for blog posts state (to be provided by embedded presenter)
@@ -192,7 +193,7 @@ fun ContentHubContent(
                                 state.announcementsState?.let { announcementsState ->
                                     if (announcementsState.unreadCount > 0) {
                                         Surface(
-                                            shape = androidx.compose.foundation.shape.CircleShape,
+                                            shape = CircleShape,
                                             color = MaterialTheme.colorScheme.primary,
                                         ) {
                                             Text(
@@ -254,7 +255,7 @@ fun ContentHubContent(
                                         )
                                     }
 
-                                    androidx.compose.material3.DropdownMenu(
+                                    DropdownMenu(
                                         expanded = showCategoryMenu,
                                         onDismissRequest = { showCategoryMenu = false },
                                     ) {
@@ -277,7 +278,7 @@ fun ContentHubContent(
                         BadgedBox(
                             badge = {
                                 if (state.announcementsUnreadCount > 0) {
-                                    androidx.compose.material3.Badge {
+                                    Badge {
                                         Text(text = state.announcementsUnreadCount.toString())
                                     }
                                 }
@@ -299,7 +300,7 @@ fun ContentHubContent(
                         BadgedBox(
                             badge = {
                                 if (state.blogPostsUnreadCount > 0) {
-                                    androidx.compose.material3.Badge {
+                                    Badge {
                                         Text(text = state.blogPostsUnreadCount.toString())
                                     }
                                 }
@@ -443,7 +444,7 @@ private fun ContentHubContentPreview(
                         BadgedBox(
                             badge = {
                                 if (state.announcementsUnreadCount > 0) {
-                                    androidx.compose.material3.Badge {
+                                    Badge {
                                         Text(text = state.announcementsUnreadCount.toString())
                                     }
                                 }
@@ -465,7 +466,7 @@ private fun ContentHubContentPreview(
                         BadgedBox(
                             badge = {
                                 if (state.blogPostsUnreadCount > 0) {
-                                    androidx.compose.material3.Badge {
+                                    Badge {
                                         Text(text = state.blogPostsUnreadCount.toString())
                                     }
                                 }
@@ -603,7 +604,7 @@ private fun ContentHubNavigationBarPreview() {
                     icon = {
                         BadgedBox(
                             badge = {
-                                androidx.compose.material3.Badge {
+                                Badge {
                                     Text(text = "3")
                                 }
                             },
@@ -623,7 +624,7 @@ private fun ContentHubNavigationBarPreview() {
                     icon = {
                         BadgedBox(
                             badge = {
-                                androidx.compose.material3.Badge {
+                                Badge {
                                     Text(text = "5")
                                 }
                             },

@@ -43,9 +43,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Surface
@@ -80,6 +82,7 @@ import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.db.BlogPostEntity
 import ink.trmnl.android.buddy.content.repository.BlogPostRepository
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
+import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.formatRelativeDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -173,7 +176,7 @@ fun BlogPostsContent(
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn() + scaleIn(),
                 exit = slideOutVertically(targetOffsetY = { it }) + fadeOut() + scaleOut(),
             ) {
-                androidx.compose.material3.ExtendedFloatingActionButton(
+                ExtendedFloatingActionButton(
                     onClick = { state.eventSink(BlogPostsScreen.Event.MarkAllAsRead) },
                     icon = {
                         Icon(
@@ -519,7 +522,7 @@ private fun ErrorState(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            androidx.compose.material3.OutlinedButton(onClick = onRetry) {
+            OutlinedButton(onClick = onRetry) {
                 Text("Retry")
             }
         }
@@ -623,7 +626,7 @@ private val sampleBlogPosts =
 @Preview(name = "Loading State")
 @Composable
 private fun BlogPostsLoadingPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         BlogPostsContent(
             state = BlogPostsScreen.State(isLoading = true),
         )
@@ -633,7 +636,7 @@ private fun BlogPostsLoadingPreview() {
 @Preview(name = "Error State")
 @Composable
 private fun BlogPostsErrorPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         BlogPostsContent(
             state =
                 BlogPostsScreen.State(
@@ -647,7 +650,7 @@ private fun BlogPostsErrorPreview() {
 @Preview(name = "Empty State")
 @Composable
 private fun BlogPostsEmptyPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         BlogPostsContent(
             state =
                 BlogPostsScreen.State(
@@ -662,7 +665,7 @@ private fun BlogPostsEmptyPreview() {
 @Preview(name = "Blog Post Card - With Image & Unread")
 @Composable
 private fun BlogPostCardWithImagePreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         Surface {
             BlogPostCard(
                 blogPost = sampleBlogPosts[0],
@@ -678,7 +681,7 @@ private fun BlogPostCardWithImagePreview() {
 @Preview(name = "Blog Post Card - Read & Favorited")
 @Composable
 private fun BlogPostCardFavoritedPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         Surface {
             BlogPostCard(
                 blogPost = sampleBlogPosts[1],
@@ -694,7 +697,7 @@ private fun BlogPostCardFavoritedPreview() {
 @Preview(name = "Blog Post Card - No Image")
 @Composable
 private fun BlogPostCardNoImagePreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         Surface {
             BlogPostCard(
                 blogPost = sampleBlogPosts[2],
@@ -710,7 +713,7 @@ private fun BlogPostCardNoImagePreview() {
 @Preview(name = "Full Screen - With Blog Posts")
 @Composable
 private fun BlogPostsFullScreenPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         BlogPostsContent(
             state =
                 BlogPostsScreen.State(
@@ -727,7 +730,7 @@ private fun BlogPostsFullScreenPreview() {
 @Preview(name = "Full Screen - Filtered by Category")
 @Composable
 private fun BlogPostsFilteredPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         BlogPostsContent(
             state =
                 BlogPostsScreen.State(
@@ -744,7 +747,7 @@ private fun BlogPostsFilteredPreview() {
 @Preview(name = "Full Screen - Embedded (No TopBar)")
 @Composable
 private fun BlogPostsEmbeddedPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         BlogPostsContent(
             state =
                 BlogPostsScreen.State(

@@ -16,8 +16,10 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.api.models.Recipe
+import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.data.BookmarkRepository
 import ink.trmnl.android.buddy.data.RecipesRepository
+import ink.trmnl.android.buddy.ui.bookmarkedrecipes.BookmarkedRecipesScreen
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -130,7 +132,7 @@ class RecipesCatalogPresenter(
                 }
 
                 RecipesCatalogScreen.Event.BookmarksClicked -> {
-                    navigator.goTo(ink.trmnl.android.buddy.ui.bookmarkedrecipes.BookmarkedRecipesScreen)
+                    navigator.goTo(BookmarkedRecipesScreen)
                 }
 
                 is RecipesCatalogScreen.Event.SearchQueryChanged -> {
@@ -379,7 +381,7 @@ private suspend fun fetchRecipes(
     page: Int,
     onLoadingStart: () -> Unit,
     onLoadingEnd: () -> Unit,
-    onSuccess: (ink.trmnl.android.buddy.api.models.RecipesResponse) -> Unit,
+    onSuccess: (RecipesResponse) -> Unit,
     onError: (String) -> Unit,
 ) {
     onLoadingStart()

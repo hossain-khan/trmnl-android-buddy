@@ -18,6 +18,9 @@ import ink.trmnl.android.buddy.config.ImageCacheConfig
 import ink.trmnl.android.buddy.content.db.AnnouncementDao
 import ink.trmnl.android.buddy.content.db.BlogPostDao
 import ink.trmnl.android.buddy.content.db.ContentDatabase
+import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
+import ink.trmnl.android.buddy.content.repository.BlogPostRepository
+import ink.trmnl.android.buddy.content.repository.ContentFeedRepository
 import ink.trmnl.android.buddy.data.BookmarkRepository
 import ink.trmnl.android.buddy.data.DefaultBookmarkRepository
 import ink.trmnl.android.buddy.data.database.BatteryHistoryDao
@@ -80,24 +83,18 @@ object AppBindings {
 
     @Provides
     @SingleIn(AppScope::class)
-    fun provideAnnouncementRepository(announcementDao: AnnouncementDao): ink.trmnl.android.buddy.content.repository.AnnouncementRepository =
-        ink.trmnl.android.buddy.content.repository
-            .AnnouncementRepository(announcementDao)
+    fun provideAnnouncementRepository(announcementDao: AnnouncementDao): AnnouncementRepository = AnnouncementRepository(announcementDao)
 
     @Provides
     @SingleIn(AppScope::class)
-    fun provideBlogPostRepository(blogPostDao: BlogPostDao): ink.trmnl.android.buddy.content.repository.BlogPostRepository =
-        ink.trmnl.android.buddy.content.repository
-            .BlogPostRepository(blogPostDao)
+    fun provideBlogPostRepository(blogPostDao: BlogPostDao): BlogPostRepository = BlogPostRepository(blogPostDao)
 
     @Provides
     @SingleIn(AppScope::class)
     fun provideContentFeedRepository(
         announcementDao: AnnouncementDao,
         blogPostDao: BlogPostDao,
-    ): ink.trmnl.android.buddy.content.repository.ContentFeedRepository =
-        ink.trmnl.android.buddy.content.repository
-            .ContentFeedRepository(announcementDao, blogPostDao)
+    ): ContentFeedRepository = ContentFeedRepository(announcementDao, blogPostDao)
 
     @Provides
     @SingleIn(AppScope::class)

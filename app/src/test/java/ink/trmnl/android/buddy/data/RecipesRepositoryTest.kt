@@ -8,9 +8,13 @@ import assertk.assertions.isSuccess
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.ApiError
+import ink.trmnl.android.buddy.api.models.AuthorPluginErrorsResponse
 import ink.trmnl.android.buddy.api.models.CategoriesResponse
+import ink.trmnl.android.buddy.api.models.DeviceForecastResponse
+import ink.trmnl.android.buddy.api.models.DeviceLogsResponse
 import ink.trmnl.android.buddy.api.models.DeviceModelsResponse
 import ink.trmnl.android.buddy.api.models.DeviceResponse
+import ink.trmnl.android.buddy.api.models.DeviceTimelineResponse
 import ink.trmnl.android.buddy.api.models.DevicesResponse
 import ink.trmnl.android.buddy.api.models.Display
 import ink.trmnl.android.buddy.api.models.PlaylistItemsResponse
@@ -19,6 +23,7 @@ import ink.trmnl.android.buddy.api.models.RecipeDetailResponse
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.api.models.RecipesAnalyticsResponse
 import ink.trmnl.android.buddy.api.models.RecipesResponse
+import ink.trmnl.android.buddy.api.models.UninstallFeedbackResponse
 import ink.trmnl.android.buddy.api.models.UserResponse
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -207,19 +212,17 @@ class RecipesRepositoryTest {
         override suspend fun getRecipesAnalytics(authorization: String): ApiResult<RecipesAnalyticsResponse, ApiError> =
             throw NotImplementedError()
 
-        override suspend fun getAuthorPluginErrors(
-            authorization: String,
-        ): ApiResult<ink.trmnl.android.buddy.api.models.AuthorPluginErrorsResponse, ApiError> = throw NotImplementedError()
+        override suspend fun getAuthorPluginErrors(authorization: String): ApiResult<AuthorPluginErrorsResponse, ApiError> =
+            throw NotImplementedError()
 
-        override suspend fun getUninstallFeedback(
-            authorization: String,
-        ): ApiResult<ink.trmnl.android.buddy.api.models.UninstallFeedbackResponse, ApiError> = throw NotImplementedError()
+        override suspend fun getUninstallFeedback(authorization: String): ApiResult<UninstallFeedbackResponse, ApiError> =
+            throw NotImplementedError()
 
         override suspend fun getDeviceForecast(
             authorization: String,
             deviceId: Int,
             hours: Int?,
-        ): ApiResult<ink.trmnl.android.buddy.api.models.DeviceForecastResponse, ApiError> = throw NotImplementedError()
+        ): ApiResult<DeviceForecastResponse, ApiError> = throw NotImplementedError()
 
         override suspend fun getDeviceTimeline(
             authorization: String,
@@ -227,7 +230,7 @@ class RecipesRepositoryTest {
             date: String?,
             source: String?,
             hours: Int?,
-        ): ApiResult<ink.trmnl.android.buddy.api.models.DeviceTimelineResponse, ApiError> = throw NotImplementedError()
+        ): ApiResult<DeviceTimelineResponse, ApiError> = throw NotImplementedError()
 
         override suspend fun getDeviceLogs(
             authorization: String,
@@ -237,6 +240,6 @@ class RecipesRepositoryTest {
             limit: Int?,
             beforeTs: String?,
             beforeEventId: String?,
-        ): ApiResult<ink.trmnl.android.buddy.api.models.DeviceLogsResponse, ApiError> = throw NotImplementedError()
+        ): ApiResult<DeviceLogsResponse, ApiError> = throw NotImplementedError()
     }
 }

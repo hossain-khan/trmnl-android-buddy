@@ -5,6 +5,9 @@ import assertk.assertions.contains
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
+import com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
+import com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.mockwebserver.MockResponse
@@ -12,6 +15,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 /**
@@ -178,22 +182,22 @@ class TrmnlApiClientTest {
             )
 
         val retrofit =
-            retrofit2.Retrofit
+            Retrofit
                 .Builder()
                 .baseUrl(mockWebServer.url("/"))
                 .client(okHttpClient)
                 .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
+                    ApiResultConverterFactory,
                 ).addConverterFactory(
                     Json.asConverterFactory("application/json".toMediaType()),
                 ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
+                    ApiResultCallAdapterFactory,
                 ).build()
 
         val apiService = retrofit.create(TrmnlApiService::class.java)
 
         // Make a test call
-        kotlinx.coroutines.runBlocking {
+        runBlocking {
             apiService.getDevices("Bearer $apiKey")
         }
 

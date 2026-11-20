@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.dev
 import ink.trmnl.android.buddy.ui.recipesanalytics.GrowthDataPointUi
 import ink.trmnl.android.buddy.ui.recipesanalytics.PluginAnalyticsUi
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsUi
+import java.time.LocalDate
 
 /**
  * Mock data generator for recipes analytics testing in development builds.
@@ -125,7 +126,7 @@ object RecipesAnalyticsMockData {
      * Generate mock growth data for the last 8 days.
      */
     private fun generateMockGrowthData(): List<GrowthDataPointUi> {
-        val today = java.time.LocalDate.now()
+        val today = LocalDate.now()
         return (7 downTo 0).map { daysAgo ->
             val date = today.minusDays(daysAgo.toLong())
             GrowthDataPointUi(

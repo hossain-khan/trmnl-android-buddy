@@ -41,9 +41,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.cartesian.AutoScrollCondition
@@ -254,7 +256,7 @@ private fun HealthStatusSection(
 private fun HealthStatusCard(
     label: String,
     percentage: Double,
-    color: androidx.compose.ui.graphics.Color,
+    color: Color,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -760,7 +762,7 @@ private fun EmptyCreatorAnalyticsCard(
                         "8-day growth trends, failing installs, and user uninstall feedback.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                textAlign = TextAlign.Center,
             )
 
             Button(
@@ -1133,7 +1135,7 @@ private fun InsightLoadingCard(
 @Composable
 private fun InsightEmptyCard(
     iconRes: Int,
-    iconTint: androidx.compose.ui.graphics.Color,
+    iconTint: Color,
     title: String,
     subtitle: String,
     modifier: Modifier = Modifier,

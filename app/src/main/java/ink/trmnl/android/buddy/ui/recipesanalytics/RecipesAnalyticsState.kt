@@ -49,7 +49,7 @@ sealed interface RecipesAnalyticsState {
  * Normalizes health percentages so they sum to 100% (temporary fix until backend
  * returns valid percentages).
  */
-fun ink.trmnl.android.buddy.api.models.RecipesAnalytics.toUi(): RecipesAnalyticsUi {
+fun RecipesAnalytics.toUi(): RecipesAnalyticsUi {
     val (normalizedHealthy, normalizedDegraded, normalizedErroring) =
         normalizeHealthPercentages(
             healthy = health.healthy.percent ?: 0.0,

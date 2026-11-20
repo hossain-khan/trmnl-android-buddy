@@ -44,11 +44,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -652,7 +654,7 @@ private fun PersonalInfoSection(
                     supportingContent = { Text(user.firstName) },
                     colors =
                         ListItemDefaults.colors(
-                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                            containerColor = Color.Transparent,
                         ),
                 )
                 ListItem(
@@ -660,7 +662,7 @@ private fun PersonalInfoSection(
                     supportingContent = { Text(user.lastName) },
                     colors =
                         ListItemDefaults.colors(
-                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                            containerColor = Color.Transparent,
                         ),
                 )
                 ListItem(
@@ -668,7 +670,7 @@ private fun PersonalInfoSection(
                     supportingContent = { Text(user.email) },
                     colors =
                         ListItemDefaults.colors(
-                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                            containerColor = Color.Transparent,
                         ),
                 )
             }
@@ -707,7 +709,7 @@ private fun LocaleTimezoneSection(
                     supportingContent = { Text(user.locale) },
                     colors =
                         ListItemDefaults.colors(
-                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                            containerColor = Color.Transparent,
                         ),
                 )
                 ListItem(
@@ -715,7 +717,7 @@ private fun LocaleTimezoneSection(
                     supportingContent = { Text(user.timeZone) },
                     colors =
                         ListItemDefaults.colors(
-                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                            containerColor = Color.Transparent,
                         ),
                 )
                 ListItem(
@@ -723,7 +725,7 @@ private fun LocaleTimezoneSection(
                     supportingContent = { Text(user.timeZoneIana) },
                     colors =
                         ListItemDefaults.colors(
-                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                            containerColor = Color.Transparent,
                         ),
                 )
                 ListItem(
@@ -735,7 +737,7 @@ private fun LocaleTimezoneSection(
                     },
                     colors =
                         ListItemDefaults.colors(
-                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                            containerColor = Color.Transparent,
                         ),
                 )
             }
@@ -773,13 +775,13 @@ private fun ApiAccessSection(
                 supportingContent = {
                     Text(
                         text = PrivacyUtils.redactApiKey(apiKey),
-                        fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                        fontFamily = FontFamily.Monospace,
                         style = MaterialTheme.typography.bodySmall,
                     )
                 },
                 colors =
                     ListItemDefaults.colors(
-                        containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                        containerColor = Color.Transparent,
                     ),
             )
         }

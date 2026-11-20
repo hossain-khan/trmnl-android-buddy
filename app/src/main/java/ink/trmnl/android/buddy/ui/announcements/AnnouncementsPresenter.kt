@@ -19,6 +19,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import ink.trmnl.android.buddy.content.db.AnnouncementEntity
 import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
+import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
 import ink.trmnl.android.buddy.util.BrowserUtils
 import kotlinx.coroutines.launch
@@ -33,7 +34,7 @@ class AnnouncementsPresenter
         @Assisted private val navigator: Navigator,
         @ApplicationContext private val context: Context,
         private val announcementRepository: AnnouncementRepository,
-        private val userPreferencesRepository: ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository,
+        private val userPreferencesRepository: UserPreferencesRepository,
     ) : Presenter<AnnouncementsScreen.State> {
         @Composable
         override fun present(): AnnouncementsScreen.State {

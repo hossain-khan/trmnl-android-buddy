@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.announcements
 
+import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import assertk.assertThat
 import assertk.assertions.hasSize
@@ -53,7 +54,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository(announcements)
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -84,7 +85,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository()
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -120,7 +121,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository(announcements)
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -166,7 +167,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository(announcements)
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -212,7 +213,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository(announcements)
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -243,7 +244,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository(listOf(announcement))
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -287,7 +288,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository(listOf(announcement))
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -331,7 +332,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository(listOf(announcement))
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -380,7 +381,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository(announcements)
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -428,7 +429,7 @@ class AnnouncementsScreenTest {
                         ),
                 )
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -463,7 +464,7 @@ class AnnouncementsScreenTest {
                         ),
                 )
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -492,7 +493,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository()
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -529,7 +530,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository()
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen())
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(),
@@ -564,7 +565,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository()
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen(isEmbedded = false))
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(isEmbedded = false),
@@ -593,7 +594,7 @@ class AnnouncementsScreenTest {
             val announcementRepository = createTestRepository()
             val userPreferencesRepository = FakeUserPreferencesRepository()
             val navigator = FakeNavigator(AnnouncementsScreen(isEmbedded = true))
-            val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+            val context = ApplicationProvider.getApplicationContext<Context>()
             val presenter =
                 AnnouncementsPresenter(
                     screen = AnnouncementsScreen(isEmbedded = true),

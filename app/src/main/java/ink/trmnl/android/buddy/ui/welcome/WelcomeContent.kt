@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.ui.welcome
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -401,7 +402,7 @@ private fun WelcomeScreenLoadingPreview() {
     name = "Welcome Screen - Dark Theme",
     showBackground = true,
     backgroundColor = 0xFF000000,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 private fun WelcomeScreenDarkPreview() {
@@ -468,7 +469,7 @@ private fun WhatsNewSectionSingleUpdatePreview() {
     name = "What's New Section - Dark Theme",
     showBackground = true,
     backgroundColor = 0xFF000000,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 private fun WhatsNewSectionDarkPreview() {

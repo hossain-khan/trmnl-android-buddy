@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.dev
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.compose.runtime.Composable
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.work.ListenableWorker
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -275,7 +277,7 @@ class DevelopmentPresenter(
     /**
      * Trigger a one-time worker execution.
      */
-    private inline fun <reified T : androidx.work.ListenableWorker> triggerWorker(context: Context) {
+    private inline fun <reified T : ListenableWorker> triggerWorker(context: Context) {
         val workRequest = OneTimeWorkRequestBuilder<T>().build()
         WorkManager.getInstance(context).enqueue(workRequest)
         Timber.d("Enqueued one-time work request for ${T::class.simpleName}")
@@ -292,7 +294,7 @@ class DevelopmentPresenter(
                 }
             } else {
                 Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = android.net.Uri.parse("package:${context.packageName}")
+                    data = Uri.parse("package:${context.packageName}")
                 }
             }
         context.startActivity(intent)

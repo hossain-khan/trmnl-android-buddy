@@ -1,5 +1,7 @@
 package ink.trmnl.android.buddy.api
 
+import com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
+import com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -71,11 +73,11 @@ abstract class BaseApiTest {
                 .baseUrl(mockWebServer.url("/"))
                 .client(okHttpClient)
                 .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
+                    ApiResultConverterFactory,
                 ).addConverterFactory(
                     json.asConverterFactory("application/json".toMediaType()),
                 ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
+                    ApiResultCallAdapterFactory,
                 ).build()
 
         apiService = retrofit.create(TrmnlApiService::class.java)

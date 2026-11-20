@@ -14,6 +14,7 @@ import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import org.junit.Ignore
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 /**
  * Unit tests for TrmnlApiService recipe endpoints using MockWebServer.
@@ -398,7 +399,7 @@ class TrmnlRecipesApiTest : BaseApiTest() {
             mockWebServer.enqueue(
                 MockResponse()
                     .setBody("""{"data": []}""")
-                    .setBodyDelay(2, java.util.concurrent.TimeUnit.SECONDS),
+                    .setBodyDelay(2, TimeUnit.SECONDS),
             )
 
             // When: Call getRecipes with short timeout client

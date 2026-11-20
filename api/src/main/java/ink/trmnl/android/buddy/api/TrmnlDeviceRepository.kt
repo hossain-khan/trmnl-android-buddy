@@ -2,6 +2,7 @@ package ink.trmnl.android.buddy.api
 
 import com.slack.eithernet.ApiResult
 import ink.trmnl.android.buddy.api.models.Device
+import ink.trmnl.android.buddy.api.models.PlaylistItem
 import ink.trmnl.android.buddy.api.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -147,7 +148,7 @@ class TrmnlDeviceRepository(
      * }
      * ```
      */
-    suspend fun getPlaylistItems(deviceId: Int? = null): ApiResult<List<ink.trmnl.android.buddy.api.models.PlaylistItem>, *> =
+    suspend fun getPlaylistItems(deviceId: Int? = null): ApiResult<List<PlaylistItem>, *> =
         withContext(Dispatchers.IO) {
             when (val result = apiService.getPlaylistItems(authHeader)) {
                 is ApiResult.Success -> {

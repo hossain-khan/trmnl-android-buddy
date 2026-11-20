@@ -11,6 +11,8 @@ import assertk.assertions.isGreaterThan
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
+import com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
+import com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
 import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.fakes.FakeBatteryHistoryRepository
 import ink.trmnl.android.buddy.fakes.FakeUserPreferencesRepository
@@ -72,11 +74,11 @@ class BatteryCollectionWorkerTest {
                 .baseUrl(mockWebServer.url("/"))
                 .client(okHttpClient)
                 .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
+                    ApiResultConverterFactory,
                 ).addConverterFactory(
                     json.asConverterFactory("application/json".toMediaType()),
                 ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
+                    ApiResultCallAdapterFactory,
                 ).build()
 
         apiService = retrofit.create(TrmnlApiService::class.java)

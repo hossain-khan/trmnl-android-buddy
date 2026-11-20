@@ -39,12 +39,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.work.WorkInfo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.dev.DevelopmentScreen.Event
+import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+import ink.trmnl.android.buddy.work.WorkerStatus
 import kotlin.math.roundToInt
 
 /**
@@ -434,7 +437,7 @@ private fun WorkerTestingSection(
 private fun WorkerStatusSection(
     title: String,
     description: String,
-    workerStatuses: List<ink.trmnl.android.buddy.work.WorkerStatus>,
+    workerStatuses: List<WorkerStatus>,
     eventSink: (Event) -> Unit,
 ) {
     SectionCard(title = title, description = description) {
@@ -477,7 +480,7 @@ private fun WorkerStatusSection(
 }
 
 @Composable
-private fun WorkerStatusItem(workerStatus: ink.trmnl.android.buddy.work.WorkerStatus) {
+private fun WorkerStatusItem(workerStatus: WorkerStatus) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors =
@@ -508,12 +511,12 @@ private fun WorkerStatusItem(workerStatus: ink.trmnl.android.buddy.work.WorkerSt
                     fontWeight = FontWeight.SemiBold,
                     color =
                         when (workerStatus.state) {
-                            androidx.work.WorkInfo.State.SUCCEEDED -> MaterialTheme.colorScheme.primary
-                            androidx.work.WorkInfo.State.RUNNING -> MaterialTheme.colorScheme.tertiary
-                            androidx.work.WorkInfo.State.ENQUEUED -> MaterialTheme.colorScheme.secondary
-                            androidx.work.WorkInfo.State.FAILED -> MaterialTheme.colorScheme.error
-                            androidx.work.WorkInfo.State.BLOCKED -> MaterialTheme.colorScheme.outline
-                            androidx.work.WorkInfo.State.CANCELLED -> MaterialTheme.colorScheme.outline
+                            WorkInfo.State.SUCCEEDED -> MaterialTheme.colorScheme.primary
+                            WorkInfo.State.RUNNING -> MaterialTheme.colorScheme.tertiary
+                            WorkInfo.State.ENQUEUED -> MaterialTheme.colorScheme.secondary
+                            WorkInfo.State.FAILED -> MaterialTheme.colorScheme.error
+                            WorkInfo.State.BLOCKED -> MaterialTheme.colorScheme.outline
+                            WorkInfo.State.CANCELLED -> MaterialTheme.colorScheme.outline
                         },
                 )
             }
@@ -547,7 +550,7 @@ private fun WorkerStatusItem(workerStatus: ink.trmnl.android.buddy.work.WorkerSt
 @Composable
 private fun AnalyticsTestingSection(
     currentScenario: DevelopmentScreen.AnalyticsScenario?,
-    analyticsState: ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState,
+    analyticsState: RecipesAnalyticsState,
     eventSink: (Event) -> Unit,
 ) {
     SectionCard(
@@ -568,15 +571,15 @@ private fun AnalyticsTestingSection(
                     supportingContent = {
                         val stateLabel =
                             when (analyticsState) {
-                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Success -> {
+                                is RecipesAnalyticsState.Success -> {
                                     "Loaded (${analyticsState.data.totalPlugins} plugins)"
                                 }
 
-                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Loading -> {
+                                is RecipesAnalyticsState.Loading -> {
                                     "Loading..."
                                 }
 
-                                is ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState.Error -> {
+                                is RecipesAnalyticsState.Error -> {
                                     "Error: ${analyticsState.message}"
                                 }
                             }

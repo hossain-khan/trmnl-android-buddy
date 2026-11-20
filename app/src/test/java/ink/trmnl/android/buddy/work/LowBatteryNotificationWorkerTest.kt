@@ -4,6 +4,8 @@ import android.app.NotificationManager
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.ListenableWorker
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import androidx.work.testing.TestListenableWorkerBuilder
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -42,7 +44,7 @@ class LowBatteryNotificationWorkerTest {
     private lateinit var fakeApiService: FakeTrmnlApiService
     private lateinit var fakeUserPreferencesRepository: FakeUserPreferencesRepository
     private lateinit var notificationManager: NotificationManager
-    private lateinit var workerParams: androidx.work.WorkerParameters
+    private lateinit var workerParams: WorkerParameters
 
     @Before
     fun setup() {
@@ -58,17 +60,17 @@ class LowBatteryNotificationWorkerTest {
         // We use a concrete Worker implementation to get valid WorkerParameters
         class DummyWorker(
             context: Context,
-            params: androidx.work.WorkerParameters,
-        ) : androidx.work.Worker(context, params) {
+            params: WorkerParameters,
+        ) : Worker(context, params) {
             override fun doWork(): Result = Result.success()
         }
 
         val dummyWorker = TestListenableWorkerBuilder<DummyWorker>(context).build()
 
         // Extract WorkerParameters using reflection
-        val paramsField = androidx.work.ListenableWorker::class.java.getDeclaredField("mWorkerParams")
+        val paramsField = ListenableWorker::class.java.getDeclaredField("mWorkerParams")
         paramsField.isAccessible = true
-        workerParams = paramsField.get(dummyWorker) as androidx.work.WorkerParameters
+        workerParams = paramsField.get(dummyWorker) as WorkerParameters
     }
 
     private suspend fun runWorker(): ListenableWorker.Result {

@@ -8,9 +8,11 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.DeviceModel
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 /**
  * Unit tests for TrmnlApiService device models endpoints using MockWebServer.
@@ -244,7 +246,7 @@ class TrmnlDeviceModelsApiTest : BaseApiTest() {
             mockWebServer.enqueue(
                 MockResponse()
                     .setBody("""{"data": []}""")
-                    .setBodyDelay(10, java.util.concurrent.TimeUnit.SECONDS),
+                    .setBodyDelay(10, TimeUnit.SECONDS),
             )
 
             // When: Calling getDeviceModels with short timeout client
@@ -633,7 +635,7 @@ class TrmnlDeviceModelsApiTest : BaseApiTest() {
         publishedAt: String? = "2024-01-01T00:00:00.000Z",
         kind: String = "trmnl",
         paletteIds: List<String> = listOf("bw"),
-    ) = ink.trmnl.android.buddy.api.models.DeviceModel(
+    ) = DeviceModel(
         name = name,
         label = label,
         description = description,

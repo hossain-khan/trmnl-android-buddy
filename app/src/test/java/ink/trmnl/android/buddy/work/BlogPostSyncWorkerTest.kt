@@ -3,6 +3,8 @@ package ink.trmnl.android.buddy.work
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.ListenableWorker
+import androidx.work.WorkerFactory
+import androidx.work.WorkerParameters
 import androidx.work.testing.TestListenableWorkerBuilder
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -353,12 +355,12 @@ class BlogPostSyncWorkerTest {
     private fun createWorker(): BlogPostSyncWorker {
         // Create a custom WorkerFactory that provides our test dependencies
         val workerFactory =
-            object : androidx.work.WorkerFactory() {
+            object : WorkerFactory() {
                 override fun createWorker(
                     appContext: Context,
                     workerClassName: String,
-                    workerParameters: androidx.work.WorkerParameters,
-                ): androidx.work.ListenableWorker? =
+                    workerParameters: WorkerParameters,
+                ): ListenableWorker? =
                     if (workerClassName == BlogPostSyncWorker::class.java.name) {
                         BlogPostSyncWorker(
                             appContext,

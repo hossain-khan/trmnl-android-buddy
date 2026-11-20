@@ -41,10 +41,14 @@ import ink.trmnl.android.buddy.api.TrmnlApiService
 import ink.trmnl.android.buddy.api.models.Device
 import ink.trmnl.android.buddy.api.util.toUserMessage
 import ink.trmnl.android.buddy.content.models.ContentItem
+import ink.trmnl.android.buddy.content.repository.AnnouncementRepository
+import ink.trmnl.android.buddy.content.repository.BlogPostRepository
+import ink.trmnl.android.buddy.content.repository.ContentFeedRepository
 import ink.trmnl.android.buddy.data.RecipesAnalyticsRepository
 import ink.trmnl.android.buddy.data.preferences.DeviceTokenRepository
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import ink.trmnl.android.buddy.di.ApplicationContext
+import ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen
 import ink.trmnl.android.buddy.ui.components.TrmnlTitle
 import ink.trmnl.android.buddy.ui.contenthub.ContentHubScreen
 import ink.trmnl.android.buddy.ui.devicedetail.DeviceDetailScreen
@@ -67,6 +71,7 @@ import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsScreen
 import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
 import ink.trmnl.android.buddy.ui.recipesanalytics.getDataOrNull
 import ink.trmnl.android.buddy.ui.recipesanalytics.toUi
+import ink.trmnl.android.buddy.ui.settings.SettingsScreen
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.formatRefreshRateExplanation
@@ -267,9 +272,9 @@ class TrmnlDevicesPresenter
         private val apiService: TrmnlApiService,
         private val userPreferencesRepository: UserPreferencesRepository,
         private val deviceTokenRepository: DeviceTokenRepository,
-        private val contentFeedRepository: ink.trmnl.android.buddy.content.repository.ContentFeedRepository,
-        private val announcementRepository: ink.trmnl.android.buddy.content.repository.AnnouncementRepository,
-        private val blogPostRepository: ink.trmnl.android.buddy.content.repository.BlogPostRepository,
+        private val contentFeedRepository: ContentFeedRepository,
+        private val announcementRepository: AnnouncementRepository,
+        private val blogPostRepository: BlogPostRepository,
         private val recipesAnalyticsRepository: RecipesAnalyticsRepository,
     ) : Presenter<TrmnlDevicesScreen.State> {
         @Composable
@@ -496,7 +501,7 @@ class TrmnlDevicesPresenter
                     }
 
                     is SettingsClicked -> {
-                        navigator.goTo(ink.trmnl.android.buddy.ui.settings.SettingsScreen)
+                        navigator.goTo(SettingsScreen)
                     }
 
                     TogglePrivacy -> {
@@ -514,7 +519,7 @@ class TrmnlDevicesPresenter
                             // Clear all token data from preferences
                             userPreferencesRepository.clearApiToken()
                             // Navigate to AccessTokenScreen with root reset
-                            navigator.resetRoot(ink.trmnl.android.buddy.ui.accesstoken.AccessTokenScreen)
+                            navigator.resetRoot(AccessTokenScreen)
                         }
                     }
 

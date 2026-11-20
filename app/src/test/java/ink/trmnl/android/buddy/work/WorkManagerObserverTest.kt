@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.work
 
 import android.content.Context
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.Configuration
 import androidx.work.WorkInfo
@@ -48,7 +49,7 @@ class WorkManagerObserverTest {
         val config =
             Configuration
                 .Builder()
-                .setMinimumLoggingLevel(android.util.Log.DEBUG)
+                .setMinimumLoggingLevel(Log.DEBUG)
                 .setExecutor(SynchronousExecutor())
                 .build()
 
