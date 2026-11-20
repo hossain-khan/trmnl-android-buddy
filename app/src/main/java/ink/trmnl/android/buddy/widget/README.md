@@ -16,6 +16,8 @@ The widget fetches the live display image via the TRMNL API and renders it direc
 | [`RefreshWidgetCallback.kt`](RefreshWidgetCallback.kt) | `ActionCallback` — handles in-widget refresh button tap |
 | [`WidgetConfigurationActivity.kt`](WidgetConfigurationActivity.kt) | `ComponentActivity` — device-picker shown when adding the widget |
 | [`WidgetBitmapUtils.kt`](WidgetBitmapUtils.kt) | Bitmap memory cap estimation and two-stage `RGB_565` downsampling helpers |
+| [`WidgetPinHelper.kt`](WidgetPinHelper.kt) | In-app widget pinning helper using `GlanceAppWidgetManager.requestPinGlanceAppWidget` |
+| [`WidgetPinReceiver.kt`](WidgetPinReceiver.kt) | `BroadcastReceiver` — pre-configures newly pinned widgets with the selected device |
 
 ## Widget States
 

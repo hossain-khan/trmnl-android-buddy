@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -20,6 +21,7 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
+import androidx.glance.LocalState
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
@@ -30,7 +32,6 @@ import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
-import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -115,7 +116,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         var cachedBitmap: Bitmap? = null
 
         provideContent {
-            val prefs = currentState<Preferences>()
+            val prefs = (LocalState.current as? Preferences) ?: emptyPreferences()
             val deviceFriendlyId = prefs[DEVICE_FRIENDLY_ID_KEY]
             val deviceName = prefs[DEVICE_NAME_KEY] ?: ""
             val errorMessage = prefs[ERROR_MESSAGE_KEY]

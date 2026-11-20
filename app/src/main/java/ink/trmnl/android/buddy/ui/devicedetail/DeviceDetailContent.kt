@@ -25,12 +25,21 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,6 +56,8 @@ import ink.trmnl.android.buddy.ui.utils.getBatteryIcon
 import ink.trmnl.android.buddy.ui.utils.getWifiColor
 import ink.trmnl.android.buddy.ui.utils.getWifiIcon
 import ink.trmnl.android.buddy.ui.utils.isLowBatteryAlert
+import ink.trmnl.android.buddy.widget.WidgetPinHelper
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 /**
@@ -64,8 +75,30 @@ fun DeviceDetailContent(
     state: DeviceDetailScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val isWidgetPinSupported = remember(context) { WidgetPinHelper.isPinSupported(context) }
+    var hasExistingWidget by remember(state.deviceId) { mutableStateOf<Boolean?>(null) }
+    var isAddedThisSession by remember(state.deviceId) { mutableStateOf(false) }
+
+    LaunchedEffect(state.deviceId, isWidgetPinSupported) {
+        if (isWidgetPinSupported) {
+            hasExistingWidget = WidgetPinHelper.hasWidgetForDevice(context, state.deviceId)
+        }
+    }
+
+    LaunchedEffect(state.deviceId) {
+        WidgetPinHelper.pinnedDeviceEvents.collect { pinnedDeviceId ->
+            if (pinnedDeviceId == state.deviceId) {
+                isAddedThisSession = true
+            }
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { TrmnlTitle(state.deviceName) },
@@ -158,6 +191,29 @@ fun DeviceDetailContent(
                     isLoading = state.isDiagnosticsLoading,
                     nextCheckInTime = state.nextCheckInTime,
                     nextCheckInScreenName = state.nextCheckInScreenName,
+                )
+            }
+
+            if (isWidgetPinSupported && state.hasDeviceToken && (hasExistingWidget == false || isAddedThisSession)) {
+                HomeScreenWidgetCard(
+                    hasDeviceToken = state.hasDeviceToken,
+                    isAdded = isAddedThisSession,
+                    onAddWidget = {
+                        coroutineScope.launch {
+                            val pinned =
+                                WidgetPinHelper.requestPinWidget(
+                                    context = context,
+                                    deviceFriendlyId = state.deviceId,
+                                    deviceName = state.deviceName,
+                                )
+                            if (!pinned) {
+                                snackbarHostState.showSnackbar("Unable to open launcher widget pin prompt.")
+                            }
+                        }
+                    },
+                    onConfigureToken = {
+                        state.eventSink(DeviceDetailScreen.Event.SettingsClicked)
+                    },
                 )
             }
 
@@ -632,6 +688,76 @@ private fun getRefreshRateLabel(refreshRateSeconds: Int): String {
             }
 
     return closestOption?.second ?: "Unknown"
+}
+
+@Composable
+private fun HomeScreenWidgetCard(
+    hasDeviceToken: Boolean,
+    isAdded: Boolean,
+    onAddWidget: () -> Unit,
+    onConfigureToken: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Home Screen Widget",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            supportingContent = {
+                Text(
+                    text =
+                        when {
+                            isAdded -> "Widget added to your home screen"
+                            hasDeviceToken -> "Pin this device's live e-ink display to your home screen"
+                            else -> "Configure your device API key to show live display updates on your home screen"
+                        },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
+            leadingContent = {
+                Icon(
+                    painter = painterResource(R.drawable.widgets_24dp_e8eaed_fill0_wght400_grad0_opsz24),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            },
+            trailingContent = {
+                if (isAdded) {
+                    OutlinedButton(
+                        onClick = {},
+                        enabled = false,
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.check_24dp_e8eaed_fill1_wght400_grad0_opsz24),
+                            contentDescription = null,
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
+                        )
+                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                        Text("Added")
+                    }
+                } else {
+                    OutlinedButton(
+                        onClick = if (hasDeviceToken) onAddWidget else onConfigureToken,
+                    ) {
+                        Text(if (hasDeviceToken) "Add Widget" else "Configure")
+                    }
+                }
+            },
+            colors =
+                ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+        )
+    }
 }
 
 // ========== Previews ==========
