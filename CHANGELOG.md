@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Replaced fully qualified class names with explicit `import` statements across `api`, `app`, and `content` modules and formatted Kotlin sources with Kotlinter.
+- Updated Gradle dependencies: Metro (`1.6.0`), KSP (`2.3.14`), Lifecycle Runtime KTX (`2.11.1`), Robolectric (`4.18.1`), and AndroidX Biometric (`1.4.0-rc01`).
 
 ## [2.21.0] - 2026-11-14
 
