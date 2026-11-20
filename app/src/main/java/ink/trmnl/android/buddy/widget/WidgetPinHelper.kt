@@ -56,11 +56,14 @@ object WidgetPinHelper {
                             putExtra(WidgetPinReceiver.EXTRA_DEVICE_NAME, deviceName)
                         }
                     }
+                // FLAG_MUTABLE is required so the system launcher can fill in
+                // AppWidgetManager.EXTRA_APPWIDGET_ID when the widget is pinned.
+                // Safe on API 34+ because callbackIntent is an explicit Intent.
                 PendingIntent.getBroadcast(
                     context,
                     deviceFriendlyId.hashCode(),
                     callbackIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
                 )
             } else {
                 null

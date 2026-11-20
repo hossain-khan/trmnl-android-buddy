@@ -174,7 +174,7 @@ fun DeviceDetailContent(
                 )
             }
 
-            if (isWidgetPinSupported) {
+            if (isWidgetPinSupported && state.hasDeviceToken) {
                 HomeScreenWidgetCard(
                     hasDeviceToken = state.hasDeviceToken,
                     onAddWidget = {

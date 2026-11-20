@@ -9,6 +9,7 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -46,10 +47,19 @@ class WidgetPinReceiver : BroadcastReceiver() {
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
                 val manager = GlanceAppWidgetManager(appContext)
-                val glanceId =
+                var glanceId =
                     manager
                         .getGlanceIds(TrmnlDeviceWidget::class.java)
                         .firstOrNull { manager.getAppWidgetId(it) == appWidgetId }
+                var attempts = 0
+                while (glanceId == null && attempts < 5) {
+                    attempts++
+                    delay(200)
+                    glanceId =
+                        manager
+                            .getGlanceIds(TrmnlDeviceWidget::class.java)
+                            .firstOrNull { manager.getAppWidgetId(it) == appWidgetId }
+                }
                 if (glanceId == null) {
                     Timber.w("[WidgetPinReceiver] GlanceId not found for widget $appWidgetId")
                     return@launch
