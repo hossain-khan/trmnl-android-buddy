@@ -4,8 +4,8 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.preferencesOf
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import kotlinx.coroutines.CancellationException
 import timber.log.Timber
@@ -15,8 +15,6 @@ import timber.log.Timber
  * using [GlanceAppWidgetManager.requestPinGlanceAppWidget].
  */
 object WidgetPinHelper {
-    private val PREVIEW_SIZE = DpSize(250.dp, 130.dp)
-
     /**
      * Returns `true` if the current default launcher supports pinning app widgets from in-app.
      */
@@ -68,11 +66,21 @@ object WidgetPinHelper {
                 null
             }
 
+        val previewState =
+            if (!deviceFriendlyId.isNullOrBlank()) {
+                preferencesOf(
+                    TrmnlDeviceWidget.DEVICE_FRIENDLY_ID_KEY to deviceFriendlyId,
+                    TrmnlDeviceWidget.DEVICE_NAME_KEY to (deviceName ?: ""),
+                )
+            } else {
+                emptyPreferences()
+            }
+
         return try {
             GlanceAppWidgetManager(context).requestPinGlanceAppWidget(
                 receiver = TrmnlDeviceWidgetReceiver::class.java,
                 preview = TrmnlDeviceWidget(),
-                previewState = PREVIEW_SIZE,
+                previewState = previewState,
                 successCallback = successCallback,
             )
         } catch (e: CancellationException) {
