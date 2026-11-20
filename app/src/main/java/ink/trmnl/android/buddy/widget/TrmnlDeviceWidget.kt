@@ -3,13 +3,8 @@ package ink.trmnl.android.buddy.widget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
@@ -17,15 +12,18 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
+import androidx.glance.LocalSize
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.appWidgetBackground
@@ -45,14 +43,13 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.wrapContentHeight
-import androidx.glance.state.PreferencesGlanceStateDefinition
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import ink.trmnl.android.buddy.MainActivity
 import ink.trmnl.android.buddy.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.File
+import timber.log.Timber
 import android.content.Intent as AndroidIntent
 
 /** Returns an [AndroidIntent] that opens [MainActivity] directly on the devices screen. */
@@ -82,6 +79,8 @@ private fun openDevicesIntent(context: Context): AndroidIntent =
  * @see WidgetConfigurationActivity
  */
 class TrmnlDeviceWidget : GlanceAppWidget() {
+    override val sizeMode: SizeMode = SizeMode.Exact
+
     companion object {
         val APP_WIDGET_ID_KEY = intPreferencesKey("app_widget_id")
         val DEVICE_FRIENDLY_ID_KEY = stringPreferencesKey("device_friendly_id")
@@ -98,12 +97,23 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         // MIN is the floor enforced on the API-provided refresh rate to avoid excessive polling.
         const val DEFAULT_REFRESH_INTERVAL_MINUTES = 15L
         const val MIN_REFRESH_INTERVAL_MINUTES = 15L
+
+        // Upper-bound widget target dimensions (dp) used for bitmap downsampling.
+        private const val MAX_WIDGET_WIDTH_DP = 400
+        private const val MAX_WIDGET_HEIGHT_DP = 300
     }
 
     override suspend fun provideGlance(
         context: Context,
         id: GlanceId,
     ) {
+        // Hoist decoded bitmap cache outside provideContent so SizeMode.Exact
+        // shares one Bitmap across all size compositions without re-decoding,
+        // while re-decoding when the path or LAST_UPDATED_KEY changes during an active session.
+        var cachedPath: String? = null
+        var cachedLastUpdated = -1L
+        var cachedBitmap: Bitmap? = null
+
         provideContent {
             val prefs = currentState<Preferences>()
             val deviceFriendlyId = prefs[DEVICE_FRIENDLY_ID_KEY]
@@ -111,20 +121,22 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
             val errorMessage = prefs[ERROR_MESSAGE_KEY]
             val appWidgetId = prefs[APP_WIDGET_ID_KEY] ?: AppWidgetManager.INVALID_APPWIDGET_ID
             val imageFilePath = prefs[IMAGE_FILE_PATH_KEY]
+            val lastUpdated = prefs[LAST_UPDATED_KEY] ?: 0L
             val isRefreshing = prefs[IS_REFRESHING_KEY] ?: false
 
-            // Decode the bitmap reactively whenever the image file path changes.
-            // Using LaunchedEffect (supported since Glance 1.1.0) ensures the bitmap is always
-            // in sync with the latest state, even when Glance re-uses an active session and
-            // only triggers a recomposition (rather than a full provideGlance re-run).
-            var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-            LaunchedEffect(imageFilePath) {
-                bitmap =
-                    withContext(Dispatchers.IO) {
-                        imageFilePath?.let { path ->
-                            val file = File(path)
-                            if (file.exists()) BitmapFactory.decodeFile(path) else null
-                        }
+            if (imageFilePath != cachedPath || lastUpdated != cachedLastUpdated) {
+                cachedPath = imageFilePath
+                cachedLastUpdated = lastUpdated
+                cachedBitmap =
+                    imageFilePath?.let { path ->
+                        WidgetBitmapUtils.decodeDownsampledWidgetBitmap(
+                            context = context,
+                            filePath = path,
+                            maxWidthDp = MAX_WIDGET_WIDTH_DP,
+                            maxHeightDp = MAX_WIDGET_HEIGHT_DP,
+                            distinctImageCount = 1,
+                            config = Bitmap.Config.RGB_565,
+                        )
                     }
             }
 
@@ -133,7 +145,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     appWidgetId = appWidgetId,
                     deviceFriendlyId = deviceFriendlyId,
                     deviceName = deviceName,
-                    bitmap = bitmap,
+                    bitmap = cachedBitmap,
                     errorMessage = errorMessage,
                     isRefreshing = isRefreshing,
                 )
@@ -141,8 +153,22 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         }
     }
 
+    override fun onCompositionError(
+        context: Context,
+        glanceId: GlanceId,
+        appWidgetId: Int,
+        throwable: Throwable,
+    ) {
+        Timber.e(throwable, "[TrmnlDeviceWidget] Composition error for widget $appWidgetId")
+        val fallback =
+            RemoteViews(context.packageName, R.layout.trmnl_widget_initial_layout).apply {
+                setTextViewText(R.id.widget_status_text, "Unable to display widget. Tap to open app.")
+            }
+        AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, fallback)
+    }
+
     @Composable
-    private fun WidgetContent(
+    internal fun WidgetContent(
         appWidgetId: Int,
         deviceFriendlyId: String?,
         deviceName: String,
@@ -150,6 +176,10 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
         errorMessage: String?,
         isRefreshing: Boolean,
     ) {
+        val size = LocalSize.current
+        val isCompact = size.width < 180.dp || size.height < 110.dp
+        val contentPadding = if (isCompact) 6.dp else 8.dp
+
         Box(
             modifier =
                 GlanceModifier
@@ -157,7 +187,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     .background(GlanceTheme.colors.surface)
                     .appWidgetBackground()
                     .cornerRadius(16.dp)
-                    .padding(8.dp),
+                    .padding(contentPadding),
         ) {
             when {
                 deviceFriendlyId == null -> {
@@ -208,6 +238,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                 provider = ImageProvider(R.drawable.widgets_24dp_e8eaed_fill0_wght400_grad0_opsz24),
                 contentDescription = null,
                 modifier = GlanceModifier.size(48.dp),
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
             )
             Spacer(modifier = GlanceModifier.height(8.dp))
             Text(
@@ -233,6 +264,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                 contentDescription = null,
                 modifier = GlanceModifier.size(36.dp),
                 alpha = 0.6f,
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
             )
             Spacer(modifier = GlanceModifier.height(10.dp))
             if (deviceName.isNotEmpty()) {
@@ -269,6 +301,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                 contentDescription = null,
                 modifier = GlanceModifier.size(32.dp),
                 alpha = 0.8f,
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.error),
             )
             Spacer(modifier = GlanceModifier.height(8.dp))
             if (deviceName.isNotEmpty()) {
@@ -289,6 +322,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     contentDescription = "Refreshing…",
                     modifier = GlanceModifier.size(32.dp),
                     alpha = 0.5f,
+                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
                 )
             } else {
                 Image(
@@ -304,6 +338,7 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                                     ),
                                 ),
                             ),
+                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurface),
                 )
             }
         }
@@ -336,19 +371,23 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                     // Show a static clock-loader icon while the refresh worker is running.
                     // Glance does not support animated drawables, so a static frame communicates
                     // the in-progress state without animation.
-                    Image(
-                        provider = ImageProvider(R.drawable.clock_loader_40_24dp_999999_fill0_wght400_grad0_opsz24),
-                        contentDescription = "Refreshing…",
-                        modifier = GlanceModifier.size(20.dp),
-                        alpha = 0.5f,
-                    )
+                    Box(
+                        modifier = GlanceModifier.size(32.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Image(
+                            provider = ImageProvider(R.drawable.clock_loader_40_24dp_999999_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Refreshing…",
+                            modifier = GlanceModifier.size(20.dp),
+                            alpha = 0.5f,
+                            colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
+                        )
+                    }
                 } else {
-                    Image(
-                        provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                        contentDescription = "Refresh",
+                    Box(
                         modifier =
                             GlanceModifier
-                                .size(20.dp)
+                                .size(32.dp)
                                 .clickable(
                                     actionRunCallback<RefreshWidgetCallback>(
                                         actionParametersOf(
@@ -356,7 +395,15 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                                         ),
                                     ),
                                 ),
-                    )
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Image(
+                            provider = ImageProvider(R.drawable.refresh_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                            contentDescription = "Refresh",
+                            modifier = GlanceModifier.size(20.dp),
+                            colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurface),
+                        )
+                    }
                 }
             }
 
@@ -371,5 +418,53 @@ class TrmnlDeviceWidget : GlanceAppWidget() {
                 contentScale = ContentScale.Fit,
             )
         }
+    }
+}
+
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(widthDp = 250, heightDp = 130)
+@Composable
+private fun TrmnlDeviceWidgetUnconfiguredPreview() {
+    GlanceTheme {
+        TrmnlDeviceWidget().WidgetContent(
+            appWidgetId = 1,
+            deviceFriendlyId = null,
+            deviceName = "",
+            bitmap = null,
+            errorMessage = null,
+            isRefreshing = false,
+        )
+    }
+}
+
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(widthDp = 250, heightDp = 130)
+@Composable
+private fun TrmnlDeviceWidgetLoadingPreview() {
+    GlanceTheme {
+        TrmnlDeviceWidget().WidgetContent(
+            appWidgetId = 1,
+            deviceFriendlyId = "ABC123",
+            deviceName = "Living Room TRMNL",
+            bitmap = null,
+            errorMessage = null,
+            isRefreshing = false,
+        )
+    }
+}
+
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(widthDp = 250, heightDp = 130)
+@Composable
+private fun TrmnlDeviceWidgetErrorPreview() {
+    GlanceTheme {
+        TrmnlDeviceWidget().WidgetContent(
+            appWidgetId = 1,
+            deviceFriendlyId = "ABC123",
+            deviceName = "Living Room TRMNL",
+            bitmap = null,
+            errorMessage = "Network error",
+            isRefreshing = false,
+        )
     }
 }

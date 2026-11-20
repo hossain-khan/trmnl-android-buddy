@@ -156,6 +156,8 @@ dependencies {
     // Glance - Compose for app widgets
     implementation(libs.glance.appwidget)
     implementation(libs.glance.material3)
+    implementation(libs.glance.preview)
+    debugImplementation(libs.glance.appwidget.preview)
 
     // Accompanist - Compose utilities for permissions
     implementation(libs.accompanist.permissions)
