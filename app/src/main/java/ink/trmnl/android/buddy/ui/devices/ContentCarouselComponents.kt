@@ -55,6 +55,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -65,6 +66,8 @@ import ink.trmnl.android.buddy.content.models.ContentItem
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.formatRelativeDate
 import kotlinx.coroutines.delay
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 /**
  * Content carousel composable.
@@ -416,7 +419,7 @@ internal fun ContentItemCard(
                         fontWeight = if (!item.isRead) FontWeight.Bold else FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 2,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
 
@@ -448,7 +451,7 @@ internal fun ContentItemCard(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 3,
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
 
@@ -654,9 +657,9 @@ private val sampleAnnouncement =
                 "Check out the new settings panel to get started.",
         link = "https://trmnl.com/announcements/screen-sharing",
         publishedDate =
-            java.time.Instant
+            Instant
                 .now()
-                .minus(2, java.time.temporal.ChronoUnit.DAYS),
+                .minus(2, ChronoUnit.DAYS),
         isRead = false,
     )
 
@@ -669,9 +672,9 @@ private val sampleBlogPost =
                 "We'll cover layout design, data sources, and optimization tips.",
         link = "https://trmnl.com/blog/perfect-dashboard",
         publishedDate =
-            java.time.Instant
+            Instant
                 .now()
-                .minus(5, java.time.temporal.ChronoUnit.HOURS),
+                .minus(5, ChronoUnit.HOURS),
         isRead = false,
         authorName = "John Doe",
         category = "Tutorial",

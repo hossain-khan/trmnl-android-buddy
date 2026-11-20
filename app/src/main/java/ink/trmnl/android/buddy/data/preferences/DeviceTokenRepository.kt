@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
@@ -74,7 +75,7 @@ interface DeviceTokenRepository {
 /**
  * Implementation of DeviceTokenRepository using DataStore Preferences.
  */
-@ContributesBinding(dev.zacsweers.metro.AppScope::class)
+@ContributesBinding(AppScope::class)
 @Inject
 class DeviceTokenRepositoryImpl(
     private val context: Context,

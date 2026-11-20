@@ -17,6 +17,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import ink.trmnl.android.buddy.api.models.RecipesAnalytics
 import ink.trmnl.android.buddy.data.RecipesAnalyticsRepository
 import ink.trmnl.android.buddy.work.WorkManagerObserver
 import ink.trmnl.android.buddy.work.WorkerStatus
@@ -422,7 +423,7 @@ private class FakeRecipesAnalyticsRepository : RecipesAnalyticsRepository {
     var clearCacheCalled = false
         private set
 
-    override suspend fun getRecipesAnalytics(authorization: String): Result<ink.trmnl.android.buddy.api.models.RecipesAnalytics> =
+    override suspend fun getRecipesAnalytics(authorization: String): Result<RecipesAnalytics> =
         Result.failure(Exception("Fake repository - not implemented for testing"))
 
     override fun clearCache() {

@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.data
 
 import ink.trmnl.android.buddy.api.models.Recipe
+import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.data.database.BookmarkedRecipeDao
 import ink.trmnl.android.buddy.data.database.BookmarkedRecipeEntity
 import ink.trmnl.android.buddy.di.ApplicationContext
@@ -109,7 +110,7 @@ private fun BookmarkedRecipeEntity.toRecipe(): Recipe =
         authorBio = null,
         customFields = emptyList(),
         stats =
-            ink.trmnl.android.buddy.api.models.RecipeStats(
+            RecipeStats(
                 installs = installs,
                 forks = forks,
             ),

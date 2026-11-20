@@ -9,6 +9,8 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.slack.eithernet.ApiResult
+import ink.trmnl.android.buddy.api.models.PlaylistItem
+import ink.trmnl.android.buddy.api.models.PluginSetting
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import org.junit.Test
@@ -446,7 +448,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
     fun `PlaylistItem displayName returns plugin name when available`() {
         // Given: Playlist item with plugin setting
         val item =
-            ink.trmnl.android.buddy.api.models.PlaylistItem(
+            PlaylistItem(
                 id = 1,
                 deviceId = 123,
                 pluginSettingId = 456,
@@ -458,7 +460,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
                 updatedAt = "2026-01-01T00:00:00Z",
                 mirror = false,
                 pluginSetting =
-                    ink.trmnl.android.buddy.api.models.PluginSetting(
+                    PluginSetting(
                         id = 456,
                         name = "My Plugin",
                         pluginId = 37,
@@ -476,7 +478,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
     fun `PlaylistItem displayName returns formatted mashup ID when plugin not available`() {
         // Given: Playlist item with mashup (no plugin setting)
         val item =
-            ink.trmnl.android.buddy.api.models.PlaylistItem(
+            PlaylistItem(
                 id = 1,
                 deviceId = 123,
                 pluginSettingId = null,
@@ -501,7 +503,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
     fun `PlaylistItem isNeverRendered returns true when rendered_at is null`() {
         // Given: Playlist item with null rendered_at
         val item =
-            ink.trmnl.android.buddy.api.models.PlaylistItem(
+            PlaylistItem(
                 id = 1,
                 deviceId = 123,
                 pluginSettingId = 456,
@@ -526,7 +528,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
     fun `PlaylistItem isNeverRendered returns false when rendered_at has value`() {
         // Given: Playlist item with rendered_at timestamp
         val item =
-            ink.trmnl.android.buddy.api.models.PlaylistItem(
+            PlaylistItem(
                 id = 1,
                 deviceId = 123,
                 pluginSettingId = 456,
@@ -551,7 +553,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
     fun `PlaylistItem isMashup returns true when mashup_id is not null`() {
         // Given: Playlist item with mashup ID
         val item =
-            ink.trmnl.android.buddy.api.models.PlaylistItem(
+            PlaylistItem(
                 id = 1,
                 deviceId = 123,
                 pluginSettingId = null,
@@ -576,7 +578,7 @@ class TrmnlPlaylistItemsApiTest : BaseApiTest() {
     fun `PlaylistItem isMashup returns false when mashup_id is null`() {
         // Given: Playlist item without mashup ID
         val item =
-            ink.trmnl.android.buddy.api.models.PlaylistItem(
+            PlaylistItem(
                 id = 1,
                 deviceId = 123,
                 pluginSettingId = 456,

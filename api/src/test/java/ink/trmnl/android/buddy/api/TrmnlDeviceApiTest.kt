@@ -13,6 +13,7 @@ import com.slack.eithernet.ApiResult
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 /**
  * Unit tests for TrmnlApiService device endpoints using MockWebServer.
@@ -223,7 +224,7 @@ class TrmnlDeviceApiTest : BaseApiTest() {
             mockWebServer.enqueue(
                 MockResponse()
                     .setBody("""{"data": []}""")
-                    .setBodyDelay(10, java.util.concurrent.TimeUnit.SECONDS),
+                    .setBodyDelay(10, TimeUnit.SECONDS),
             )
 
             // When: Call getDevices with short timeout client

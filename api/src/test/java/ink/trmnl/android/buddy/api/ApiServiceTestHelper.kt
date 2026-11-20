@@ -1,11 +1,14 @@
 package ink.trmnl.android.buddy.api
 
+import com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory
+import com.slack.eithernet.integration.retrofit.ApiResultConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * Test helper utility for creating TrmnlApiService instances with custom configurations.
@@ -30,7 +33,7 @@ object ApiServiceTestHelper {
         val shortTimeoutClient =
             OkHttpClient
                 .Builder()
-                .readTimeout(timeoutSeconds, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(timeoutSeconds, TimeUnit.SECONDS)
                 .build()
 
         val retrofit =
@@ -39,11 +42,11 @@ object ApiServiceTestHelper {
                 .baseUrl(mockWebServer.url("/"))
                 .client(shortTimeoutClient)
                 .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
+                    ApiResultConverterFactory,
                 ).addConverterFactory(
                     json.asConverterFactory("application/json".toMediaType()),
                 ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
+                    ApiResultCallAdapterFactory,
                 ).build()
 
         return retrofit.create(TrmnlApiService::class.java)
@@ -70,11 +73,11 @@ object ApiServiceTestHelper {
                 .baseUrl(mockWebServer.url("/"))
                 .client(okHttpClient)
                 .addConverterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultConverterFactory,
+                    ApiResultConverterFactory,
                 ).addConverterFactory(
                     json.asConverterFactory("application/json".toMediaType()),
                 ).addCallAdapterFactory(
-                    com.slack.eithernet.integration.retrofit.ApiResultCallAdapterFactory,
+                    ApiResultCallAdapterFactory,
                 ).build()
 
         return retrofit.create(TrmnlApiService::class.java)

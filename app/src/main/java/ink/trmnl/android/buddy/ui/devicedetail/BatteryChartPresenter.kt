@@ -6,6 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -22,6 +23,7 @@ import ink.trmnl.android.buddy.data.preferences.UserPreferences
 import ink.trmnl.android.buddy.data.preferences.UserPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 /**
@@ -64,16 +66,16 @@ class BatteryChartPresenter
             val coroutineScope = rememberCoroutineScope()
 
             // Check if battery has been recorded today
-            val hasRecordedToday by androidx.compose.runtime.remember {
+            val hasRecordedToday by remember {
                 derivedStateOf {
                     val today =
-                        java.util.Calendar
+                        Calendar
                             .getInstance()
                             .apply {
-                                set(java.util.Calendar.HOUR_OF_DAY, 0)
-                                set(java.util.Calendar.MINUTE, 0)
-                                set(java.util.Calendar.SECOND, 0)
-                                set(java.util.Calendar.MILLISECOND, 0)
+                                set(Calendar.HOUR_OF_DAY, 0)
+                                set(Calendar.MINUTE, 0)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
                             }.timeInMillis
 
                     batteryHistory.any { it.timestamp >= today }
@@ -81,7 +83,7 @@ class BatteryChartPresenter
             }
 
             // Check if battery history should be cleared
-            val clearHistoryReason by androidx.compose.runtime.remember {
+            val clearHistoryReason by remember {
                 derivedStateOf {
                     BatteryHistoryAnalyzer.getClearHistoryReason(batteryHistory)
                 }

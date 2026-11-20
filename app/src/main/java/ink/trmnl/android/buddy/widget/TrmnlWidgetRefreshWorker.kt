@@ -4,11 +4,13 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.work.Constraints
+import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.ExistingWorkPolicy.APPEND_OR_REPLACE
@@ -64,7 +66,7 @@ class TrmnlWidgetRefreshWorker(
     private val apiService: TrmnlApiService,
     private val deviceTokenRepository: DeviceTokenRepository,
     private val okHttpClient: OkHttpClient,
-) : androidx.work.CoroutineWorker(context, params) {
+) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         val appWidgetId = inputData.getInt(KEY_APP_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -223,7 +225,7 @@ class TrmnlWidgetRefreshWorker(
 
     private suspend fun updateGlanceError(
         context: Context,
-        glanceId: androidx.glance.GlanceId,
+        glanceId: GlanceId,
         message: String,
     ) {
         updateAppWidgetState(context, glanceId) { mutablePrefs ->
@@ -235,7 +237,7 @@ class TrmnlWidgetRefreshWorker(
     /** Clears the [TrmnlDeviceWidget.IS_REFRESHING_KEY] flag and triggers a widget re-render. */
     private suspend fun clearRefreshingFlag(
         context: Context,
-        glanceId: androidx.glance.GlanceId,
+        glanceId: GlanceId,
     ) {
         updateAppWidgetState(context, glanceId) { mutablePrefs ->
             mutablePrefs.remove(TrmnlDeviceWidget.IS_REFRESHING_KEY)

@@ -3,6 +3,7 @@ package ink.trmnl.android.buddy.util
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
@@ -99,7 +100,7 @@ object ImageDownloadUtils {
         context: Context,
         bitmap: Bitmap,
         displayName: String,
-    ): android.net.Uri? {
+    ): Uri? {
         val contentResolver = context.contentResolver
         val contentValues =
             ContentValues().apply {

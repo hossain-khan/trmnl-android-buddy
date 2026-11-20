@@ -32,6 +32,8 @@ import ink.trmnl.android.buddy.ui.recipesanalytics.RecipesHealthCard
 import ink.trmnl.android.buddy.ui.recipesanalytics.isEmpty
 import ink.trmnl.android.buddy.ui.recipesanalytics.toHealthCardData
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 /**
  * Loading state composable.
@@ -264,9 +266,9 @@ private val sampleAnnouncement =
                 "Check out the new settings panel to get started.",
         link = "https://trmnl.com/announcements/screen-sharing",
         publishedDate =
-            java.time.Instant
+            Instant
                 .now()
-                .minus(2, java.time.temporal.ChronoUnit.DAYS),
+                .minus(2, ChronoUnit.DAYS),
         isRead = false,
     )
 
@@ -279,9 +281,9 @@ private val sampleBlogPost =
                 "We'll cover layout design, data sources, and optimization tips.",
         link = "https://trmnl.com/blog/perfect-dashboard",
         publishedDate =
-            java.time.Instant
+            Instant
                 .now()
-                .minus(5, java.time.temporal.ChronoUnit.HOURS),
+                .minus(5, ChronoUnit.HOURS),
         isRead = false,
         authorName = "John Doe",
         category = "Tutorial",

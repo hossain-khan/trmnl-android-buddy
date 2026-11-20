@@ -1,6 +1,7 @@
 package ink.trmnl.android.buddy.ui.utils
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import assertk.assertThat
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
@@ -19,7 +20,7 @@ class ColorUtilsTest {
     fun `calculateDarkPixelPercentage returns 1 for completely black image`() {
         // Create a completely black 10x10 bitmap
         val bitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888)
-        bitmap.eraseColor(android.graphics.Color.BLACK)
+        bitmap.eraseColor(Color.BLACK)
 
         val result = calculateDarkPixelPercentage(bitmap)
 
@@ -30,7 +31,7 @@ class ColorUtilsTest {
     fun `calculateDarkPixelPercentage returns 0 for completely white image`() {
         // Create a completely white 10x10 bitmap
         val bitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888)
-        bitmap.eraseColor(android.graphics.Color.WHITE)
+        bitmap.eraseColor(Color.WHITE)
 
         val result = calculateDarkPixelPercentage(bitmap)
 
@@ -45,7 +46,7 @@ class ColorUtilsTest {
         // Fill top half with black, bottom half with white
         for (y in 0 until 10) {
             for (x in 0 until 10) {
-                val color = if (y < 5) android.graphics.Color.BLACK else android.graphics.Color.WHITE
+                val color = if (y < 5) Color.BLACK else Color.WHITE
                 bitmap.setPixel(x, y, color)
             }
         }
@@ -60,7 +61,7 @@ class ColorUtilsTest {
     fun `calculateDarkPixelPercentage ignores fully transparent pixels`() {
         // Create a 10x10 bitmap with transparent black
         val bitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888)
-        bitmap.eraseColor(android.graphics.Color.TRANSPARENT)
+        bitmap.eraseColor(Color.TRANSPARENT)
 
         val result = calculateDarkPixelPercentage(bitmap)
 
@@ -78,9 +79,9 @@ class ColorUtilsTest {
                 // 90 out of 100 pixels are black
                 val color =
                     if ((y * 10 + x) < 90) {
-                        android.graphics.Color.BLACK
+                        Color.BLACK
                     } else {
-                        android.graphics.Color.WHITE
+                        Color.WHITE
                     }
                 bitmap.setPixel(x, y, color)
             }
@@ -101,9 +102,9 @@ class ColorUtilsTest {
                 // 30 out of 100 pixels are black
                 val color =
                     if ((y * 10 + x) < 30) {
-                        android.graphics.Color.BLACK
+                        Color.BLACK
                     } else {
-                        android.graphics.Color.WHITE
+                        Color.WHITE
                     }
                 bitmap.setPixel(x, y, color)
             }
@@ -123,9 +124,9 @@ class ColorUtilsTest {
             for (x in 0 until 10) {
                 val color =
                     if ((y * 10 + x) < 50) {
-                        android.graphics.Color.BLACK
+                        Color.BLACK
                     } else {
-                        android.graphics.Color.WHITE
+                        Color.WHITE
                     }
                 bitmap.setPixel(x, y, color)
             }
@@ -142,7 +143,7 @@ class ColorUtilsTest {
     fun `isBitmapPredominantlyDark handles dark gray as dark`() {
         // Create a bitmap with dark gray (RGB: 50, 50, 50)
         val bitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888)
-        val darkGray = android.graphics.Color.rgb(50, 50, 50)
+        val darkGray = Color.rgb(50, 50, 50)
         bitmap.eraseColor(darkGray)
 
         val result = isBitmapPredominantlyDark(bitmap, darkPercentageThreshold = 0.8f)
@@ -155,7 +156,7 @@ class ColorUtilsTest {
     fun `isBitmapPredominantlyDark handles light gray as light`() {
         // Create a bitmap with light gray (RGB: 200, 200, 200)
         val bitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888)
-        val lightGray = android.graphics.Color.rgb(200, 200, 200)
+        val lightGray = Color.rgb(200, 200, 200)
         bitmap.eraseColor(lightGray)
 
         val result = isBitmapPredominantlyDark(bitmap, darkPercentageThreshold = 0.8f)

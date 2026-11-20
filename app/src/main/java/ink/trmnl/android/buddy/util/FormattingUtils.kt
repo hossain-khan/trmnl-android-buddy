@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.util
 
+import java.time.Duration
 import java.time.Instant
 import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoUnit
@@ -118,7 +119,7 @@ fun formatRelativeTime(isoTimestamp: String?): String {
         val instant = Instant.parse(isoTimestamp)
         val now = Instant.now()
         val secondsDiff =
-            java.time.Duration
+            Duration
                 .between(instant, now)
                 .seconds
 

@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -172,7 +173,7 @@ fun RecipeDetailBottomSheet(
                     SubcomposeAsyncImage(
                         model =
                             ImageRequest
-                                .Builder(androidx.compose.ui.platform.LocalContext.current)
+                                .Builder(LocalContext.current)
                                 .data(recipe.screenshotUrl)
                                 .transformations(SmartInvertTransformation(isDarkMode))
                                 .build(),

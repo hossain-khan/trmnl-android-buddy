@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,6 +72,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import ink.trmnl.android.buddy.R
 import ink.trmnl.android.buddy.content.db.AnnouncementEntity
+import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
 import ink.trmnl.android.buddy.util.BrowserUtils
 import ink.trmnl.android.buddy.util.formatRelativeDate
 import kotlinx.coroutines.delay
@@ -149,7 +151,7 @@ fun AnnouncementsContent(
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn() + scaleIn(),
                 exit = slideOutVertically(targetOffsetY = { it }) + fadeOut() + scaleOut(),
             ) {
-                androidx.compose.material3.ExtendedFloatingActionButton(
+                ExtendedFloatingActionButton(
                     onClick = { state.eventSink(AnnouncementsScreen.Event.MarkAllAsRead) },
                     icon = {
                         Icon(
@@ -668,7 +670,7 @@ private val sampleAnnouncements =
 @Preview(name = "Loading State")
 @Composable
 private fun AnnouncementsLoadingPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         AnnouncementsContent(
             state =
                 AnnouncementsScreen.State(
@@ -682,7 +684,7 @@ private fun AnnouncementsLoadingPreview() {
 @Preview(name = "Empty State - All Filter")
 @Composable
 private fun AnnouncementsEmptyAllPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         AnnouncementsContent(
             state =
                 AnnouncementsScreen.State(
@@ -698,7 +700,7 @@ private fun AnnouncementsEmptyAllPreview() {
 @Preview(name = "Empty State - Unread Filter")
 @Composable
 private fun AnnouncementsEmptyUnreadPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         AnnouncementsContent(
             state =
                 AnnouncementsScreen.State(
@@ -715,7 +717,7 @@ private fun AnnouncementsEmptyUnreadPreview() {
 @Preview(name = "Announcement Item - Unread")
 @Composable
 private fun AnnouncementItemUnreadPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         Surface {
             AnnouncementItem(
                 announcement = sampleAnnouncements[0],
@@ -730,7 +732,7 @@ private fun AnnouncementItemUnreadPreview() {
 @Preview(name = "Announcement Item - Read")
 @Composable
 private fun AnnouncementItemReadPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         Surface {
             AnnouncementItem(
                 announcement = sampleAnnouncements[1],
@@ -745,7 +747,7 @@ private fun AnnouncementItemReadPreview() {
 @Preview(name = "Filter Chips - All Selected")
 @Composable
 private fun FilterChipsAllPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         Surface {
             FilterChips(
                 selectedFilter = AnnouncementsScreen.Filter.ALL,
@@ -760,7 +762,7 @@ private fun FilterChipsAllPreview() {
 @Preview(name = "Filter Chips - Unread Selected")
 @Composable
 private fun FilterChipsUnreadPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         Surface {
             FilterChips(
                 selectedFilter = AnnouncementsScreen.Filter.UNREAD,
@@ -775,7 +777,7 @@ private fun FilterChipsUnreadPreview() {
 @Preview(name = "Full Screen - With Announcements")
 @Composable
 private fun AnnouncementsFullScreenPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         AnnouncementsContent(
             state =
                 AnnouncementsScreen.State(
@@ -793,7 +795,7 @@ private fun AnnouncementsFullScreenPreview() {
 @Preview(name = "Full Screen - With Auth Banner")
 @Composable
 private fun AnnouncementsWithAuthBannerPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         AnnouncementsContent(
             state =
                 AnnouncementsScreen.State(
@@ -812,7 +814,7 @@ private fun AnnouncementsWithAuthBannerPreview() {
 @Preview(name = "Full Screen - Embedded (No TopBar)")
 @Composable
 private fun AnnouncementsEmbeddedPreview() {
-    ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme {
+    TrmnlBuddyAppTheme {
         AnnouncementsContent(
             state =
                 AnnouncementsScreen.State(

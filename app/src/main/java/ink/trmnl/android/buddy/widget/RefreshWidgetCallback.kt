@@ -1,5 +1,6 @@
 package ink.trmnl.android.buddy.widget
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import androidx.glance.GlanceId
 import androidx.glance.action.ActionParameters
@@ -20,7 +21,7 @@ class RefreshWidgetCallback : ActionCallback {
         parameters: ActionParameters,
     ) {
         val appWidgetId = parameters[APP_WIDGET_ID_KEY]
-        if (appWidgetId == null || appWidgetId == android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID) {
+        if (appWidgetId == null || appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             Timber.w("[RefreshWidgetCallback] Invalid appWidgetId, skipping refresh")
             return
         }

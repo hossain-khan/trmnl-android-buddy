@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -43,6 +44,7 @@ import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.transformations
 import ink.trmnl.android.buddy.R
+import ink.trmnl.android.buddy.api.models.AuthorBio
 import ink.trmnl.android.buddy.api.models.Recipe
 import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.ui.theme.TrmnlBuddyAppTheme
@@ -82,7 +84,7 @@ fun RecipeListItem(
                     SubcomposeAsyncImage(
                         model =
                             ImageRequest
-                                .Builder(androidx.compose.ui.platform.LocalContext.current)
+                                .Builder(LocalContext.current)
                                 .data(recipe.iconUrl)
                                 .transformations(SmartInvertTransformation(isDarkMode))
                                 .build(),
@@ -233,7 +235,7 @@ private fun RecipeListItemPreview() {
                     iconUrl = null,
                     screenshotUrl = null,
                     authorBio =
-                        ink.trmnl.android.buddy.api.models.AuthorBio(
+                        AuthorBio(
                             category = "weather,custom",
                         ),
                     stats = RecipeStats(installs = 1230, forks = 1),
@@ -257,7 +259,7 @@ private fun RecipeListItemWithHighStatsPreview() {
                     iconUrl = null,
                     screenshotUrl = null,
                     authorBio =
-                        ink.trmnl.android.buddy.api.models.AuthorBio(
+                        AuthorBio(
                             category = "entertainment,programming",
                         ),
                     stats = RecipeStats(installs = 25, forks = 176),
@@ -281,7 +283,7 @@ private fun RecipeListItemBookmarkedPreview() {
                     iconUrl = null,
                     screenshotUrl = null,
                     authorBio =
-                        ink.trmnl.android.buddy.api.models.AuthorBio(
+                        AuthorBio(
                             category = "productivity",
                         ),
                     stats = RecipeStats(installs = 500, forks = 50),

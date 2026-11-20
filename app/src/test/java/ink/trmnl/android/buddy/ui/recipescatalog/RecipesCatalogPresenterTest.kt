@@ -16,6 +16,7 @@ import ink.trmnl.android.buddy.api.models.RecipeStats
 import ink.trmnl.android.buddy.api.models.RecipesResponse
 import ink.trmnl.android.buddy.data.FakeBookmarkRepository
 import ink.trmnl.android.buddy.data.RecipesRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Ignore
 import org.junit.Test
@@ -34,7 +35,7 @@ private const val DEFAULT_PER_PAGE = 25
  * - Error handling and retry
  * - Navigation
  */
-@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class RecipesCatalogPresenterTest {
     @Test
     fun `presenter loads recipes on initial composition`() =

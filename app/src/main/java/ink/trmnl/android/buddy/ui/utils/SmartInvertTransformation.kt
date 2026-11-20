@@ -1,10 +1,10 @@
 package ink.trmnl.android.buddy.ui.utils
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
-import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -60,7 +60,7 @@ class SmartInvertTransformation(
 
         // Create a new bitmap with inverted colors
         val output = Bitmap.createBitmap(input.width, input.height, input.config ?: Bitmap.Config.ARGB_8888)
-        val canvas = android.graphics.Canvas(output)
+        val canvas = Canvas(output)
 
         // Create color inversion matrix
         val invertMatrix =

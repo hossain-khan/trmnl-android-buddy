@@ -21,6 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.time.Instant
 
 /**
  * Unit tests for [BlogPostRepository] RSS parsing functionality.
@@ -170,9 +171,9 @@ class BlogPostRepositoryTest {
                         link = item.link ?: return@mapNotNull null,
                         authorName = item.author ?: "TRMNL Team",
                         category = item.categories.firstOrNull(),
-                        publishedDate = java.time.Instant.now(),
+                        publishedDate = Instant.now(),
                         featuredImageUrl = null,
-                        fetchedAt = java.time.Instant.now(),
+                        fetchedAt = Instant.now(),
                     )
                 }
 
@@ -337,11 +338,11 @@ class BlogPostRepositoryTest {
         override suspend fun markAsRead(id: String) {
             posts.find { it.id == id }?.let {
                 val index = posts.indexOf(it)
-                posts[index] = it.copy(isRead = true, lastReadAt = java.time.Instant.now())
+                posts[index] = it.copy(isRead = true, lastReadAt = Instant.now())
             }
         }
 
-        override suspend fun markAllAsRead(timestamp: java.time.Instant) {
+        override suspend fun markAllAsRead(timestamp: Instant) {
             posts.forEachIndexed { index, post ->
                 if (!post.isRead) {
                     posts[index] = post.copy(isRead = true, lastReadAt = timestamp)
@@ -354,7 +355,7 @@ class BlogPostRepositoryTest {
         override suspend fun updateReadingProgress(
             id: String,
             progress: Float,
-            timestamp: java.time.Instant,
+            timestamp: Instant,
         ) {
             posts.find { it.id == id }?.let {
                 val index = posts.indexOf(it)

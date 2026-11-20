@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -76,8 +77,8 @@ data object SettingsScreen : ParcelableScreen {
         val isRssFeedContentNotificationEnabled: Boolean = false,
         val isSecurityEnabled: Boolean = false,
         val isAuthenticationAvailable: Boolean = false,
-        val analyticsState: ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState =
-            ink.trmnl.android.buddy.ui.recipesanalytics.RecipesAnalyticsState
+        val analyticsState: RecipesAnalyticsState =
+            RecipesAnalyticsState
                 .Loading(),
         val showRecipeHealthCard: Boolean = true,
         val showLegacyTokenAnalyticsDialog: Boolean = false,
@@ -168,7 +169,7 @@ class SettingsPresenter(
         //
         // Legacy `user_` tokens are skipped here because `/api/analytics` requires a scoped
         // `trmnl_` API key; tapping "Recipes Analytics" shows an upgrade prompt instead.
-        androidx.compose.runtime.LaunchedEffect(preferences.apiToken) {
+        LaunchedEffect(preferences.apiToken) {
             val apiToken = preferences.apiToken
             try {
                 if (apiToken.isNullOrEmpty()) {

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Replaced fully qualified class names with explicit `import` statements across `api`, `app`, and `content` modules and formatted Kotlin sources with Kotlinter.
+
 ## [2.21.0] - 2026-11-14
 
 ### Added

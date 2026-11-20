@@ -1,11 +1,16 @@
 package ink.trmnl.android.buddy.widget
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.Configuration
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.ListenableWorker
 import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.testing.WorkManagerTestInitHelper
 import assertk.assertThat
@@ -59,7 +64,7 @@ class TrmnlWidgetRefreshWorkerTest {
         val config =
             Configuration
                 .Builder()
-                .setMinimumLoggingLevel(android.util.Log.DEBUG)
+                .setMinimumLoggingLevel(Log.DEBUG)
                 .build()
         WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
     }
@@ -95,7 +100,7 @@ class TrmnlWidgetRefreshWorkerTest {
                             .Builder()
                             .putInt(
                                 TrmnlWidgetRefreshWorker.KEY_APP_WIDGET_ID,
-                                android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID,
+                                AppWidgetManager.INVALID_APPWIDGET_ID,
                             ).build(),
                 )
 
@@ -303,7 +308,7 @@ class TrmnlWidgetRefreshWorkerTest {
             context = context,
             appWidgetId = appWidgetId,
             initialDelayMinutes = 15,
-            existingWorkPolicy = androidx.work.ExistingWorkPolicy.APPEND_OR_REPLACE,
+            existingWorkPolicy = ExistingWorkPolicy.APPEND_OR_REPLACE,
         )
 
         // Then: Work is enqueued
@@ -324,7 +329,7 @@ class TrmnlWidgetRefreshWorkerTest {
             context = context,
             appWidgetId = appWidgetId,
             initialDelayMinutes = 30,
-            existingWorkPolicy = androidx.work.ExistingWorkPolicy.KEEP,
+            existingWorkPolicy = ExistingWorkPolicy.KEEP,
         )
 
         // Then: Work is enqueued
@@ -384,18 +389,18 @@ class TrmnlWidgetRefreshWorkerTest {
     // Helpers
     // =========================================================
 
-    private fun getWorkerParameters(): androidx.work.WorkerParameters {
+    private fun getWorkerParameters(): WorkerParameters {
         class DummyWorker(
             context: Context,
-            params: androidx.work.WorkerParameters,
-        ) : androidx.work.Worker(context, params) {
+            params: WorkerParameters,
+        ) : Worker(context, params) {
             override fun doWork(): Result = Result.success()
         }
 
         val dummyWorker = TestListenableWorkerBuilder<DummyWorker>(context).build()
-        val paramsField = androidx.work.ListenableWorker::class.java.getDeclaredField("mWorkerParams")
+        val paramsField = ListenableWorker::class.java.getDeclaredField("mWorkerParams")
         paramsField.isAccessible = true
-        return paramsField.get(dummyWorker) as androidx.work.WorkerParameters
+        return paramsField.get(dummyWorker) as WorkerParameters
     }
 
     private fun createWorker(inputData: Data): TrmnlWidgetRefreshWorker =
